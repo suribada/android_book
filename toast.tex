@@ -1,0 +1,69 @@
+줄까여러 곳에서 사용하는 클래스라면, 메인 스레드에서도 일반 스레드에서도 사용할 가능성이 있다. 내 경우에는 특정 예외 케이스에 Toast 보여주기를 시도하였다.
+
+\colorbox{backcolour}{\parbox[t]{15cm}{
+Toast는 앱에서 발생시키지만, Toast를 발생시킨 화면과 무관하게 동작하는 것을 볼 수 있다. 화면이 바뀌거나 앱이 종료되었는데도 Toast는 남아서 뜨는 것도 흔히 볼 수 있다.
+Toast도 생각해보면 UI 화면이라고 할 수 있으므로, 메인 스레드에서만 show를 할 수 있을 것 같은데 그렇진 않다.\\
+디바이스에서 ps 를 해보면 /system/bin/servicemanager가 떠있는데, 이것이 Context의 getSystemService로 가져오는 시스템 서비스들의 프로세스이다. 그 가운데 Toast는 내부적으로 Context.NOTIFICATIN\_SERVICE(NotificationManager)를 사용하고, aidl 파일은 /frameworks/base/core/java/android/app/INotificationManager.aidl이고, Stub 구현은 /frameworks/base/services/java/com/android/server/NotificationManagerService.java이다.\\
+Toast의 show 메소드는 INofificationManager의 enqueToast를 호출하는 것으로 여기서도 Queue에 넣는 역할을 하게 되고, 결국 띄우는 것은 servicemanager 프로세스에서 Binder Call하는 것이다.(스레드풀 이용)
+}}\newline \newline
+
+% 스레드에서 Window 생성이 문제가 없는지 확인해보자. 
+
+맨 먼저 직접 Toast를 사용해보자.
+\begin{lstlisting}[frame=single] 
+	public void process(final Context context, String input) {
+		if (TextUtils.isEmpty(input)) {
+			Toast.makeText(context, "Error occurred", Toast.LENGTH_LONG).show();
+			return;
+		}
+		...
+	}
+\end{lstlisting}	
+일반 스레드에서는 문제가 발생한다. 바로 Toast에서 내부적으로 Handler를 사용하기 때문이다.
+\begin{lstlisting}[frame=single] 
+09-12 15:49:19.058: E/AndroidRuntime(30478): java.lang.RuntimeException: Can't create handler inside thread that has not called Looper.prepare()
+09-12 15:49:19.058: E/AndroidRuntime(30478): 	at android.os.Handler.<init>(Handler.java:121)
+09-12 15:49:19.058: E/AndroidRuntime(30478): at android.widget.Toast$TN.<init>(Toast.java:322)
+09-12 15:49:19.058: E/AndroidRuntime(30478): 	at android.widget.Toast.<init>(Toast.java:91)
+09-12 15:49:19.058: E/AndroidRuntime(30478): 	at android.widget.Toast.makeText(Toast.java:238)
+\end{lstlisting}	
+
+그래서 일반 스레드에서 아래처럼 사용하는 것도 가능은 하다.
+\begin{lstlisting}[frame=single] 
+	public void process(final Context context, String input) {
+		if (TextUtils.isEmpty(input)) {
+			Looper.prepare();
+	        	Toast.makeText(context, "Error occurred", Toast.LENGTH_LONG).show();
+	        	Looper.loop();
+			return;
+		}
+		...
+	}
+\end{lstlisting}
+하지만 Looper.loop가 무한반복문이기 때문에 계속 리턴되지 않는 문제가 생긴다. Looper.myLooper().quit() 메소드를 실행할 수 있는 위치도 loop 다음 라인에는 할 수 없어서 메인 스레드나 다른 스레드에서 quit 해야만 한다.
+	
+그렇다면 계속 떠있는 게 아무 문제없는 MainLooper를 사용하는 방법은 무엇일까? 바로 MainLooper와 연결된 Handler를 사용하는 것으로 Handler의 네 생성자 가운데 세 번째 생성자를 사용하는 것이다.
+\begin{lstlisting}[frame=single] 
+	private Handler handler = new Handler(Looper.getMainLooper());
+	
+	public void process(final Context context, String input) {
+		if (TextUtils.isEmpty(input)) {
+			handler.post(new Runnable() {
+				
+				public void run() {
+					Toast.makeText(context, "Error occurred", Toast.LENGTH_LONG).show();
+				}
+			});
+			return;
+		}
+		...
+	}
+\end{lstlisting}
+
+IntentService의 onHandleIntent에서 Toast띄우는 건 주의하자. 이미 Looper가 생성되어 있기 때문에 그 Looper를 기준으로 쓰이는데, onDestroy에서 Looper가 끝나고 나면, Toast “sending message to a Handler on a dead thread” 이게 뜬다.
+
+스레드 안에서도 Looper만 있다면 Toast를 띄울 수 있다.
+
+스레드에서 띄우는 경우 Toast가 계속 남을 수도 있다. hide도 결국 callback을 호출하는 것뿐
+
+% 스레드에서 Window 만드는 게  가능한가?

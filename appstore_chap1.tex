@@ -1,0 +1,442 @@
+\documentclass{beamer}
+
+\usetheme{CambridgeUS}
+\usefonttheme[onlylarge]{structurebold}
+\setbeamerfont*{frametitle}{size=\normalsize,series=\bfseries}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage{kotex}
+\usepackage{listings}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{purple}{rgb}{0.5, 0.0, 0.5}
+
+\newcommand\Fontvi{\fontsize{8}{9.6}\selectfont}
+
+\begin{document}
+
+\lstset {
+	language=java, 
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+    keywordstyle=\color{purple},
+	tabsize=4,
+	showspaces=false, 
+	showstringspaces=false,   
+	breaklines=true
+}
+
+\title{안드로이드 컴포넌트의 이해}
+\author[노재춘]{\texttt{suribada@gmail.com}}
+\date[\today]{네이버 지도지역서비스개발랩}
+
+\begin{frame}
+\titlepage
+\end{frame}
+
+\begin{frame}
+SQLite DB Lock 문제는 왜 발생하고, 해결 방법은 무엇인가?
+\end{frame}
+
+\setbeamercovered{transparent=20}
+\begin{frame}
+\frametitle{SQLite 기본}
+\begin{itemize}
+\item 시퀄라이트인가? 에스큐엘라이트냐?
+\item Thread에서 쿼리를 실행하는 것이 좋은가?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{군더더기 코드들}
+\begin{itemize}
+\item 쿼리를 실행하는 메소드마다 synchronized를 해놓는다.
+\item 단순 쿼리조차도 DB Transaction을 해놓는다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{문제들}
+\begin{itemize}
+\item android.database.sqlite.SQLiteDatabaseLockedException이 발생하지만 원인을 알 수 없고, 재현이 잘 안 된다.
+\item 왜 사용자들은 crash가 많을까?
+\item 타이밍 이슈는 언제나 힘들다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lock 기본 내용}
+\begin{itemize}
+\item 읽기 할 때는 Shared Lock을 잡는다. 다른 Shared Lock과 공존할 수 있다.
+\item 쓰기 할 때는 Exclusive Lock을 잡는다. 다른 Lock을 허용하지 않는다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lock의 상태 5가지(1)}
+\begin{itemize}
+\item UNLOCKED: 기본상태로 읽기나 쓰기가 안 된다.
+\item SHARED: 읽기만 되고 쓰기는 안 된다. 동시에 여러 개의 프로세스가 Shared Lock을 가질 수 있다. 하나 이상의  Shared Lock이 활성화 되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
+\item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 하려고 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 개의 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lock의 상태 5가지(2)}
+\begin{itemize}
+\item PENDING: 가능한한 빨리 Lock을 잡고 있는 프로세스가 쓰기를 하려고 한다. 즉, 현재의 모든 Shared Lock이 clear되면서 Exclusive Lock을 가지려 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
+\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고, 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하려 하는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lock 문제 재현}
+\begin{itemize}
+\item https://github.com/touchlab/Android-Database-Locking-Collisions-Example
+\item 에러가 발생해야 하는데 안 날 수도 있다. 이 때는 스레드 갯수를 늘려보면 반드시 발생시킬 수 있다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lock 문제 재현을 통한 결론}
+\begin{itemize}
+\item 여러 스레드에서 별도의 SQLiteDatabase 인스턴스를 가지고 있으면 읽기와 쓰기가 함께 있는 경우 Lock 에러를 발생시킨다.
+\item 반대로, 여러 스레드에서도 오직 하나의 SQLiteDatabase 인스턴스 만을 가지고 명령을 실행한다면, Lock  에러는 발생하지 않는다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{왜 그럴까?}
+\begin{itemize}
+\item 안드로이드에서 SQLite의 default threading mode가 serialized이기 때문이다. 즉 명령어들은 순차적으로 실행된다.
+\item threading mode 관련한 내용은 SQLite 사이트를 참고하자. http://www.sqlite.org/threadsafe.html
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{하나의 인스턴스만?}
+\begin{itemize}
+\item SQLiteDatabase 인스턴스를 하나만 가지고서 serialized mode로 동작한다면 속도가 느려지진 않을까? 결론적으로 그렇다.\\
+쓰기와 읽기가 함께 있는 것이라면 serialized mode가 되어야만 Lock 문제가 없기 때문에 하나의 인스턴스를 사용해야 하지만, 읽기만 있다면 굳이 하나의 인스턴스를 고집할 필요가 없다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+DB Lock과 Transaction은 왜 한 묶음으로 얘기하는 것일까?
+\end{frame}
+
+\begin{frame}
+\frametitle{DB Lock과 Transaction}
+\begin{itemize}
+\item 일반적인 CUD에서는 Lock을 잡아봐야 아주 짧은 시간이기 때문에 큰 영향을 주지는 않는다. 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 해야 하는 Transaction이다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Transaction 사용하기}
+\begin{itemize}
+\item 필요한 경우에는 가능하면 쓰는 것이 좋다. \\
+ex) 여러 데이터를 한꺼번에 입력하기
+\item 케이스마다 다르지만, 실행 속도가 10분의 1 이하로 줄어들기도 한다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Transaction 기본 패턴}
+\begin{verbatim}
+	db.beginTransaction();
+	try {
+	    	...
+	    db.setTransactionSuccessful();
+	} catch (Exception e) {
+	    ...
+	} finally {
+	    db.endTransaction();
+	}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLite Transaction mode(1)}
+\begin{itemize}
+\item deferred, immediate, exclusive의 세 가지 모드를 사용하고, 디폴트는 deferred이다.\\(http://sqlite.org/lang\_transaction.html)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLite Transaction mode(2)}
+\begin{itemize}
+\item defered: 말 그대로 Lock을 가능한한 뒤로 미룬다. Transaction을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고, 첫 write operation이 있을때 Reserved Lock을 잡는다. 최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 쓰레드에서 DB 작업을 더 할 수가 있다. 
+\item immediate: Transaction을 시작할 때 Reserved Lock이 잡힌다. Reserved Lock은 2개 이상 잡힐 수 없으므로, 다른 immidate Transaction을 시작할 수는 없다. 그래도 다른 프로세스나 쓰레드에서 읽기를 할 수는 있다.
+\item exclusive: Transaction을 시작할 때 Exclusive Lock이 잡히므로, 다른 DB 작업을 도저히 할 수가 없다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLite Transaction mode(3)}
+\begin{itemize}
+\item 앞의 설명대로라면 가능한한 exclusive 보다는 immediate, immediate보다는 defered를 쓰고 싶지만, 안드로이드에서 지원하는 것은 exclusive와 immediate 두 가지뿐이다. 게다가 immediate 모드는 Level 11 Honeycomb부터 지원하기 시작했다.\\
+\item SQLite 사이트에서 보면 defered가 디폴트라서 이 기준으로 쓰여 있는 문서들이 있어서 혼동되는 경우가 있다. 주의해서 보도록 하자.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Transaction 기본 패턴 수정}
+\begin{verbatim}
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+	    db.beginTransactionNonExclusive();
+	} else {
+	    db.beginTransaction();
+	}
+	try {
+	    	...
+	    db.setTransactionSuccessful();
+	} catch (Exception e) {
+	    ...
+	} finally {
+	    db.endTransaction();
+	}
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper(1)}
+\begin{itemize}
+\item SQLiteDatabase는 SQLite에 접근하는 클래스로, SQL 명령어를 실행하고 데이터베이스 관리를 하는 메소드들을 가지고 있다. SQLite를 사용하기 위해서는 꼭 거쳐야 하는 클래스이지만, 실제 프로젝트에서는 SQLiteDatabase를 직접 생성해서 사용하는 경우는 드물다.\\
+바로 Helper 클래스인 SQLiteOpenHelper를 상속해서 사용하는데, 여기서 Database 생성이나 Database 버전 관리를 알아서 해준다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper(2)}
+\begin{itemize}
+\item 일반적으로 앱은 업데이트 됨에 따라 DB 테이블이 추가되거나, 칼럼이 변경되거나, 앱에 필요한 기본 데이터가 필요한 경우가 생겨난다. 그래서 버전 관리는 필수적인데, SQLiteDatabase를 가지고 직접 하지 말고, 반드시 SQLiteOpenHelper를 이용한다.
+\item SQLiteOpenHelper는 추상 클래스이면서 일종의 Template Method 패턴을 만들어놓은 것으로, 이 클래스를 상속해서 onCreate와 onUpgrade 메소드를 구현한 Database Helper를 작성하면 된다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Database Helper 예제}
+\Fontvi
+\begin{verbatim}
+public class DatabaseHelper extends SQLiteOpenHelper {
+    private static final String DATABASE_NAME = "loader_throttle.db";
+    private static final int DATABASE_VERSION = 2;
+
+    DatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + MainTable.TABLE_NAME + " ("
+        ....
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        for (int i = oldVersion + 1; i <= newVersion; i++) {
+            processUpgrade(i);
+        }
+    }
+}
+\end{verbatim}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper 살펴보기(1)}
+\begin{itemize}
+\item 생성자에 DATABASE\_NAME이 들어가는 것이 바로 DB 파일명이다.\\
+그럼 DB를 여러 개 쓴다면 Database Helper가 여러 개 필요하다는 말일까? 바로 그렇다. 하나의 앱에서 경우에 따라서 여러개의 DB를 사용할 수도 있고, 이것들은 각각 기본적으로 Database Helper가 필요하게 된다.\\
+가능하면 DB를 하나로 사용하는 것이 좋지만, 상황상 어쩔 수 없는 케이스도 있고 DB Lock 문제를 효과적으로 대응하기 위해서 DB를 분리해놓을 수도 있다.(읽기 전용 데이터를 위한 DB, 읽기+쓰기 용도 DB)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper 살펴보기(2)}
+\begin{itemize}
+\item Database 생성은 어느 시점에 될까? 생성자에서 해주는 것으로 생각할 수 있지만 그렇지 않다.\\
+실제로 Database 열기/생성(openOrCreate)은 SQLiteOpenHelper의 getReadableDatabase/getWritableDatabase 메소드를 호출할 때이다. 더 정확하게 얘기하면 SQLiteOpenHelper에는 SQLiteDatabase 인스턴스를 하나 가지고 있는데, 이 인스턴스가 이미 앞에 이미 생성되었으면 그것을 사용하고, 그렇지 않은 경우에 열기/생성을 하고 (getWritableDatabase에서만) onCreate와 onUpgrade 메소드가 실행된다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper 살펴보기(3)}
+\begin{itemize}
+\item onCreate, onUpgrade에는 테이블 생성/수정 뿐 아니라, 많은 기본 데이터 INSERT 등도 필요하다.\\
+이럴 때 Transaction을 쓰고 싶은데, SQLiteOpenHelper에는 이미 onCreate와 onUpgrade에 Transaction 처리가 되어 있어, 별도로 Transaction 처리를 할 필요가 없다.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper 살펴보기(4)}
+\Fontvi
+\begin{itemize}
+\item DATABASE\_NAME 위치에 null을 넣으면  파일 DB가 아닌 메모리 DB가 된다. 파일 DB라도 속도가 느리진 않지만 메모리 DB는 그보다 훨씬 속도가 낫다. 하지만 DB가 close되면 함께 사라져버리는 휘발성 DB이므로, 일종의 Cache 용도로 사용하는 것이 좋다.\\
+DB를 안 쓰고 Cache 자료구조를 만들수도 있는데, 굳이 메모리 DB를 쓰면 좋은 경우는 무엇일까? 바로 그 안에서 쿼리를 마음껏 실행할 수 있다는 것이다.\\
+이를테면 여러 칼럼이 있고 각 칼럼별로 정렬을 바꾸어주는 기능이 있다고 하면, 이런때 정렬할 때마다 File IO를 하는 것보다는 Memory DB에 담아놓고서 정렬을 하면 결과가 훨씬 빨라질 것이다. 파일 DB에서 raw 데이터를 가져와서 조합 생성해낸 결과 데이터 목록을 메모리 DB로 만들어서 사용하는 것도 고려해볼 수 있다.\\
+
+당연한 얘기지만, 메모리 DB에서는 DB 버전 업그레이드가 의미가 없으므로 version은 신경 쓸 필요 없다. 1로 해놓고 다시는 변경하지 말자.
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{SQLiteOpenHelper 살펴보기(5)}
+\begin{itemize}
+\item Database Helper는 앱 전체에 걸쳐 하나의 인스턴스를 가지고 있어야만, DB Lock 문제에서 자유롭다. 
+그래서 일반적으로 Singleton 패턴을 만들어서 사용한다. 
+
+\Fontvi
+\begin{verbatim}
+public static DatabaseHelper extends SQLiteOpenHelper  {
+   private static DatabaseHelper instance;
+ 
+  public static synchronized DatabaseHelper getInstance(Context context) {
+     if (instance == null) {
+        instance = new DatabaseHelper(context.getApplicationContext());
+     }
+    return instance;
+   }
+ 
+   private DatabaseHelper(Context context) {
+       ....
+   }
+}
+\end{verbatim}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{SQLiteOpenHelper 살펴보기(6)}
+\begin{itemize}
+\item close 메소드는 실제 거의 호출할 일이 없다. close는 SQLiteDatabase 인스턴스의 close를 호출하고, SQLiteDatabase 인스턴스를 null로 만든다.  매번 close 하지 않고, SQLiteDatabase 인스턴스를 계속 재사용해도 문제가 없고, 또 다른 이유는 close 시점 때문에 문제가 발생할 수 있다는 데 있다.\\
+하나의 쓰레드에서 getWritableDatabase를 한 이후에 query를 한다고 하자. 다른 쓰레드에서는 뭔가 작업을 하고 close를 실행한다. 시점에 따라서 getWritableDatabase 이후에 close가 되고, 이것을 가지고 query를 하게 되면, 에러가 발생하게 된다. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ContentProvider를 적용할 것인가?}
+외부 앱에 데이터를 제공하기 위해서는 ContentProvider를 만들어야 한다.\\
+그런데 하나의 앱에서만 사용한다면, ContentProvider를 굳이 쓰지 말라는 가이드와 가능하면 ContentProvider를 쓰라는 가이드가 혼재해 있다.
+\end{frame}
+
+\begin{frame}
+\frametitle{로컬에서 ContentProvider를 쓰면 좋은 점}
+\begin{itemize}
+\item method signature를 따라야 하므로, API의 일관성을 유지할 수 있다.
+\item CursorLoader, AsyncQueryHandler 같은 유용한 클래스들에서 ContentProvider의 Uri가 전달되어야만 동작한다.
+\item 하나의 앱에서도 프로세스가 분리될 수 있다. 이를테면 Service가 메모리나 CPU 점유가 커서 프로세스를 분리했다면, 각각 Database Helper를 사용한다면 Lock문제가 언제든 발생할 수 있다. 이때 앱 프로세스에 ContentProvider를 두고, 이 ContentProvider를 Service 프로세스에서 ContentResolver를 통해서 접근하면 유일한 Database Helper를 유지할 수 있다.
+\end {itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{로컬에서 ContentProvider를 쓰면 좋지 않은 점}
+\begin{itemize}
+\item 속도가 조금 느리다.
+\item groupBy, having, limit 같은 파라미터를 ContentResolver에서 전달할 수 없다.  필요한 경우 Uri나 다른 파라미터에 억지로 끼워넣어서 전달해야만 한다. 
+\item ContentResolver를 통하므로, 별도의 public 메소드를 만들어봤자 접근할 수가 없다.
+\end {itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{ContentProvicer는 DB Lock 문제에서 자유로운가?(1)}
+\begin{itemize}
+\item ContentProvider를 사용하면 멀티 스레드 환경에서 Lock 문제가 없이 잘 동작하기 때문에 ContentProvider를 쓰면 thread safe 하다고 잘못 아는 경우가 있는데, thread safe는 ContentProvider를 써서 그런 것이 아니라 ContentProvider를 만드는 일반적인 패턴으로 인한 것이다.\\
+onCreate에서 Database Helper를 하나 생성해놓고 이것을 사용하는 패턴이 주로 사용되고 있다.
+
+\Fontvi
+\begin{verbatim}
+	@Override
+	public boolean onCreate() {
+	    mOpenHelper = new DatabaseHelper(getContext());
+	    return true;
+	}
+\end{verbatim}
+\end {itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ContentProvicer는 DB Lock 문제에서 자유로운가?(2)}
+\begin{itemize}
+\item onCreate는 처음 사용할 때 단 한번만 실행되고, 하나의 ContentProvider는 디바이스에서 오직 하나만 존재하기 때문에 Database Helper도 오직 하나뿐이다. 따라서 내부적으로 명령어가 serialize되면서 thread safe가 되는 것이다.
+\end {itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ContentProvider 만들때 주의할 점}
+\begin{itemize}
+\item ContentProvider.onCreate 메소드는 Application.onCreate 이전에 실행된다. 따라서 Application.onCreate 메소드가 먼저 실행되었다고 가정하고 만들면 안 된다.
+\item onCreate는 메인 쓰레드에서 실행하고 다른 메소드들은 일반적으로 별도의 쓰레드에서 실행하므로, Content Provider의 메소드들간에는 thread safe에 주의하도록 하자.(멤버 변수를 함부로 쓰면 안 된다!)
+\end {itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{ContentProvider batch execute(1)}
+\begin{itemize}
+\item ContentProvider에서는 여러 개의 명령어를 한꺼번에 실행할 수 있는 방법도 제공한다. 속도 향상을 위해서 Transaction을 쓰는 것으로 혼동할 수도 있지만, 실제로 하는 일은 ContentProviderOperation 목록을 한꺼번에 전송해서 하나씩 순차적으로 수행하는 것에 지나지 않는다.
+\Fontvi
+\begin{verbatim} 
+ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+operations.add(ContentProviderOperation.newInsert(NotePad.CONTENT_URI)
+    	.withValue(NotePad.Notes.COLUMN_NAME_TITLE, "Lunch")
+    	.withValue(NotePad.Notes.COLUMN_NAME_NOTE, "Kimchi")
+    	.withValue(NotePad.COLUMN_NAME_CREATE_DATE, Long.valueOf(System.currentTimeMillis()))
+    	.build());
+operations.add(ContentProviderOperation.newUpdate(NotePad.CONTENT_URI)
+    	.withSelection(NotePad.Notes._ID + "=?", new String[] {3})
+    	.withValue(NotePad.Notes.COLUMN_NAME_TITLE, "Lunch2")
+    	.withValue(NotePad.Notes.COLUMN_NAME_NOTE, "Kimchi2")
+    	.withValue(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, Long.valueOf(System.currentTimeMillis()))
+    	.build());
+....
+mContext.getContentResolver().applyBatch(NotePad.AUTHORITY, operations);
+\end{verbatim}
+\end {itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{ContentProvider batch execute(2)}
+다른 프로세스에서 실행한다면, 하나씩 Binder를 거쳐서 명령어를 주고 받는 것보다 한꺼번에 보내는 것이므로 속도 향상은 있을 수 있지만, Transaction을 쓰는 것처럼 비약적인 속도 향상까지는 아니다.\\
+ContentProvider 쪽에서는 만일 Tranaction을 써서 속도 향상을 시키고 싶다면,
+applyBatch(ArrayList$<$ContentProviderOperation$>$ operations) 메소드를 오버라이드 하는 방법이 있다.
+\Fontvi
+\begin{verbatim} 
+@Override
+public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) {
+    SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+    db.beginTransaction();
+    try {
+        ContentProviderResult[] result = super.applyBatch(operations);
+        db.setTransactionSuccessful();
+        return result;
+    } finally {
+        db.endTransaction();
+    }
+}
+\end{verbatim}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{쿼리 실행 속도 체크}
+일반적으로 속도 체크를 위해서 코드 상에 쿼리 실행 전후 시간차이를 로그로 남겨서 확인한다. 이 방식도 지속적으로 확인이 필요할 때는 유용하지만, 시기가 지나면 불필요한 로깅 코드가 남게 된다.\\
+adb shell에서 dumpsys dbinfo를 하면 db별로 최근 쿼리 실행 속도와 바인드된 파라미터들을 확인할 수 있다. 
+가장 최근 것부터 나온다.(쿼리를 prepare하고 execute하는 것을 볼 수 있다.)
+
+\Fontvi
+\begin{verbatim} 
+     Most recently executed operations:
+        0: [2014-09-30 10:40:04.548] executeForLastInsertedRowId took 5ms - succeeded, 
+        sql="INSERT INTO system(value,name) VALUES (?,?)",
+         bindArgs=["1", "volume_ring_last_audible_speaker"]
+        1: [2014-09-30 10:40:04.548] prepare took 0ms - succeeded,
+         sql="INSERT INTO system(value,name) VALUES (?,?)"
+\end{verbatim}
+
+\end{frame}
+
+\end{document}

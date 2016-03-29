@@ -1,0 +1,560 @@
+\section{프로세스}
+%http://shadowxx.egloos.com/m/10781292
+%http://s2junn.tistory.com/45
+%http://www.androidcentral.com/fine-tuning-minfree-settings-improving-androids-multi-tasking
+% https://lucidtale.wordpress.com/tag/low-memory-killer/
+
+07-27 20:35:33.817 I/ActivityManager( 1003): Killing 14489:com.nhn.android.webtoon/u0a224 (adj 15): empty #17
+
+killUnneededProcessLocked 메소드에서 프로세스 kill
+- Anr, 사용자 Kill, 코드상에서 kill, crash, 너무 오랜 WakeLock 잡는 경우/과도한 cpu time
+
+empty app 갯수 제한이 있다.(ProcessList)
+
+6개의 임계값을 가진다.
+
+cat /sys/module/lowmemorykiller/parameters/adj
+0,58,117,176,529,1000
+
+
+cat /sys/module/lowmemorykiller/parameters/minfree
+12288,15360,18432,21504,24576,30720
+
+페이지 단위이므로, 4k를 곱한다.
+
+% https://lucidtale.wordpress.com/tag/low-memory-killer/
+oom-adj와 oom_score_adj 매핑은?
+oom_adj는 -16~15, oom_score_adj 는 -1000~1000
+
+cat /proc/<pid>/ 아래에 oom_adj, oom_score, oom_score_adj 세 파일이 있다.
+oom_score_adj 파일이 원하는 값?
+
+
+전화 같은 건 중간에 꺼지면 안 된다.
+
+
+\begin{comment}
+shell@C6903:/proc/5086 $ cat oom_score_adj
+58
+shell@C6903:/proc/5086 $ cat oom_score
+703
+1|shell@C6903:/proc/5086 $ cat oom_adj
+11
+\end{comment}
+
+/drivers/staging/android/lowmemorykiller.c에 구현되어 있다.
+
+프로세스가 kill될 가능성에 대해서 알아보기 위해서, 
+\url{http://developer.android.com/guide/components/processes-and-threads.html}를 보고서 프로세스의 우선순위를 살펴보자.
+\begin{enumerate}
+\item Foreground process: 사용자와 interact하는 Activity를 가지고 있거나, 그런 Activity에 bound된 Service를 가지고 있거나, startForeground를 호출한 foreground Service를 가지고 있거나, Service의 생명주기(onCreate, onStart, onStartCommand, onDestroy)를 실행중인 Service를 가지고 있거나, onReceive를 실행하는 BroadcastReceiver를 가지고 있는 경우이다.
+메모리가 부족할 때에도 가장 마지막까지 남아있을 수 있는 process들이다.
+\item Visible process: foreground 컴포넌트를 가지고 있지는 않지만, 사용자가 보는 화면에 아직 영향이 있다. Activity로 치면 onPause까지 탔지만 visible 상태인 것이다.(다이얼로그 테마나 투명한 Activity가 가렸을 때이다.)
+visible Activity에 bound된 Service를 가진 경우도 해당한다. 
+\item Service process: startService로 실행했지만, 위의 카테고리에는 들어가지 않는 Service를 가진 경우이다. 이런 것들은 사용자가 지금 보고 있는 것과 직접적인 연관은 없다. Service에서 startCommand까지 리턴되었지만, 명시적으로 stopService 또는 stopSelf를 호출하지 않는 채 놔두는 경우에 해당한다.
+\item Background process: 보통 여러 개의 background process가 존재한다.
+\item Empty process: 사용자가 Back 키로 종료를 하고 활성화된 컴포넌트가 없다면,  empty process가 된다. 이런 프로세스를 메모리에 갖고 있는 이유는 다음에 컴포넌트를 띄울때 빠르게 띄우려고 하는 cache 용도일 뿐이다. 가장 우선순위가 낮아서 리소스가 부족하면 가장 먼저 kill 대상이 된다.
+\end{enumerate}
+
+ActivityManagerService에서 updateOomAdjLocked 메소드에서 값을 반영한다.
+computeOomAdjLocked 메소드가 위 목록 내용이 있다.
+단계는 위 5개보다 많다.
+
+    private final int[] mOomAdj = new int[] {
+            FOREGROUND_APP_ADJ, VISIBLE_APP_ADJ, PERCEPTIBLE_APP_ADJ,
+            BACKUP_APP_ADJ, CACHED_APP_MIN_ADJ, CACHED_APP_MAX_ADJ
+    };
+    
+    0, 1, 2, 3, 9, 15
+
+ActivityManagerService에서 ProcessList 인스턴스를 생성하고, 생성자 안에서 파일에 값을 쓰고 있다.
+
+com.android.server.am.ProcessList에 -17~16까지 oom_adj 값이 대응되어 있다.
+
+\begin{lstlisting}[frame=single] 
+    // Adjustment used in certain places where we don't know it yet.
+    // (Generally this is something that is going to be cached, but we
+    // don't know the exact value in the cached range to assign yet.)
+    static final int UNKNOWN_ADJ = 16;
+
+    // This is a process only hosting activities that are not visible,
+    // so it can be killed without any disruption.
+    static final int CACHED_APP_MAX_ADJ = 15;
+    static final int CACHED_APP_MIN_ADJ = 9;
+
+    // The B list of SERVICE_ADJ -- these are the old and decrepit
+    // services that aren't as shiny and interesting as the ones in the A list.
+    static final int SERVICE_B_ADJ = 8;
+
+    // This is the process of the previous application that the user was in.
+    // This process is kept above other things, because it is very common to
+    // switch back to the previous app.  This is important both for recent
+    // task switch (toggling between the two top recent apps) as well as normal
+    // UI flow such as clicking on a URI in the e-mail app to view in the browser,
+    // and then pressing back to return to e-mail.
+    static final int PREVIOUS_APP_ADJ = 7;
+
+    // This is a process holding the home application -- we want to try
+    // avoiding killing it, even if it would normally be in the background,
+    // because the user interacts with it so much.
+    static final int HOME_APP_ADJ = 6;
+
+    // This is a process holding an application service -- killing it will not
+    // have much of an impact as far as the user is concerned.
+    static final int SERVICE_ADJ = 5;
+
+    // This is a process with a heavy-weight application.  It is in the
+    // background, but we want to try to avoid killing it.  Value set in
+    // system/rootdir/init.rc on startup.
+    static final int HEAVY_WEIGHT_APP_ADJ = 4;
+
+    // This is a process currently hosting a backup operation.  Killing it
+    // is not entirely fatal but is generally a bad idea.
+    static final int BACKUP_APP_ADJ = 3;
+
+    // This is a process only hosting components that are perceptible to the
+    // user, and we really want to avoid killing them, but they are not
+    // immediately visible. An example is background music playback.
+    static final int PERCEPTIBLE_APP_ADJ = 2;
+
+    // This is a process only hosting activities that are visible to the
+    // user, so we'd prefer they don't disappear.
+    static final int VISIBLE_APP_ADJ = 1;
+
+    // This is the process running the current foreground app.  We'd really
+    // rather not kill it!
+    static final int FOREGROUND_APP_ADJ = 0;
+
+    // This is a system persistent process, such as telephony.  Definitely
+    // don't want to kill it, but doing so is not completely fatal.
+    static final int PERSISTENT_PROC_ADJ = -12;
+
+    // The system process runs at the default adjustment.
+    static final int SYSTEM_ADJ = -16;
+
+    // Special code for native processes that are not being managed by the system (so
+    // don't have an oom adj assigned by the system).
+    static final int NATIVE_ADJ = -17;
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single] 
+shell@C6903:/ $ dumpsys activity oom
+  OOM levels:
+    -16: SYSTEM_ADJ (49152 kB)
+    -12: PERSISTENT_PROC_ADJ (49152 kB)
+      0: FOREGROUND_APP_ADJ (49152 kB)
+      1: VISIBLE_APP_ADJ (61440 kB)
+      2: PERCEPTIBLE_APP_ADJ (73728 kB)
+      3: BACKUP_APP_ADJ (86016 kB)
+      4: HEAVY_WEIGHT_APP_ADJ (98304 kB)
+      5: SERVICE_ADJ (98304 kB)
+      6: HOME_APP_ADJ (98304 kB)
+      7: PREVIOUS_APP_ADJ (98304 kB)
+      8: SERVICE_B_ADJ (98304 kB)
+      9: CACHED_APP_MIN_ADJ (98304 kB)
+     15: CACHED_APP_MAX_ADJ (122880 kB)
+
+  Process OOM control (45 total, non-act at 7, non-svc at 7):
+    PERS #44: pers  F/ /P  trm: 0 995:system/1000 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=85493 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #43: pers  F/ /P  trm: 0 1226:com.android.systemui/u0a40 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=56198 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #42: pers  F/ /P  trm: 0 1493:com.android.phone/1001 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=37351 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #41: pers  F/ /P  trm: 0 1503:com.sonyericsson.devicemonitor/u0a196 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=7401 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #40: pers  F/ /P  trm: 0 1516:com.sonyericsson.android.wakeup/1000 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=5507 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #39: pers  F/ /P  trm: 0 1538:com.sonymobile.mirrorlink.system/1000 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=5571 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    PERS #38: pers  F/ /P  trm: 0 1552:com.android.nfc/1027 (fixed)
+        oom: max=-12 curRaw=-12 setRaw=-12 cur=-12 set=-12
+        state: cur=P  set=P  lastPss=8610 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    Proc #14: fore  B/ /IB trm: 0 17524:android.process.acore/u0a53 (provider)
+        com.android.providers.contacts/.SemcContactsProvider2<=Proc{1638:com.google.process.gapps/u0a36}
+        oom: max=16 curRaw=0 setRaw=0 cur=0 set=0
+        state: cur=IB set=IB lastPss=11453 lastCachedPss=7265
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 0: fore  F/A/T  trm: 0 592:com.facebook.katana/u0a208 (top-activity)
+        oom: max=16 curRaw=0 setRaw=0 cur=0 set=0
+        state: cur=T  set=T  lastPss=153871 lastCachedPss=0
+        keeping=true cached=false empty=false hasAboveClient=false
+    Proc #37: vis   F/ /IF trm: 0 1667:com.android.smspush/u0a191 (service)
+        com.android.smspush/.WapPushManager<=Proc{1493:com.android.phone/1001}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IF set=IF lastPss=5558 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #36: vis   F/ /IF trm: 0 2113:com.google.process.location/u0a36 (service)
+        com.google.android.backuptransport/com.google.android.backup.BackupTransportService<=Proc{995:system/1000}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IF set=IF lastPss=7902 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #13: vis   B/ /IB trm: 0 1462:com.google.android.gms.persistent/u0a36 (cch-bound-services)
+        com.google.android.gms/com.google.android.location.network.NetworkLocationService<=Proc{995:system/1000}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IB set=IB lastPss=20513 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 7: vis   B/ /IB trm: 0 3949:com.google.android.gms/u0a36 (service)
+        com.google.android.gms/.usagereporting.service.UsageReportingService<=Proc{1638:com.google.process.gapps/u0a36}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IB set=IB lastPss=22545 lastCachedPss=22545
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 6: vis   F/ /IF trm: 0 2598:com.android.bluetooth/1002 (service)
+        com.android.bluetooth/.pan.PanService<=Proc{995:system/1000}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IF set=IF lastPss=9474 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 1: vis   B/ /IB trm: 0 1638:com.google.process.gapps/u0a36 (service)
+        com.google.android.gms/.clearcut.service.ClearcutLoggerService<=Proc{1462:com.google.android.gms.persistent/u0a36}
+        oom: max=16 curRaw=1 setRaw=1 cur=1 set=1
+        state: cur=IB set=IB lastPss=22723 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #34: prcp  F/ /IF trm: 0 30399:com.dingulHangul.dingulHangulKeyboard_dinki/u0a219 (service)
+        com.dingulHangul.dingulHangulKeyboard_dinki/.SoftKeyboard<=Proc{995:system/1000}
+        oom: max=16 curRaw=2 setRaw=2 cur=2 set=2
+        state: cur=IF set=IF lastPss=30811 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #22: prcp  F/S/IF trm: 0 1419:com.sonyericsson.usbux/1000 (fg-service)
+        oom: max=16 curRaw=2 setRaw=2 cur=2 set=2
+        state: cur=IF set=IF lastPss=6641 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #17: svc   B/ /S  trm: 0 1349:android.process.media/u0a31 (started-services)
+        oom: max=16 curRaw=5 setRaw=5 cur=5 set=5
+        state: cur=S  set=S  lastPss=14446 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #10: svc   B/ /S  trm: 0 4106:com.sonymobile.phoneusage/1000 (started-services)
+        oom: max=16 curRaw=5 setRaw=5 cur=5 set=5
+        state: cur=S  set=S  lastPss=7707 lastCachedPss=7025
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 8: svc   B/ /S  trm: 0 7287:com.google.android.googlequicksearchbox:search/u0a74 (started-services)
+        oom: max=16 curRaw=5 setRaw=5 cur=5 set=5
+        state: cur=S  set=S  lastPss=18329 lastCachedPss=17592
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 2: home  B/ /HO trm: 0 1580:com.sonyericsson.home/u0a102 (home)
+        oom: max=16 curRaw=6 setRaw=6 cur=6 set=6
+        state: cur=HO set=HO lastPss=39988 lastCachedPss=39988
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc # 3: prev  B/ /LA trm: 0 29590:com.teamblind.blind/u0a215 (previous)
+        oom: max=16 curRaw=7 setRaw=7 cur=7 set=7
+        state: cur=LA set=LA lastPss=71719 lastCachedPss=71719
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #35: svcb  B/ /S  trm: 0 3893:com.nhn.nni/u0a221 (started-services)
+        oom: max=16 curRaw=8 setRaw=8 cur=8 set=8
+        state: cur=S  set=S  lastPss=17102 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #33: svcb  B/ /S  trm: 0 26116:com.kakao.talk/u0a225 (started-services)
+        oom: max=16 curRaw=8 setRaw=8 cur=8 set=8
+        state: cur=S  set=S  lastPss=21060 lastCachedPss=0
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #19: svcb  B/ /S  trm: 0 3754:com.nhn.android.post/u0a242 (started-services)
+        oom: max=16 curRaw=8 setRaw=8 cur=8 set=8
+        state: cur=S  set=S  lastPss=13881 lastCachedPss=12409
+        keeping=true cached=false empty=true hasAboveClient=false
+    Proc #11: cch   B/ /CE trm: 0 5290:com.sonyericsson.android.bootinfo:remote/1000 (cch-empty)
+        oom: max=16 curRaw=9 setRaw=9 cur=9 set=9
+        state: cur=CE set=CE lastPss=3037 lastCachedPss=3037
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc # 9: cch   B/ /CE trm: 0 6065:jp.naver.pick:service/u0a241 (cch-empty)
+        oom: max=16 curRaw=9 setRaw=9 cur=9 set=9
+        state: cur=CE set=CE lastPss=9000 lastCachedPss=9000
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc # 4: cch   B/ /CA trm: 0 29961:net.daum.android.daum/u0a223 (cch-act)
+        oom: max=16 curRaw=9 setRaw=9 cur=9 set=9
+        state: cur=CA set=CA lastPss=73037 lastCachedPss=73037
+        keeping=false cached=true empty=true hasAboveClient=false
+        run cpu over +2m22s435ms used 0 (0%)
+    Proc # 5: cch+1 B/ /CA trm: 0 30604:com.sonyericsson.conversations/u0a28 (cch-act)
+        oom: max=16 curRaw=10 setRaw=10 cur=10 set=10
+        state: cur=CA set=CA lastPss=23646 lastCachedPss=23646
+        keeping=false cached=true empty=true hasAboveClient=false
+        keep awake over +2m22s435ms used 0 (0%)
+        run cpu over +2m22s435ms used 0 (0%)
+    Proc #15: cch+2 B/ /S  trm: 0 23825:com.facebook.orca/u0a227 (cch-started-ui-services)
+        oom: max=16 curRaw=11 setRaw=11 cur=11 set=11
+        state: cur=S  set=S  lastPss=61380 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #12: cch+2 B/ /CE trm: 0 5265:com.sonyericsson.crashmonitor/u0a160 (cch-empty)
+        oom: max=16 curRaw=11 setRaw=11 cur=11 set=11
+        state: cur=CE set=CE lastPss=5197 lastCachedPss=5197
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc #18: cch+4 B/ /CE trm: 0 3785:com.nhn.android.search/u0a226 (cch-empty)
+        oom: max=16 curRaw=13 setRaw=13 cur=13 set=13
+        state: cur=CE set=CE lastPss=10531 lastCachedPss=10531
+        keeping=false cached=true empty=true hasAboveClient=false
+        run cpu over +2m22s435ms used 0 (0%)
+    Proc #16: cch+4 B/ /CE trm: 0 5996:com.sony.smallapp.managerservice/u0a171 (cch-empty)
+        oom: max=16 curRaw=13 setRaw=13 cur=13 set=13
+        state: cur=CE set=CE lastPss=3858 lastCachedPss=3858
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc #32: cch+6 B/ /S  trm: 0 21924:com.example.handlertest/u0a237 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=5380 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #31: cch+6 B/ /S  trm: 0 27611:com.sonyericsson.advancedwidget.clock:lockscreen/u0a102 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=3732 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #30: cch+6 B/ /S  trm: 0 27695:com.sonymobile.seamlesstether/u0a70 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=3624 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #29: cch+6 B/ /S  trm: 0 27772:com.sonymobile.enterprise.service/1000 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=3533 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #28: cch+6 B/ /S  trm: 0 458:org.simalliance.openmobileapi.service/2989 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=5600 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #27: cch+6 B/ /S  trm: 0 4164:com.sonymobile.photoanalyzer/u0a68 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=12030 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #26: cch+6 B/ /S  trm: 0 30913:com.sonyericsson.extras.liveware/u0a81 (cch-started-services)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=S  set=S  lastPss=9126 lastCachedPss=0
+        keeping=true cached=true empty=true hasAboveClient=false
+    Proc #25: cch+6 B/ /CE trm: 0 6081:com.google.android.talk/u0a121 (cch-empty)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=CE set=CE lastPss=18512 lastCachedPss=18512
+        keeping=false cached=true empty=true hasAboveClient=false
+        keep awake over +2m22s435ms used 0 (0%)
+    Proc #24: cch+6 B/ /CE trm: 0 6147:com.google.android.googlequicksearchbox/u0a74 (cch-empty)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=CE set=CE lastPss=8665 lastCachedPss=8665
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc #23: cch+6 B/ /CE trm: 0 3650:com.sonyericsson.tvout.mhl/1000 (cch-empty)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=CE set=CE lastPss=3090 lastCachedPss=3090
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc #21: cch+6 B/ /CE trm: 0 6208:com.sonyericsson.android.locationbasedwifi:service/u0a129 (cch-empty)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=CE set=CE lastPss=3520 lastCachedPss=3520
+        keeping=false cached=true empty=true hasAboveClient=false
+    Proc #20: cch+6 B/ /CE trm: 0 4694:com.nhn.android.band/u0a221 (cch-empty)
+        oom: max=16 curRaw=15 setRaw=15 cur=15 set=15
+        state: cur=CE set=CE lastPss=20681 lastCachedPss=20681
+        keeping=false cached=true empty=true hasAboveClient=false
+
+  mHomeProcess: ProcessRecord{45e8f558 1580:com.sonyericsson.home/u0a102}
+  mPreviousProcess: ProcessRecord{45bcced0 29590:com.teamblind.blind/u0a215}
+\end{lstlisting}
+
+
+\begin{lstlisting}[frame=single] 
+shell@C6903:/ $ dumpsys meminfo --oom
+Applications Memory Usage (kB):
+Uptime: 38134973 Realtime: 97477094
+Total PSS by OOM adjustment:
+  5159988 kB: Native
+              171893 kB: mediaserver (pid 294)
+               89321 kB: surfaceflinger (pid 307)
+               89050 kB: mm-qcamera-daemon (pid 426)
+               88071 kB: rild (pid 306)
+               88047 kB: zygote (pid 308)
+               87334 kB: sdcard (pid 424)
+               87309 kB: drmserver (pid 309)
+               87121 kB: sensors.qcom (pid 377)
+               86849 kB: gsiff_daemon (pid 427)
+               86293 kB: netd (pid 304)
+               86266 kB: cnd (pid 421)
+               86204 kB: system_monitor (pid 436)
+               86183 kB: wpa_supplicant (pid 1243)
+               86142 kB: ims_rtp_daemon (pid 766)
+               86040 kB: netmgrd (pid 384)
+               86026 kB: xssm (pid 328)
+               85879 kB: logcat (pid 7259)
+               85879 kB: logcat (pid 7261)
+               85879 kB: logcat (pid 7263)
+               85872 kB: fast-dormancy (pid 329)
+               85838 kB: qmuxd (pid 371)
+               85835 kB: imsdatadaemon (pid 435)
+               85816 kB: /init (pid 1)
+               85810 kB: vold (pid 293)
+               85772 kB: iddd (pid 299)
+               85766 kB: credmgrd (pid 332)
+               85760 kB: mm-pp-daemon (pid 432)
+               85743 kB: time_daemon (pid 429)
+               85696 kB: qcom-system-daemon (pid 312)
+               85684 kB: imsqmidaemon (pid 374)
+               85678 kB: gpsone_daemon (pid 463)
+               85655 kB: keystore (pid 311)
+               85629 kB: ueventd (pid 173)
+               85619 kB: sh (pid 7609)
+               85613 kB: illumination_service (pid 302)
+               85601 kB: adbd (pid 457)
+               85582 kB: suntrold (pid 391)
+               85582 kB: ssr_diag (pid 425)
+               85582 kB: dumpsys (pid 7622)
+               85579 kB: mpdecision (pid 2171)
+               85562 kB: rfs_access (pid 297)
+               85562 kB: idd-logreader (pid 469)
+               85552 kB: qseecomd (pid 366)
+               85538 kB: rmt_storage (pid 434)
+               85536 kB: ta_qmi_service (pid 282)
+               85519 kB: scd (pid 325)
+               85513 kB: healthd (pid 291)
+               85510 kB: sct_service (pid 283)
+               85505 kB: tad_static (pid 174)
+               85495 kB: installd (pid 310)
+               85485 kB: remote_vold (pid 303)
+               85482 kB: debuggerd (pid 305)
+               85482 kB: wcnss_service (pid 431)
+               85474 kB: adsprpcd (pid 321)
+               85470 kB: servicemanager (pid 292)
+               85466 kB: qrngd (pid 319)
+               85460 kB: qseecomd (pid 320)
+               85458 kB: fota-trigger (pid 2124)
+               85421 kB: ssrapp (pid 326)
+   204180 kB: Persistent
+               85357 kB: system (pid 995)
+               55186 kB: com.android.systemui (pid 1226 / activities)
+               37106 kB: com.android.phone (pid 1493 / activities)
+                8467 kB: com.android.nfc (pid 1552)
+                7262 kB: com.sonyericsson.devicemonitor (pid 1503)
+                5434 kB: com.sonymobile.mirrorlink.system (pid 1538)
+                5368 kB: com.sonyericsson.android.wakeup (pid 1516)
+   146953 kB: Foreground
+              146953 kB: com.facebook.katana (pid 592 / activities)
+    76581 kB: Visible
+               22354 kB: com.google.process.gapps (pid 1638)
+               20464 kB: com.google.android.gms.persistent (pid 1462)
+               11282 kB: android.process.acore (pid 17524)
+                9309 kB: com.android.bluetooth (pid 2598)
+                7754 kB: com.google.process.location (pid 2113)
+                5418 kB: com.android.smspush (pid 1667)
+    37341 kB: Perceptible
+               30673 kB: com.dingulHangul.dingulHangulKeyboard_dinki (pid 30399)
+                6668 kB: com.sonyericsson.usbux (pid 1419)
+    35332 kB: A Services
+               14462 kB: android.process.media (pid 1349)
+               13296 kB: com.nhn.android.post (pid 3754)
+                7574 kB: com.sonymobile.phoneusage (pid 4106)
+    39598 kB: Home
+               39598 kB: com.sonyericsson.home (pid 1580 / activities)
+    70826 kB: Previous
+               70826 kB: com.teamblind.blind (pid 29590 / activities)
+   158058 kB: B Services
+               58072 kB: com.facebook.orca (pid 23825)
+               21172 kB: com.kakao.talk (pid 26116)
+               17614 kB: com.google.android.googlequicksearchbox:search (pid 7287)
+               17219 kB: com.nhn.nni (pid 3893)
+               13552 kB: com.sonymobile.photoanalyzer (pid 4164)
+                9270 kB: com.sonyericsson.extras.liveware (pid 30913)
+                5455 kB: org.simalliance.openmobileapi.service (pid 458)
+                5259 kB: com.example.handlertest (pid 21924)
+                3571 kB: com.sonyericsson.advancedwidget.clock:lockscreen (pid 27611)
+                3481 kB: com.sonymobile.seamlesstether (pid 27695)
+                3393 kB: com.sonymobile.enterprise.service (pid 27772)
+   265158 kB: Cached
+               72496 kB: net.daum.android.daum (pid 29961 / activities)
+               23078 kB: com.sonyericsson.conversations (pid 30604 / activities)
+               21178 kB: com.google.android.gms (pid 3949)
+               19506 kB: com.nhn.android.webtoon (pid 7487)
+               19198 kB: jp.naver.line.android (pid 7417)
+               19132 kB: com.nhn.android.band (pid 4694)
+               18368 kB: com.google.android.apps.plus (pid 7388)
+               12865 kB: com.android.vending (pid 7445)
+               11136 kB: com.nhn.android.search (pid 3785)
+                9592 kB: com.google.android.calendar (pid 7142)
+                7744 kB: com.android.calendar (pid 7087)
+                6363 kB: com.android.chrome (pid 7371)
+                5846 kB: com.sony.smallapp.managerservice (pid 5996)
+                4453 kB: com.google.android.apps.uploader (pid 7336)
+                4188 kB: com.sonyericsson.updatecenter (pid 7300)
+                3751 kB: com.sonyericsson.idd.agent (pid 7320)
+                3402 kB: com.sonyericsson.android.locationbasedwifi:service (pid 7586)
+                2862 kB: com.sonyericsson.tvout.mhl (pid 7569)
+
+Total RAM: 1736120 kB
+ Free RAM: 549962 kB (265158 cached pss + 209960 cached + 74844 free)
+ Used RAM: 6010613 kB (5928857 used pss + 20648 buffers + 5332 shmem + 55776 slab)
+ Lost RAM: -4824455 kB
+   Tuning: 143 (large 463), oom 122880 kB, restore limit 40960 kB (high-end-gfx)
+\end{lstlisting}
+         
+\subsection{프로세스 분리}
+각 프로세스별로 사용 가능한 메모리는 제한되어 있다. 안드로이드 버전별로 디바이스별로 메모리 제한에 차이가 있다.\\
+Honeycomb부터 anroid:largeHeap 같은 옵션도 쓸 수 있지만, 디바이스에 따라서 이 옵션이 소용이 없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나, 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
+
+주로 메모리 이슈 때문에 프로세스 분리를 하게 되는데, Activity/Service/ContentProvider/BroacastReciever는 모두 프로세스 분리가 가능하다.
+동일 패키지에서 생성된 별도 프로세스는 pid(process id)는 다르지만, 동일한 uid(user id)를 가지고 동일하게 파일과 리소스에 접근할 수 있다.\\
+
+다양한 케이스가 있겠지만, 프로세스 분리가 필요한 경우들을 생각해보자.
+\begin{itemize}
+\item Activity 자체가 무거운 경우이다. 사진 공유 앱에서 디바이스의 카메라 앱을 실행시키지 않고, 자신의 카메라 Activity를 가지고 있는 경우가 있는데, 이런 카메라 Activity는 별도 프로세스로 분리하는 것이 낫다.
+\item Activity가 무겁지는 않지만, 동시에 Service에서 작업 스레드로 작업을 진행하다가 Out Of Memory이 날 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 가운데 가령 10\% 라도 발생한다면, 이 때는 Service를 분리할 것인지 Activity를 분리할 것인지 고민해야 한다.\\
+Service가 독립적인 부분이 많다면 Service를 분리하는 게 나을 것이다. 만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 나을 수 있다. 정답은 없고 case by case이다.
+% 분리함으로써 변경이 많이 필요한 쪽보다는 간단하게 분리 가능하는 게 나을 것이다.
+\item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해 보자.
+\end{itemize}
+
+Application도 AndroidManifest.xml에 android:process 값을 넣을 수는 있는데, 이 값은 앱의 컴포넌트들이 실행되는 기본 프로세스를 얘기하는 것으로 프로세스 분리하고는 의미가 다르다. 쓸 일이 거의 없다고 보면 된다.\\
+
+프로세스 분리를 했을 때, Application은 각 프로세스마다 새로 뜬다.\\
+이 부분 때문에 많이 혼동되는데, 프로세스가 달라지면 Zygote에 의해서 fork된 이후에 새로 ActivityThread를 띄우고 Application을 새로 생성한다.\\
+
+설명을 위해서 코드 \ref{application}을 다시 한번 보자. 앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스), ActivityB(android:process=":camera")가 있다고 하자. 그리고 ActivityA에서 버튼을 클릭하면, ActivityB가 뜬다고 할 때 각각 어떤 프로세스로 어떻게 실행되는지 확인해보자.
+
+\begin{enumerate}
+\item ShoppingApplication - 디폴트 프로세스
+\item ActivityA - 디폴트 프로세스
+\item CategoryUpdaterService - 디폴트 프로세스(이제 ActivityA에서 ActivityB를 띄운다.)
+\item ShoppingApplication - :camera 프로세스
+\item ActivityB - :camera 프로세스
+\item CategoryUpdaterService - 디폴트 프로세스
+\end{enumerate}
+
+컴포넌트가 프로세스 분리되어 있다고 해도 Application만은 어느 프로세스에서도 한번은 실행되어야 한다고 알면 된다.(4)\\
+그리고 또 하나 주목할 부분은 분리된 프로세스에서 Application에서 띄우는 CategoryUpdaterService는 다시 디폴트 프로세스에서 실행된다는 점이다.(6)\\
+즉 프로세스 분리가 됨으로써 Application.onCreate는 자주 호출될 가능성이 있고(이를테면 BroadcastReceiver를 프로세스 분리했다면), Application.onCreate에서 Service를 시작한다면, 이 Service가 자주 실행될 가능성이 있다.\\
+기본 프로세스에서만 Service가 동작하게 하려면 아래처럼 작성해 볼 수 있다.
+
+\begin{lstlisting}[frame=single] 
+	@Override
+	public void onCreate() {
+		....
+		if (isDefaultProcess()) {
+			startService(new Intent(this, CategoryUpdaterService.class));
+		}
+	}
+	
+	private boolean isDefaultProcess() {
+		int pid = android.os.Process.myPid();
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);                      
+        List<RunningAppProcessInfo> processInfos = activityManager.getRunningAppProcesses();     
+
+        for (RunningAppProcessInfo each : processInfos) {                          
+            if (each.pid == pid && each.processName.equals(getPackageName())) {                              
+                return true;
+            }                         
+        }
+        return false;
+    }
+\end{lstlisting}
+
+프로세스 분리시 주의할 점을 얘기해보자.
+\begin{itemize}
+\item 당연한 얘기지만 간과해서는 안 되는 게 메모리 공유가 안 된다는 것이다. 그래서 본래의 프로세스에서 Cache 용도로 만든 것이든 Singleton이든 별도 프로세스에서는 소용이 없다. 앱을 만들다가 프로세스 분리한 것을 잊고서 왜 값이 안 나오는지 쓸데없이 고민한 경험들을 가진 이들도 많을 것이다.
+이 때는 값을 따로 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용하든지 해야 한다.
+\item 분리된 프로세스에서는 SharedPreferences 가져올 때  mode가 중요하다.\\
+Context.getSharedPreferences (String name, int mode) 메소드 사용할 때  mode에 Context.MODE\_PRIVATE을 하면, 값을 제대로 가져올 수가 없다.(Honeycomb 이상)
+기본적으로 2.3 Gingerbread까지는 multi process 용도로 사용이 가능했지만, 그 이후에는 Context.MODE\_MULTI\_PROCESS를 사용하지 않으면, 다른 프로세스에서 변경된 값을 읽어올 수가 없다.
+\end{itemize}
+
+\begin{comment}
+android:multiprocess 옵션은 Activity와 ContentProvider만 있음.
+\end{comment}

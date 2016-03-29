@@ -1,0 +1,91 @@
+adb shell getevent 해보자.
+
+InputDispatcher.cpp (/frameworks/services/input/InputDispatcher.cpp) 에서 
+findFocusedWindowTargetsLocked로 타겟 정함
+dispatchEventLocked로 전달함
+
+/frameworks/native/include/utils/Thread.h 에서 threadLoop 메소드 확인
+true를 리턴하면 계속되고, 아니면 끝난다.
+/frameworks/native/libs/utils/Threads.cpp
+
+/frameworks/base/policy/src/com/android/internal/policy/impl/PhoneWindowManager.java
+interceptKeyBeforeQueueing에서 VOLUME, POWER 처리(Reader에서 notifyKey 할때)
+interceptKeyBeforeDispatching에서  HOME, MENU 버튼 처리(Reader에서 dispach하 할때)
+
+SystemServer.init2
+	ServerThread.run
+		InputManagerService.start
+			NativeInputManager.nativeStart
+				InputManager.start
+					InputDispatcherThread.run
+					InputReaderThread.run
+	
+
+InputReaderThread.run
+	InputReaderThread.threadLoop
+		InputReader.loopOnce
+			EventHub.getEvents
+			InputReader.processEventsLocked
+				InputReader.processEventsForDeviceLocked
+					InputDevice.process
+						InputMapper.process
+						
+InputMapper들은 InputReader.cpp에 있다.
+						
+KeyboardInputMapper.process
+	KeyboardInputMapper.processKey
+		InputDispatcher.notifyKey
+			InputDispatcherPolicyInterface.interceptKeyBeforeQueueing
+			InputDispatcher.enqueueInboundEventLocked
+이렇게 Queue에 넣는다.
+
+			
+TouchInputMapper.process			
+	TouchInputMappper.sync
+		TouchInputMapper.consumeRawEvents
+			TouchInputMapper.dispatchVirtualKey
+				InputDispatcher.notifyKey
+				
+				
+InputDispatcherThread.run
+	InputDispatcherThread.threadLoop				
+		InputDispatcher.dispatchOnce
+			InputDispatcher.dispatchOnceInnerLocked
+				Queue.dequeAtHead
+				InputDispatcher.dispatchMotionLocked
+					InputDispatcher.findFocusedWindowTargetsLocked
+					InputDispatcher.dispatchEventLocked
+						InputDispatcher.prepareDispatchCycleLocked
+							InputDispatcher.enqueueDispatchEntriesLocked
+								InputDispatcher.startDispatchCycleLocked
+									InputPublisher.publishMotionEvent
+										InputChannel.sendMessage
+
+소켓 통신
+
+ViewRootImpl.setView
+	Session.addToDisplay
+		WindowManagerService.addWindow
+			WindowManagerService.registerInputChannel										
+				InputManagerService.registerInputChannel							
+					NativeInputManager.registerInputChannel					
+						InputDispatcher.registerInputChannel
+							Looper.addFd
+Session.addTodisplay 사용하는 곳은
+ViewRootImpl, WallPaperService, SurfaceView 세 곳이다.
+	
+InputDispatcher.handleReceiveCallback
+	InputPublisher.receiveFinishedSignal
+		InputPublisher.receiveMessage
+
+
+http://blog.csdn.net/powq2009/article/details/8426271
+
+http://berebereport.tistory.com/65
+
+getevent, setevent
+http://dry-kiss.blogspot.kr/2012/03/android-adb.html
+
+http://blog.lciel.jp/blog/2013/12/12/android-touch-event-2/
+
+getevent 하면 하나의 이벤트에 대해서 여러 라인에 걸쳐서 결과가 나온다. ABS_X, ABS_Y(X, Y 좌표)

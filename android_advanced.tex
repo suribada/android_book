@@ -1,0 +1,74 @@
+\documentclass[a4paper,hidelinks,10pt]{article}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{upquote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim} 
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{hvfloat}
+
+%\usepackage[scale=0.75,twoside,bindingoffset=5mm,a4paper]{geometry}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{purple}{rgb}{0.5, 0.0, 0.5}
+\definecolor{burntorange}{rgb}{0.8, 0.33, 0.0}
+\definecolor{tearose}{rgb}{1.0, 0.92, 0.8}
+
+\renewcommand\lstlistingname{코드}
+
+\title{안드로이드 Advanced}
+\author{네이버 지도지역Cell, 노재춘}
+
+\begin{document}
+
+% http://latexcolor.com
+\maketitle
+
+\parindent=0em
+
+\lstset {
+	language=java, 
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+    keywordstyle=\color{purple},
+	tabsize=4,
+	showspaces=false, 
+	showstringspaces=false, 
+	numberstyle=\color{codegray},
+	numbers=left,                    
+    numbersep=5pt,  
+    stepnumber=5,      
+	breaklines=true
+}
+
+\begin{comment}
+\begin{abstract}
+잘 만든 앱은 다 그럭저럭이지만, 그렇지 않은 앱은 제각각의 이유가 있다. 여기서는 그럭저럭한 앱을 만드는 원리와 방법을 찾아보고, 문제를 발생시키는 제각각의 이유에 대해서도 얘기해보자.
+\end{abstract}
+\end{comment}
+
+\input{binder}
+\input{deepsleep}
+
+\section{Looper/Handler}
+\input{singlethread}
+
+\section{Activity}
+
+\input{activity}
+\input{activity2}
+\input{activity3}
+
+\input{service}
+\input{service2}
+
+\input{contentprovider}
+
+\end{document}

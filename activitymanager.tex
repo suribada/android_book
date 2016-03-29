@@ -1,0 +1,75 @@
+\section{ActivityManager}
+ActivitiyManager를 adb shell에서 사용할 수 있다.\footnote{http://developer.android.com/tools/help/adb.html를 참고하자}
+Activity 뿐만 아니라 Broadcast도 보낼 수 있고, 서비스를 실행시킬 수도 있다. 
+아래 명령어를 쓰면 된다. 인텐트 필터가 없는 Activity의 경우에는 android:exported=''true''가 돼 있어야만 한다.
+
+
+adb shell am start -n com.example.android.lifecycle/.ActivityC 
+
+
+ACTIVITY MANAGER PENDING INTENTS (dumpsys activity intents)
+* PendingIntentRecord{afb311e8 android startActivity}
+  * PendingIntentRecord{aface5c0 com.android.phone broadcastIntent}
+  * PendingIntentRecord{afd31288 android broadcastIntent}
+  
+ACTIVITY MANAGER BROADCAST STATE (dumpsys activity broadcasts)
+  Historical broadcasts [foreground]:
+  #0: BroadcastRecord{afc89660 android.intent.action.SCREEN_ON}
+  #1: BroadcastRecord{afcce2b8 android.intent.action.SCREEN_OFF}
+
+  Historical broadcasts [background]:
+  #0: BroadcastRecord{afb220c8 com.android.internal.telephony.gprs-data-stall}
+  #1: BroadcastRecord{afd39b28 android.intent.action.TIME_TICK}
+  #2: BroadcastRecord{afda7118 com.android.internal.telephony.gprs-data-stall}
+  #3: BroadcastRecord{afbbdbd0 android.intent.action.TIME_TICK}
+  
+  Sticky broadcasts:
+  * Sticky action android.media.SCO_AUDIO_STATE_CHANGED
+  * Sticky action android.media.ACTION_SCO_AUDIO_STATE_UPDATED
+  * Sticky action android.net.thrott.THROTTLE_ACTION
+  
+ACTIVITY MANAGER CONTENT PROVIDERS (dumpsys activity providers)
+  Published content providers (by class):
+  * ContentProviderRecord{afb4b708 com.android.phone/.IccProvider}
+    proc=ProcessRecord{afb3f580 1130:com.android.phone/1001}
+    authority=icc
+  * ContentProviderRecord{af8899f8 com.android.providers.settings/.SettingsProvider}
+    proc=ProcessRecord{af88b210 1021:system/1000}
+    authority=settings
+    12 connections, 0 external handles
+      -> 1083:com.android.systemui/u0a31 s1/1 u0/0 +15h54m44s976ms
+      -> 1099:com.example.android.softkeyboard/u0a25 s1/1 u0/0 +15h54m44s594ms
+      -> 1130:com.android.phone/1001 s1/1 u0/0 +15h54m44s262ms
+      -> 1175:android.process.acore/u0a3 s1/1 u0/0 +15h54m43s428ms
+      -> 1532:com.nhn.android.ncs.calendar/u0a44 s1/1 u0/0 +15h54m34s497ms
+      -> 1620:com.android.defcontainer/u0a4 s1/1 u0/0 +15h48m29s286ms
+      -> 1142:com.android.launcher/u0a15 s1/1 u0/0 +15h47m58s704ms
+      -> 3913:com.nhn.android.works.calendar/u0a45 s1/1 u0/0 +10h18m17s146ms
+      -> 3972:com.android.deskclock/u0a19 s1/1 u0/0 +8h36m8s420ms
+      -> 5879:com.android.settings/1000 s1/1 u0/0 +8h7m33s39ms
+      -> 11307:com.nhn.android.calendar/u0a43 s1/1 u0/0 +11m56s939ms
+      -> 11537:com.nhn.android.calendar:widget/u0a43 s1/1 u0/0 +11m41s359ms
+  * ContentProviderRecord{afb4b598 com.android.providers.telephony/.SmsProvider}
+    proc=ProcessRecord{afb3f580 1130:com.android.phone/1001}
+    authority=sms
+    
+ACTIVITY MANAGER SERVICES (dumpsys activity services)
+  Active services:
+  * ServiceRecord{afaf6008 com.android.phone/.TelephonyDebugService}
+    app=ProcessRecord{afb3f580 1130:com.android.phone/1001}
+    created=-15h54m45s289ms started=true connections=0
+  * ServiceRecord{afb05bb0 com.android.systemui/.ImageWallpaper}
+    app=ProcessRecord{af9a8630 1083:com.android.systemui/u0a31}
+    created=-15h54m45s898ms started=false connections=1
+    Connections:
+      act=android.service.wallpaper.WallpaperService -> 1021:system/1000    
+      
+ACTIVITY MANAGER RUNNING PROCESSES (dumpsys activity processes)
+  Process LRU list (sorted by oom_adj):
+    PERS # 2: adj=sys  /F  trm= 0 1021:system/1000 (fixed)
+    PERS #11: adj=pers /F  trm= 0 1130:com.android.phone/1001 (fixed)
+    PERS # 0: adj=pers /F  trm= 0 1083:com.android.systemui/u0a31 (fixed)
+    Proc # 3: adj=fore /FA trm= 0 11307:com.nhn.android.calendar/u0a43 (top-activity)
+    Proc # 1: adj=prcp /F  trm= 0 1099:com.example.android.softkeyboard/u0a25 (service)
+        com.example.android.softkeyboard/.SoftKeyboard<=Proc{1021:system/1000}
+    Proc #10: adj=home /B  trm= 0 1142:com.android.launcher/u0a15 (home)      \textsl{•}

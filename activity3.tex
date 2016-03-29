@@ -1,0 +1,127 @@
+\subsection{이렇게 해보자.}
+
+\subsubsection{static 메서드로 startActivity를 실행한다.}
+\begin{lstlisting}[frame=single]
+public class TodoDetailActivity extends FragmentActivity {
+	
+	private static final String TODO_ID = "todoId";
+	private static final String TODO_CONTENT = "content";
+	
+	private static long todoId = 0L;
+
+	public static void startActivity(Context context, long todoId, String content) {
+		Intent intent = new Intent(context, TodoDetailActivity.class);
+		intent.putExtra(TODO_ID, todoId);
+		intent.putExtra(TODO_CONTENT, content);
+		context.startActivity(intent);
+	}
+\end{lstlisting}
+이것은 개발자 가이드에서 Fragment에 Argument를 전달할때 쓰는 방식인데, Activity에서도 활용할만 하다.\\
+Intent에 key-value를 전달할 일이 많고, key는 문자열인데, 이 문자열을 Caller와 Callee 양쪽에서 직접 문자열을 넣는 방식은 오타 가능성이 있기 때문에 잘 쓰지 않는다.\\
+key를 상수로 갖고 있는 게 좋은데 Caller 쪽에 있는 게 좋을지, Callee 쪽에 있는 게 좋을 지 또 망설여진다. 자주 쓰이는 key라면 별도의 클래스에 상수로 두는 방법도 있겠지만..\\
+
+Callee 쪽에 있다고 한다면, 아래 코드 처럼 된다. 
+\begin{lstlisting}[frame=single]
+Intent intent = new Intent(this, TodoDetailActivity.class);
+intent.putExtra(TodoDetailActivity.TODO_ID, todoId);
+intent.putExtra(TodoDetailActivity.TODO_CONTENT, content);
+startActivity(intent);
+\end{lstlisting}
+뭔가 깔끔한 맛이 없다. 이럴 때 Callee 쪽에 static 메서드로 startActivity를 만들어 놓는다면, Caller 쪽에서는 key 값을 신경 쓸 필요가 없고, Callee 쪽에서만 상수를 만들고 이 상수에서 꺼내서 사용하면 된다.\\
+전달하는 값이 정해져 있는 경우에 쓸 만한 방법으로 대부분이 이 경우에 해당한다.
+그렇지 않을 때는 static  메서드를 너무 많이 만들 수도 없으므로 그럴 때는 Calee 쪽에 상수를 두고서 Calee 쪽에서 참조하는 방법을 그냥 쓰도록 하자.\\
+
+\subsubsection{여러 위젯이 있을 때 동일한 위젯끼리 모아놓는다.}
+\begin{lstlisting}[frame=single]
+Button okButton, detailButton;
+Spinner groupSpinner, statusSpinner;
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single]
+Button okButton;
+Spinner groupSpinner;
+Button detailButton;
+Spinner statusSpinner;
+\end{lstlisting}
+
+Activity에 동작이 많으면 코드가 길어지기 마련이다. 
+예를 들어 이벤트 처리시에 ``어떤 스피너를 바꿔야 하지?''할 때가 있는데, 아래 방식보다는 위 방식에서 찾기가 수월하다.\\
+AdapterView에서 ViewHolder 패턴을 쓸때도 마찬가지로 동일한 위젯끼리 모아놓는 것이 좋다.
+(물론 findViewById() 해서 멤버 변수에 대입하는 것은 레이아웃 순서에 맞게 한다.)\\
+동일한 위젯이 많은 때는 Grouping을 다시 할 수도 있다.
+\begin{lstlisting}[frame=single]
+Button mondayButton, tuesdayButton, wednesdayButton, thursdayButton, fridayButton, saturdayButton, sudayButton;
+Button okButton, cancelButton;
+\end{lstlisting}
+
+\subsubsection{상수나 멤버 변수는 쓰이는 위치 근처에 선언한다}
+무조건 맨 위에다가 멤버 변수를 모두 선언할 필요는 없다. 
+메서드 한두개에서만 쓰는 멤버 변수는 바로 그 위에다가 선언해서 변수가 어디에 있고 어디에 쓰이는지 확인하는데 시간을 들이지 않도록 하자.
+
+\subsection{이런거 하지 말자.}
+
+\subsubsection{불필요한 Casting은 하지 말자.}
+View나 ViewGroup에 Actvity상에서 기껏해야 Visibility만 조건에 따라 변경되는 경우가 있다. 이럴 때 굳이 findViewById()해서 LinearLayout이니 ImageView니 Casting하는 수고는 하지 말자.\\
+% 샘플?
+그리고 특히 Layout의 경우에는 변경될 가능성이 아주 많다. 버튼 두개면 LinearLayout 이면 충분한데, 그 버튼 한쪽에 New 마크가 붙는 사소한 이유로 RelativeLayout으로 바뀌어야 할 수가 있다. Layout param 변경이 필요한 경우에만 Casting을 한다.
+
+\subsubsection{상속 구조를 깊게 하지 말자.}
+복잡한 앱에서는 액티비티의 상속구조가 4, 5단계까지 있는 것을 본 적도 있다. 이런 코드를 보면, 분석이 상당히 어렵고, 문제가 발생할 때 찾아내는 것에 어려움이 많다.
+단순한 유틸리티 메서드를 위해서 상속을 하지는 말자. 로직의 흐름상 반드시 수행해야 할 코드를 중심으로 상위 클래스를 만든다.\\
+
+물론 쉽지는 않다. 클래스 구성을 잘 단순화 해야 하고, 여러 수단을 동원해야만 한다. 내 경우에는 AOP나 Marker Interface 도입 등을 통해서 클래스 구성을 단순화 한 적이 있다. 이 부분에 대해서는 다른 절에서 상세하게 다루기로 하자.\\
+
+\subsubsection{Activity에서 너무 많은 Listener 인터페이스를 구현하지 말자}
+OnTouchListener, OnClickListener, OnItemSelectedListener 등 안드로이드에서 제공하는 Listener 인터페이스가 많고, 개발중에도 필요에 의해서 Listener 인터페이스를 만들게 된다.\\
+
+이런 인터페이스들을 Activity 선언에 모두 implements로 해놓고 setOnTouchListener(this), setOnClickListner(this), setOnItemSelectdLister(this) 이런 식으로 하고, 커스텀으로 만든 것까지 하면 여러 개가 될 수가 있다. 이렇게 하면 해당 이벤트의 Listener를 수정할 때, 메서드를 찾아가는 게 간단치 않다. OnClickListener 같은 경우는, onClick 메서드를 찾으면 되지만, OnItemSelectedListener 같은 건 어떨까? Listener에 메서드가 2개이다. 커스텀으로 만든 경우에는 여러 메서드를 가질 수도 있다.\\ 
+내가 원하는 메서드를 금방 찾을 수 있을까?\\
+
+이럴 때는 멤버 변수로 Listner 구현을 두는 것으로 전환하는 것도 생각해보자.
+
+\begin{lstlisting}[frame=single]
+private OnItemSelectedListener onItemSelectedListener = new OnItemSelectedListener() {
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		....
+	}
+	
+	@Overrides
+	public void onNothingSelected(AdapterView<?> parent) {
+		...
+	}
+
+}	
+\end{lstlisting}	
+이렇게 하면 setOnItemSelectdLister(this)가 아닌 setOnItemSelectdLister(onItemSelectedListener)를 해놓으면 찾아가는 게 그 전보다 쉬워진다. OnItemSelectedListener의 onNothingSelected()처럼 메서드가 어디에 속한 것인지 익숙하지 않은 것들은 Activity의 메서드로 나와있는 것보다는 위처럼 하는 것을 권장한다.\\
+
+또한 Button 같은 것이 위에서 얘기한 것처럼 Grouping이 되어 있다고 할 때 각각 OnClickListener를 만들어놓는 것이 낫다.
+예를 들어 알람설정 화면에 월/화/수/목/금/토/일 같은 요일을 선택하는 Button이 있고, 알람/진동 같은 옵션도 Button으로 있다고 할 때, 같은 OnClickListener를 쓰면 코드를 깔끔하게 만들기 어렵다. 버튼 선택시 다중 선택이  되는 경우도 있고, 하나를 선택하면 다른 것의 선택이 해제되는 동작들 같은 것도 볼 수 있는데, if 문 안에서 번거롭게 처리하는 것보다 그룹별로 따로 Listener를 분리해놓고 생각하자.\\
+
+아래 코드는 5분, 10분, 30분 3개의 버튼 가운데서 하나만 선택되어야 하는 것인데, 다른 Listener하고 분리해서 사용한 예이다.
+\begin{lstlisting}[frame=single]
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		...
+		mSnoozeFiveMin.setOnClickListener(snoozeListener);
+		mSnoozeTenMin.setOnClickListener(snoozeListener);
+		mSnoozeThirtyMin.setOnClickListener(snoozeListener);
+	}
+
+	private OnClickListener snoozeListener = new OnClickListener() {
+		
+		@Override
+		public void onClick(View view) {
+			mSnoozeFiveMin.setSelected(view == mSnoozeFiveMin);
+			mSnoozeTenMin.setSelected(view == mSnoozeTenMin);
+			mSnoozeThirtyMin.setSelected(view == mSnoozeThirtyMin);
+		}
+		
+	};
+\end{lstlisting}	
+
+\begin{comment}
+\subsubsection{스레드에서 startActivity를 하지 말자.}
+스레드에서 UI 코드가 동작 하지 않는다고 하지만, 그것은 어디까지나 ViewRootImpl의 checkThread를 거치는 경우 뿐이다.(즉 draw/redraw 하는 경우) 스레드에서 startActivity해도 동작은 한다.
+\end{comment}

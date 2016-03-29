@@ -1,0 +1,37 @@
+\BOOKMARK [0][-]{chapter.1}{...... ..}{}% 1
+\BOOKMARK [1][-]{section.1.1}{..... .....}{chapter.1}% 2
+\BOOKMARK [2][-]{subsection.1.1.1}{..... ..... ..}{section.1.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.2}{.. .. ....}{section.1.1}% 4
+\BOOKMARK [1][-]{section.1.2}{Looper/Handler}{chapter.1}% 5
+\BOOKMARK [2][-]{subsection.1.2.1}{.. ...}{section.1.2}% 6
+\BOOKMARK [2][-]{subsection.1.2.2}{Looper}{section.1.2}% 7
+\BOOKMARK [2][-]{subsection.1.2.3}{MessageQueue/Message}{section.1.2}% 8
+\BOOKMARK [2][-]{subsection.1.2.4}{Handler}{section.1.2}% 9
+\BOOKMARK [2][-]{subsection.1.2.5}{ANR}{section.1.2}% 10
+\BOOKMARK [2][-]{subsection.1.2.6}{... ..}{section.1.2}% 11
+\BOOKMARK [0][-]{chapter.2}{..... ....}{}% 12
+\BOOKMARK [1][-]{section.2.1}{Context}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.2}{Activity}{chapter.2}% 14
+\BOOKMARK [2][-]{subsection.2.2.1}{....}{section.2.2}% 15
+\BOOKMARK [2][-]{subsection.2.2.2}{Tasks}{section.2.2}% 16
+\BOOKMARK [2][-]{subsection.2.2.3}{... ....}{section.2.2}% 17
+\BOOKMARK [2][-]{subsection.2.2.4}{... .. ...}{section.2.2}% 18
+\BOOKMARK [1][-]{section.2.3}{Service}{chapter.2}% 19
+\BOOKMARK [2][-]{subsection.2.3.1}{Started Service}{section.2.3}% 20
+\BOOKMARK [2][-]{subsection.2.3.2}{Bounded service}{section.2.3}% 21
+\BOOKMARK [1][-]{section.2.4}{ContentProvider}{chapter.2}% 22
+\BOOKMARK [2][-]{subsection.2.4.1}{SQLite}{section.2.4}% 23
+\BOOKMARK [2][-]{subsection.2.4.2}{SQLiteOpenHelper}{section.2.4}% 24
+\BOOKMARK [2][-]{subsection.2.4.3}{ContentProvider}{section.2.4}% 25
+\BOOKMARK [2][-]{subsection.2.4.4}{SQLite/ContentProvider .. .}{section.2.4}% 26
+\BOOKMARK [1][-]{section.2.5}{BroadcastReceiver}{chapter.2}% 27
+\BOOKMARK [2][-]{subsection.2.5.1}{BroadcastReceiver ..}{section.2.5}% 28
+\BOOKMARK [1][-]{section.2.6}{App Widget}{chapter.2}% 29
+\BOOKMARK [2][-]{subsection.2.6.1}{App Widget ..}{section.2.6}% 30
+\BOOKMARK [2][-]{subsection.2.6.2}{RemoteViews}{section.2.6}% 31
+\BOOKMARK [2][-]{subsection.2.6.3}{App Widget ....}{section.2.6}% 32
+\BOOKMARK [2][-]{subsection.2.6.4}{... .}{section.2.6}% 33
+\BOOKMARK [1][-]{section.2.7}{Application}{chapter.2}% 34
+\BOOKMARK [2][-]{subsection.2.7.1}{. ...}{section.2.7}% 35
+\BOOKMARK [2][-]{subsection.2.7.2}{Application Callback}{section.2.7}% 36
+\BOOKMARK [2][-]{subsection.2.7.3}{.... ..}{section.2.7}% 37

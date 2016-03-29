@@ -1,0 +1,79 @@
+\begin{comment}
+내가 잘못 알던 내용이다. ㅎㅎ 문제 없다.
+아래의 코드를 한번 보자. 
+\begin{lstlisting}[frame=single]
+	private Context context;
+	
+	public AccountPreference(Context context) {
+		this.context = context;
+	}
+	public boolean isLogin() {
+		SharedPreferences pref = context.getSharedPreferences(PREF_CONFIG_KEY, Context.MODE_PRIVATE);
+		return pref.getBoolean(PREF_IS_LOGIN, false);
+	}
+ 
+	public void setLogin(boolean isLogin) {
+		SharedPreferences pref = context.getSharedPreferences(PREF_CONFIG_KEY, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(PREF_IS_LOGIN, isLogin);
+		editor.apply();
+	}
+\end{lstlisting}
+
+SharedPreferences에는 여러 개의 key가 있다면, 이 클래스는 어느 정도 커질 가능성이 있다. 
+그런데 context.getSharedPreferences가 계속 반복되기 때문에 멤버 변수로 빼고 싶은 마음이 든다.\\
+그래서 아래처럼 변경해보았다. 과연 문제가 없을까? 
+
+\begin{lstlisting}[frame=single]
+	private SharedPreferences pref;
+	
+	public AccountPreference(Context context) {
+		this.pref = context.getSharedPreferences(PREF_CONFIG_KEY, Context.MODE_PRIVATE);
+	}
+	
+	public boolean isLogin() {
+		return pref.getBoolean(PREF_IS_LOGIN, false);
+	}
+ 
+	public void setLogin(boolean isLogin) {
+		SharedPreferences.Editor editor = pref.edit();
+		editor.putBoolean(PREF_IS_LOGIN, isLogin);
+		editor.apply();
+	}
+\end{lstlisting}
+
+이제 아래 코드를 한번 보자. 첫번째 라인은 preference xml 파일에서 가져온 값이 false였다고 가정한다.
+\begin{lstlisting}[frame=single]
+	accountPreference.isLogin(); // false
+	accountPreference.setLogin(true);
+	accountPreference.isLogin(); // false or true?
+\end{lstlisting}
+여기서 3번째 라인의 결과는 true가 나오길 기대할 테지만, 전혀 그렇지 않다. 
+
+\begin{lstlisting}[frame=single]
+   private static final HashMap<String, SharedPreferencesImpl> sSharedPrefs =
+            new HashMap<String, SharedPreferencesImpl>();
+            
+   public SharedPreferences getSharedPreferences(String name, int mode) {
+        SharedPreferencesImpl sp;
+        synchronized (sSharedPrefs) {
+            sp = sSharedPrefs.get(name);
+            if (sp == null) {
+                File prefsFile = getSharedPrefsFile(name);
+                sp = new SharedPreferencesImpl(prefsFile, mode);
+                sSharedPrefs.put(name, sp);
+                return sp;
+            }
+        }
+        if ((mode & Context.MODE_MULTI_PROCESS) != 0 ||
+            getApplicationInfo().targetSdkVersion < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            // If somebody else (some other process) changed the prefs
+            // file behind our back, we reload it.  This has been the
+            // historical (if undocumented) behavior.
+            sp.startReloadIfChangedUnexpectedly();
+        }
+        return sp;
+    }
+\end{lstlisting}
+    
+\end{comment}

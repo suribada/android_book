@@ -1,0 +1,25 @@
+가끔 긴 시간 간격으로(예를 들어 한시간) 어떤 작업을 처리하기 위해서 Handler의 delayed Message를 사용하는 경우가 있는데,
+이 경우는 실행 보장이 어렵다. deep sleep 상태(오랜 시간 사용이 없으면 battery power를 유지하기 위해 WIFI, GPS, CPU를 꺼놓는 등 작업이 들어간다. battery saver 프로그램을 쓴다면 가능성이 더 높다.)가 되면 Looper.loop가 실행되지 않을 수 있다.\\
+
+이럴 때 방법은 AlarmManager를 쓰는 것이다. delay time도 잘 맞추어서 깨워주고, deep sleep에도 문제가 없다.\footnote{API level 19부터는 AlarmManager의 set 메서드는 부정확할 수 있다.(배터리 이용 효율 향상 등을 위해 근접한 시간대로 batch 처리된다.) 해당 버전부터는 정확한 시간으로 설정하기 위해서라면 setExact 메서드를 사용하자.}
+\begin{lstlisting}[frame=single]
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		try {
+			....
+		} ca	tch (Exception) {
+			restartService();
+		}
+	}
+ 
+ 
+	/**
+	 * If updater fails, retry after 1 hour
+	 */
+	private void restartService() {
+		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, UpdaterService.class),  
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+		am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 60 * 60 * 1000, pendingIntent);
+	}
+\end{lstlisting}

@@ -1,0 +1,659 @@
+\documentclass[a4paper,hidelinks,10pt]{article}
+\usepackage{kotex}
+\usepackage{graphicx}
+\usepackage{upquote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim} 
+\usepackage{hyperref}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+%\usepackage[scale=0.75,twoside,bindingoffset=5mm,a4paper]{geometry}
+
+\renewcommand{\baselinestretch}{1.3} 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{purple}{rgb}{0.5, 0.0, 0.5}
+\definecolor{burntorange}{rgb}{0.8, 0.33, 0.0}
+\definecolor{tearose}{rgb}{1.0, 0.92, 0.8}
+
+\renewcommand\lstlistingname{코드}
+
+\title{안드로이드 개발노트}
+\author{노재춘}
+
+\begin{document}
+
+% http://latexcolor.com
+\maketitle
+\tableofcontents
+
+\parindent=0em
+
+\lstset {
+	language=java, 
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+    keywordstyle=\color{purple},
+	tabsize=4,
+	showspaces=false, 
+	showstringspaces=false, 
+	numberstyle=\color{codegray},
+	numbers=left,                    
+    numbersep=5pt,  
+    stepnumber=5,      
+	breaklines=true
+}
+
+\newpage
+
+\begin{comment}
+\begin{abstract}
+잘 만든 앱은 다 그럭저럭이지만, 그렇지 않은 앱은 제각각의 이유가 있다. 여기서는 그럭저럭한 앱을 만드는 원리와 방법을 찾아보고, 문제를 발생시키는 제각각의 이유에 대해서도 얘기해보자.
+\end{abstract}
+\end{comment}
+
+\input{start}
+
+\input{singlethread}
+
+%\input{context}
+
+%\section{Activity}
+
+%\input{activity}
+%\input{activity2}
+%\input{activity2-1}\right 
+%\input{activity3}
+%\section{안드로이드 SDK 도구}
+
+%%\input{tools}
+
+%%\input{intent}
+%\input{service}
+%\input{service2}
+%\input{contentprovider}
+%\input{brodcastreceiver}
+%\input{application}
+%\input{binder}
+%\input{pattern}
+\ 
+%\input{deepsleep}
+
+%\input{activitymanager}
+%\input{toast}
+
+% https://www.bookmake.co.kr/print/product.html?goods_cd=10000153#
+\begin{comment}
+파싱 내용이 많은 경우, simple xml이 성능이 좀 떨어지나 보네요.. proguard 해봐도 눈에 띄게 차이나는 듯 하여, 카테고리 목록 가져오는 것(824라인) 해보니, 이렇습니다.
+http://stackoverflow.com/questions/7224318/how-to-solve-the-xml-parsing-performance-issue-on-android
+중간에 누가 500라인 가지고 테스트 한 그래프 나옵니다
+
+http://developer.android.com/reference/android/provider/Settings.html#ACTION_MANAGE_OVERLAY_PERMISSION  이것이 권한 세팅 Intent Action입네다  컴파일 target을 23으로 하지 않으면 문자열을 직접 쓰면 되겠죠..
+
+putFragment는 특정 Fragment를 포함해서 저장하고자 할 때 사용한다. 저장 목록에 포함시킨다. 따라서 Bundle은 그냥 파라미터일 뿐이다.
+http://stackoverflow.com/questions/6446961/when-to-use-fragmentmanagerputfragment-and-getfragment
+
+Fragment에는 setTargetFragment도 있어요.
+CalledFramgent called = new CalledFragment();
+called.setTargetFragment(this, 0);
+getFragmentManager.add(... called);
+
+이런 식으로 하고서, CalledFrament에서는 getTargetFragment() 해서 쓸 수 있어요. 중심 로직이 있는 Fragment에서 다른 Fragment 생성할 때 쓸 수 있는 방법입니다.
+
+setResult를 하고, finish를 해주어야 한다.
+finish 안에서 setResult한 값을 사용한다.
+
+http://stackoverflow.com/questions/25427607/android-studio-automatic-inspections-are-disabled
+
+속도 비교
+http://instructure.github.io/blog/2013/12/09/volley-vs-retrofit/
+
+getParentFragment 메서드는 Level 17부터 사용한다.
+
+getResources().getColor가 아닌 getResources().getColorStateList를 써야 한다.
+if (isExpanded && hasSubCatory) {
+				holder.title.setTextColor(0xffffffff); // 하얀색
+			} else {	holder.title.setTextColor(getResources().getColorStateList(R.color.selector_textcolor_search_around_category));
+			}
+			
+FragmentTabHost는 Fragment용의 TabHost(support-v4에만 있음)
+if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) 
+						!= PackageManager.PERMISSION_GRANTED) {
+					if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext,
+							Manifest.permission.ACCESS_FINE_LOCATION)) {
+						// 한번이라도 거부를 했다면, 설명이 필요하다.
+					    new AlertDialog.Builder(mContext).setMessage(R.string.permission_access_fine_location_rational)
+					    	.setPositiveButton(R.string.nmap_str_confirm, new OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									requestFineLocationPermission();
+								}
+								
+							})
+							.setNegativeButton(R.string.nmap_str_cancel, null)
+							.show();
+					} else {
+						requestFineLocationPermission();
+					}
+					return;
+				}
+				enableMyLocation();
+				
+런타임 퍼미션도 targetSdk가 23이 아니면 의미가 없다.
+
+androidM 권한 체크
+https://github.com/googlesamples/android-RuntimePermissions/blob/master/Application/src/main/java/com/example/android/system/runtimepermissions/MainActivity.java
+
+설정에서 권한을 빼면 Application.onCreate부터 다시 한다. 그래서 다른 곳에서 세팅한 값은 날아간다.
+사용자 모르게 재시작하는 케이스와 동일하다.
+
+Never Ask Agin을 선택하면, 아무 것도 뜨지 않는다.
+http://stackoverflow.com/questions/32854169/does-checking-the-never-ask-again-box-when-asking-for-a-runtime-permission-disable
+
+http://stackoverflow.com/questions/14424654/how-to-clear-focus-for-edittext
+
+ListPopupWindow도 쓸만은 하지만.. 테두리 때문에 번거로움
+
+ExpandableListView에서도 ViewType이 여러 개면 신경써야 한다.
+http://stackoverflow.com/questions/21169294/how-to-handle-various-types-of-rows-in-an-expandablelistview
+
+
+ExpandableListView에서 ChildItem 선택 여부는 Adapter의 이 메소드 사용
+isChildSelectable(int groupPosition, int childPosition)
+Child 레이아웃에 clickable 있으면 문제가 생긴다.
+
+ExpandableListView 화살표 안 보이게..
+android:groupIndicator="@null"
+
+ExpandableListView 그룹바 클릭 안 되게 하기
+http://stackoverflow.com/questions/5844980/how-to-disable-the-collapsing-of-an-expandablelistview
+
+꽉 찬 다이얼로그 만들기
+http://www.tutorialforandroid.com/2015/03/center-dialogfragment-with-padding.html
+
+Dialog에서는 getContext()는 Activity가 아니다.
+		if (getContext() instanceof Activity) {
+			mActivity = ((Activity) getContext());
+		} else if (getContext() instanceof ContextWrapper) {
+			mActivity = (Activity) ((ContextWrapper) getContext()).getBaseContext();
+		}
+
+    <style name="Dialog.NoTitle" parent="android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+public class SearchDialogFragment extends DialogFragment {
+
+   @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final View view = View.inflate(getActivity(), R.layout.navi_search, null);
+
+        Dialog dialog = new Dialog(getActivity(), R.style.Dialog_NoTitle);
+        dialog.setContentView(view);
+        return dialog;
+    }
+
+}
+
+DialogFragment 좌우 패딩 문제
+http://stackoverflow.com/questions/23990726/how-to-make-dialogfragment-width-to-fill-parent
+setStyle(DialogFragment.STYLE_NORMAL, 0); // title 영역 있고 여백 있음
+setStyle(DialogFragment.STYLE_NO_TITLE, 0); // title 영역 없고 여백 있음
+setStyle(DialogFragment.STYLE_NO_FRAME, 0); // title 영역 있고 상하 꽉 참, 좌우는 여백 있음
+setStyle(DialogFragment.STYLE_NO_INPUT, 0); // 위와 동일하지만, touch가 안 먹음. 뒤에 깔린 곳에 먹음
+
+다이얼로그에서 getContext는 Activity가 아니다.
+http://stackoverflow.com/questions/13129428/accessing-activity-from-custom-button
+
+getItemViewType 메소드 리턴값은 getViewTypeCount 리턴값보다 작아야 한다.
+따라서 viewType 은 0부터 시작하도록 하자.
+09-08 11:47:57.709 E/AndroidRuntime(  936): java.lang.ArrayIndexOutOfBoundsException: length=6; index=6
+09-08 11:47:57.709 E/AndroidRuntime(  936): 	at android.widget.AbsListView$RecycleBin.addScrapView(AbsListView.java:6864)
+09-08 11:47:57.709 E/AndroidRuntime(  936): 	at android.widget.ListView.layoutChildren(ListView.java:1592)
+09-08 11:47:57.709 E/AndroidRuntime(  936): 	at android.widget.AbsListView.onLayout(AbsListView.java:2157)
+
+
+http://ohgyun.com/518 git 대소문자 문제
+
+                
+http://solvedstack.com/questions/android-styling-seek-bar
+
+http://www.slideshare.net/arload/next-android-profiler?from_m_app=android
+
+ private String getDistance(int distanceMeter) {
+        boolean kmUnit = (distanceMeter >= 1000);
+        if (kmUnit) {
+            float kiloMeter = (float)distanceMeter / 1000.0F;
+            return String.format("%.1fkm", kiloMeter);
+        }
+        return String.format("%dm", distanceMeter);
+    }
+
+In 2010, @RomainGuy (core Android engineer) stated that negative margins had unspecified behavior.
+
+In 2011, @RomainGuy stated that you can use negative margins on LinearLayout and RelativeLayout.
+http://stackoverflow.com/questions/10673503/is-it-a-bad-practice-to-use-negative-margins-in-android
+
+https://github.com/JulienGenoud/android-percent-support-lib-sample 
+
+디바이스 회전시 Activity는 새로 생성된다. hashCode가 바뀐 것을 보면 알 수 있다.
+Log.d("suribada", "activity=" + this);
+ActivityThread.requestRelaunchActivity를 보자. 
+
+https://newcircle.com/s/post/1250/android_fragments_tutorial
+
+Handling Run-Time Configuration Changes
+When the system destroys and re-creates an activity because of a run-time configuration change, the activity automatically re-instantiates existing fragments.
+This isn’t a problem for “static” fragments declared in the activity’s layout.
+But for “dynamic” fragments, you need to test for this situation to prevent creating a second instance of your fragment.
+To test whether the system is re-creating the activity, check whether the Bundle argument passed to your activity’s onCreate() is null.
+It it is non-null, the system is re-creating the activity. In this case, the activity automatically re-instantiates existing fragments.
+If it null you can safely instantiate your dynamic fragment.
+
+
+      View bookmarkView = inflater.inflate(R.layout.bookmark_item, null, false);
+        populateBookmark(bookmarkView);
+        listView.addHeaderView(bookmarkView);
+        final View footerView = inflater.inflate(R.layout.delete_all_item, null, false);
+        listView.addFooterView(footerView, null, true);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (view == footerView) {
+                    Toast.makeText(getActivity(), "모두 삭제하시려우?", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                int itemPositon = position - listView.getHeaderViewsCount();
+                RecentPointInfo item = adapter.getItem(itemPositon);
+                getFragmentManager().beginTransaction().remove(RecentlyDestinationFragment.this).commit();
+                ((NaviHomePage) getActivity()).requestRoutePlanning(BaseApplication.getMapController().getCarLocation(), MappyMap.n2m(item.grsX, item.grsY));
+            }
+
+        });
+        
+proguard 때문에  TAG 같은 곳에 class.getName을 쓰지 않는 것이 좋다.
+
+http://stackoverflow.com/questions/9718245/webview-in-scrollview
+
+https://github.com/wasabeef/awesome-android-ui
+
+
+1	2015.08.26   19시 30분   ~   2015.08.26   21시 30분	Process
+2	2015.09.02   19시 30분   ~   2015.09.02   21시 30분	Thread
+3	2015.09.09   19시 30분   ~   2015.09.09   21시 30분	구현패텬1-Singlton 등
+4	2015.09.16   19시 30분   ~   2015.09.16   21시 30분	구현패턴2-Mark Interface 등
+5	2015.09.23   19시 30분   ~   2015.09.23   21시 30분	Fragment
+6	2015.10.07   19시 30분   ~   2015.10.07   21시 30분	Data Storage
+- preference
+- File
+7	2015.10.14   19시 30분   ~   2015.10.14   21시 30분	리소스 활용
+8	2015.10.21   19시 30분   ~   2015.10.21   21시 30분	레이아웃
+
+http://stablekernel.com/blog/replace-asynctask-asynctaskloader-rx-observable-rxjava-android-patterns/
+
+http://www.appbrain.com/stats/libraries/dev
+
+http://www.quora.com/Is-it-possible-to-use-or-add-a-fragment-without-using-a-user-interface-in-Android
+
+Fragment onCreateView, onViewCreated 구분
+Fragment로 또 다시 상속이 될 때 onViewCreated에서 하면 된다.
+
+레이아웃 작성할 때 tools namespace로 속성을 오버라이드하면 프리뷰에 반영되네요
+보통 gone으로 날려버린 것들 모양 보려고 다시 코드 수정하고 했었는데
+
+android:windowActionBarOverlay는 레이아웃에 겹치는 스타일이다. 
+
+FragmentManager는 추상 클래스이고, 구현체는 내부클래스인 FragmentManagerImpl이다.
+
+매 Activity마다 FragmentManager 인스턴스를 따로 가집니다. 짐작은 하셨겠지만, 확인해봤습니다.
+
+getSharedPreferences 요게 희한한 놈이네요.. 파일 IO이기 때문에 스레드에서 getSharedPreferences 하는 게 맞았지만(2.X 대까지), 4.X 에는 내부에서 스레드로 ㅏ파일 IO를 하고 있습니다.
+혹시나 SharedPreferencesCompat에서 어찌 해주나 했는데 없습니다.
+
+http://randomizedsort.blogspot.kr/2010/09/message-object-pooling-in-android.html
+
+http://unix.stackexchange.com/questions/153585/how-oom-killer-decides-which-process-to-kill-first
+
+https://android-arsenal.com/
+
+http://square.github.io/#android  쓸만한 게 좀 있네요..otto는 쓰는 데도 좀 있었고요. (이게 내부적으로 LocalBroadcastManager  하고 비슷). okhttp, picasso도 좀 봤던 거 같고, leakcanary 같은 건 도움이 될지도..
+
+android:persistent telephony
+Whether or not the application should remain running at all times — "true" if it should, and "false" if not. The default value is "false". Applications should not normally set this flag; persistence mode is intended only for certain system applications.
+
+ProcessList 클래스 볼 것
+http://android-developers.blogspot.kr/2014/01/process-stats-understanding-how-your.html
+dumpsys activity processes
+설정->앱->
+
+https://github.com/googlesamples/  샘플 많이 생겼음
+
+전체에서 좌표 구하는 법(status bar 포함)
+ImageView coordinate = mPinView.getPin();
+Rect rct = new Rect();
+coordinate.getGlobalVisibleRect(rct)
+
+            
+http://jcenter.bintray.com/com/nineoldandroids/library/2.4.0/
+
+ViewStub
+http://aroundck.tistory.com/2131
+inflate된 이후에는 findViewById(stub).setVisibility(View.GONE) 소용 없음
+
+http://androidhuman.tistory.com/432 파일 
+
+View.AttchInfo new는 ViewRootImpl 생성자에서 하고 있다. 즉 View의 Handler는 ViewRootImpl의 Handler이다.
+
+onSaveInstanceState는 결국 ActivityThread에서 처리하는 작업이다. ActivityClientRecord?
+
+https://plus.google.com/communities/116342551728637785407
+
+http://hsc.com/Blog/Best-Practices-For-Memory-Optimization-on-Android-1
+
+https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9CBxr3BVjPTPoDPLdPIFCE
+퍼포먼스 2탄
+
+http://stackoverflow.com/questions/16402312/on-android-why-does-the-ps-command-show-high-virtual-memory-when-an-app-hasnt
+
+getApplicationVariants().all { variant ->
+
+        if (variant.name.startsWith("reference") || variant.name.endsWith("Release")) {
+            return;
+        }
+        ..
+}
+        
+~/Library/Android/sdk/extras/google/m2repository 아래에 gradle jar 파일 생김
+/Applications/Android Studio.app/Contents/gradle/m2repository
+cache 사용 /Users/nhn/.gradle/caches/modules-2/files-2.1/com.nineoldandroids/library/2.4.0
+
+'와 " 차이는 " 에서는 \$ expression  쓸 수 있다는 것
+
+targetVersion > 9인 경우 메인 스레드에서 네트웍 통신을 할 경우에는 NetworkOnMainThreadException 발생   
+ActivityThread.bindApplication에서 StrictMode.enableDeathOnNetwork 호출함
+
+터치영역을 넓히기 위해서 ViewDelegate를 써야만 하는 경우는 이런 경우입니다. 텍스트 뒤에 ImageView가 있다고 쳐요. 근데 ImageView의 터치영역을 아무리 해봐야 텍스트 영역까지 넘어가지 않잖아요. 이때 터치 영역을 다른 영역까지 더 침범을 하겠다 하면 이때 쓰는 것이 ViewDelegate 입니다. ViewDelegate의 최대 범위는 해당 뷰의 ViewParent 입니다.
+
+TableLayout에서 좌우가 폰트 사이즈가 다른 경우, 문제가 발생할 수 있다. 라인 하나면 별 문제가 안되지만, shrinkColumns로 여러개 하면 하단이 잘린다.
+이때는 작은 쪽에 layout_gravity="center_vertical"로 주면 문제가 해결된다. 
+
+Relative나 weight로 해결 안 되는 것이 TableLayout으로 해결 가능하다. shrinkColumns 로 ..
+      <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:shrinkColumns="0">
+            <TableRow>
+                <TextView
+                    android:id="@+id/taxi_company"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textSize="17dp"
+                    android:textColor="#3c3c3c"
+                    android:text="전국모범운전자연합회마산동부지회라네"/>
+                <ImageView
+                    android:id="@+id/brand"
+                    android:layout_width="38.67dp"
+                    android:layout_height="16dp"
+                    android:layout_marginLeft="7.33dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/v4_ic_bottom_brand"/>
+            </TableRow>
+        </TableLayout>
+        
+Volley는 결과가 늦게 전달되는 경우가 있으므로 tag로 request를 취소하는 게 나을 수도 있다.
+ex) 택시 최근 목록만 중요한 경우
+
+퍼포먼스 관련
+https://docs.google.com/document/d/1EKVq2FzcLVJFbwUtaC3QRddSwtzs0BSKZahkQyeGyHo/pub?embedded=true
+https://www.udacity.com/course/android-performance--ud825
+
+ActiviveServices에는 MAX_SERVICE_INACTIVITY 변수가 있어서 30분 정도 Activity와 연결이 끊어지면, 우선순위가 낮아진다.
+eclipse ddms에서 kill하는 것은 LMK와 동작이 동일하다.(서비스가 다시 살아난다.)
+
+설정에서 죽이는 건 좀다른가? 확인 필요
+
+http://orhanobut.github.io/effective-android/
+
+XMLRequest Volley
+https://gist.github.com/itsalif/6149365
+
+http://opensource.samsung.com/reception/receptionSub.do?method=search&searchValue=GT-I9500
+
+https://support.apple.com/kb/DL1572?viewlocale=en_US&locale=en_US
+yosemiti에서 안드로이드 스튜디오 죽는 문제
+
+AnimationSet에서 연속해서 startAnimation을 하면 onAnimationEnd는 뒤의 것은 안 불릴 수 있다.
+
+		OrientationEventListener oel = new OrientationEventListener(getContext()) {
+			   
+			@Override
+			public void onOrientationChanged(int orientation) {
+				layoutStation();s
+			}
+			  
+		};
+		oel.enable();  
+		
+ 	public void onConfigurationChanged(Configuration newConfig) {
+ 		super.onConfigurationChanged(newConfig);
+-
++		if (newConfig.orientation > 0) {
++			ViewTreeObserver observer = mView.getViewTreeObserver();
++		    observer.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
++
++				@Override
++		        public void onGlobalLayout() {
++		        	showRouteInfo();
++		        	ViewTreeRemover.removeGlobalLayoutListener(this, mView);
++		        }
++		        
++		    });
++		}
+ 	}
+		
+	public static void removeGlobalLayoutListener(OnGlobalLayoutListener listener, View view) {
+		if (Build.VERSION.SDK_INT >= 16) {
+    		view.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
+    	} else {
+    		view.getViewTreeObserver().removeGlobalOnLayoutListener(listener);
+    	}
+		
+	}
+
+		
+sdcard에 저장되는 문제
+http://stackoverflow.com/questions/26512970/google-play-services-and-arm-translation-on-genymotion-2-3-0 
+
+
+http://la-stranger.tistory.com/20
+http://forum.xda-developers.com/showthread.php?t=2528952
+https://www.virtualbox.org/wiki/Downloads
+
+http://stackoverflow.com/questions/2524683/how-to-get-new-width-height-of-root-layout-in-onconfigurationchanged
+
+http://stackoverflow.com/questions/2965993/how-static-variable-treated-by-gc
+
+http://stackoverflow.com/questions/16921337/why-apache-harmony-or-how-to-use-java-8-on-android
+                                   
+http://www.infoq.com/news/2015/01/google-android-performance
+
+애니메이션이 느릴 때 hardwareAccelation을 조정해봐도 된다.
+
+http://www.androidpub.com/94999 TextView에 marquee 넣기
+
+PopupWindow에는 getWindow가 없어서 배경을 DIMM 할 수 없다.
+
+	LayoutParams params = getWindow().getAttributes();
+		params.width = LayoutParams.WRAP_CONTENT;
+		params.height = LayoutParams.FILL_PARENT;
+		params.dimAmount = .6f;
+		getWindow().setAttributes((android.view.WindowManager.LayoutParams)params);
+		getWindow().getAttributes().windowAnimations = R.style.GnbDialogAnimation;
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		setCanceledOnTouchOutside(true);
+		
+Window에는 직접 Animation을 적용하지 않고 style을 사용한다.
+
+   <style name="animationPopup" parent="android:Animation"> 
+    	<item name="android:windowEnterAnimation">@anim/push_left_in</item> 
+    </style> 
+    
+		Activity owner = (Activity) getContext();
+		Display display = owner.getWindowManager().getDefaultDisplay();
+		int screenWidth = display.getWidth();
+		int screenHeight = display.getHeight();
+
+		PopupWindow popup = new PopupWindow(LayoutInflater.from(owner).inflate(R.layout.bus_home_bookmark, null), 
+				(int)(screenWidth / 3), screenHeight);
+		popup.setAnimationStyle(R.style.animationPopup);
+		popup.setFocusable(true);
+		popup.setBackgroundDrawable(new BitmapDrawable());
+		popup.setOutsideTouchable(true);
+		
+		owner.getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND,
+				WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		popup.showAtLocation(owner.getWindow().getDecorView().getRootView(), Gravity.RIGHT | Gravity.TOP, 0, 0);
+
+
+padding을 쓸것인가 margin을 쓸 것인가
+주의사항: depth 10 이하
+가능하면 단순한 레이아웃 사용
+ViewStub도 사용 가능(꼭 Activity가 아니라)
+
+style은 왜 android namespace를 쓰지 않는가.
+
+
+01-15 19:32:31.060 I/PowerManagerService( 1212): go to sleep finished
+01-15 19:32:37.780 I/PowerManagerService( 1212): Waking up from sleep...
+01-15 19:32:38.300 I/PowerManagerService( 1212): wake up finished
+01-15 19:32:43.600 I/PowerManagerService( 1212): Going to sleep by user request...
+01-15 19:32:44.030 I/PowerManagerService( 1212): go to sleep finished
+
+http://tasker.wikidot.com/deep-sleep-detective
+
+http://stackoverflow.com/questions/10206021/alarmmanager-not-working-in-sleep-mode
+
+http://www.androiddesignpatterns.com/2013/01/inner-class-handler-memory-leak.html
+Handler와 마찬가지로 listener도 메모리 leak 가능성
+onDestroy에서 해체하는 게 맞겠음
+registerReceiver의 경우는?
+
+wakelock도 잡아놓고 해지 않아면 10분 정도 지나서 자동으로 해지한다.
+
+http://dubroy.com/memory_management_for_android_apps.pdf
+
+http://code.google.com/p/android-protips-location/
+
+noHistory는 finish를 하면 안 보임
+
+
+
+AlarmManagerService
+PendingIntent FinishedDispatcher가 있다.
+PendingIntentRecord extends IIntentSender.Stub  sendInner에서..
+ActivityManagerService를 거쳐 
+
+앱 삭제되면 alarm 제거하지만, 업데이트할 때는 alarm 제거하지 않는다.
+
+http://stackoverflow.com/questions/14957645/android-power-management-sleep-mode-etc
+
+http://developer.android.com/reference/android/net/wifi/WifiManager.WifiLock.html은 따로 있다.
+
+http://stackoverflow.com/questions/24770804/how-to-force-deep-sleep-on-android-phone-for-testing
+
+http://www.genymotion.com
+
+http://stackoverflow.com/questions/18471780/android-adb-retrieve-database-using-run-as
+
+WindowManagerImpl addView에서 ViewRootImpl 생성함
+
+/frameworks/base/policy/src/com/android/internal/policy/impl 아래 있음
+PhoneWindowManager는 WindowManagerService.makeNewWindowManager로 생성(그래서 하나뿐~~)
+WindowManagerService.makeNewWindow(Context context)는 PhoneWindow를 리턴한다.
+이것은 Activity.attach에서 생성
+DecorView는 PhoneWindow 안의 내부 클래스이다.
+
+ViewRootImpl checkThread에서 스레드문제 확인함
+
+ViewRootImpl은 Handler 상속했는데, JB부터 ViewRootHandler 따로 가지고 있다. 
+
+Manifest는 언제 읽어들이지? 설치할 때인가.. LoadedApk 관련?
+
+GC 관련
+http://aroundck.tistory.com/378
+
+권병웅 상
+- onStart, onResume 차이
+visible, user interaction
+discard oldest:  notification 없다. 
+
+PhoneWindow에 target에 따른 차이를 볼 수 있다.
+
+onSaveInstanceState
+http://charlesharley.com/2012/programming/views-saving-instance-state-in-android/
+
+proguard 매핑 파일은 프로젝트아래 proguard 디렉토리 아래에 있다.
+
+at android.view.ViewGroup.dispatchHoverEvent(ViewGroup.java:1575)
+at android.view.View.dispatchGenericMotionEvent(View.java:7527)
+at com.android.internal.policy.impl.PhoneWindow$DecorView.superDispatchGenericMotionEvent(PhoneWindow.java:2190)
+at com.android.internal.policy.impl.PhoneWindow.superDispatchGenericMotionEvent(PhoneWindow.java:1522)
+at android.app.Activity.dispatchGenericMotionEvent(Activity.java:2506)
+at com.android.internal.policy.impl.PhoneWindow$DecorView.dispatchGenericMotionEvent(PhoneWindow.java:2144)
+at android.view.View.dispatchPointerEvent(View.java:7643)
+at android.view.ViewRootImpl.deliverPointerEvent(ViewRootImpl.java:3682)
+at android.view.ViewRootImpl.deliverInputEvent(ViewRootImpl.java:3613)
+at android.view.ViewRootImpl.doProcessInputEvents(ViewRootImpl.java:4804)
+at android.view.ViewRootImpl.enqueueInputEvent(ViewRootImpl.java:4783)
+at android.view.ViewRootImpl$WindowInputEventReceiver.onInputEvent(ViewRootImpl.java:4875)
+at android.view.InputEventReceiver.dispatchInputEvent(InputEventReceiver.java:185)
+at android.os.MessageQueue.nativePollOnce(Native Method)
+at android.os.MessageQueue.next(MessageQueue.java:125)
+at android.os.Looper.loop(Looper.java:124)
+at android.app.ActivityThread.main(ActivityThread.java:5329)
+
+native so 파일이 있으면, 에뮬레이터에서 HAXM 쓸 수가 없다.(롤리팝)
+
+tpacketcapture로 pcap 파일을 구할 수 있다. 그 이후에 wireshark로 확인한다. Follow TCP Stream으로 확인
+http://www.bradcurtis.com/hosts-files-and-the-google-android-emulator/
+
+메모리 문제로 업로드가 안 될 수 있다.
+http://blog.andrewray.me/how-to-modify-the-android-emulator-hosts-file/
+
+http://www.kandroid.org/online-pdk/guide/tcpdump.html
+
+proxy 사용하기
+http://tleyden.github.io/blog/2013/11/20/debugging-http-traffic-in-android-apps-with-a-proxy/
+
+db access 쪽에  synchronized 거는 경우를 봤다. 면접에서도 들은 내용
+query에서 불필요하게 transaction을 건다. 무조건 거는 건 안 된다.
+
+http://lsit81.tistory.com/entry/Android-Debug-상태-체크
+
+Alarm등록된 것은 앱 삭제시 제거한다.
+
+alarmnagerService에서 ACTION_DATE_CHANGED를 발생시킨다. 낮 12시에 되기도 한다.
+\end{comment}
+
+\bibliography{book}
+\bibliographystyle{plain}
+
+
+\end{document}

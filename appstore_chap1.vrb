@@ -1,0 +1,15 @@
+\frametitle{쿼리 실행 속도 체크}
+일반적으로 속도 체크를 위해서 코드 상에 쿼리 실행 전후 시간차이를 로그로 남겨서 확인한다. 이 방식도 지속적으로 확인이 필요할 때는 유용하지만, 시기가 지나면 불필요한 로깅 코드가 남게 된다.\\
+adb shell에서 dumpsys dbinfo를 하면 db별로 최근 쿼리 실행 속도와 바인드된 파라미터들을 확인할 수 있다.
+가장 최근 것부터 나온다.(쿼리를 prepare하고 execute하는 것을 볼 수 있다.)
+
+\Fontvi
+\begin{verbatim}
+     Most recently executed operations:
+        0: [2014-09-30 10:40:04.548] executeForLastInsertedRowId took 5ms - succeeded,
+        sql="INSERT INTO system(value,name) VALUES (?,?)",
+         bindArgs=["1", "volume_ring_last_audible_speaker"]
+        1: [2014-09-30 10:40:04.548] prepare took 0ms - succeeded,
+         sql="INSERT INTO system(value,name) VALUES (?,?)"
+\end{verbatim}
+

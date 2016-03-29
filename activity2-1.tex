@@ -1,0 +1,43 @@
+\begin{comment}
+\subsection{윈도우 옵션}
+ // No title
+\begin{verbatim}
+   requestWindowFeature(Window.FEATURE_NO_TITLE);
+\end{verbatim}
+
+\begin{itemize}
+ \item \verb|FLAG_FULL_SCREEN|: 풀화면을 사용한다. 
+\begin{verbatim}
+ getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN); 
+\end{verbatim}
+ \item \verb|FLAG_SHOW_WHEN_LOCKED|: 스크린이 잠겨있을 때, 윈도우를 보이게 한다. key guard나 다른 lock screen보다 우선순위를 갖게 한다.
+스크린을 켜놓기 위해 \verb|FLAG_TURN_SCREEN_ON| 과 함께 쓰일 수 있다. 
+\item \verb|FLAG_TURN_SCREEN_ON|: 윈도우가 보여진 다음에는 스크린이 켜진 채로 있게 한다.
+\item \verb|FLAG_DISMISS_KEYGUARD|: key gaurd를 없앤다. \verb|<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />| 이 퍼미션 필요하다.
+\item \verb|FLAG_TURN_SCREEN_ON|: 스크린을 켠다. 
+
+\end{itemize}
+
+알람 화면 같은 아래처럼 옵션을 사용할 수 있다.
+\begin{verbatim}
+getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+				| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON 
+				| WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+\end{verbatim}		
+key guard가 보여지고 있는지 체크한다.
+\begin{verbatim}
+KeyguardManager keyguardManager = (KeyguardManager)getSystemService(KEYGUARD_SERVICE);
+boolean result = keyguardManager.inKeyguardRestrictedInputMode() 
+\end{verbatim}
+
+
+% http://www.androidpub.com/1123549 검토할 것
+
+
+allowTaskReparenting=["true" | "false"] 디폴트는 false
+
+
+
+
+\end{comment}
+

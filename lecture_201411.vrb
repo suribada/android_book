@@ -1,0 +1,3 @@
+\frametitle{Service 중복 실행 방지}
+여러 곳에서 startService를 하는 경우, 모두 실행하지 않고 이미 시작되었으면 나머지는 skip 하고자 할 때가 있다.\\
+소스 코드는 교재 참고

@@ -1,0 +1,66 @@
+\BOOKMARK [1][-]{section.1}{... ...}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{.... ... ...}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{.. ... ...}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{dumpsys ...}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{... ... ..}{section.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.4.1}{... ... .. .. ..}{subsection.1.4}% 6
+\BOOKMARK [3][-]{subsubsection.1.4.2}{.. ... ..}{subsection.1.4}% 7
+\BOOKMARK [2][-]{subsection.1.5}{Deep Sleep}{section.1}% 8
+\BOOKMARK [1][-]{section.2}{Looper/Handler}{}% 9
+\BOOKMARK [1][-]{section.3}{.. .... Handler}{}% 10
+\BOOKMARK [2][-]{subsection.3.1}{.. ...}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.2}{Looper}{section.3}% 12
+\BOOKMARK [2][-]{subsection.3.3}{Message. MessageQueue}{section.3}% 13
+\BOOKMARK [2][-]{subsection.3.4}{Handler}{section.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Handler ..}{subsection.3.4}% 15
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Handler ..}{subsection.3.4}% 16
+\BOOKMARK [3][-]{subsubsection.3.4.3}{Handler .. ..}{subsection.3.4}% 17
+\BOOKMARK [3][-]{subsubsection.3.4.4}{... ..}{subsection.3.4}% 18
+\BOOKMARK [2][-]{subsection.3.5}{ANR}{section.3}% 19
+\BOOKMARK [1][-]{section.4}{..... ...}{}% 20
+\BOOKMARK [2][-]{subsection.4.1}{HandlerThread}{section.4}% 21
+\BOOKMARK [2][-]{subsection.4.2}{....}{section.4}% 22
+\BOOKMARK [3][-]{subsubsection.4.2.1}{ThreadPoolExecutor}{subsection.4.2}% 23
+\BOOKMARK [3][-]{subsubsection.4.2.2}{ScheduledThreadPoolExecutor}{subsection.4.2}% 24
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Executors}{subsection.4.2}% 25
+\BOOKMARK [1][-]{section.5}{Activity}{}% 26
+\BOOKMARK [2][-]{subsection.5.1}{....}{section.5}% 27
+\BOOKMARK [3][-]{subsubsection.5.1.1}{startActivity. startActivityResult}{subsection.5.1}% 28
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Activity. .... ... ....}{subsection.5.1}% 29
+\BOOKMARK [3][-]{subsubsection.5.1.3}{.... ... ... ...}{subsection.5.1}% 30
+\BOOKMARK [2][-]{subsection.5.2}{Tasks}{section.5}% 31
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Task. ..}{subsection.5.2}% 32
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Task ....}{subsection.5.2}% 33
+\BOOKMARK [3][-]{subsubsection.5.2.3}{taskAffinity}{subsection.5.2}% 34
+\BOOKMARK [3][-]{subsubsection.5.2.4}{Activity. Task .. ..}{subsection.5.2}% 35
+\BOOKMARK [2][-]{subsection.5.3}{... ....}{section.5}% 36
+\BOOKMARK [3][-]{subsubsection.5.3.1}{static .... startActivity. .....}{subsection.5.3}% 37
+\BOOKMARK [3][-]{subsubsection.5.3.2}{.. ... .. . ... .... ......}{subsection.5.3}% 38
+\BOOKMARK [3][-]{subsubsection.5.3.3}{... .. ... ... .. ... ....}{subsection.5.3}% 39
+\BOOKMARK [2][-]{subsection.5.4}{... .. ...}{section.5}% 40
+\BOOKMARK [3][-]{subsubsection.5.4.1}{.... Casting. .. ...}{subsection.5.4}% 41
+\BOOKMARK [3][-]{subsubsection.5.4.2}{.. ... .. .. ...}{subsection.5.4}% 42
+\BOOKMARK [3][-]{subsubsection.5.4.3}{Activity.. .. .. Listener ...... .... ..}{subsection.5.4}% 43
+\BOOKMARK [1][-]{section.6}{Service}{}% 44
+\BOOKMARK [2][-]{subsection.6.1}{Started Service}{section.6}% 45
+\BOOKMARK [3][-]{subsubsection.6.1.1}{Service ... ..}{subsection.6.1}% 46
+\BOOKMARK [3][-]{subsubsection.6.1.2}{.. ... ..}{subsection.6.1}% 47
+\BOOKMARK [3][-]{subsubsection.6.1.3}{... .... ... ..}{subsection.6.1}% 48
+\BOOKMARK [3][-]{subsubsection.6.1.4}{IntentService}{subsection.6.1}% 49
+\BOOKMARK [3][-]{subsubsection.6.1.5}{Service .. .. ..}{subsection.6.1}% 50
+\BOOKMARK [2][-]{subsection.6.2}{Bound Service}{section.6}% 51
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Remote Binding}{subsection.6.2}% 52
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Local Binding}{subsection.6.2}% 53
+\BOOKMARK [3][-]{subsubsection.6.2.3}{bindService. .. ..}{subsection.6.2}% 54
+\BOOKMARK [3][-]{subsubsection.6.2.4}{Binding. ..}{subsection.6.2}% 55
+\BOOKMARK [1][-]{section.7}{ContentProvider}{}% 56
+\BOOKMARK [2][-]{subsection.7.1}{SQLite}{section.7}% 57
+\BOOKMARK [3][-]{subsubsection.7.1.1}{DB Lock ..}{subsection.7.1}% 58
+\BOOKMARK [2][-]{subsection.7.2}{SQLiteOpenHelper}{section.7}% 59
+\BOOKMARK [2][-]{subsection.7.3}{ContentProvider}{section.7}% 60
+\BOOKMARK [3][-]{subsubsection.7.3.1}{ContentResolver}{subsection.7.3}% 61
+\BOOKMARK [3][-]{subsubsection.7.3.2}{ContentProvider ..}{subsection.7.3}% 62
+\BOOKMARK [3][-]{subsubsection.7.3.3}{.. execute}{subsection.7.3}% 63
+\BOOKMARK [2][-]{subsection.7.4}{SQLite/ContentProvider .. .}{section.7}% 64
+\BOOKMARK [3][-]{subsubsection.7.4.1}{.. .. ..}{subsection.7.4}% 65
+\BOOKMARK [3][-]{subsubsection.7.4.2}{ContentProvider .. ..}{subsection.7.4}% 66

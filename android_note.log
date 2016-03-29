@@ -1,0 +1,3421 @@
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2015.11.18)  26 MAR 2016 02:51
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**./android_note.tex
+(./android_note.tex
+LaTeX2e <2015/10/01> patch level 2
+Babel <3.9m> and hyphenation patterns for 79 languages loaded.
+(c:/texlive/2015/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2014/09/29 v1.4h Standard LaTeX document class
+(c:/texlive/2015/texmf-dist/tex/latex/base/bk10.clo
+File: bk10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@chapter=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(c:/texlive/2015/texmf-dist/tex/latex/cjk-ko/kotex.sty
+Package: kotex 2015/04/19 v1.6 Korean TeX (ko.TeX)
+
+(c:/texlive/2015/texmf-dist/tex/latex/kotex-utf/kotex.cfg)
+(c:/texlive/2015/texmf-dist/tex/xetex/xetexko/xetexko.sty
+Package: xetexko 2015/03/26 v2.12 Typesetting Korean with XeTeX
+
+(c:/texlive/2015/texmf-dist/tex/xetex/xetexko/xetexko-space.sty
+Package: xetexko-space 2015/06/16 v2.13 Spacings and fonts for XeTeX-ko
+\XKcjkclosing=\XeTeXcharclass4
+\XKcjkcolon=\XeTeXcharclass5
+\XKcjkfullstop=\XeTeXcharclass6
+\XKcjkliaison=\XeTeXcharclass7
+\XKcjkextrastop=\XeTeXcharclass8
+\XKcjksymbol=\XeTeXcharclass9
+\XKhangulsyllable=\XeTeXcharclass10
+\XKhanguljungjong=\XeTeXcharclass11
+\XKlatinopening=\XeTeXcharclass12
+\XKlatinclosing=\XeTeXcharclass13
+\XKopeningquote=\XeTeXcharclass14
+\XKclosingquote=\XeTeXcharclass15
+\XKlatinfullstop=\XeTeXcharclass16
+\XKlatinquestion=\XeTeXcharclass17
+\XKlatinexclamation=\XeTeXcharclass18
+\XKlatinhyphen=\XeTeXcharclass19
+\XKlatincomma=\XeTeXcharclass20
+\XKlatincolon=\XeTeXcharclass21
+\XKlatinnumber=\XeTeXcharclass22
+\XKhanjacombining=\XeTeXcharclass23
+\XKdotemphbox=\box26
+)
+(c:/texlive/2015/texmf-dist/tex/xetex/xetexko/xetexko-josa.sty
+Package: xetexko-josa 2015/01/16 v2.10 Auto-josa for XeTeX-ko
+\@josa=\count88
+)
+(c:/texlive/2015/texmf-dist/tex/xetex/xetexko/xetexko-font.sty
+Package: xetexko-font 2015/03/26 v2.12 LaTeX Font commands for XeTeX-ko
+
+(c:/texlive/2015/texmf-dist/tex/latex/fontspec/fontspec.sty
+Package: fontspec 2015/09/24 v2.4e Font selection for XeLaTeX and LuaLaTeX
+
+(c:/texlive/2015/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2015/11/04 v6224 L3 programming layer (loader) 
+
+(c:/texlive/2015/texmf-dist/tex/latex/l3kernel/expl3-code.tex
+Package: expl3 2015/11/04 v6224 L3 programming layer (code) 
+L3 Module: l3bootstrap 2015/10/18 v6213 L3 Bootstrap code
+L3 Module: l3names 2015/11/03 v6220 L3 Namespace for primitives
+L3 Module: l3basics 2015/09/22 v6033 L3 Basic definitions
+L3 Module: l3expan 2015/09/10 v5983 L3 Argument expansion
+L3 Module: l3tl 2015/09/29 v6121 L3 Token lists
+L3 Module: l3str 2015/09/20 v6021 L3 Strings
+L3 Module: l3seq 2015/08/05 v5777 L3 Sequences and stacks
+L3 Module: l3int 2015/09/25 v6089 L3 Integers
+\c_max_int=\count89
+\l_tmpa_int=\count90
+\l_tmpb_int=\count91
+\g_tmpa_int=\count92
+\g_tmpb_int=\count93
+L3 Module: l3quark 2015/08/17 v5855 L3 Quarks
+L3 Module: l3prg 2015/11/01 v6216 L3 Control structures
+\g__prg_map_int=\count94
+L3 Module: l3clist 2015/09/02 v5901 L3 Comma separated lists
+L3 Module: l3token 2015/09/28 v6114 L3 Experimental token manipulation
+L3 Module: l3prop 2015/08/05 v5777 L3 Property lists
+L3 Module: l3msg 2015/09/28 v6113 L3 Messages
+L3 Module: l3file 2015/09/23 v6037 L3 File and I/O operations
+\l_iow_line_count_int=\count95
+\l__iow_target_count_int=\count96
+\l__iow_current_line_int=\count97
+\l__iow_current_word_int=\count98
+\l__iow_current_indentation_int=\count99
+L3 Module: l3skip 2015/09/25 v6089 L3 Dimensions and skips
+\c_zero_dim=\dimen103
+\c_max_dim=\dimen104
+\l_tmpa_dim=\dimen105
+\l_tmpb_dim=\dimen106
+\g_tmpa_dim=\dimen107
+\g_tmpb_dim=\dimen108
+\c_zero_skip=\skip43
+\c_max_skip=\skip44
+\l_tmpa_skip=\skip45
+\l_tmpb_skip=\skip46
+\g_tmpa_skip=\skip47
+\g_tmpb_skip=\skip48
+\c_zero_muskip=\muskip10
+\c_max_muskip=\muskip11
+\l_tmpa_muskip=\muskip12
+\l_tmpb_muskip=\muskip13
+\g_tmpa_muskip=\muskip14
+\g_tmpb_muskip=\muskip15
+L3 Module: l3keys 2015/09/23 v6037 L3 Key-value interfaces
+\g__keyval_level_int=\count100
+\l_keys_choice_int=\count101
+L3 Module: l3fp 2015/08/25 v5890 L3 Floating points
+\c__fp_leading_shift_int=\count102
+\c__fp_middle_shift_int=\count103
+\c__fp_trailing_shift_int=\count104
+\c__fp_big_leading_shift_int=\count105
+\c__fp_big_middle_shift_int=\count106
+\c__fp_big_trailing_shift_int=\count107
+\c__fp_Bigg_leading_shift_int=\count108
+\c__fp_Bigg_middle_shift_int=\count109
+\c__fp_Bigg_trailing_shift_int=\count110
+L3 Module: l3box 2015/08/09 v5822 L3 Experimental boxes
+\c_empty_box=\box27
+\l_tmpa_box=\box28
+\l_tmpb_box=\box29
+\g_tmpa_box=\box30
+\g_tmpb_box=\box31
+L3 Module: l3coffins 2015/08/06 v5789 L3 Coffin code layer
+\l__coffin_internal_box=\box32
+\l__coffin_internal_dim=\dimen109
+\l__coffin_offset_x_dim=\dimen110
+\l__coffin_offset_y_dim=\dimen111
+\l__coffin_x_dim=\dimen112
+\l__coffin_y_dim=\dimen113
+\l__coffin_x_prime_dim=\dimen114
+\l__coffin_y_prime_dim=\dimen115
+\c_empty_coffin=\box33
+\l__coffin_aligned_coffin=\box34
+\l__coffin_aligned_internal_coffin=\box35
+\l_tmpa_coffin=\box36
+\l_tmpb_coffin=\box37
+\l__coffin_display_coffin=\box38
+\l__coffin_display_coord_coffin=\box39
+\l__coffin_display_pole_coffin=\box40
+\l__coffin_display_offset_dim=\dimen116
+\l__coffin_display_x_dim=\dimen117
+\l__coffin_display_y_dim=\dimen118
+L3 Module: l3color 2014/08/23 v5354 L3 Experimental color support
+L3 Module: l3candidates 2015/11/01 v6216 L3 Experimental additions to l3kernel
+\l__box_top_dim=\dimen119
+\l__box_bottom_dim=\dimen120
+\l__box_left_dim=\dimen121
+\l__box_right_dim=\dimen122
+\l__box_top_new_dim=\dimen123
+\l__box_bottom_new_dim=\dimen124
+\l__box_left_new_dim=\dimen125
+\l__box_right_new_dim=\dimen126
+\l__box_internal_box=\box41
+\l__coffin_bounding_shift_dim=\dimen127
+\l__coffin_left_corner_dim=\dimen128
+\l__coffin_right_corner_dim=\dimen129
+\l__coffin_bottom_corner_dim=\dimen130
+\l__coffin_top_corner_dim=\dimen131
+\l__coffin_scaled_total_height_dim=\dimen132
+\l__coffin_scaled_width_dim=\dimen133
+L3 Module: l3sys 2015/09/25 v6087 L3 Experimental system/runtime functions
+L3 Module: l3luatex 2015/09/10 v5983 L3 Experimental LuaTeX-specific functions
+)
+(c:/texlive/2015/texmf-dist/tex/latex/l3kernel/l3unicode-data.def
+File: l3unicode-data.def 2015/07/20 v5676 L3 Unicode data
+)
+(c:/texlive/2015/texmf-dist/tex/latex/l3kernel/l3xdvipdfmx.def
+File: l3xdvidpfmx.def 2015/09/10 v5983 L3 Experimental driver: xdvipdfmx
+))
+(c:/texlive/2015/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2015/11/04 v6224 L3 Experimental document command parser
+\l__xparse_current_arg_int=\count111
+\l__xparse_m_args_int=\count112
+\l__xparse_mandatory_args_int=\count113
+\l__xparse_processor_int=\count114
+\l__xparse_v_nesting_int=\count115
+)
+\l_fontspec_script_int=\count116
+\l_fontspec_language_int=\count117
+\l_fontspec_strnum_int=\count118
+\l__fontspec_tmpa_dim=\dimen134
+\l__fontspec_tmpb_dim=\dimen135
+\l__fontspec_tmpc_dim=\dimen136
+
+(c:/texlive/2015/texmf-dist/tex/latex/fontspec/fontspec-patches.sty
+Package: fontspec-patches 2015/09/24 v2.4e Font selection for XeLaTeX and LuaLa
+TeX
+LaTeX Info: Redefining \em on input line 49.
+LaTeX Info: Redefining \emph on input line 57.
+LaTeX Info: Redefining \- on input line 60.
+.................................................
+. LaTeX info: "xparse/redefine-command"
+. 
+. Redefining command \oldstylenums with sig. 'm' on line 155.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \liningnums with sig. 'm' on line 159.
+.................................................
+)
+(c:/texlive/2015/texmf-dist/tex/latex/fontspec/fontspec-xetex.sty
+Package: fontspec-xetex 2015/09/24 v2.4e Font selection for XeLaTeX and LuaLaTe
+X
+
+(c:/texlive/2015/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(c:/texlive/2015/texmf-dist/tex/latex/euenc/eu1enc.def
+File: eu1enc.def 2010/05/27 v0.1h Experimental Unicode font encodings
+)
+LaTeX Font Info:    Try loading font information for EU1+lmr on input line 105.
+
+
+(c:/texlive/2015/texmf-dist/tex/latex/euenc/eu1lmr.fd
+File: eu1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+))
+(c:/texlive/2015/texmf-dist/tex/xelatex/xunicode/xunicode.sty
+File: xunicode.sty 2011/09/09 v0.981 provides access to latin accents and many 
+other characters in Unicode lower plane
+
+(c:/texlive/2015/texmf-dist/tex/latex/tipa/t3enc.def
+File: t3enc.def 2001/12/31 T3 encoding
+LaTeX Font Info:    Try loading font information for EU1+lmss on input line 357
+.
+
+(c:/texlive/2015/texmf-dist/tex/latex/euenc/eu1lmss.fd
+File: eu1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
+))
+\tipaTiiicode=\count119
+\tipasavetokens=\toks14
+\tipachecktokens=\toks15
+
+(c:/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+(c:/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
+
+(c:/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
+)
+(c:/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
+)
+Package graphics Info: Driver file: xetex.def on input line 94.
+
+(c:/texlive/2015/texmf-dist/tex/xelatex/xetex-def/xetex.def
+File: xetex.def 2015/09/11 v4.06 LaTeX color/graphics driver for XeTeX (TeX Liv
+e/RRM/JK)
+
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+)))
+\Gin@req@height=\dimen137
+\Gin@req@width=\dimen138
+))
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__fontspec_post_arg:w with sig. 'mmO{}' on line 42.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \fontspec with sig. 'om' on line 44.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmainfont with sig. 'om' on line 54.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setsansfont with sig. 'om' on line 64.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmonofont with sig. 'om' on line 74.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmathrm with sig. 'om' on line 88.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setboldmathrm with sig. 'om' on line 96.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmathsf with sig. 'om' on line 104.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmathtt with sig. 'om' on line 112.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newfontfamily with sig. 'mom' on line 126.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newfontface with sig. 'mom' on line 141.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \defaultfontfeatures with sig. 't+om' on line 155.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \addfontfeatures with sig. 'm' on line 210.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newfontfeature with sig. 'mm' on line 221.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newAATfeature with sig. 'mmmm' on line 229.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newopentypefeature with sig. 'mmm' on line 237.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \aliasfontfeature with sig. 'mm' on line 258.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \aliasfontfeatureoption with sig. 'mmm' on line 267.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newfontscript with sig. 'mm' on line 272.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newfontlanguage with sig. 'mm' on line 298.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \DeclareFontsExtensions with sig. 'm' on line 318.
+.................................................
+\l__fontspec_tmp_int=\count120
+LaTeX Info: Redefining \itshape on input line 2227.
+LaTeX Info: Redefining \slshape on input line 2232.
+LaTeX Info: Redefining \scshape on input line 2237.
+LaTeX Info: Redefining \upshape on input line 2242.
+
+(c:/texlive/2015/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \__xtxko_post_args:w with sig. 'mmO{}' on line 116.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmainhangulfont with sig. 'om' on line 146.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setsanshangulfont with sig. 'om' on line 156.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmonohangulfont with sig. 'om' on line 166.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmainhanjafont with sig. 'om' on line 174.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setsanshanjafont with sig. 'om' on line 184.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmonohanjafont with sig. 'om' on line 194.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \adhochangulfont with sig. 'om' on line 203.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \adhochanjafont with sig. 'om' on line 220.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newhangulfontfamily with sig. 'mom' on line 238.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newhanjafontfamily with sig. 'mom' on line 258.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newhangulfontface with sig. 'mom' on line 278.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \newhanjafontface with sig. 'mom' on line 298.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \addhangulfontfeature with sig. 'm' on line 337.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \addhanjafontfeature with sig. 'm' on line 358.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \defaulthangulfontfeatures with sig. 't+om' on line 377.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \defaulthanjafontfeatures with sig. 't+om' on line 389.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \setmathhangulfont with sig. 'om' on line 392.
+.................................................
+.................................................
+. LaTeX info: "xparse/define-command"
+. 
+. Defining command \xetexkofontregime with sig. 'om' on line 411.
+.................................................
+)
+(c:/texlive/2015/texmf-dist/tex/xetex/xetexko/xetexko-vertical.sty
+Package: xetexko-vertical 2015/05/28 v2.13 Vertical environment for XeTeX-ko
+\verticalem=\dimen139
+)
+(c:/texlive/2015/texmf-dist/tex/latex/cjk-ko/kolabels-utf.sty
+Package: kolabels-utf 2015/03/20 v1.5 UTF-8 Hangul item labels
+)))
+(c:/texlive/2015/texmf-dist/tex/latex/upquote/upquote.sty
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+
+(c:/texlive/2015/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2005/09/27 v1.99g Standard LaTeX package
+Package textcomp Info: Sub-encoding information:
+(textcomp)               5 = only ISO-Adobe without \textcurrency
+(textcomp)               4 = 5 + \texteuro
+(textcomp)               3 = 4 + \textohm
+(textcomp)               2 = 3 + \textestimated + \textcurrency
+(textcomp)               1 = TS1 - \textcircled - \t
+(textcomp)               0 = TS1 (full)
+(textcomp)             Font families with sub-encoding setting implement
+(textcomp)             only a restricted character set as indicated.
+(textcomp)             Family '?' is the default used for unknown fonts.
+(textcomp)             See the documentation for details.
+Package textcomp Info: Setting ? sub-encoding to TS1/1 on input line 79.
+
+(c:/texlive/2015/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+)
+LaTeX Info: Redefining \oldstylenums on input line 334.
+Package textcomp Info: Setting cmr sub-encoding to TS1/0 on input line 349.
+Package textcomp Info: Setting cmss sub-encoding to TS1/0 on input line 350.
+Package textcomp Info: Setting cmtt sub-encoding to TS1/0 on input line 351.
+Package textcomp Info: Setting cmvtt sub-encoding to TS1/0 on input line 352.
+Package textcomp Info: Setting cmbr sub-encoding to TS1/0 on input line 353.
+Package textcomp Info: Setting cmtl sub-encoding to TS1/0 on input line 354.
+Package textcomp Info: Setting ccr sub-encoding to TS1/0 on input line 355.
+Package textcomp Info: Setting ptm sub-encoding to TS1/4 on input line 356.
+Package textcomp Info: Setting pcr sub-encoding to TS1/4 on input line 357.
+Package textcomp Info: Setting phv sub-encoding to TS1/4 on input line 358.
+Package textcomp Info: Setting ppl sub-encoding to TS1/3 on input line 359.
+Package textcomp Info: Setting pag sub-encoding to TS1/4 on input line 360.
+Package textcomp Info: Setting pbk sub-encoding to TS1/4 on input line 361.
+Package textcomp Info: Setting pnc sub-encoding to TS1/4 on input line 362.
+Package textcomp Info: Setting pzc sub-encoding to TS1/4 on input line 363.
+Package textcomp Info: Setting bch sub-encoding to TS1/4 on input line 364.
+Package textcomp Info: Setting put sub-encoding to TS1/5 on input line 365.
+Package textcomp Info: Setting uag sub-encoding to TS1/5 on input line 366.
+Package textcomp Info: Setting ugq sub-encoding to TS1/5 on input line 367.
+Package textcomp Info: Setting ul8 sub-encoding to TS1/4 on input line 368.
+Package textcomp Info: Setting ul9 sub-encoding to TS1/4 on input line 369.
+Package textcomp Info: Setting augie sub-encoding to TS1/5 on input line 370.
+Package textcomp Info: Setting dayrom sub-encoding to TS1/3 on input line 371.
+Package textcomp Info: Setting dayroms sub-encoding to TS1/3 on input line 372.
+
+Package textcomp Info: Setting pxr sub-encoding to TS1/0 on input line 373.
+Package textcomp Info: Setting pxss sub-encoding to TS1/0 on input line 374.
+Package textcomp Info: Setting pxtt sub-encoding to TS1/0 on input line 375.
+Package textcomp Info: Setting txr sub-encoding to TS1/0 on input line 376.
+Package textcomp Info: Setting txss sub-encoding to TS1/0 on input line 377.
+Package textcomp Info: Setting txtt sub-encoding to TS1/0 on input line 378.
+Package textcomp Info: Setting lmr sub-encoding to TS1/0 on input line 379.
+Package textcomp Info: Setting lmdh sub-encoding to TS1/0 on input line 380.
+Package textcomp Info: Setting lmss sub-encoding to TS1/0 on input line 381.
+Package textcomp Info: Setting lmssq sub-encoding to TS1/0 on input line 382.
+Package textcomp Info: Setting lmvtt sub-encoding to TS1/0 on input line 383.
+Package textcomp Info: Setting lmtt sub-encoding to TS1/0 on input line 384.
+Package textcomp Info: Setting qhv sub-encoding to TS1/0 on input line 385.
+Package textcomp Info: Setting qag sub-encoding to TS1/0 on input line 386.
+Package textcomp Info: Setting qbk sub-encoding to TS1/0 on input line 387.
+Package textcomp Info: Setting qcr sub-encoding to TS1/0 on input line 388.
+Package textcomp Info: Setting qcs sub-encoding to TS1/0 on input line 389.
+Package textcomp Info: Setting qpl sub-encoding to TS1/0 on input line 390.
+Package textcomp Info: Setting qtm sub-encoding to TS1/0 on input line 391.
+Package textcomp Info: Setting qzc sub-encoding to TS1/0 on input line 392.
+Package textcomp Info: Setting qhvc sub-encoding to TS1/0 on input line 393.
+Package textcomp Info: Setting futs sub-encoding to TS1/4 on input line 394.
+Package textcomp Info: Setting futx sub-encoding to TS1/4 on input line 395.
+Package textcomp Info: Setting futj sub-encoding to TS1/4 on input line 396.
+Package textcomp Info: Setting hlh sub-encoding to TS1/3 on input line 397.
+Package textcomp Info: Setting hls sub-encoding to TS1/3 on input line 398.
+Package textcomp Info: Setting hlst sub-encoding to TS1/3 on input line 399.
+Package textcomp Info: Setting hlct sub-encoding to TS1/5 on input line 400.
+Package textcomp Info: Setting hlx sub-encoding to TS1/5 on input line 401.
+Package textcomp Info: Setting hlce sub-encoding to TS1/5 on input line 402.
+Package textcomp Info: Setting hlcn sub-encoding to TS1/5 on input line 403.
+Package textcomp Info: Setting hlcw sub-encoding to TS1/5 on input line 404.
+Package textcomp Info: Setting hlcf sub-encoding to TS1/5 on input line 405.
+Package textcomp Info: Setting pplx sub-encoding to TS1/3 on input line 406.
+Package textcomp Info: Setting pplj sub-encoding to TS1/3 on input line 407.
+Package textcomp Info: Setting ptmx sub-encoding to TS1/4 on input line 408.
+Package textcomp Info: Setting ptmj sub-encoding to TS1/4 on input line 409.
+))
+(c:/texlive/2015/texmf-dist/tex/latex/listings/listings.sty
+\lst@mode=\count121
+\lst@gtempboxa=\box42
+\lst@token=\toks17
+\lst@length=\count122
+\lst@currlwidth=\dimen140
+\lst@column=\count123
+\lst@pos=\count124
+\lst@lostspace=\dimen141
+\lst@width=\dimen142
+\lst@newlines=\count125
+\lst@lineno=\count126
+\lst@maxwidth=\dimen143
+
+(c:/texlive/2015/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count127
+\lst@skipnumbers=\count128
+\lst@framebox=\box43
+)
+(c:/texlive/2015/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+(c:/texlive/2015/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2014/10/28 v1.1a Standard LaTeX Color (DPC)
+
+(c:/texlive/2015/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: xetex.def on input line 142.
+)
+(c:/texlive/2015/texmf-dist/tex/latex/tools/verbatim.sty
+Package: verbatim 2014/10/28 v1.5q LaTeX2e package for verbatim enhancements
+\every@verbatim=\toks18
+\verbatim@line=\toks19
+\verbatim@in@stream=\read1
+)
+(c:/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
+
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+Package: hobsub-hyperref 2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)
+
+
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
+Package: hobsub-generic 2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)
+Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)
+Package hobsub Info: Skipping package `infwarerr' (already loaded).
+Package hobsub Info: Skipping package `ltxcmds' (already loaded).
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+Package: intcalc 2007/09/27 v1.1 Expandable calculations with integers (HO)
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is not detected.
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: pdfTeX >= 1.30 not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode not found.
+Package: pdfescape 2011/11/25 v1.13 Implements pdfTeX's escape features (HO)
+Package: bigintcalc 2012/04/08 v1.3 Expandable calculations on big integers (HO
+)
+Package: bitset 2011/01/30 v1.1 Handle bit-vector datatype (HO)
+Package: uniquecounter 2011/01/30 v1.2 Provide unlimited unique counter (HO)
+)
+Package hobsub Info: Skipping package `hobsub' (already loaded).
+Package: letltxmacro 2010/09/02 v1.4 Let assignment for LaTeX macros (HO)
+Package: hopatch 2012/05/28 v1.2 Wrapper for package hooks (HO)
+Package: xcolor-patch 2011/01/30 xcolor patch
+Package: atveryend 2011/06/30 v1.8 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)
+Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
+Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+(c:/texlive/2015/texmf-dist/tex/latex/oberdiek/auxhook.sty
+Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
+)
+(c:/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+)
+\@linkdim=\dimen144
+\Hy@linkcounter=\count129
+\Hy@pagecounter=\count130
+
+(c:/texlive/2015/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
+)
+\Hy@SavedSpaceFactor=\count131
+
+(c:/texlive/2015/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+Package hyperref Info: Hyper figures OFF on input line 4443.
+Package hyperref Info: Link nesting OFF on input line 4448.
+Package hyperref Info: Hyper index ON on input line 4451.
+Package hyperref Info: Plain pages OFF on input line 4458.
+Package hyperref Info: Backreferencing OFF on input line 4463.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4688.
+\c@Hy@tempcnt=\count132
+
+(c:/texlive/2015/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5041.
+\XeTeXLinkMargin=\dimen145
+\Fld@menulength=\count133
+\Field@Width=\dimen146
+\Fld@charsize=\dimen147
+Package hyperref Info: Hyper figures OFF on input line 6295.
+Package hyperref Info: Link nesting OFF on input line 6300.
+Package hyperref Info: Hyper index ON on input line 6303.
+Package hyperref Info: backreferencing OFF on input line 6310.
+Package hyperref Info: Link coloring OFF on input line 6315.
+Package hyperref Info: Link coloring with OCG OFF on input line 6320.
+Package hyperref Info: PDF/A mode OFF on input line 6325.
+LaTeX Info: Redefining \ref on input line 6365.
+LaTeX Info: Redefining \pageref on input line 6369.
+\Hy@abspage=\count134
+\c@Item=\count135
+\c@Hfootnote=\count136
+)
+
+Package hyperref Message: Driver (autodetected): hxetex.
+
+(c:/texlive/2015/texmf-dist/tex/latex/hyperref/hxetex.def
+File: hxetex.def 2012/11/06 v6.83m Hyperref driver for XeTeX
+
+(c:/texlive/2015/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2012/11/06 v6.83m Hyperref: PDF Unicode definition (HO)
+)
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/stringenc.sty
+Package: stringenc 2011/12/02 v1.10 Convert strings between diff. encodings (HO
+)
+)
+\pdfm@box=\box44
+\c@Hy@AnnotLevel=\count137
+\HyField@AnnotCount=\count138
+\Fld@listcount=\count139
+\c@bookmark@seq@number=\count140
+
+(c:/texlive/2015/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
+Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
+Package rerunfilecheck Info: Feature \pdfmdfivesum is not available
+(rerunfilecheck)             (e.g. pdfTeX or LuaTeX with package `pdftexcmds').
+
+(rerunfilecheck)             Therefore file contents cannot be checked efficien
+tly
+(rerunfilecheck)             and the loading of the package is aborted.
+)
+\Hy@SectionHShift=\skip49
+)
+(c:/texlive/2015/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+\Gm@cnth=\count141
+\Gm@cntv=\count142
+\c@Gm@tempcnt=\count143
+\Gm@bindingoffset=\dimen148
+\Gm@wd@mp=\dimen149
+\Gm@odd@mp=\dimen150
+\Gm@even@mp=\dimen151
+\Gm@layoutwidth=\dimen152
+\Gm@layoutheight=\dimen153
+\Gm@layouthoffset=\dimen154
+\Gm@layoutvoffset=\dimen155
+\Gm@dimlist=\toks20
+)
+(c:/texlive/2015/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2005/09/27 v1.99g Standard LaTeX package
+
+(c:/texlive/2015/texmf-dist/tex/latex/base/t1enc.def
+File: t1enc.def 2005/09/27 v1.99g Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)
+LaTeX Font Info:    Try loading font information for T1+lmr on input line 105.
+
+(c:/texlive/2015/texmf-dist/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
+))
+(c:/texlive/2015/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+\fancy@headwidth=\skip50
+\f@ncyO@elh=\skip51
+\f@ncyO@erh=\skip52
+\f@ncyO@olh=\skip53
+\f@ncyO@orh=\skip54
+\f@ncyO@elf=\skip55
+\f@ncyO@erf=\skip56
+\f@ncyO@olf=\skip57
+\f@ncyO@orf=\skip58
+)
+(c:/texlive/2015/texmf-dist/tex/latex/kotex-utf/contrib/dhucs-cmap.sty
+Package: dhucs-cmap 2007/06/16 searchable PDF for dhucs upon pdftex
+)
+(c:/texlive/2015/texmf-dist/tex/latex/makecell/makecell.sty
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+
+(c:/texlive/2015/texmf-dist/tex/latex/tools/array.sty
+Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
+\col@sep=\dimen156
+\extrarowheight=\dimen157
+\NC@list=\toks21
+\extratabsurround=\skip59
+\backup@length=\skip60
+)
+\rotheadsize=\dimen158
+\c@nlinenum=\count144
+\TeXr@lab=\toks22
+)
+(c:/texlive/2015/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2014/10/28 v4.11 Multi-page Table package (DPC)
+\LTleft=\skip61
+\LTright=\skip62
+\LTpre=\skip63
+\LTpost=\skip64
+\LTchunksize=\count145
+\LTcapwidth=\dimen159
+\LT@head=\box45
+\LT@firsthead=\box46
+\LT@foot=\box47
+\LT@lastfoot=\box48
+\LT@cols=\count146
+\LT@rows=\count147
+\c@LT@tables=\count148
+\c@LT@chunks=\count149
+\LT@p@ftn=\toks23
+)
+\g__file_internal_ior=\read2
+\g__fontspec_family_Arial_int=\count150
+.................................................
+. fontspec info: "defining-font"
+. 
+. Font family 'Arial(0)' created for font 'Arial' with options
+. [Ligatures=TeX].
+. 
+. This font family consists of the following shapes:
+. 
+. * 'normal' with NFSS spec.:
+. <->"Arial/OT:script=latn;language=DFLT;mapping=tex-text;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold' with NFSS spec.:
+. <->"Arial/B/OT:script=latn;language=DFLT;mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'italic' with NFSS spec.:
+. <->"Arial/I/OT:script=latn;language=DFLT;mapping=tex-text;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold italic' with NFSS spec.:
+. <->"Arial/BI/OT:script=latn;language=DFLT;mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+.................................................
+\g__fontspec_family_CourierNew_int=\count151
+.................................................
+. fontspec info: "defining-font"
+. 
+. Font family 'CourierNew(0)' created for font 'Courier New' with options
+. [WordSpace={1,0,0},PunctuationSpace=WordSpace].
+. 
+. This font family consists of the following shapes:
+. 
+. * 'normal' with NFSS spec.:
+. <->"Courier New/OT:script=latn;language=DFLT;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. \fontdimen 2\font =1\fontdimen 2\font \fontdimen 3\font =0\fontdimen 3\font
+. \fontdimen 4\font =0\fontdimen 4\font \fontdimen 7\font =0\fontdimen 2\font 
+. 
+. * 'bold' with NFSS spec.:
+. <->"Courier New/B/OT:script=latn;language=DFLT;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. \fontdimen 2\font =1\fontdimen 2\font \fontdimen 3\font =0\fontdimen 3\font
+. \fontdimen 4\font =0\fontdimen 4\font \fontdimen 7\font =0\fontdimen 2\font 
+. 
+. * 'italic' with NFSS spec.:
+. <->"Courier New/I/OT:script=latn;language=DFLT;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. \fontdimen 2\font =1\fontdimen 2\font \fontdimen 3\font =0\fontdimen 3\font
+. \fontdimen 4\font =0\fontdimen 4\font \fontdimen 7\font =0\fontdimen 2\font 
+. 
+. * 'bold italic' with NFSS spec.:
+. <->"Courier New/BI/OT:script=latn;language=DFLT;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. \fontdimen 2\font =1\fontdimen 2\font \fontdimen 3\font =0\fontdimen 3\font
+. \fontdimen 4\font =0\fontdimen 4\font \fontdimen 7\font =0\fontdimen 2\font 
+.................................................
+ (./android_note.aux)
+\openout1 = `android_note.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for EU1/lmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for T3/cmr/m/n on input line 61.
+LaTeX Font Info:    Try loading font information for T3+cmr on input line 61.
+(c:/texlive/2015/texmf-dist/tex/latex/tipa/t3cmr.fd
+File: t3cmr.fd 2001/12/31 TIPA font definitions
+)
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 61.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 61.
+
+(c:/texlive/2015/texmf-dist/tex/latex/base/ts1cmr.fd
+File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+.................................................
+. fontspec info: "setup-math"
+. 
+. Adjusting the maths setup (use [no-math] to avoid this).
+.................................................
+\symlegacymaths=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 61.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 61.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 61.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 61.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 61.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 61.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 61.
+LaTeX Font Info:    Redeclaring math accent \check on input line 61.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 61.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 61.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \colon on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 61.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 61.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 61.
+LaTeX Font Info:    Encoding `OT1' has changed to `EU1' for symbol font
+(Font)              `operators' in the math version `normal' on input line 61.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> EU1/lmr/m/n on input line 61.
+LaTeX Font Info:    Encoding `OT1' has changed to `EU1' for symbol font
+(Font)              `operators' in the math version `bold' on input line 61.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> EU1/lmr/m/n on input line 61.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  EU1/lmr/m/n --> EU1/lmr/m/n on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> EU1/lmr/m/it on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> EU1/lmr/bx/n on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> EU1/Arial(0)/m/n on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> EU1/CourierNew(0)/m/n on input line 61
+.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  EU1/lmr/m/n --> EU1/lmr/bx/n on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> EU1/lmr/bx/it on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> EU1/Arial(0)/bx/n on input line 61.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> EU1/CourierNew(0)/bx/n on input line 6
+1.
+.................................................
+. fontspec info: "no-scripts"
+. 
+. Font NanumMyeongjo does not contain any OpenType `Script' information.
+.................................................
+\g__fontspec_family_NanumMyeongjo_int=\count152
+.................................................
+. fontspec info: "no-font-shape"
+. 
+. Could not resolve font NanumMyeongjoExtraBold/I (it probably doesn't exist).
+.................................................
+.................................................
+. fontspec info: "no-font-shape"
+. 
+. Could not resolve font NanumMyeongjo/I (it probably doesn't exist).
+.................................................
+.................................................
+. fontspec info: "defining-font"
+. 
+. Font family 'NanumMyeongjo(0)' created for font 'NanumMyeongjo' with options
+. [Ligatures=TeX,Renderer={OpenType},BoldFont={*ExtraBold}].
+. 
+. This font family consists of the following shapes:
+. 
+. * 'normal' with NFSS spec.:
+. <->"NanumMyeongjo/OT:mapping=tex-text;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold' with NFSS spec.:
+. <->"NanumMyeongjoExtraBold/OT:mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold italic' with NFSS spec.:
+. <->"NanumMyeongjo/BI/OT:mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+.................................................
+.................................................
+. fontspec info: "no-scripts"
+. 
+. Font NanumGothic does not contain any OpenType `Script' information.
+.................................................
+\g__fontspec_family_NanumGothic_int=\count153
+.................................................
+. fontspec info: "no-font-shape"
+. 
+. Could not resolve font NanumGothic/I (it probably doesn't exist).
+.................................................
+.................................................
+. fontspec info: "defining-font"
+. 
+. Font family 'NanumGothic(0)' created for font 'NanumGothic' with options
+. [Ligatures=TeX,Renderer={OpenType}].
+. 
+. This font family consists of the following shapes:
+. 
+. * 'normal' with NFSS spec.:
+. <->"NanumGothic/OT:mapping=tex-text;"
+. 
+. * 'small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold' with NFSS spec.:
+. <->"NanumGothic/B/OT:mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+. 
+. * 'bold italic' with NFSS spec.:
+. <->"NanumGothic/BI/OT:mapping=tex-text;"
+. 
+. * 'bold small caps' with NFSS spec.:
+. 
+. and font adjustment code:
+. 
+.................................................
+LaTeX Font Info:    Try loading font information for T1+Arial(0) on input line 
+61.
+LaTeX Font Info:    No file T1Arial(0).fd. on input line 61.
+
+
+LaTeX Font Warning: Font shape `T1/Arial(0)/m/n' undefined
+(Font)              using `T1/cmr/m/n' instead on input line 61.
+
+.................................................
+. fontspec info: "no-scripts"
+. 
+. Font NanumGothic does not contain any OpenType `Script' information.
+.................................................
+\symmathhangul=\mathgroup5
+LaTeX Font Info:    Overwriting symbol font `mathhangul' in version `bold'
+(Font)                  EU1/NanumMyeongjo(0)/m/n --> EU1/NanumMyeongjo(0)/bx/n 
+on input line 61.
+\c@lstlisting=\count154
+\AtBeginShipoutBox=\box49
+Package hyperref Info: Link coloring OFF on input line 61.
+(c:/texlive/2015/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
+
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
+)
+\c@section@level=\count155
+)
+LaTeX Info: Redefining \ref on input line 61.
+LaTeX Info: Redefining \pageref on input line 61.
+LaTeX Info: Redefining \nameref on input line 61.
+
+(./android_note.out) (./android_note.out)
+\@outlinefile=\write3
+\openout3 = `android_note.out'.
+
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: xetex
+*geometry* verbose mode - [ preamble ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=455.24411pt
+* \textheight=700.50687pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-26.0pt
+* \headheight=12.0pt
+* \headsep=14.0pt
+* \topskip=10.0pt
+* \footskip=25.29494pt
+* \marginparwidth=115.0pt
+* \marginparsep=7.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 67.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 67.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 67.
+(c:/texlive/2015/texmf-dist/tex/generic/oberdiek/se-ascii-print.def
+File: se-ascii-print.def 2011/12/02 v1.10 stringenc: Printable ASCII characters
+
+) [1
+
+
+]
+(./android_note.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 3.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 3.
+ [2
+
+] [3])
+\tf@toc=\write4
+\openout4 = `android_note.toc'.
+
+
+(c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+) [4]
+Underfull \hbox (badness 10000) in paragraph at lines 114--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 119--122
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 125--126
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 127--128
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--130
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
+
+ []
+
+(./start.tex [5
+
+]
+Chapter 1.
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--6
+
+ []
+
+File: system-architecture.png Graphic file (type QTm)
+<use  "system-architecture.png" >
+Overfull \hbox (9.93832pt too wide) in paragraph at lines 7--8
+[][] 
+ []
+
+[6
+
+]
+Overfull \hbox (1.55798pt too wide) in paragraph at lines 13--14
+[]\EU1/lmr/m/n/10 Android Runtime \EU1/NanumMyeongjo(0)/m/n/10 의 \EU1/lmr/m/n/1
+0 Core Libraries \EU1/NanumMyeongjo(0)/m/n/10 에 는 \EU1/lmr/m/n/10 android.jar \
+EU1/NanumMyeongjo(0)/m/n/10 가 있 다. 여 기 에 는 \EU1/lmr/m/n/10 android.* \EU1/Nanum
+Myeongjo(0)/m/n/10 패 키 지, \EU1/lmr/m/n/10 com.android.*
+ []
+
+
+Overfull \hbox (26.38647pt too wide) in paragraph at lines 13--14
+\EU1/NanumMyeongjo(0)/m/n/10 패 키 지, 자 바 기 본 패 키 지 \EU1/lmr/m/n/10 (java.*, java
+x.*), Apache HttpClient(\EU1/NanumMyeongjo(0)/m/n/10 마 시 멜 로 에 서 제 거 됨\EU1/lmr/
+m/n/10 ), DOM/SAX/XMLPull-
+ []
+
+LaTeX Font Info:    Try loading font information for T1+CourierNew(0) on input 
+line 15.
+LaTeX Font Info:    No file T1CourierNew(0).fd. on input line 15.
+
+LaTeX Font Warning: Font shape `T1/CourierNew(0)/m/n' undefined
+(Font)              using `T1/cmr/m/n' instead on input line 15.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 26--27
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--38
+
+ []
+
+[7]
+Underfull \hbox (badness 10000) in paragraph at lines 39--40
+
+ []
+
+File: sourcetree.png Graphic file (type QTm)
+<use  "sourcetree.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 57--59
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 60--63
+
+ []
+
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 73--75
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--80
+
+ []
+
+
+Overfull \hbox (36.75723pt too wide) in paragraph at lines 81--83
+\EU1/NanumMyeongjo(0)/m/n/10 므 로 다 른 방 법 도 가 능 하 다. 바 로 \EU1/lmr/m/n/10 ViewGro
+up \EU1/NanumMyeongjo(0)/m/n/10 레 이 아 웃 속 성 에 \EU1/lmr/m/n/10 android:descendan
+tFocusability=“blocksDescendants”
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--83
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 84--85
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 86--87
+
+ []
+
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 114--116
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 117--136
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [10]
+Underfull \hbox (badness 10000) in paragraph at lines 137--140
+
+ []
+
+
+Overfull \hbox (15.69885pt too wide) in paragraph at lines 153--156
+\EU1/NanumMyeongjo(0)/m/n/10 앱 이 동 작 하 는 안 드 로 이 드 버 전 을 지 정 하 기 위 해 서 는 \EU1/l
+mr/m/n/10 AndroidManifest.xml \EU1/NanumMyeongjo(0)/m/n/10 에 서 \EU1/lmr/m/n/10 
+uses-sdk \EU1/NanumMyeongjo(0)/m/n/10 항 목 에 \EU1/lmr/m/n/10 android:minSdk-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 153--156
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 157--160
+
+ []
+
+[11]
+Underfull \hbox (badness 10000) in paragraph at lines 163--164
+
+ []
+
+[12]
+Underfull \hbox (badness 10000) in paragraph at lines 266--268
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--272
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 284--285
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 286--287
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 299--300
+
+ []
+
+[14]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [15])
+(./singlethread.tex [16]
+Chapter 2.
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--8
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 24--27
+
+ []
+
+[17
+
+] [18]
+Underfull \hbox (badness 10000) in paragraph at lines 124--128
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 132--136
+
+ []
+
+[19]
+Underfull \hbox (badness 10000) in paragraph at lines 166--169
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 170--174
+
+ []
+
+[20]
+Underfull \hbox (badness 10000) in paragraph at lines 191--193
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--197
+
+ []
+
+[21]
+Underfull \hbox (badness 10000) in paragraph at lines 217--218
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 219--224
+
+ []
+
+[22]
+Underfull \hbox (badness 10000) in paragraph at lines 263--264
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 265--266
+
+ []
+
+
+Overfull \hbox (30.09865pt too wide) in paragraph at lines 282--284
+[][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 282--284
+
+ []
+
+[23] [24]
+Underfull \hbox (badness 10000) in paragraph at lines 367--368
+
+ []
+
+[25]
+Overfull \hbox (52.62393pt too wide) in paragraph at lines 406--407
+\EU1/lmr/m/n/10 SUME_ACTIVITY, PAUSE_ACTIVITY, DESTROY_ACTIVITY, CREATE_SERVICE
+, STOP_SERVICE,
+ []
+
+
+Overfull \hbox (10.12866pt too wide) in paragraph at lines 407--412
+[]\EU1/lmr/m/n/10 Touch \EU1/NanumMyeongjo(0)/m/n/10 나 \EU1/lmr/m/n/10 Redraw \
+EU1/NanumMyeongjo(0)/m/n/10 등 이 벤 트 처 리 를 위 한 \EU1/lmr/m/n/10 ViewRootImpl \EU1
+/NanumMyeongjo(0)/m/n/10 클 래 스 가 있 다 \EU1/lmr/m/n/10 (MSG_INVALIDATE, MSG_RE-
+ []
+
+
+Overfull \hbox (13.75882pt too wide) in paragraph at lines 407--412
+\EU1/lmr/m/n/10 SIZED, MSG_DISPATCH_KEY, MSG_CHECK_FOCUS MESSAGE_DISPACH_DRAG_E
+VENT
+ []
+
+
+Overfull \hbox (5.62251pt too wide) in paragraph at lines 407--412
+\EU1/NanumMyeongjo(0)/m/n/10 등\EU1/lmr/m/n/10 ). ICS \EU1/NanumMyeongjo(0)/m/n/
+10 까 지 는 \EU1/lmr/m/n/10 ViewRootImpl \EU1/NanumMyeongjo(0)/m/n/10 이 \EU1/lmr/m
+/n/10 Handler \EU1/NanumMyeongjo(0)/m/n/10 를 상 속 했 지 만, 젤 리 빈 부 터 는 내 부 클 래 스 로
+ \EU1/lmr/m/n/10 ViewRootHandler
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 417--418
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 419--425
+
+ []
+
+[26]
+Underfull \hbox (badness 10000) in paragraph at lines 449--452
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 464--465
+
+ []
+
+[27]
+Underfull \hbox (badness 10000) in paragraph at lines 486--489
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 490--496
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 497--500
+
+ []
+
+[28]
+Underfull \hbox (badness 10000) in paragraph at lines 518--523
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 533--534
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 554--555
+
+ []
+
+[29]
+Underfull \hbox (badness 10000) in paragraph at lines 556--558
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 559--561
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 564--565
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 564--565
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 572--574
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 575--576
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 577--582
+
+ []
+
+[30]
+Underfull \hbox (badness 10000) in paragraph at lines 605--607
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 608--611
+
+ []
+
+[31]
+Chapter 3.
+
+Underfull \hbox (badness 10000) in paragraph at lines 623--626
+
+ []
+
+
+Overfull \hbox (23.72041pt too wide) in paragraph at lines 627--633
+[] \EU1/NanumMyeongjo(0)/m/n/10 코 드 []\EU1/lmr/m/n/10 2.4[]\EU1/NanumMyeongjo(0
+)/m/n/10 를 다 시 한 번 보 자. \EU1/lmr/m/n/10 Looper.loop() \EU1/NanumMyeongjo(0)/m/n
+/10 는 무 한 반 복 문 이 기 때 문 에 계 속 리 턴 되 지 않 는 다. \EU1/lmr/m/n/10 Looper.myLooper().
+qu-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 627--633
+
+ []
+
+[32
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 654--655
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 656--658
+
+ []
+
+File: favorite_sample.png Graphic file (type QTm)
+<use  "favorite_sample.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 663--669
+
+ []
+
+[33] [34]
+Underfull \hbox (badness 10000) in paragraph at lines 734--746
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 747--749
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 750--754
+
+ []
+
+
+Overfull \hbox (15.25337pt too wide) in paragraph at lines 755--761
+[]$[]$ 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 755--761
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 762--765
+
+ []
+
+[35]
+Underfull \hbox (badness 10000) in paragraph at lines 823--827
+
+ []
+
+[36]
+Underfull \hbox (badness 10000) in paragraph at lines 828--829
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 830--831
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 850--851
+
+ []
+
+[37]
+Underfull \hbox (badness 10000) in paragraph at lines 871--872
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 874--876
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 877--878
+
+ []
+
+
+Overfull \hbox (1.84866pt too wide) in paragraph at lines 879--883
+\EU1/lmr/m/n/10 4 \EU1/NanumMyeongjo(0)/m/n/10 개 는 \EU1/lmr/m/n/10 ScheduledThr
+eadPoolExecutor \EU1/NanumMyeongjo(0)/m/n/10 에 서 는 고 정 되 어 있 는 데, \EU1/lmr/m/n/
+10 maximumPoolSize = Integer.MAX_VALUE,
+ []
+
+
+Overfull \hbox (39.9174pt too wide) in paragraph at lines 879--883
+\EU1/lmr/m/n/10 WorkQueue \EU1/NanumMyeongjo(0)/m/n/10 는 기 본 사 이 즈 는 \EU1/lmr/m
+/n/10 16 \EU1/NanumMyeongjo(0)/m/n/10 인 데, 들 어 오 는 게 많 아 지 면 계 속 사 이 즈 가 커 지 고 
+제 한 이 없 다.\EU1/lmr/m/n/10 (Integer.MAX_VALUE) 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 879--883
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 894--896
+
+ []
+
+[38]
+Overfull \hbox (11.54755pt too wide) in paragraph at lines 900--901
+[]\EU1/lmr/m/n/10 newFixedThreadPool(int nThreads): \EU1/NanumMyeongjo(0)/m/n/1
+0 파 라 미 터 로 전 달 되 는 고 정 개 수 까 지 스 레 드 를 생 성 한 다. \EU1/lmr/m/n/10 workQueue
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 925--926
+
+ []
+
+[39] [40] [41]
+Underfull \hbox (badness 10000) in paragraph at lines 1046--1047
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1048--1049
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1054--1055
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1059--1062
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1063--1065
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1066--1075
+
+ []
+
+[42]
+Underfull \hbox (badness 10000) in paragraph at lines 1085--1087
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1102--1103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1104--1105
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1111--1113
+
+ []
+
+[43] [44]
+Underfull \hbox (badness 10000) in paragraph at lines 1175--1179
+
+ []
+
+) (./context.tex [45]
+Chapter 4.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--4
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 5--7
+
+ []
+
+[46
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 62--64
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 65--66
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--69
+
+ []
+
+File: context.png Graphic file (type QTm)
+<use  "context.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 70--74
+
+ []
+
+[47]
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
+
+ []
+
+) (./activity.tex [48]
+Chapter 5.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--6
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 7--12
+
+ []
+
+File: activity-lifecycle.png Graphic file (type QTm)
+<use  "activity-lifecycle.png" >
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [49
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 21--22
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 25--27
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 28--30
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 31--33
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--36
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 37--39
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 40--43
+
+ []
+
+[50]
+Underfull \hbox (badness 10000) in paragraph at lines 55--59
+
+ []
+
+File: basic-lifecycle-paused.png Graphic file (type QTm)
+<use  "basic-lifecycle-paused.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 74--75
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--78
+
+ []
+
+[51]
+Overfull \hbox (18.26581pt too wide) in paragraph at lines 91--97
+\EU1/lmr/m/n/10 tyForResult() \EU1/NanumMyeongjo(0)/m/n/10 에 서 쓰 려 고 하 면 \EU1/l
+mr/m/n/10 “android.util.AndroidRuntimeException: FORWARD_RESULT_FLAG
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 100--101
+
+ []
+
+[52]
+Underfull \hbox (badness 10000) in paragraph at lines 113--117
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 118--123
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 143--145
+
+ []
+
+[53]
+Underfull \hbox (badness 10000) in paragraph at lines 167--169
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 170--174
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 175--181
+
+ []
+
+[54]
+Underfull \hbox (badness 10000) in paragraph at lines 237--241
+
+ []
+
+[55] [56]
+Underfull \hbox (badness 10000) in paragraph at lines 292--318
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 320--323
+
+ []
+
+[57]
+LaTeX Font Info:    Try loading font information for EU1+mono on input line 339
+.
+LaTeX Font Info:    No file EU1mono.fd. on input line 339.
+
+
+LaTeX Font Warning: Font shape `EU1/mono/m/n' undefined
+(Font)              using `EU1/lmr/m/n' instead on input line 339.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 360--362
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 366--367
+
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 388
+ []
+
+[58]
+Underfull \hbox (badness 10000) in paragraph at lines 399--404
+
+ []
+
+[59]
+Underfull \hbox (badness 10000) in paragraph at lines 405--408
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 409--413
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 414--416
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 417--419
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 420--422
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 423--426
+
+ []
+
+
+Overfull \hbox (0.24394pt too wide) in paragraph at lines 434--442
+\EU1/lmr/m/n/10 mcc, mnc, locale, touchscreen, keyboard, keyboardHidden, naviga
+tion, orientation, screenLayout, uiMode,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 434--442
+
+ []
+
+[60]
+Overfull \hbox (2.45909pt too wide) in paragraph at lines 443--444
+\EU1/lmr/m/n/10 http://developer.android.com/intl/ko/guide/topics/manifest/acti
+vity-element.html \EU1/NanumMyeongjo(0)/m/n/10 에 는 현 시 점 에 서 \EU1/lmr/m/n/10 (2
+016
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 443--444
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 445--448
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 449--456
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 457--458
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 459--460
+
+ []
+
+[61]
+Underfull \hbox (badness 10000) in paragraph at lines 519--520
+
+ []
+
+[62]
+Underfull \hbox (badness 10000) in paragraph at lines 531--532
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 533--537
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 538--542
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 543--544
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 545--546
+
+ []
+
+
+Overfull \hbox (11.21162pt too wide) in paragraph at lines 557--560
+\EU1/NanumMyeongjo(0)/m/n/10 하 지 않 고 \EU1/lmr/m/n/10 onConfigurationChanged() \
+EU1/NanumMyeongjo(0)/m/n/10 메 서 드 가 불 리 는 것 이 다 르 다. \EU1/lmr/m/n/10 ActivityA$
+\OMS/cmsy/m/n/10 !$\EU1/lmr/m/n/10 ActivityB$\OMS/cmsy/m/n/10 !$\EU1/lmr/m/n/10
+ DialogActivity(\EU1/NanumMyeongjo(0)/m/n/10 다
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 557--560
+
+ []
+
+[63]
+Underfull \hbox (badness 10000) in paragraph at lines 561--563
+
+ []
+
+
+Overfull \hbox (23.04987pt too wide) in paragraph at lines 565--567
+\EU1/NanumMyeongjo(0)/m/n/10 마 지 막 으 로 현 재 \EU1/lmr/m/n/10 Configuration \EU1/N
+anumMyeongjo(0)/m/n/10 을 확 인 하 는 방 법 을 살 펴 보 자. \EU1/lmr/m/n/10 Context \EU1/Na
+numMyeongjo(0)/m/n/10 가 있 다 면 \EU1/lmr/m/n/10 getResources().getConfiguration()
+
+ []
+
+[64]) (./activity2.tex
+File: diagram_backstack.png Graphic file (type QTm)
+ <use  "diagram_backstack.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 6--7
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--22
+
+ []
+
+[65]
+Underfull \hbox (badness 10000) in paragraph at lines 23--25
+
+ []
+
+
+Overfull \hbox (13.65138pt too wide) in paragraph at lines 26--31
+\EU1/NanumMyeongjo(0)/m/n/10 드 상 태 이 기 때 문 에 \EU1/lmr/m/n/10 Activity \EU1/Nanu
+mMyeongjo(0)/m/n/10 의 메 서 드 로 는 안 된 다. 바 로 \EU1/lmr/m/n/10 ActivityManager \EU1
+/NanumMyeongjo(0)/m/n/10 에 서 \EU1/lmr/m/n/10 List$\OML/cmm/m/it/10 <$\EU1/lmr/m
+/n/10 ActivityManager.Running-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--35
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--38
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--42
+
+ []
+
+[66]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [67]
+[68]
+Underfull \hbox (badness 10000) in paragraph at lines 194--199
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 200--206
+
+ []
+
+
+Overfull \hbox (5.02425pt too wide) in paragraph at lines 207--209
+[] \EU1/NanumMyeongjo(0)/m/n/10 이 런 케 이 스 를 막 기 위 해 서 \EU1/mono/m/n/10 AlarmAle
+rt \EU1/NanumMyeongjo(0)/m/n/10 의 \EU1/mono/m/n/10 taskAffinity \EU1/NanumMyeon
+gjo(0)/m/n/10 를 다 르 게 세 팅 하 면, \EU1/mono/m/n/10 FLAG_ACTIVITY_NEW_TASK
+ []
+
+[69]
+File: diagram_multiple_instances.png Graphic file (type QTm)
+ <use  "diagram_multiple_instances.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 227--229
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 230--231
+
+ []
+
+[70]
+Overfull \hbox (20.69623pt too wide) in paragraph at lines 232--234
+\EU1/NanumMyeongjo(0)/m/n/10 로 호 출 하 면 \EU1/mono/m/n/10 ActivityA, ActivityB$\O
+MS/cmsy/m/n/10 )$\EU1/mono/m/n/10 ActivityC 2 \EU1/NanumMyeongjo(0)/m/n/10 개 의 
+태 스 크 가 남 게 되 다. 여 기 서 도 \EU1/mono/m/n/10 ActivityA$\OMS/cmsy/m/n/10 !$\EU1/mon
+o/m/n/10 ActivityB$\OMS/cmsy/m/n/10 !
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 232--234
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 243--244
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 245--246
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 247--251
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 261--263
+
+ []
+
+[71]
+Overfull \hbox (45.9001pt too wide) in paragraph at lines 269--273
+\EU1/mono/m/n/10 FLAG_ACTIVITY_CLEAR_TOP \EU1/NanumMyeongjo(0)/m/n/10 의 한 계 도 알
+ 고 있 어 야 한 다. \EU1/mono/m/n/10 ActivityA$\OMS/cmsy/m/n/10 )$\EU1/mono/m/n/10 Ac
+tivityB$\OMS/cmsy/m/n/10 )$\EU1/mono/m/n/10 ActivityA$\OMS/cmsy/m/n/10 )$\EU1/m
+ono/m/n/10 ActivityB
+ []
+
+
+Overfull \hbox (5.5627pt too wide) in paragraph at lines 279--280
+[]\EU1/mono/m/n/10 Caller \EU1/NanumMyeongjo(0)/m/n/10 가 \EU1/mono/m/n/10 Activ
+ity \EU1/NanumMyeongjo(0)/m/n/10 일 때 만 정 상 적 으 로 \EU1/mono/m/n/10 REORDER \EU1/
+NanumMyeongjo(0)/m/n/10 가 동 작 한 다. \EU1/mono/m/n/10 FLAG_ACTIVITY_NEW_TASK
+ []
+
+
+Overfull \hbox (37.41072pt too wide) in paragraph at lines 279--280
+\EU1/NanumMyeongjo(0)/m/n/10 를 함 께 플 래 그 에 사 용 해 야 하 는 \EU1/mono/m/n/10 Service
+, BroadcastReceiver, Application \EU1/NanumMyeongjo(0)/m/n/10 에 서 는 \EU1/mono/m
+/n/10 FLAG_ACTIVITY_RE-
+ []
+
+[72]) (./service.tex [73]
+Chapter 6.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--3
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 34--35
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 36--39
+
+ []
+
+[74
+
+]
+Overfull \hbox (5.38019pt too wide) in paragraph at lines 40--42
+[] \EU1/NanumMyeongjo(0)/m/n/10 프 로 세 스 가 \EU1/mono/m/n/10 kill \EU1/NanumMyeon
+gjo(0)/m/n/10 될 가 능 성 을 알 아 보 기 위 해 서, []$[][][][] [] [] [] [][][][][][][][][] 
+[] [][][][][][][] [] [][][] [] [][][][][] [] [][][][][][][][][][] []
+ []
+
+[75]
+Underfull \hbox (badness 10000) in paragraph at lines 101--103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--107
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 108--109
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--113
+
+ []
+
+[76]
+Underfull \hbox (badness 10000) in paragraph at lines 114--115
+
+ []
+
+File: service-lifecycle.png Graphic file (type QTm)
+<use  "service-lifecycle.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
+
+ []
+
+) (./service2.tex
+Underfull \hbox (badness 10000) in paragraph at lines 2--3
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [77]
+Underfull \hbox (badness 10000) in paragraph at lines 4--6
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 12--16
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 17--21
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 22--23
+
+ []
+
+[78] [79]
+Underfull \hbox (badness 10000) in paragraph at lines 93--96
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--98
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--104
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 105--109
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 110--111
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 112--118
+
+ []
+
+[80]
+Underfull \hbox (badness 10000) in paragraph at lines 119--122
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 124--127
+
+ []
+
+[81]
+Underfull \hbox (badness 10000) in paragraph at lines 166--169
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 173--175
+
+ []
+
+[82]
+Underfull \hbox (badness 10000) in paragraph at lines 192--193
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 194--195
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 196--198
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 199--200
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 201--203
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 204--205
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 206--208
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 209--211
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 216--225
+
+ []
+
+[83]
+Underfull \hbox (badness 10000) in paragraph at lines 226--228
+
+ []
+
+[84]
+Underfull \hbox (badness 10000) in paragraph at lines 280--282
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 283--284
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 316--317
+
+ []
+
+[85]
+Underfull \hbox (badness 10000) in paragraph at lines 326--328
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 329--332
+
+ []
+
+[86]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [87]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [88]
+[89]
+Underfull \hbox (badness 10000) in paragraph at lines 514--516
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 517--519
+
+ []
+
+[90]
+Underfull \hbox (badness 10000) in paragraph at lines 527--530
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 531--533
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 558--559
+
+ []
+
+[91]
+Underfull \hbox (badness 10000) in paragraph at lines 617--620
+
+ []
+
+
+Underfull \vbox (badness 1297) has occurred while \output is active []
+
+ [92]
+[93]
+Underfull \hbox (badness 10000) in paragraph at lines 673--674
+
+ []
+
+File: service-binding-tree-lifecycle.png Graphic file (type QTm)
+<use  "service-binding-tree-lifecycle.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 708--713
+
+ []
+
+[94]
+Underfull \hbox (badness 10000) in paragraph at lines 714--717
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 718--720
+
+ []
+
+[95]
+Underfull \hbox (badness 10000) in paragraph at lines 749--750
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 770--774
+
+ []
+
+[96] [97]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [98]
+[99] [100]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [101])
+(./contentprovider.tex [102]
+Chapter 7.
+
+Underfull \hbox (badness 5231) in paragraph at lines 6--6
+[][][] \EU1/NanumMyeongjo(0)/m/n/8 안 드 로 이 드 프 레 임 워 크 에 서 사 용 하 는 네 이 티 브 메 서 
+드 는 \EU1/mono/m/n/8 jni \EU1/NanumMyeongjo(0)/m/n/8 를 이 용 해 서 \EU1/mono/m/n/8 /
+frameworks/base/core/jni/an-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3--7
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 8--10
+
+ []
+
+[103
+
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [104]
+Underfull \hbox (badness 10000) in paragraph at lines 98--101
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--107
+
+ []
+
+[105]
+Underfull \hbox (badness 10000) in paragraph at lines 163--164
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 165--167
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--169
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 170--171
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 172--173
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 174--178
+
+ []
+
+[106]
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 186--189
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--201
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 204--206
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--210
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 217--219
+
+ []
+
+[107]
+Underfull \hbox (badness 10000) in paragraph at lines 221--223
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 231--234
+
+ []
+
+[108]
+Underfull \hbox (badness 10000) in paragraph at lines 267--269
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 271--272
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 289--290
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 291--293
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 294--296
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 341--343
+
+ []
+
+[109]
+Underfull \hbox (badness 10000) in paragraph at lines 344--346
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 376--379
+
+ []
+
+[110]
+Underfull \hbox (badness 10000) in paragraph at lines 392--395
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 406--410
+
+ []
+
+[111]
+Underfull \hbox (badness 10000) in paragraph at lines 438--440
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 448--449
+
+ []
+
+[112]
+Underfull \hbox (badness 10000) in paragraph at lines 457--458
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 474--478
+
+ []
+
+[113]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [114]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [115]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [116]
+Overfull \hbox (4.75145pt too wide) in paragraph at lines 637--641
+[]\EU1/mono/m/n/10 insert/update/delete \EU1/NanumMyeongjo(0)/m/n/10 메 서 드 에 서 
+쿼 리 실 행 후 에 \EU1/mono/m/n/10 getContext().getContentResolver().notifyChange(uri
+,
+ []
+
+[117]
+Underfull \hbox (badness 10000) in paragraph at lines 759--761
+
+ []
+
+[118]
+Underfull \hbox (badness 10000) in paragraph at lines 792--793
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 794--796
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 797--800
+
+ []
+
+[119] [120]
+Underfull \hbox (badness 10000) in paragraph at lines 873--875
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 892--893
+
+ []
+
+) (./brodcastreceiver.tex [121]
+Chapter 8.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--5
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 15--18
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 19--20
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 21--22
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
+
+ []
+
+[122
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 25--28
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 29--31
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 37--38
+
+ []
+
+
+Overfull \hbox (0.95056pt too wide) in paragraph at lines 49--52
+[][]$[][][][] [] [] [] [][][][][][][][][] [] [][][][][][][] [] [][][] [] [][][]
+[][][][][][] [] [][][][][][][] [] [][][][][][][] [] [][][][][][] [] [][][][]$[]
+\EU1/NanumMyeongjo(0)/m/n/10 에 보 면 시 스 템
+ []
+
+[123]
+Overfull \hbox (55.12527pt too wide) in paragraph at lines 96--100
+[]\EU1/mono/m/n/10 Intent \EU1/NanumMyeongjo(0)/m/n/10 클 래 스 에 정 의 된 모 든 \EU1/m
+ono/m/n/10 Broadcast Action \EU1/NanumMyeongjo(0)/m/n/10 이 \EU1/mono/m/n/10 ‘pr
+otected intent’ \EU1/NanumMyeongjo(0)/m/n/10 인 것 은 아 니 다. \EU1/mono/m/n/10 ACTI
+ON_MEDIA_SCANNER_SC-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 96--100
+
+ []
+
+
+Overfull \hbox (30.67924pt too wide) in paragraph at lines 101--106
+[] \EU1/NanumMyeongjo(0)/m/n/10 캘 린 더 앱 이 라 면, 처 리 해 야 하 는 이 벤 트 로 는 \EU1/mono/
+m/n/10 ACTION_TIMEZONE_CHANGED, ACTION_LOCALE_CHANG-
+ []
+
+
+Overfull \hbox (43.03632pt too wide) in paragraph at lines 101--106
+\EU1/mono/m/n/10 ED Action \EU1/NanumMyeongjo(0)/m/n/10 이 있 다. 그 리 고 케 이 스 마 다 
+다 르 지 만 웬 만 한 앱 에 서 처 리 하 는 이 벤 트 로 는 \EU1/mono/m/n/10 ACTION_BOOT_COMPLETED
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 101--106
+
+ []
+
+[124]
+Underfull \hbox (badness 10000) in paragraph at lines 143--147
+
+ []
+
+
+Overfull \hbox (27.3303pt too wide) in paragraph at lines 148--149
+[] \EU1/NanumMyeongjo(0)/m/n/10 바 탕 화 면 에 \EU1/mono/m/n/10 Shortcut \EU1/NanumM
+yeongjo(0)/m/n/10 을 설 치 하 는 것 도 \EU1/mono/m/n/10 Broadcast \EU1/NanumMyeongjo(0
+)/m/n/10 를 통 해 서 한 다. \EU1/mono/m/n/10 com.android.launcher.action.INSTALL_SHOR
+T-
+ []
+
+[125]
+Underfull \hbox (badness 10000) in paragraph at lines 173--175
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 179--181
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 182--183
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 184--186
+
+ []
+
+[126]
+Underfull \hbox (badness 10000) in paragraph at lines 187--189
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 212--213
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 215--217
+
+ []
+
+
+Overfull \hbox (51.22981pt too wide) in paragraph at lines 218--219
+[] \EU1/NanumMyeongjo(0)/m/n/10 시 스 템 에 서 보 내 는 \EU1/mono/m/n/10 Sticky Broadca
+st \EU1/NanumMyeongjo(0)/m/n/10 는 \EU1/mono/m/n/10 Intent \EU1/NanumMyeongjo(0)
+/m/n/10 클 래 스 \EU1/mono/m/n/10 API \EU1/NanumMyeongjo(0)/m/n/10 문 서 에 서 확 인 할 수
+ 있 다. \EU1/mono/m/n/10 ACTION_BATTERY_CHANGED,
+ []
+
+
+Overfull \hbox (1.74309pt too wide) in paragraph at lines 218--219
+\EU1/mono/m/n/10 ACTION_DEVICE_STORAGE_LOW, ACTION_DOCK_EVENT Action \EU1/Nanum
+Myeongjo(0)/m/n/10 에 대 해 서 \EU1/mono/m/n/10 BroadcastReceiver
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 218--219
+
+ []
+
+[127]
+Underfull \hbox (badness 10000) in paragraph at lines 241--245
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 262--263
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 264--268
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 280--281
+
+ []
+
+[128]
+Underfull \hbox (badness 10000) in paragraph at lines 302--304
+
+ []
+
+[129]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [130]
+Overfull \hbox (3.70992pt too wide) in paragraph at lines 367--370
+[]\EU1/mono/m/n/10 ACTION_APPWIDGET_DELETED, ACTION_OPTIONS_CHANGED, ACTION_ENA
+BLED, 
+ []
+
+
+Overfull \hbox (20.03322pt too wide) in paragraph at lines 367--370
+\EU1/mono/m/n/10 ACTION_DISABLED Action \EU1/NanumMyeongjo(0)/m/n/10 은 \EU1/mon
+o/m/n/10 protected intent \EU1/NanumMyeongjo(0)/m/n/10 로 시 스 템 에 서 만 보 낼 수 있 다.
+ 앱 에 서 는 \EU1/mono/m/n/10 ACTION_APP-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 372--373
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 375--377
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 380--381
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 380--381
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 382--384
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 385--388
+
+ []
+
+[131]
+Underfull \hbox (badness 10000) in paragraph at lines 396--398
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 399--402
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 417--419
+
+ []
+
+[132]
+Underfull \hbox (badness 10000) in paragraph at lines 433--436
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 437--440
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 444--447
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 448--450
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 451--453
+
+ []
+
+[133]
+Underfull \hbox (badness 10000) in paragraph at lines 458--459
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 464--465
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 466--469
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 474--476
+
+ []
+
+) (./application.tex [134]
+Chapter 9.
+
+Underfull \hbox (badness 10000) in paragraph at lines 2--5
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--12
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 14--16
+
+ []
+
+[135
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 67--68
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--70
+
+ []
+
+[136]
+Underfull \hbox (badness 10000) in paragraph at lines 71--75
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 94--95
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 96--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 98--101
+
+ []
+
+
+Overfull \hbox (4.39174pt too wide) in paragraph at lines 102--103
+[]\EU1/mono/m/n/10 ComponentCallbacks \EU1/NanumMyeongjo(0)/m/n/10 는 \EU1/mono/
+m/n/10 ICS \EU1/NanumMyeongjo(0)/m/n/10 이 전 에 서 \EU1/mono/m/n/10 Application \E
+U1/NanumMyeongjo(0)/m/n/10 에 \EU1/mono/m/n/10 onConfigurationChanged(), onLowMe
+mory(), onTrim-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 102--103
+
+ []
+
+[137]
+Underfull \hbox (badness 10000) in paragraph at lines 104--105
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 106--110
+
+ []
+
+[138]
+Underfull \hbox (badness 10000) in paragraph at lines 190--192
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--195
+
+ []
+
+[139]
+Underfull \hbox (badness 10000) in paragraph at lines 205--206
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 207--208
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 221--223
+
+ []
+
+[140]
+Underfull \hbox (badness 10000) in paragraph at lines 255--259
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 278--282
+
+ []
+
+[141]
+Underfull \hbox (badness 10000) in paragraph at lines 283--286
+
+ []
+
+) (./binder.tex [142]
+Chapter 10.
+
+Underfull \hbox (badness 10000) in paragraph at lines 39--41
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 42--43
+
+ []
+
+[143
+
+]
+Underfull \vbox (badness 1122) has occurred while \output is active []
+
+ [144]
+Underfull \hbox (badness 10000) in paragraph at lines 120--123
+
+ []
+
+[145]
+*geometry* verbose mode - [ newgeometry ] result:
+* driver: xetex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: twoside 
+* h-part:(L,W,R)=(56.9055pt, 468.90071pt, 71.70166pt)
+* v-part:(T,H,B)=(101.40665pt, 686.7347pt, 56.9055pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=468.90071pt
+* \textheight=686.7347pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-0.56833pt
+* \topmargin=3.13666pt
+* \headheight=12.0pt
+* \headsep=14.0pt
+* \topskip=10.0pt
+* \footskip=25.29494pt
+* \marginparwidth=115.0pt
+* \marginparsep=7.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidetrue
+* \@mparswitchtrue
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+
+Overfull \hbox (33.53323pt too wide) in paragraph at lines 180--181
+[][] 
+ []
+
+[146
+
+]
+Overfull \hbox (7.29459pt too wide) in paragraph at lines 199--202
+\EU1/mono/m/n/10 loadReceiver \EU1/NanumMyeongjo(0)/m/n/10 에 서 \EU1/mono/m/n/10
+ Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MEDIA_MOUNTED,
+ []
+
+[147
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 215--217
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 218--220
+
+ []
+
+[148]
+Underfull \hbox (badness 10000) in paragraph at lines 257--260
+
+ []
+
+[149]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [150]
+Underfull \hbox (badness 10000) in paragraph at lines 380--381
+
+ []
+
+[151]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [152]
+Underfull \hbox (badness 10000) in paragraph at lines 459--462
+
+ []
+
+[153]
+Overfull \hbox (24.46172pt too wide) in paragraph at lines 487--490
+\EU1/NanumMyeongjo(0)/m/n/10 이 것 이 동 작 하 는 이 유 는 \EU1/mono/m/n/10 Binder \EU1/N
+anumMyeongjo(0)/m/n/10 에 도 기 본 적 으 로 \EU1/mono/m/n/10 onTransact() \EU1/NanumMy
+eongjo(0)/m/n/10 메 서 드 가 정 의 되 어 있 고, 여 기 서 \EU1/mono/m/n/10 DUMP_TRANSAC-
+ []
+
+[154]
+Underfull \hbox (badness 10000) in paragraph at lines 620--626
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [155]
+Underfull \hbox (badness 10000) in paragraph at lines 651--652
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 653--655
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 656--657
+
+ []
+
+[156]
+Underfull \hbox (badness 10000) in paragraph at lines 675--677
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 678--684
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 685--687
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 699--701
+
+ []
+
+[157]
+Underfull \hbox (badness 10000) in paragraph at lines 721--727
+
+ []
+
+[158]
+Underfull \hbox (badness 10000) in paragraph at lines 752--753
+
+ []
+
+
+Overfull \hbox (13.32903pt too wide) in paragraph at lines 769--770
+[]\EU1/mono/m/n/10 AlarmManager \EU1/NanumMyeongjo(0)/m/n/10 를 통 해 \EU1/mono/m/
+n/10 Alarm \EU1/NanumMyeongjo(0)/m/n/10 을 등 록 한 다. []$[][][][] [] [] [] [][][] 
+[] [][][] [] [][][][][][][][] [] [][][][][][][]$[]를 보 면 \EU1/mono/m/n/10 RTC(re
+al-
+ []
+
+[159]) (./pattern.tex [160]
+Chapter 11.
+
+Underfull \hbox (badness 10000) in paragraph at lines 10--13
+
+ []
+
+[161
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 37--40
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 43--46
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--60
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 90--91
+
+ []
+
+[162] [163] [164]
+Underfull \hbox (badness 10000) in paragraph at lines 180--183
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--201
+
+ []
+
+[165]
+Underfull \hbox (badness 10000) in paragraph at lines 246--248
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 249--252
+
+ []
+
+[166]
+Underfull \hbox (badness 10000) in paragraph at lines 298--301
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 310--316
+
+ []
+
+[167]
+Underfull \hbox (badness 10000) in paragraph at lines 334--335
+
+ []
+
+[168] [169]
+Underfull \hbox (badness 10000) in paragraph at lines 439--441
+
+ []
+
+[170])
+No file android_note.bbl.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 170.
+[171]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 170.
+ (./android_note.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 170.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 170.
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 170.
+ ) 
+Here is how much of TeX's memory you used:
+ 25993 strings out of 493668
+ 471504 string characters out of 6148790
+ 837045 words of memory out of 5000000
+ 29067 multiletter control sequences out of 15000+600000
+ 53620 words of font info for 87 fonts, out of 8000000 for 9000
+ 1328 hyphenation exceptions out of 8191
+ 68i,12n,71p,10464b,1996s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+Output written on android_note.pdf (171 pages).

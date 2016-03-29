@@ -1,0 +1,116 @@
+\expandafter\ifx\csname doTocEntry\endcsname\relax \expandafter\endinput\fi
+\doTocEntry\toclikechapter{}{\csname a:TocLink\endcsname{1}{x1-1000}{QQ2-1-1}{차례}}{3}\relax 
+\doTocEntry\toclikechapter{}{\csname a:TocLink\endcsname{1}{x1-2000}{QQ2-1-2}{이 책의 구성}}{7}\relax 
+\doTocEntry\tocchapter{}{\csname a:TocLink\endcsname{1}{Q1-1-3}{}{이 책의 구성}}{7}\relax 
+\doTocEntry\tocchapter{1}{\csname a:TocLink\endcsname{1}{x1-30001}{QQ2-1-4}{안드로이드 프레임워크}}{8}\relax 
+\doTocEntry\tocsection{1.1}{\csname a:TocLink\endcsname{1}{x1-40001.1}{QQ2-1-5}{프레임워크 개요}}{8}\relax 
+\doTocEntry\tocsection{1.2}{\csname a:TocLink\endcsname{1}{x1-50001.2}{QQ2-1-6}{프레임워크 소스 구조}}{9}\relax 
+\doTocEntry\tocsection{1.3}{\csname a:TocLink\endcsname{1}{x1-60001.3}{QQ2-1-7}{안드로이드 버전}}{11}\relax 
+\doTocEntry\tocsubsection{1.3.1}{\csname a:TocLink\endcsname{1}{x1-70001.3.1}{QQ2-1-8}{호환성 모드}}{11}\relax 
+\doTocEntry\tocsubsection{1.3.2}{\csname a:TocLink\endcsname{1}{x1-80001.3.2}{QQ2-1-9}{버전 체크}}{13}\relax 
+\doTocEntry\tocchapter{2}{\csname a:TocLink\endcsname{1}{x1-90002}{QQ2-1-10}{메인 스레드와 Handler}}{15}\relax 
+\doTocEntry\tocsection{2.1}{\csname a:TocLink\endcsname{1}{x1-100002.1}{QQ2-1-11}{메인 스레드}}{15}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-10011}{}{\numberline {2.1}ActivityThread.java}}{15}\relax 
+\doTocEntry\tocsection{2.2}{\csname a:TocLink\endcsname{1}{x1-110002.2}{QQ2-1-13}{Looper}}{16}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-11003}{}{\numberline {2.2}Looper.java}}{16}\relax 
+\doTocEntry\tocsection{2.3}{\csname a:TocLink\endcsname{1}{x1-120002.3}{QQ2-1-15}{Message와 MessageQueue}}{17}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-12002}{}{\numberline {2.3}Message.java}}{17}\relax 
+\doTocEntry\tocsection{2.4}{\csname a:TocLink\endcsname{1}{x1-130002.4}{QQ2-1-17}{Handler}}{17}\relax 
+\doTocEntry\tocsubsection{2.4.1}{\csname a:TocLink\endcsname{1}{x1-140002.4.1}{QQ2-1-18}{Handler 생성}}{18}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-14002}{}{\numberline {2.4}LooperThead}}{18}\relax 
+\doTocEntry\tocsubsection{2.4.2}{\csname a:TocLink\endcsname{1}{x1-150002.4.2}{QQ2-1-20}{Handler 동작}}{19}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-15002}{}{\numberline {2.5}Handler.java}}{20}\relax 
+\doTocEntry\tocsubsection{2.4.3}{\csname a:TocLink\endcsname{1}{x1-160002.4.3}{QQ2-1-22}{Handler 일반 용도}}{20}\relax 
+\doTocEntry\tocsubsection{2.4.4}{\csname a:TocLink\endcsname{1}{x1-170002.4.4}{QQ2-1-23}{타이밍 이슈}}{22}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-17004}{}{\numberline {2.6}부정확한 지연시간}}{22}\relax 
+\doTocEntry\tocsection{2.5}{\csname a:TocLink\endcsname{1}{x1-180002.5}{QQ2-1-25}{ANR}}{23}\relax 
+\doTocEntry\tocchapter{3}{\csname a:TocLink\endcsname{1}{x1-190003}{QQ2-1-26}{백그라운드 스레드}}{26}\relax 
+\doTocEntry\tocsection{3.1}{\csname a:TocLink\endcsname{1}{x1-200003.1}{QQ2-1-27}{HandlerThread}}{26}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-20021}{}{\numberline {3.1}Handler 스레드 사용 예제(버그 존재)}}{27}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-20074}{}{\numberline {3.2}Handler 스레드 사용 예제(Fixed)}}{28}\relax 
+\doTocEntry\tocsection{3.2}{\csname a:TocLink\endcsname{1}{x1-210003.2}{QQ2-1-30}{스레드 풀}}{29}\relax 
+\doTocEntry\tocsubsection{3.2.1}{\csname a:TocLink\endcsname{1}{x1-220003.2.1}{QQ2-1-31}{ThreadPoolExecutor}}{29}\relax 
+\doTocEntry\tocsubsection{3.2.2}{\csname a:TocLink\endcsname{1}{x1-230003.2.2}{QQ2-1-32}{ScheduledThreadPoolExecutor}}{30}\relax 
+\doTocEntry\tocsubsection{3.2.3}{\csname a:TocLink\endcsname{1}{x1-240003.2.3}{QQ2-1-33}{Executors}}{31}\relax 
+\doTocEntry\tocchapter{4}{\csname a:TocLink\endcsname{1}{x1-250004}{QQ2-1-34}{Context}}{36}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-25004}{}{\numberline {4.1}ContextWrapper.java}}{36}\relax 
+\doTocEntry\tocchapter{5}{\csname a:TocLink\endcsname{1}{x1-260005}{QQ2-1-36}{Activity}}{38}\relax 
+\doTocEntry\tocsection{5.1}{\csname a:TocLink\endcsname{1}{x1-270005.1}{QQ2-1-37}{생명주기}}{38}\relax 
+\doTocEntry\tocsubsection{5.1.1}{\csname a:TocLink\endcsname{1}{x1-280005.1.1}{QQ2-1-38}{startActivity와 startActivityForResult}}{39}\relax 
+\doTocEntry\tocsubsection{5.1.2}{\csname a:TocLink\endcsname{1}{x1-290005.1.2}{QQ2-1-39}{Activity 전환}}{41}\relax 
+\doTocEntry\tocsubsection{5.1.3}{\csname a:TocLink\endcsname{1}{x1-300005.1.3}{QQ2-1-40}{Configuration 변경}}{42}\relax 
+\doTocEntry\tocsubsection{5.1.4}{\csname a:TocLink\endcsname{1}{x1-310005.1.4}{QQ2-1-41}{생명주기 메서드 사용 시 주의점}}{43}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-320005.1.4}{QQ2-1-42}{리소스 생성/제거}}{43}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-330005.1.4}{QQ2-1-43}{super.onXXX 호출 순서}}{43}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-340005.1.4}{QQ2-1-44}{finish 메서드 호출하고 바로 리턴}}{44}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-350005.1.4}{QQ2-1-45}{onXXX 메서드는 직접 호출하지 않음}}{44}\relax 
+\doTocEntry\tocsection{5.2}{\csname a:TocLink\endcsname{1}{x1-360005.2}{QQ2-1-46}{태스크}}{45}\relax 
+\doTocEntry\tocsubsection{5.2.1}{\csname a:TocLink\endcsname{1}{x1-370005.2.1}{QQ2-1-47}{태스크 상태}}{46}\relax 
+\doTocEntry\tocsubsection{5.2.2}{\csname a:TocLink\endcsname{1}{x1-380005.2.2}{QQ2-1-48}{태스크 확인}}{46}\relax 
+\doTocEntry\tocsubsection{5.2.3}{\csname a:TocLink\endcsname{1}{x1-390005.2.3}{QQ2-1-49}{taskAffinity}}{47}\relax 
+\doTocEntry\tocsubsection{5.2.4}{\csname a:TocLink\endcsname{1}{x1-400005.2.4}{QQ2-1-50}{태스크 속성 부여}}{48}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{1}{x1-410005.2.4}{QQ2-1-51}{Callee 속성부여는 AndroidManifest.xml의 Activity 선언에 android:launchMode로 한다.}}{49}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{1}{x1-420005.2.4}{QQ2-1-52}{Caller 속성 부여는 Intent Flags에 지정한다.}}{50}\relax 
+\doTocEntry\tocchapter{6}{\csname a:TocLink\endcsname{1}{x1-430006}{QQ2-1-53}{Service}}{52}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-43050}{}{\numberline {6.1}SleepService}}{53}\relax 
+\doTocEntry\tocsection{6.1}{\csname a:TocLink\endcsname{1}{x1-440006.1}{QQ2-1-55}{Started Service}}{54}\relax 
+\doTocEntry\tocsubsection{6.1.1}{\csname a:TocLink\endcsname{1}{x1-450006.1.1}{QQ2-1-56}{Service 재시작 방식}}{55}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{1}{x1-460006.1.1}{QQ2-1-57}{START\_NOT\_STICKY}}{56}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{1}{x1-470006.1.1}{QQ2-1-58}{START\_STICKY}}{56}\relax 
+\doTocEntry\tocparagraph{}{\csname a:TocLink\endcsname{1}{x1-480006.1.1}{QQ2-1-59}{START\_REDELIVER\_INTENT}}{56}\relax 
+\doTocEntry\tocsubsection{6.1.2}{\csname a:TocLink\endcsname{1}{x1-490006.1.2}{QQ2-1-60}{멀티 스레드 이슈}}{56}\relax 
+\doTocEntry\tocsubsection{6.1.3}{\csname a:TocLink\endcsname{1}{x1-500006.1.3}{QQ2-1-61}{암시적 인텐트로 서비스 실행}}{57}\relax 
+\doTocEntry\tocsubsection{6.1.4}{\csname a:TocLink\endcsname{1}{x1-510006.1.4}{QQ2-1-62}{IntentService}}{58}\relax 
+\doTocEntry\tocsubsection{6.1.5}{\csname a:TocLink\endcsname{1}{x1-520006.1.5}{QQ2-1-63}{Service 중복 실행 방지}}{59}\relax 
+\doTocEntry\tocsection{6.2}{\csname a:TocLink\endcsname{1}{x1-530006.2}{QQ2-1-64}{Bound Service}}{60}\relax 
+\doTocEntry\tocsubsection{6.2.1}{\csname a:TocLink\endcsname{1}{x1-540006.2.1}{QQ2-1-65}{리모트 바인딩}}{61}\relax 
+\doTocEntry\tocsubsection{6.2.2}{\csname a:TocLink\endcsname{1}{x1-550006.2.2}{QQ2-1-66}{로컬 바인딩}}{62}\relax 
+\doTocEntry\tocsubsection{6.2.3}{\csname a:TocLink\endcsname{1}{x1-560006.2.3}{QQ2-1-67}{bindService를 쓰는 이유}}{63}\relax 
+\doTocEntry\tocsubsection{6.2.4}{\csname a:TocLink\endcsname{1}{x1-570006.2.4}{QQ2-1-68}{바인딩의 특성}}{63}\relax 
+\doTocEntry\tocsubsection{6.2.5}{\csname a:TocLink\endcsname{1}{x1-580006.2.5}{QQ2-1-69}{Messenger}}{65}\relax 
+\doTocEntry\tocchapter{7}{\csname a:TocLink\endcsname{1}{x1-590007}{QQ2-1-70}{ContentProvider}}{68}\relax 
+\doTocEntry\tocsection{7.1}{\csname a:TocLink\endcsname{1}{x1-600007.1}{QQ2-1-71}{SQLite}}{68}\relax 
+\doTocEntry\tocsubsection{7.1.1}{\csname a:TocLink\endcsname{1}{x1-610007.1.1}{QQ2-1-72}{DB Lock 문제}}{73}\relax 
+\doTocEntry\tocsubsection{7.1.2}{\csname a:TocLink\endcsname{1}{x1-620007.1.2}{QQ2-1-73}{SQLiteOpenHelper}}{76}\relax 
+\doTocEntry\tocsection{7.2}{\csname a:TocLink\endcsname{1}{x1-630007.2}{QQ2-1-74}{ContentProvider}}{78}\relax 
+\doTocEntry\tocsubsection{7.2.1}{\csname a:TocLink\endcsname{1}{x1-640007.2.1}{QQ2-1-75}{ContentProvider 적용}}{79}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-64002}{}{\numberline {7.1}ContentProvider 예}}{80}\relax 
+\doTocEntry\tocsubsection{7.2.2}{\csname a:TocLink\endcsname{1}{x1-650007.2.2}{QQ2-1-77}{배치 execute}}{81}\relax 
+\doTocEntry\tocsection{7.3}{\csname a:TocLink\endcsname{1}{x1-660007.3}{QQ2-1-78}{SQLite/ContentProvider 관련 팁}}{81}\relax 
+\doTocEntry\tocsubsection{7.3.1}{\csname a:TocLink\endcsname{1}{x1-670007.3.1}{QQ2-1-79}{쿼리 실행 확인}}{81}\relax 
+\doTocEntry\tocsubsection{7.3.2}{\csname a:TocLink\endcsname{1}{x1-680007.3.2}{QQ2-1-80}{ContentProvider 예외 확인}}{83}\relax 
+\doTocEntry\tocchapter{8}{\csname a:TocLink\endcsname{1}{x1-690008}{QQ2-1-81}{BroadcastReceiver}}{84}\relax 
+\doTocEntry\tocsection{8.1}{\csname a:TocLink\endcsname{1}{x1-700008.1}{QQ2-1-82}{BroadcastReceiver 구현}}{84}\relax 
+\doTocEntry\tocsection{8.2}{\csname a:TocLink\endcsname{1}{x1-710008.2}{QQ2-1-83}{BroadcastReceiver 등록}}{85}\relax 
+\doTocEntry\tocsection{8.3}{\csname a:TocLink\endcsname{1}{x1-720008.3}{QQ2-1-84}{Ordered/Sticky Broadcast}}{89}\relax 
+\doTocEntry\tocsection{8.4}{\csname a:TocLink\endcsname{1}{x1-730008.4}{QQ2-1-85}{LocalBroadcastManager}}{90}\relax 
+\doTocEntry\tocsection{8.5}{\csname a:TocLink\endcsname{1}{x1-740008.5}{QQ2-1-86}{App Widget}}{91}\relax 
+\doTocEntry\tocsubsection{8.5.1}{\csname a:TocLink\endcsname{1}{x1-750008.5.1}{QQ2-1-87}{App Widget 기본}}{91}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-75013}{}{\numberline {8.1}AppWidgetProvider.java}}{92}\relax 
+\doTocEntry\tocsubsection{8.5.2}{\csname a:TocLink\endcsname{1}{x1-760008.5.2}{QQ2-1-89}{RemoteViews}}{92}\relax 
+\doTocEntry\tocsubsection{8.5.3}{\csname a:TocLink\endcsname{1}{x1-770008.5.3}{QQ2-1-90}{App Widget 업데이트}}{93}\relax 
+\doTocEntry\tocsubsection{8.5.4}{\csname a:TocLink\endcsname{1}{x1-780008.5.4}{QQ2-1-91}{유의할 점}}{94}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-790008.5.4}{QQ2-1-92}{메인 스레드 점유}}{94}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-800008.5.4}{QQ2-1-93}{부팅 중에는 initialLayout만 보임}}{94}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-810008.5.4}{QQ2-1-94}{ICS부터 기본 패딩}}{95}\relax 
+\doTocEntry\tocsubsubsection{}{\csname a:TocLink\endcsname{1}{x1-820008.5.4}{QQ2-1-95}{고해상도 폰에서 Bitmap 생성시 메모리 문제}}{95}\relax 
+\doTocEntry\tocchapter{9}{\csname a:TocLink\endcsname{1}{x1-830009}{QQ2-1-96}{Application}}{97}\relax 
+\doTocEntry\tocsection{9.1}{\csname a:TocLink\endcsname{1}{x1-840009.1}{QQ2-1-97}{앱 초기화}}{97}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-84003}{}{\numberline {9.1}Application 샘플}}{97}\relax 
+\doTocEntry\tocsection{9.2}{\csname a:TocLink\endcsname{1}{x1-850009.2}{QQ2-1-99}{Application Callback}}{98}\relax 
+\doTocEntry\tocsection{9.3}{\csname a:TocLink\endcsname{1}{x1-860009.3}{QQ2-1-100}{프로세스 분리}}{100}\relax 
+\doTocEntry\tocchapter{10}{\csname a:TocLink\endcsname{1}{x1-8700010}{QQ2-1-101}{시스템 서비스}}{103}\relax 
+\doTocEntry\tocsection{10.1}{\csname a:TocLink\endcsname{1}{x1-8800010.1}{QQ2-1-102}{네이티브 시스템 서비스}}{103}\relax 
+\doTocEntry\tocsection{10.2}{\csname a:TocLink\endcsname{1}{x1-8900010.2}{QQ2-1-103}{자바 시스템 서비스}}{103}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-89003}{}{\numberline {10.1}SystemServer.java}}{106}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-89029}{}{\numberline {10.2}ActivityManagerService.java}}{107}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-89050}{}{\numberline {10.3}ContextImpl.java}}{107}\relax 
+\doTocEntry\tocsection{10.3}{\csname a:TocLink\endcsname{1}{x1-9000010.3}{QQ2-1-107}{dumpsys 명령어}}{107}\relax 
+\doTocEntry\tocsection{10.4}{\csname a:TocLink\endcsname{1}{x1-9100010.4}{QQ2-1-108}{시스템 서비스 이슈}}{108}\relax 
+\doTocEntry\tocsubsection{10.4.1}{\csname a:TocLink\endcsname{1}{x1-9200010.4.1}{QQ2-1-109}{빈번한 리모트 호출}}{108}\relax 
+\doTocEntry\tocsubsection{10.4.2}{\csname a:TocLink\endcsname{1}{x1-9300010.4.2}{QQ2-1-110}{전원 관리와 Deep Sleep}}{109}\relax 
+\doTocEntry\tocsubsection{10.4.3}{\csname a:TocLink\endcsname{1}{x1-9400010.4.3}{QQ2-1-111}{알람 등록과 제거}}{112}\relax 
+\doTocEntry\tocchapter{11}{\csname a:TocLink\endcsname{1}{x1-9500011}{QQ2-1-112}{구현 패턴}}{113}\relax 
+\doTocEntry\tocsection{11.1}{\csname a:TocLink\endcsname{1}{x1-9600011.1}{QQ2-1-113}{싱글톤 패턴}}{113}\relax 
+\doTocEntry\toclol{}{\csname a:TocLink\endcsname{1}{x1-96002}{}{\numberline {11.1}LocalBroadcastManager.java}}{113}\relax 
+\doTocEntry\tocsection{11.2}{\csname a:TocLink\endcsname{1}{x1-9700011.2}{QQ2-1-115}{마커 인터페이스}}{115}\relax 
