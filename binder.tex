@@ -484,8 +484,8 @@ dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시�
         }
     }
 \end{lstlisting}
-이것이 동작하는 이유는 Binder에도 기본적으로 onTransact() 메서드가 정의되어 있고,
-여기서 DUMP\_TRANSAC\-TION code에 대해 처리하기 때문이다.
+이것이 동작하는 이유는 Binder 클래스에도 onTransact() 메서드가 정의되어 있고,
+여기서 DUMP\_TRANSAC\-TION code을 처리하기 때문이다.
 그리고 시스템 서비스 Stub에서는 onTransact() 메서드 맨 아래에 super.onTransact(code, data, reply, flags)를 호출하고 있다.
 
 \begin{lstlisting}[frame=single]
@@ -764,11 +764,11 @@ USB 충전 외에도 Deep Sleep에 대해서 모호한 내용들이 있는데 �
 
 Deep Sleep 상태에서 깨어나는 방법은 기본적으로 Interrupt에 의해서이다. 
 이런 Interrupt와 관련된 장치들은 항상 wakeup 상태이다.
-일반적으로 4가지 정도를 생각할 수 있다. 
+일반적으로 4가지 정도를 얘기한다. 
 \begin{enumerate}
 \item Power 키를 눌러 화면을 ON 시키면 잠에서도 깨어난다.
 \item 단말이 아무리 깊은 잠에 빠져 있어도 전화나 문자가 오면 받아야 하기 때문에 전화 관련 모듈은 wakeup 상태이다. 안드로이드 소스에서 /hardware/ril/libril/rip.cpp을 보면, RIL 데몬에서 호출해서 WakeLock을 얻는 것을 볼 수 있다.
-\item AlarmManager를 통해 Alarm을 등록한다. \url{http://lwn.net/Articles/429925/}를 보면 RTC(real-time clock)에 의해서 Alarm이 Trigger된다.
+\item AlarmManager를 통해 Alarm을 등록한다. RTC(real-time clock)에 의해서 Alarm이 Trigger된다.\footnote{\url{http://lwn.net/Articles/429925/}를 참고하자.}
 \item GCM(Google Cloud Messaging) 메시지를 소켓을 통해 받고서, 잠에서 깨어나 메시지를 처리한다.
 \end{enumerate}
  

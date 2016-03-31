@@ -91,7 +91,7 @@ startActivityForResult() 메서드 관련해서 몇 가지 내용을 살펴보�
 \item Activity A에서 startActivityForResult() 메서드로 Activity B를 호출하고 Activity B에서는 자신을 닫고 또 다른 Activity C를 호출하는 경우가 있다. 
 이때 Activity C에서 setResult()를 실행해서 전달한 것은 Activity A에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
 Activity C가 닫히는 순간 Activity A의 onActivityResult() 메서드가 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 Activity A에 전달되지 않고 resultCode는 RESULT\_CANCELED이면서 data == null이 될 뿐이다.  이런 경우에 값을 전달받기 위해서는, Activity B에서 ActivityC를 시작하기 위해서 startActivity()를 실행하면서 Intent에 Intent.FLAG\_ACTIVITY\_FORWARD\_RESULT 플래그를 추가하는 것이다.
-이 플래그는 startActivityForResult()에서 쓰려고 하면 ``android.util.AndroidRuntimeExce\-ption: FORWARD\_RESULT\_FLAG used while also requesting a result''  예외를 발생시킨다. 
+이 플래그는 startActivityForResult()에서 쓰려고 하면 ``android.util.AndroidRuntimeExce\-ption: FORWARD\_RESULT\_F\-LAG used while also requesting a result''  예외를 발생시킨다. 
 다시 말하면, Activity A에서 Activity B를 시작할 때는 startActivityForResult() 메서드를 사용하고, Activity B에서 Activity C를 시작할 때는 startActivity() 메서드를 사용하면서 플래그를 사용해야 한다. 
 이런 식으로 하면 2개가 아닌 여러 개를 거쳐도 맨 아래에서 startActivityForResult()를 실행한 Activity에 값을 다시 전달할 수 있다.
 \end{itemize}
@@ -563,7 +563,7 @@ ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity(다이얼로그 테�
 
 \subsection{Configuration 확인}
 마지막으로 현재 Configuration을 확인하는 방법을 살펴보자. 
-Context가 있다면 getResources().getConfiguration()으로 가져와서 Configuration의 toString() 메서드로 출력하면 된다. 
+Context가 있다면 getResources().getConfigura\-tion()으로 가져와서 Configuration의 toString() 메서드로 출력하면 된다. 
 \begin{lstlisting}[frame=single]
 {1.0 450mcc5mnc ko_KR ldltr sw360dp w360dp h567dp 480dpi nrml port finger -keyb/v/h -nav/h s.28}
 {1.0 450mcc5mnc ko_KR ldltr sw360dp w598dp h335dp 480dpi nrml land finger -keyb/v/h -nav/h s.29}

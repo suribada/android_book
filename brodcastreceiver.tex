@@ -83,7 +83,7 @@ ACTION_SCREEN_ON
 
 문서를 보면 `This is a protected intent that can only be sent by the system.' 메시지가 많이 나온다. 즉 해당 이벤트는 시스템이 발생시키는 것이지, 앱에서 발생시킬 수는 없는 것이다.
 이런 protected intent를 발생시켜보면 SecurityException을 만나게 된다. 아래는 
-sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPLETED))를 실행한 결과 예외 스택이다.
+sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPL\-ETED))를 실행한 결과 예외 스택이다.
 \begin{lstlisting}[frame=single] 
 07-29 21:53:20.312: E/AndroidRuntime(15102): Caused by: java.lang.SecurityException: Permission Denial: not allowed to send broadcast android.intent.action.BOOT_COMPLETED from pid=15102, uid=10301
 07-29 21:53:20.312: E/AndroidRuntime(15102): 	at android.os.Parcel.readException(Parcel.java:1465)
@@ -94,15 +94,15 @@ sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPLETED))를 실행한 결과 �
 \end{lstlisting}
 
 Intent 클래스에 정의된 모든 Broadcast Action이 `protected intent'인 것은 아니다.
-ACTION\_MEDIA\_SCANNER\_SC\-AN\_FI\-LE Action 같은 것은 앱에서 발생시키라고 있는 것이다.
+ACTION\_MEDIA\_SCA\-NNER\_SC\-AN\_FI\-LE Action 같은 것은 앱에서 발생시키라고 있는 것이다.
 이미지를 SD Card에 저장했는데 미디어 스캐닝이 안 돼서 곧바로 화면에 가져올 수 없는 경우가 있다.
 이때 바로 앱에서 사용하는 방식이 ACTION\_MEDIA\_SCANNER\_SCAN\_FILE Action를 브로드캐스팅해서 미디어 스캐너가 동작하게 하는 것이다.\\
 
 캘린더 앱이라면, 처리해야 하는 이벤트로는 ACTION\_TIMEZONE\_CHANGED,
-ACTION\_LOCALE\_CHANG\-ED Action이 있다.
-그리고 케이스마다 다르지만 웬만한 앱에서 처리하는 이벤트로는 ACTION\_BOOT\_COMPLETED Action도 있다. 
-많은 앱에서 특정 시간에 하는 작업을 AlarmManager에 등록하고 있다.
-PendingIntent를 setXxx() 메서드를 통해서 특정 시간에 동작하도록 AlarmManager에 등록하는데, 이 알람들은 단말이 꺼지면 모두 사라져 버리므로 다시 부팅하면 사라진 알람들을 재등록해야 한다. 이때 ACTION\_BOOT\_COMPLETED Action 이벤트를 받아서 재등록을 진행한다.\\
+ACTION\_LOCALE\_C\-HANG\-ED Action이 있다.
+그리고 많은 앱에서 처리하는 이벤트로는 ACTION\_BOOT\_COMPLETED Action도 있다. 
+앱에서 특정 시간에 하는 작업을 위해서는 AlarmManager에 등록하고 있다.
+PendingIntent를 setXxx() 메서드를 통해서 특정 시간에 동작하도록 AlarmManager에 등록하는데, 이 알람들은 단말이 꺼지면 모두 사라져 버리므로 다시 부팅하면 사라진 알람들을 재등록해야 한다. 이때 ACTION\_BOOT\_COMPLETED Action을 받아서 재등록을 진행한다.\\
 
 동적인 등록은 registerReceiver()/unregisterReceiver() 메서드로 등록과 해제를 한다.
 일반적으로 Activity에서는 포그라운드 lifetime인 onResume()/onPause()에서 registerReceiver()/unregisterReceiver()를 호출한다.
@@ -145,7 +145,7 @@ Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 
 코드 상으로는 AudioManager 클래스에 상수로 있는데 @hide로 숨겨져 있다. 
 이런 식으로 Action명을 알 수 있다면 처리할 수 있는 케이스가 많다.\\
 
-바탕화면에 Shortcut을 설치하는 것도 Broadcast를 통해서 한다. com.android.launcher.action.INSTALL\_SHORT\-CUT도 undocumented Action이다.
+바탕화면에 Shortcut을 설치하는 것도 Broadcast를 통해서 한다. com.android.launcher.action.INSTALL\_SH\-ORT\-CUT도 undocumented Action이다.
 \begin{lstlisting}[frame=single] 
 	Intent shortcutIntent = new Intent("android.intent.action.MAIN", null);
 		
@@ -215,7 +215,7 @@ finishAffinity() 메서드는 Activity 어느 하나에서만 호출하면 되�
 sendStickyBroadcast()는 Intent를 시스템에 등록해놓고, 새로 해당 Intent를 받을 수 있는 BroadcastReceiver가 등록되면 이 시점에 BroadcastReceiver의 onReceive()가 호출된다. 즉 먼저 이벤트를 발생시켜 놓고서, 그 이벤트 상태를 알고자 하는 BroadcastReceiver가 등록되는 시점에 BroadcastReceiver에서 이벤트를 받는 것이다.
 Sticky Broadcast를 보내기 위해서는 android.permission.BROADCAST\_STICKY 퍼미션이 필요하다.\\
 
-시스템에서 보내는 Sticky Broadcast는 Intent 클래스 API 문서에서 확인할 수 있다. ACTION\_BATTERY\_CHANGED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
+시스템에서 보내는 Sticky Broadcast는 Intent API 문서에서 확인할 수 있다. ACTION\_BATTERY\_CHANGED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
 
 앱에서는 sendStickyBroadcast()를 호출하는 것은 권장되지 않는다. 롤리팝에서는 이 메서드가 deprecated 되기도 했다.
 Sticky Broadcast는 계속 시스템 메모리에 정보가 남아있어서, 어디선가 정보를 알고 싶을 때 언제든지 빼낼 수가 있기 때문에 보안 문제가 있다.
@@ -367,7 +367,7 @@ public class AppWidgetProvider extends BroadcastReceiver {
 \item 30라인(5)에서 ACTION\_APPWIDGET\_DISABLED Action은 마지막 인스턴스가 삭제될 때 호출된다.
 \item ACTION\_APPWIDGET\_DELETED, ACTION\_OPTIONS\_CHANGED, ACTION\_ENABLED,\\
 ACTION\_DISABLED Action은 protected intent로 시스템에서만 보낼 수 있다.
-앱에서는 ACTION\_APP\-WIDGET\_UPDATE만 보낼 수 있다.
+앱에서는 ACTION\_A\-PP\-WIDGET\_UPDATE만 보낼 수 있다.
 \end{itemize}
 
 AppWidgetProvider를 상속하면 onReceive() 메서드는 구현하지 않아도 되지만, 별도 Intent Action을 사용한다면 onReceive() 메서드를 오버라이드해야 한다. App Widget에 버튼 클릭 같은 액션이 있어서 다시 그려야 하는 경우 등이다.\\
@@ -447,7 +447,7 @@ DB에서 데이터를 가져와서 뿌려주고, 일정이 없다면 ``일정 �
 일정 목록을 가져오고나면 목록이 없다는 메시지가 사라지기 때문에, 이 메시지가 있는 상태로 initialLayout을 설정해도 될 것 같은데 사용상의 문제가 있다.\\
 
 단말 전원을 새로 ON시키면 홈 스크린 화면이 보이고 나서 금방 부팅이 완료되는 것이 아니다. 
-내부적으로 이후에도 여러 작업들을 한참 하고서야 부팅이 끝났다고 ACTION\_BOOT\_COMPLETED Intent Action을 발생시키고, 이후에 ACTION\_APPWIDGET\_UPDATE Intent Action을 발생시킨다.\\
+내부적으로 이후에도 여러 작업들을 한참 하고서야 부팅이 끝났다고 ACTION\_BOOT\_COMPLETED  Action을 발생시키고, 이후에 ACTION\_APPWIDGET\_UPDATE Action을 발생시킨다.\\
 
 화면이 처음 보일 때에 App Widget은 바로 initialLayout 상태 그대로 보여준다. 부팅이 끝나고서야 업데이트를 하므로, 사용자 입장에서는 일정 목록이 없다가 시간이 꽤 지나니까 제대로 보이게 된다.
 이런 경우에 사용자는 ``왜 일정이 없지'' 하고서 앱을 실행해 본다. 그리고 다시 홈 스크린으로 돌아오면 일정이 나오기 때문에, 앱을 실행해야만 App Widget이 보이는 것으로 오해하게 된다.\\

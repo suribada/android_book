@@ -230,7 +230,7 @@ Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성
 ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 바로 taskAffinity가 동일할 때는 아무 의미가 없다. 새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면,  ActivityA 위에 그대로 뜨게 된다. 이 내용에 대해서 명시적으로 언급된 부분은 찾지 못했지만 여러 테스트에서도 동일한 결과를 보여 주었다. 이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해 보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC는 스택에서 제거된다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다. singleTask launchMode의 효과가 전혀 없는 게 아니다.\\
 
 이번에는 ActivityB의 taskAffinity를 변경하고 테스트해 보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
-여기서도 ActivityA$\rightarrow$ActivityB$\rightarrow\newline$ActivityC$\rightarrow$ActivityB 순서로 실행해 보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
+여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해 보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
 
 앞서 얘기했듯이 모바일 브라우저의 경우가 singleTask launchMode를 사용한다. 
 \begin{comment}
@@ -261,7 +261,7 @@ singleTask와 singleInstance launchMode는 특별한 상황에서만 사용한�
 Intent에는 setFlags(int flags) 메서드와 addFlags(int flags) 메서드가 있다. 여기에 전달되는 값은 Intent 클래스의 int 상수인 FLAG\_ACTIVITY\_XXX 값이고, 비트합($|$)으로 여러 개를 전달할 수 있다. 
 Intent Flags에 전달하는 값이 Callee의 lanuchMode와 배치되는 경우에는 Callee의 launchMode가 우선한다.\\
 
-Flags에 전달하는 상수는 꽤 많다. Caller에서 쓸 수 있는 다양한 옵션이 있는데 그 가운데 주요한 것을 얘기해보자.
+Flags에 전달하는 상수는 많다. Caller에서 쓸 수 있는 다양한 옵션이 있는데 그 가운데 주요한 것을 얘기해보자.
 \begin{itemize}
 \item FLAG\_ACTIVITY\_SINGLE\_TOP: singleTop launchMode와 동일한 효과를 갖는다.
 \item FLAG\_ACTIVITY\_NEW\_TASK: singleTask launchMode와 동일한 효과를 갖는다.
@@ -269,14 +269,14 @@ Flags에 전달하는 상수는 꽤 많다. Caller에서 쓸 수 있는 다양�
 \item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity들을 종료시킨다. 앞에서 얘기한 달력(A), 일정상세(B), 일정수정(C) 화면이 스택상에 있다면, B를 띄울 때 이 플래그를 사용하면 C는 사라지고 B에 원하는 일정을 보여주는 식이다. 보통 FLAG\_ACTIVITY\_SINGLE\_TOP 플래그와 같이 쓰이고, 이때 Callee는 남아있어서 onNewIntent() 메서드에 새로운 Intent가 전달된다. FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰이면 Callee는 종료하고서 새로 onCreate()부터 실행된다.
 % 단독으로 쓰임: B종료->A종료->A시작->C종료
 % 같이 쓰임: B종료->A onNewIntent->C종료
-이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 이를 해결하는 방법으로 다음 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
+이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$ActivityB$\Rightarrow$Activi\-tyA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 이를 해결하는 방법으로 다음 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
 
 \item FLAG\_ACTIVITY\_CLEAR\_TASK: Callee가 시작하기 전에 관련한 스택이 모두 제거되고 Callee는 빈 태스크의 baseActivity가 된다. 이 플래그는 FLAG\_ACTIVITY\_NEW\_TASK와 함께 사용되어야 한다. 앱을 사용하면서 태스크에 여러 Activity를 쌓아놓았지만 로그아웃하고 다른 아이디로 로그인한다면, 이 플래그를 사용해서 Launcher Activity를 새로 시작하는 것이 적절할 것이다(허니콤부터 사용).
 \item FLAG\_ACTIVITY\_REORDER\_TO\_FRONT: 태스크에 Activity가 있으면 그 Activity를 스택의 맨 위로 올린다. 해당 Activity가 스택에 하나밖에 없어야만 하는 경우에 쓸 수 있다.
 그런데 여기서 주의할 게 2가지 있다. 
 \begin{itemize}
 \item FLAG\_ACTIVITY\_CLEAR\_TOP 플래그와 함께 사용하면 옵션이 무시된다. 
-\item Caller가 Activity일 때만 정상적으로 REORDER가 동작한다. FLAG\_ACTIVITY\_NEW\_TASK를 함께 플래그에 사용해야 하는 Service, BroadcastReceiver, Application에서는 FLAG\_ACTIVITY\_RE\-ORDER\_TO\_FRONT가 동작하지 않는다.
+\item Caller가 Activity일 때만 정상적으로 REORDER가 동작한다. FLAG\_ACTIVITY\_NEW\_TASK를 함께 플래그에 사용해야 하는 Service, BroadcastReceiver, Application에서는 FLAG\_ACTIVI\-TY\_RE\-ORDER\_TO\_FRONT가 동작하지 않는다.
 \end{itemize}
 \end{itemize}
 

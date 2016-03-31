@@ -10,7 +10,7 @@
 
 \item Application Framework는 자바 기반의 여러 -Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다.(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다.) 각종 -Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
 
-\item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XMLPullParser 등 자바 클래스와 안드로이드 기본 리소스가 포함되어 있다.
+\item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XM\-LPullParser 등 자바 클래스와 안드로이드 기본 리소스가 포함되어 있다.
 
 \item Dalvik Virtual Machine은 자바/C/C++로 작성되어 있다(롤리팝에서는 Dalvik을 대체한 ART가 적용).\footnote{\url{https://source.android.com/devices/tech/dalvik/art.html}를 참고하자.} Register 기반의 가상 머신(Virtual Machine)으로 자바 가상 머신보다 명령이 단순하고 속도가 빠르다.
 Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울 수 있다. J2SE/J2EE 자바 애플리케이션을 만들다보면 여러 가상 머신 인스턴스는 당연한 얘기지만, J2ME에는 여러 Midlet이 하나의 가상 머신에서 돌아가는 방식이었고 안드로이드에서는 이 방식을 변경하였다.
@@ -79,7 +79,7 @@ parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는�
 따라서 레이아웃에서 CheckBox 속성을 android:focusable=``false''로 하면 style이 다시 오버라이드되어 ListView에서 정상적으로 ItemClick이 동작한다.\\
 
 프레임워크 리소스에서 styles.xml을 보면 CheckBox, RadioButton, ToggleButton, Switch, SeekBar, EditText, ImageButton 등 위젯이 focusable == true로 되어 있다. 이런 위젯이 ListView에 포함된다면 주의해야 한다.
-ListView의 각 Item View는 일반적으로 ViewGroup으로 되어있고 그 안에 focusable 위젯을 가지고 있으므로 다른 방법도 가능하다. 바로 ViewGroup 레이아웃 속성에 android:descendantFocusability=``blocksDescendants''를 넣으면 된다. 이 속성은 어디에서 사용하는가 하면 ViewGroup의 hasFocusable() 메서드에서 사용하고 있다.\\
+ListView의 각 Item View는 일반적으로 ViewGroup이고 그 안에 focusable 위젯을 가지고 있으므로 다른 방법도 가능하다. 바로 ViewGroup 레이아웃 속성에 android:descendantFocusability=``blocksDescendants''를 넣으면 된다. 이 속성은 ViewGroup의 hasFocusable() 메서드에서 체크하고 있다.\\
 
 요점은 검색만으로 문제를 해결하고 왜 그런지를 모른다면 ListView에서 CheckBox나 ImageButton은 각각의 Tip으로만 남고 까먹기도 쉽다. 프레임워크 소스 레벨에서 검증해보면, 다음에 비슷한 문제를 맞닥드려도 어디서부터 문제를 찾으면 되는지 알 수 있다.\\
 
@@ -150,7 +150,7 @@ ICS(아이스크림 샌드위치) & 14 & 4.0-4.0.2\\ \cline{2-3}
 \end{itemize}
 
 \subsection{호환성 모드}
-앱이 동작하는 안드로이드 버전을 지정하기 위해서는 AndroidManifest.xml에서 uses-sdk 항목에  android:minSdk\-Version과 android:targetSdkVersion에 버전을 기재한다. 
+앱이 동작하는 안드로이드 버전을 지정하기 위해서는 AndroidManifest.xml에서 uses-sdk 항목에  android:min\-SdkVersion과 android:targetSdkVersion에 버전을 기재한다. 
 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 채로 있는 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
 targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테스트해봤는데 앱 실행에 문제가 없다는 의미이고, 그 버전까지는 호환성 모드를 쓰지 않겠다는 뜻이다.\\
 
@@ -185,7 +185,7 @@ targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테
 \item 메인 스레드 상에서 네트워크 통신이 진저브레드 API 레벨 9까지는 허용되었으나, 그 이후에는 에러를 발생시킨다. targetSdkVersion을 높여서 NetworkOnMainThreadException이 발생한다면, 스레드에서 네트워크 통신을 하도록 변경해야 한다.
 \item 하드웨어 가속(Hardware Acceleration)은 View에서 Canvas에 그리는 모든 작업을 GPU를 가지고 하는 것이다. 하드웨어 가속은 허니콤에서 처음 시작되었고 targetSdkVersion 14 이상에서는 디폴트 옵션이다. 하드웨어 가속을 사용할 때 눈에 띄는 속도 향상은 SlidingPaneLayout이나 여러 Sliding Menu 라이브러리에서 애니메이션시 끊김 현상이 없다는 것이다. 
 필자의 경우도 애니메이션 끊김 현상이 단지 하드웨어 가속만으로 해결되는 경우를 여러 번 겪었다.
-그래서 가능하면 하드웨어 가속을 쓰는 게 좋지만 항상 속도가 향상되는 것은 아니다. 테스트를 하고 \url{http://developer.android.com/intl/ko/guide/topics/graphics/hardware-accel.html}을 참고해서 수준별(Application, Activity, Window, View)로 오버라이드하는 방법을 사용하자.
+그래서 가능하면 하드웨어 가속을 쓰는 게 좋지만 항상 속도가 향상되는 것은 아니다. \url{http://developer.android.com/intl/ko/guide/topics/graphics/hardware-accel.html}을 참고해서 테스트하고 수준별(Application, Activity, Window, View)로 오버라이드하는 방법을 사용하자.
 \item targetSdkVersion 14 이상에서는 App Widget에서 기본 패딩이 존재한다. 기존에는 셀의 사이즈를 꽉 채웠지만 targetSdkVersion이 올라가면 기본 패딩 때문에 App Widget의 실제 사이즈는 기존보다 작아진다. 관련해서 \ref{subsubsec:icspadding}절에 좀 더 상세하게 설명하였다.
 \item targetSdkVersion 21 이상에서는 startService()나 bindService()를 실행할 때 명시적 인텐트를 사용해야 한다.
 \end{itemize}
