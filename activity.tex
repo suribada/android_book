@@ -425,9 +425,9 @@ DialogActivity가 뜨면 아직 배경으로 보이는 ActivityB의 onSaveInstan
 이때 화면을 회전하면 DialogActivity에서 onSaveInstanceState() 호출 후 재시작하고 그 이후에 ActivityB를 재시작한다.\\
 
 \subsection{android:configChanges 속성}
-앞에서도 얘기했듯이 Configuration 변경 가운데서 가장 빈번하게 발생하는 것은 화면 회전이다. 화면 회전시 매번 재시작해서 Activity 초기화 때문에 느려지는 것이나 상태 저장/복구에 부담을 느낄 때, 재시작을 방지하기 위해서 AndroidManifest.xml의 Activity 선언에 지정하는 속성은 2가지가 있다.
+앞에서도 얘기했듯이 Configuration 변경 가운데서 가장 빈번하게 발생하는 것은 화면 회전이다. 화면 회전 시 매번 재시작해서 Activity 초기화 때문에 느려지는 것이나 상태 저장/복구에 부담을 느낄 때, 재시작을 방지하기 위해서 AndroidManifest.xml의 Activity 선언에 지정하는 속성은 2가지가 있다.
 \begin{itemize}
-\item android:screenOrientation 속성을 ``portrait''나 ``landscape''로 고정해서 회전해도 화면은 그대로이고 재시작이 일어나지 않게 한다. 화면이 상대적으로 작은 2.X 버전에서는 고정해서 쓰는 경우가 많았는데, 태블릿을 지원하는 3.X 버전 이후에는 많이 쓰이지 않고 게임 앱과 같이 용도가 확실한 것에 주로 쓰인다. 요구사항에 맞다면 쓸 수 있는 옵션이다.
+\item android:screenOrientation 속성을 ``portrait''나 ``landscape''로 고정해서 회전해도 화면은 그대로이고 재시작이 일어나지 않게 한다. 화면이 상대적으로 작은 2.X 버전에서는 고정해서 쓰는 경우가 많았는데, 태블릿을 지원하는 3.X 버전 이후에는 많이 쓰이지 않고 게임 앱과 같이 용도가 확실한 것에 주로 쓰인다. 요구사항에 맞다면 쓸 수 있는 옵션이다. 이때 화면 회전 시에도 Configuration은 변경되지 않는다.
 \item android:configChanges 속성에 ``orientation''을 지정해서 화면 회전 시에는 재시작하지 않고 Activity의 onConfigurationChanged() 메서드에서 회전 시에 할 작업을 지정한다.
 \end{itemize}
 
@@ -460,7 +460,7 @@ android:configChanges에 넣는 항목에 대해서는 Configuration 변경에 �
 
 %그럼 직접 처리한다는 건 또 무슨 의미일까?
 android:configChanges에 항목을 넣어서 활용하는 경우를 예를 들어보자. 
-onConfigurationChanged()에는 변경된 Configuration에 대한 리소스가 사용 가능한 것을 것을 기억하자. 
+onConfigurationChanged()에는 변경된 Configuration에 대한 리소스가 사용 가능한 것을 기억하자. 
 \begin{itemize}
 \item 가장 흔한 경우로 화면 회전에 대응하는 orientation이 있다. -port, -land로 별도 레이아웃을 사용하지 않을 때 많이 쓰인다. 앞에서 얘기했듯이 onConfigurationChanged()가 실행된 이후에 다시 그려지면서 View의 layout\_width나 layout\_height가 바뀐 것은 아니지만, 그려진 너비와 높이는 measure된 결과에 따라서 달라진다.
 경우에 따라 가로/세로 모드에서 layout\_width나 layout\_height만 변경해서 적용하려고 할 때도 있다. 
@@ -588,7 +588,13 @@ Context가 있다면 getResources().getConfigura\-tion()으로 가져와서 Conf
 \item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 시퀀스가 커진다.
 \end{itemize}
 
-Configuration의 toString() 메서드를 출력하면서 확인한 내용도 얘기해보자. Configuration이 변경될 때는 Application의 	onConfigurationChanged() 메서드가 먼저 불리고서 Activity의 onConfigurationChanged() 메서드가 불린다.
-% 환경설정에서 할 때는 ..
-화면 방향 관련해서 Configuration이 바뀌는 것은 전면에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity이 전면에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. ActivityA가 화면 방향 고정이고 ActivityB가 화면 방향을 고정하지 않았다면 어떤 현상이 발생할까? 
+Configuration의 toString() 메서드를 출력하면서 확인한 내용도 얘기해보자. Configuration이 바뀔 때는 Application의 	onConfigurationChanged() 메서드가 먼저 불리고, 전면에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.
+화면 방향 관련해서 Configuration이 바뀌는 것은 전면에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity이 전면에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. ActivityA가 화면 방향 가로 고정이고 ActivityB가 따로 방향을 고정하지 않았다면 어떤 현상이 발생할까? ActivityA의 Configuration orientaton은 land로 고정된다. 이때 Configuration seq가 N이라고 하면, ActivityA에서는 아무리 화면을 회전해도 seq가 바뀌지 않는다. ActivityB로 전환하면 어떤 현상이 발생할까? 만일 세로 방향이었다면 ActivityB가 세로 방향으로 보여야 하기 때문에 orientation이 port로 바뀌면서 seq는 N+1이 된다. 만일 가로 방향이었다면 seq는 그대로이다. 이제 ActivityB를 회전하면 계속해서 seq가 늘어나면서 land$\leftrightarrow$port가 서로 바뀐다. 이제 ActivityB를 종료하고 ActivityA로 돌아오면 어떻게 될까? 이 시점에 orientaton이 land라면 seq가 더해지지 않는다. 그런데 orientaton이 port라면 ActivityA에 맞는 Configuration으로 변경되면서 orientaton이 land가 되고 seq는 더해진다. seq는 변경될 때마다 Application의 	onConfigurationChanged() 메서드가 불린다.\\
+
+앱의 Activity가 모두 종료되었을 때는 어떨까? 프로세스가 바로 종료되지 않고 Empty Process로 한동안 남아있는데, 이때도 전면에 있는 다른 앱의 Activity가 방향 회전할 때마다 Application의 onConfigurationChanged() 메서드는 불린다. 
+다른 앱의 Activity가 역시 방향 고정이라면 Application의 onConfigurationChanged() 메서드는 불리지 않는다. 보통 런처 앱은 방향 고정인 경우가 많아서 홈 화면에서 아무리 화면을 회전해도 다른 앱의 Configuration에 영향을 주지 않는다. 
+Activity가 남아 있는 채로 Home 키로 Background로 이동해도 마찬가지다. 전면에 있는 Activity가 아닌 것은 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
+
+환경 설정에서 언어나 글꼴 크기를 변경할 때도 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 바뀐 Configiguration이 전달된다.
+
 
