@@ -105,8 +105,8 @@ onTrimMemory()는 ComponentCallbacks가 아닌 이를 상속한 ComponentCallbac
 
 ComponentCallbacks가 필요한 경우를 한번 생각해보자.
 ListView에서 스크롤하면서 현재 스크롤된 화면에 맞게 네트워크나 DB를 통해서 데이터를 불러오는 경우가 있다. 이전에 갔던 위치로 스크롤할 때 다시 데이터를 불러오면 속도가 그리 좋지 않으니, 한번 가져온 것은 캐시에 저장하는 경우가 있다.
-만일 메모리 상태가 좋지 않다면 onTrimMemory()에서 level에 따라 캐시에 저장된 데이터량을 조금씩 줄이는 방법으로 ComponentCallbacks/ComponentCallbacks2를 사용할 수 있다.
-(Activity와 Service도 ComponentCallbacks2 인터페이스를 구현하고 있으므로 동일한 방식을 사용할 수 있다.)\\
+만일 메모리 상태가 좋지 않다면 onTrimMemory()에서 level에 따라 캐시에 저장된 데이터량을 조금씩 줄이는 방법으로 ComponentCallbacks/ComponentCallbacks2를 사용할 수 있다
+(Activity와 Service도 ComponentCallbacks2 인터페이스를 구현하고 있으므로 동일한 방식을 사용할 수 있다).\\
 
 Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하는 메서드가 있고, 생명주기가 끝날 때마다 호출한다.
 앱에서 메모리 문제가 있을 때, 어떤 Activity의 어느 생명주기에서 메모리가 크게 증가하는 지 확인하기 위해 ActivityLifecycleCallbacks에 로그를 남기는 방법을 생각할 수 있다.
@@ -188,7 +188,7 @@ ActivityThread.main
 
 \section{프로세스 분리}
 각 프로세스별로 사용 가능한 메모리는 제한되어 있다. 안드로이드 버전별/단말별로 메모리 제한에 차이가 있다.
-허니콤부터 anroid:largeHeap 같은 옵션도 쓸 수 있지만 단말에 따라서 이 옵션이 소용없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
+허니콤부터 anroid:largeHeap 옵션도 쓸 수 있지만 단말에 따라서 이 옵션이 소용없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
 
 주로 메모리 이슈 때문에 프로세스를 분리하는데, Activity/Service/ContentProvider/BroacastReciever는 모두 프로세스 분리가 가능하다.
 동일 패키지에서 생성된 별도 프로세스는 pid(process id)는 다르지만, 동일한 uid(user id)를 가지고 동일하게 파일과 리소스에 접근할 수 있다.\\

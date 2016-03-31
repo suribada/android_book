@@ -215,7 +215,7 @@ TvInputManagerService & BinderService \\ \hline
 Binder Stub 구현이 없는 것은 실제로는 Binder 통신을 하는 건 아니다.
 서비스명이 DOWNLOAD\_SERVICE나 LAYOUT\_INFLATER\_SERVICE 같은 것은 편의상 시스템 서비스일 뿐이다.\\
 
-Binder Stub 구현은 어느 프로세스에서 돌아가고 있을까? Binder Stub이 각각 따로 프로세스로 실행되는 것이 아닐까 생각할 수도 있지만, 앞에서도 여러 차례 얘기한 system\_server 프로세스에서 실행되고 있다.(예외로 CameraService는 /system/bin/mediaserver 프로세스에서 실행된다.)			
+Binder Stub 구현은 어느 프로세스에서 돌아가고 있을까? Binder Stub이 각각 따로 프로세스로 실행되는 것이 아닐까 생각할 수도 있지만, 앞에서도 여러 차례 얘기한 system\_server 프로세스에서 실행되고 있다(예외로 CameraService는 /system/bin/mediaserver 프로세스에서 실행된다).			
 system\_server에서 여러 시스템 서비스를 제공하고, 이를 다른 앱에서 호출하는 것으로 이해하면 된다.\\
 
 여기서 하나 질문을 해보자. 일반 리모트 바인딩 서비스와 안드로이드에서 제공하는 시스템 서비스는 어떻게 다를까?
@@ -519,7 +519,7 @@ dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시�
 \end{lstlisting}
 
 dumpsys activity를 하면 ActivityManagerService가 워낙 많은 정보를 가지고 있기 때문에 보여주는 것이 적지 않다.
-정작 필요한 정보를 찾기 위해서 추가로 명령을 덧붙이는 게 좋다. -h 옵션을 사용해서 추가로 덧붙여 쓸 수 있는 것을 알아보자.(모든 서비스가 -h 옵션을 쓸 수 있는 것은 아니다.)
+정작 필요한 정보를 찾기 위해서 추가로 명령을 덧붙이는 게 좋다. -h 옵션을 사용해서 추가로 덧붙여 쓸 수 있는 것을 알아보자(모든 서비스가 -h 옵션을 쓸 수 있는 것은 아니다).
 아래는 activity와 package, meminfo에 쓸 수 있는 것을 조회한 것이다.
 \begin{lstlisting}[frame=single]
 shell@EF56S:/ $ dumpsys activity -h 
@@ -576,7 +576,7 @@ If [process] is specified it can be the name or
 pid of a specific process to dump.
 \end{lstlisting}
 
-Debug 클래스에 dumpService() 메서드도 있다. 이 메서드로 파일에 dumpsys 결과를 출력할 수 있는데, 메서드를 사용하기 위해서는 android.permission.DUMP 퍼미션이 필요하고 이 퍼미션은 시스템 레벨 앱에서만 사용할 수 있다. 따라서 일반 앱에서는 Debug.dumpService()는 사용할 수 없는 메서드이다.
+Debug 클래스에 dumpService() 메서드도 있다. 이 메서드로 파일에 dumpsys 결과를 출력할 수 있는데, 메서드를 사용하기 위해서는 android.permission.DUMP 퍼미션이 필요하고 이 퍼미션은 시스템 레벨 앱에서만 사용할 수 있다. 따라서 일반 앱에서는 Debug.dumpService()는 사용할 수 없다.
 
 \begin{comment}
 코드 상에서도 dump를 생성하고 싶은 경우가 있다.
@@ -619,7 +619,7 @@ dumpsys activity services
 \subsection{빈번한 리모트 호출}
 시스템 서비스의 메소드를 호출하는 것은 system\_server 프로세스에 Binder RPC 호출을 하므로, 아무래도 로컬 호출보다는 시스템에 부담을 주게 된다.
 그런데 그런 메소드 가운데서 앱에서 빈번하게 호출하는 케이스가 있다.
-예를 들어보자. 서버 API를 호출할 때마다 앱의 versionCode를 request parameter나 Header에 전달해야 하는 경우가 있다.(클라이언트 버전의 사용률을 체크하기 위한 용도도 있고, 어느 버전에서 문제가 발생했는지 트래킹하는 데도 쓰인다.)
+예를 들어보자. 서버 API를 호출할 때마다 앱의 versionCode를 request parameter나 Header에 전달해야 하는 경우가 있다.  앱의 versionCode는  클라이언트 버전의 사용률을 체크하거나, 특정 버전에서 문제가 발생했는지 트래킹하는 데도 쓰일 수 있다.
 현재 앱의 버전 정보를 알기 위해서 PackageManager를 통해서 RPC 호출을 해야만 하는데 뭔가 비효율적이긴 하다. 
 마치 내 나이를 알기 위해서 꼭 주민센터에 물어봐야 하는 것처럼 말이다. 
 Context에는 getPackageName() 메소드는 있지만, getPackageVersionCode() 같은 메소드는 없다.\\
@@ -651,7 +651,7 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 이 절에서는 안드로이드의 전원 관리의 기본 내용과 Deep Sleep 이슈에 대해 살펴보자. 마시멜로에서 도입된 Doze Mode에 대해서는 여기서는 다루지 않겠다.\\
 
 모바일 단말은 상시 전원이 차단된 상태로 오랜 시간 사용해야 하므로, 전원 관리는 안드로이드 플랫폼에서 주요 이슈이면서 우리가 만드는 앱에서도 간과해서는 안 되는 문제이다.
-안드로이드 Power Management 관련해서 자세한 내용은 `안드로이드 하드웨어 서비스'(개발자가 행복한 세상)을 참고하자.\\
+안드로이드 Power Management 관련해서 자세한 내용은 `안드로이드 하드웨어 서비스(개발자가 행복한 세상)'을 참고하자.\\
 
 안드로이드 전원 관리 메커니즘은 젤리빈 API 레벨 17 까지는 Wakelock, Early Suspsend, Late Resume 방식을 사용했는데, 리눅스 메인 커널과 통합되는 과정에서(3.4) Autosleep, Wakeup sources로 변경되었다. 내부적으로 방식이 바뀌었지만 앱 개발에서는 동일하게 WakeLock을 잡고 해제하는 코드를 그대로 사용하면 된다.\\
 
@@ -690,16 +690,18 @@ Deep Sleep 관련해서 안드로이드 개발자 사이트에서 검색하면 �
 \begin{itemize}
 \item SystemClock.uptimeMillis() 메소드는 부팅 이후에 Deep Sleep을 제외한 시간을 보여준다. 반면에 SystemClock.elapsedRealtime()은 부팅 이후 (Deep Sleep을 포함한) 시간을 보여준다. 
 따라서 elapsedRealtime()에서 uptimeMillis()를 뺀 시간이 바로 Deep Sleep 상태에 있던 시간이다. 처음 부팅을 하고서 화면이 켜진 상태에서는 두 시간이 동일하다. 그 상태에서 화면을 OFF 시키고 몇 분 후에 다시 이 시간 차이를 비교해보자. 그 차이를 따져보면 화면을 OFF 시켰을 때 몇 십초 내에 Deep Sleep 상태로 가는 것을 알 수 있다.
+
 \item Thread.sleep(long time)이나 SystemClock.sleep(long ms) 메소드의 파라미터 값은 Deep Sleep 상태에 있는 시간이 제외된 시간이다. SystemClock.sleep(long ms) 메소드는 InterruptedException을 무시하는 것이 Thread.sleep(long time)과 다르다. 예를 들어, 1분 간 sleep()을 실행하고 다른 작업을 하려고 했는데 sleep() 도중에 Deep Sleep에 빠지면 결과적으로 현상으로 보여지는 sleep 시간은 `1분 + Deep Sleep 상태에 빠진 시간'이다. 
-\item Handler에서 postAtTime() 메소드나 postDelayed() 메소드(계산을 통해 내부적으로 postAtTime()을 호출한다.)는 uptimeMillis를 기준으로 한다. 따라서 도중에 Deep Sleep 상태에 들어가면 1분의 Delay를 주었을 뿐이지만, Deep Sleep에서 깨어나고 한참 후에(다른 Message 처리할 것이 앞에 가로막지 않는다면, 최대 1분) 실행될 수도 있다.
+
+\item Handler의 postAtTime() 메소드나 postDelayed() 메소드(계산을 통해 내부적으로 다시 postAtTime() 호출)는 uptimeMillis를 기준으로 한다. 따라서 도중에 Deep Sleep 상태에 들어가면 1분의 Delay를 주었을 뿐이지만, Deep Sleep에서 깨어나고 한참 후에(다른 Message 처리할 것이 앞에 가로막지 않는다면, 최대 1분) 실행될 수도 있다.
 % http://stackoverflow.com/questions/17561380/android-thread-sleep-sometimes-waits-far-too-long
 \item PowerManager에는 isSleep()이나 isDeepSleep() 같은 메서드는 없다. 이런 메서드는 의미가 없는 게 Deep Sleep 상태에서는 메서드가 실행되지 않을 것이고, 깨어나 있는 상태에서는 이미 Deep Sleep 상태가 아니기 때문이다.
 \end{itemize}
 
-이 가운데서 앱을 개발하면서 가장 이슈가 많은 것이 세 번째이다. 
+이 가운데서 앱 개발에서 이슈가 많은 것이 세 번째이다. 
 MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보이는 케이스가 바로 그것이다.\\
 
-앞에서 반복적으로 UI를 갱신하는 패턴에 대해서 얘기했는데, 이 패턴을 다시 한번 보자.
+앞에서 반복해서 UI를 갱신하는 패턴에 대해서 얘기했는데, 이 패턴을 다시 한번 보자.
 \begin{lstlisting}[frame=single, caption=Deep Sleep 대응 필요, label=src:DefaultUpdateTime] 
   	private Handler handler = new Handler();
 

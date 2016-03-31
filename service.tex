@@ -42,7 +42,7 @@ public class LifeCycleApplication extends Application {
 \begin{enumerate}
 \item Foreground 프로세스: 사용자와 상호작용하는 Activity를 가지고 있거나, 그런 Activity에 bound된 Service를 가지고 있거나, startForeground()를 호출한 foreground Service를 가지고 있거나, Service의 생명주기(onCreate, onStart, onStartCommand, onDestroy)를 실행 중인 Service를 가지고 있거나, onReceive()를 실행하는 BroadcastReceiver를 가지고 있는 경우이다.
 메모리가 부족할 때에도 가장 마지막까지 남아 있을 수 있는 프로세스이다.
-\item Visible 프로세스: 포그라운드 컴포넌트를 가지고 있지는 않지만, 사용자가 보는 화면에 아직 영향이 있다. Activity로 보면 onPause까지 실행되었지만 visible 상태인 것이다.(다이얼로그 테마나 투명한 Activity가 가렸을 때이다.)
+\item Visible 프로세스: 포그라운드 컴포넌트를 가지고 있지는 않지만, 사용자가 보는 화면에 아직 영향이 있다. Activity로 보면 onPause까지 실행되었지만 visible 상태인 것이다(다이얼로그 테마나 투명한 Activity가 가렸을 때이다).
 visible Activity에 bound된 Service를 가진 경우도 해당한다. 
 \item Service 프로세스: startService로 실행했지만 위의 카테고리에는 들어가지 않는 Service를 가진 경우이다. 이런 것들은 사용자가 지금 보고 있는 것과 직접적인 연관은 없다.
 \item Background 프로세스: 보통 여러 백그라운드 프로세스가 존재한다.

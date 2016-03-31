@@ -23,7 +23,7 @@ Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울
 /system/bin/surfaceflinger와 /system/bin/mediaserver 프로세스로 각각 실행된다.
 \end{itemize}
 
-\item 안드로이드는 리눅스 커널을 기반으로 불필요한 것은 제거하고(X-Window, glibc, 표준 리눅스 유틸리티 일부 등) 확장 패치한 것이다.(Binder, Ashmem, Low Memory Killer 등)\\
+\item 안드로이드는 리눅스 커널을 기반으로 불필요한 것은 제거하고(X-Window, glibc, 표준 리눅스 유틸리티 일부 등) 확장 패치한 것이다(Binder, Ashmem, Low Memory Killer 등).\\
 
 이 가운데 특히 Binder IPC는 프로세스 간 통신에 사용하는 방식이다. 
 Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC를 이용한 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데서 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있게 된다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 Binder Thread에 속한 것이다. 

@@ -105,9 +105,9 @@ Activity B는 onCreate()와 onResume()을 실행할 것이다.
 그런데 Activity A가 onStop()까지 실행되고 나서 Activity B가 onCreate()부터 실행되는 것이 아니다.
 순서는 다음과 같다.
 \begin{enumerate}
-\item Activity A는 onPause() 메서드를 실행한다.(백그라운드로 이동)
-\item Activity B는 onCreate(), onStart(), onResume() 메서드를 실행하고 포커스를 갖는다.(포그라운드로 이동)
-\item Activity A는 onStop() 메서드를 실행한다(A는 not visible. B가 전체 화면을 덮는 경우). B가 반투명이거나 다이얼로그 테마 Activity인 경우에는 onStop()을 실행하지 않는다.(아직 visible이기 때문)
+\item Activity A는 onPause() 메서드를 실행한다(백그라운드로 이동).
+\item Activity B는 onCreate(), onStart(), onResume() 메서드를 실행하고 포커스를 갖는다(포그라운드로 이동).
+\item Activity A는 onStop() 메서드를 실행한다(A는 not visible. B가 전체 화면을 덮는 경우). B가 반투명이거나 다이얼로그 테마 Activity인 경우에는 onStop()을 실행하지 않는다(아직 visible이기 때문).
 \end{enumerate}
 
 설명해보면 Caller는 일단 백그라운드로 가고, Callee가 포그라운드까지 온 다음에 Caller가 not visible 상태가 된다.
@@ -126,9 +126,9 @@ SharedPreferences나 DB에 저장하지는 않고 Activity A가 끝날 때만 �
 Activity A에서 Activity B를 시작하고, 이번에는 Activity B를 닫으면 Activity A를 다시 보게 된다.
 이때의 순서는 역순이다.
 \begin{enumerate}
-\item Activity B는 onPause() 메서드를 실행한다.(백그라운드로 이동)
-\item Activity A는 onRestart(), onStart(), onResume() 메서드를 실행한다.(포그라운드로 이동)
-\item Activity B는 onStop(), onDestroy() 메서드를 실행한다.(종료)
+\item Activity B는 onPause() 메서드를 실행한다(백그라운드로 이동).
+\item Activity A는 onRestart(), onStart(), onResume() 메서드를 실행한다(포그라운드로 이동).
+\item Activity B는 onStop(), onDestroy() 메서드를 실행한다(종료).
 \end{enumerate}
 
 
@@ -573,7 +573,7 @@ Context가 있다면 getResources().getConfiguration()으로 가져와서 Config
 \end{lstlisting}
 값이 14개가 나오는데 실제 단말에서는 커스텀 데이터가 더 나오기도 한다. 1, 2라인은 화면을 회전한 것이고 4, 5라인은 설정에서 글꼴 크기를 키우고서 화면을 회전한 것이다.
 \begin{itemize}
-\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다.(4, 5라인) 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다.  `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시노트4에서는 값이 1.09로 나오기도 했다.
+\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다.  `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시노트4에서는 값이 1.09로 나오기도 했다.
 \item 두 번째는 mcc, mnc 값이다. \url{http://mcclist.com}에 따르면 450은 한국의 국가 코드이고 5는 SK Telecom의 통신사 코드이다.
 \item 세 번째는 locale 값이다.
 \item 네 번째 ldltr은 screenLayout 값이다.

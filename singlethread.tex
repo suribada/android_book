@@ -404,8 +404,7 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 안드로이드 프레임워크에서도 내부적으로 Handler를 많이 사용한다. 메인 스레드에서 실행해야 하는 작업들이 Handler를 사용해서 내부적으로 메인 Looper의 MessageQueue를 통해서 순차적으로 진행된다.
 \begin{itemize}
 \item ActivityThread에 내부 클래스인 H는 Handler를 상속한다. 컴포넌트 생명주기 관련해서 모두 H를 거친다.(Message의 what에 해당하는 int 상수에 들어가는 값에 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STOP\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.)
-\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_RE\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS
-MESSAGE\_DISPACH\_DRAG\_EVENT 등).
+\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_RE\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EVENT 등).
 ICS까지는 ViewRootImpl이 Handler를 상속했지만, 젤리빈부터는 내부 클래스로 ViewRootHandler를 사용한다.
 ViewRootImpl에서 처음 그릴 때나 다시 그리기 필요한 경우(invalidate, 레이아웃 변경, Visibility 변경 등)는 Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
 % Activity의 Window마다 있다.
@@ -469,7 +468,7 @@ invalidate()부터 시작하는 메서드를 따라가보자.
 \item invalidateChild() 메서드는 do while 문에서 parent = parent.invalidateChildInParent(location, dirty)를 parent != null인 동안에는 계속 호출한다. 여기서 ViewParent 인터페이스가 등장한다. View에서 상위 ViewGroup을 가져오기 위해서 getViewGroup()이 아니라 ViewParent를 리턴하는 getParent()를 실행하고 ViewGroup으로 캐스팅해서 쓰는 번거로움이 생긴 이유이기도 하다. 
 View/ViewGroup이 다시 그리는 영역을 상위로 전달하다 보면 어쨌든 가장 위까지 전달될 것이다. 가장 상위는 역시 ViewGroup인데(com.android.internal.policy.PhoneWindow\$DecorView) 여기서 다시 그리라는 메시지를 보낼 수도 있지만 여기서 로직 분리를 위해서 가상으로 또 다른 상위를 만들었는데 이것이 ViewRootImp 클래스이다.
 ViewGroup과 ViewRootImpl은 ViewParent 인터페이스를 구현한 것으로 invalidateChildInParent()는 ViewParent 인터페이스의 메서드이다.
-\item invalidateChild() 메서드는 do wile 문에서 최종적으로 ViewRootImpl의 invalidateChildInParent(int[] location, Rect dirty)를 호출한다.
+\item invalidateChild() 메서드는 do while 문에서 최종적으로 ViewRootImpl의 invalidateChildInParent(int[] location, Rect dirty)를 호출한다.
 \item ViewRootImpl의 invalidateChildInParent()에서 처음 하는 것은 checkThread() 메서드를 호출해서 메인 스레드가 아니면 CalledFromWrongThreadException을 발생시킨다.
 invalidateChildInParent()에서 메인 작업은 scheduleTraversals() 메서드를 호출해서 invalidated 영역을 다시 그리기 위한 순회(traversal)작업을 스케줄링하는 것이다. 스케줄링은 기존에는 메인 Looper의 MessageQueue에 Message를 직접 넣었지만 젤리빈부터 ChoreoGrapher에 다시 위임한다.
 \end{enumerate}
@@ -654,7 +653,7 @@ HandlerThread의 기본 형태를 보자.
 10라인(1)에서 Handler에 HandlerThead의 Looper를 연결하는 것을 볼 수 있다. 이후에는 이 Handler에서 보낸 Message는 HandlerThread에서 생성한 스레드에서 처리된다.\\
 
 HandlerThread가 필요한 곳은 어디일까? 
-바로 UI하고 관련없지만 단일 스레드에서 순차적인 작업\footnote{AsyncTask도  허니콤 이후부터 디폴트로 SERIAL\_EXECUTOR를 사용해서 순차적인 스레드 작업을 지원하고 있다.}이 필요할 때이다.(안드로이드 프레임워크에서는 IntentService가 HandlerThread를 내부적으로 사용하고 있다.)\\
+바로 UI와 관련없지만 단일 스레드에서 순차적인 작업\footnote{AsyncTask도  허니콤 이후부터 디폴트로 SERIAL\_EXECUTOR를 사용해서 순차적인 스레드 작업을 지원하고 있다.}이 필요할 때이다.(안드로이드 프레임워크에서는 IntentService가 HandlerThread를 내부적으로 사용하고 있다.)\\
 
 예를 들어, 아래 그림을 보면 각 항목의 오른편에 favorite 표시 체크박스가 있다.
 선택/해제하는 것을 실시간으로 DB에 반영해야 하는 요구사항이 있다.\\
@@ -665,7 +664,7 @@ HandlerThread가 필요한 곳은 어디일까?
 만일 체크 상태가 바뀔 때마다 스레드를 생성하거나 스레드 풀에서 스레드를 가져다가 DB에 반영하면 어떤 일이 벌어질까? 스레드 실행은 start()를 실행한 순서대로 되지 않기 때문에 선택$\rightarrow$해제$\rightarrow$선택을 했지만, DB에 반영할 때는 선택$\rightarrow$선택$\rightarrow$해제 순으로 반영하여 최종 결과를 잘못 반영할 가능성이 있다. 
 즉 실행 순서를 순차적으로 맞추어야 하는데, 바로 HandlerThread가 필요한 지점이다.\footnote{허니콤 이후의 AsyncTask도 순차 실행이 기본 동작이지만, AsyncTask는 백그라운드 스레드와 UI 스레드를 구분하고 데이터를 전달하는 목적에 더 적합하다.}
 HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드 스레드에서 무한루프를 만들고 BlockingQueue를 매개로 하여 백그라운드 스레드에서는 take를 실행하고 외부에서는 put을 실행하는 형태를 만들어야 한다.
-\url{http://developer.android.com/intl/ko/reference/java/util/concurrent/BlockingQueue.html}에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
+BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
 
 아래 코드를 한번 보자. 아직 버그가 있는 버전이고 이 버그를 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
 \begin{lstlisting}[frame=single, caption=HandlerThread 사용 예제(버그 존재), label=src:HandlerThreadSample] 
@@ -807,7 +806,7 @@ MessageQueue.IdleHandler API 문서를 보면 Message를 모두 처리하고서 
 
 \begin{itemize}
 \item 8라인(1)에 onLooperPrepared() 메서드 안에서 IdleHandler를 등록한다. onLooperPrepared() 메서드는 HandlerThread에서 일종의 hook 메서드로 Looper.prepare()가 실행된 다음에 호출된다.
-\item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. isFinishing == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
+\item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. isFinishing() == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
 \end{itemize}
 
 \begin{comment}    
@@ -1071,7 +1070,7 @@ AsyncTask의 병렬 실행이 필요한 경우를 들어보자.
 결과는 어땠을까? 아주 드물지만 로컬 데이터를 먼저 가져온다는 가정이 어긋나는 경우가 생겨서 에러를 발생시켰다. 
 작업량이 많고 적은 것으로 판단하면 안 된다.
 백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안 된다. 극단적으로 말하면 동작이 운에 따른 것이 된다.
-이런 문제가 제어가 어렵다면 차라리 `순차 실행`을 하는 게 나을 수도 있다.\\
+이런 문제가 제어가 어렵다면 차라리 `순차 실행'을 하는 게 나을 수도 있다.\\
 
 일반적으로 2개의 AsyncTask 간에 병렬 실행도 하면서 결과를 합해야 하는 경우에는 2가지 정도 방법을 사용한다.
 \begin{itemize}

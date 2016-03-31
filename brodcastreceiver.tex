@@ -4,7 +4,7 @@ BroadcastReceiver는 Observer 패턴\footnote{\url{http://warmz.tistory.com/751}
 예를 들어, 안드로이드 책이 한 권 출판되어서(1) 출판사에서 연락하면(2), 각 온라인 서점에서는 데이터를 각각 입력해야만 한다(3). BroadcastReceiver 입장에서 보면 1번은 Intent 내용, 2번은 sendBroadcast() 메서드 호출, 3번은 onReceive() 메서드에 대응된다.\\
 
 Observer 패턴에서는 일대다 관계에서 직접 호출하지 않고, 인터페이스를 통한 느슨한 결합을 통해 Observer를 register/unregister하는 방법을 제공한다.
-이 방식은 BroadcastReceiver에서도 마찬가지이다. BroadcastReceiver는 바로 Observer이고, 이벤트는 sendBroadcast()에 전달되는 Intent이다.(이벤트는 여러 곳에 퍼뜨리기 위한 방송용 이벤트라고 보면 된다.) Context에는 registerReceiver()와 unregisterReceiver() 메서드가 있어서 여러 컴포넌트(Activity, Service, Application)에서 사용할 수 있다.
+이 방식은 BroadcastReceiver에서도 마찬가지이다. BroadcastReceiver는 바로 Observer이고, 이벤트는 sendBroadcast()에 전달되는 Intent이다(이벤트는 여러 곳에 퍼뜨리기 위한 방송용 이벤트라고 보면 된다). Context에는 registerReceiver()와 unregisterReceiver() 메서드가 있어서 여러 컴포넌트(Activity, Service, Application)에서 사용할 수 있다.
 
 \section{BroadcastReceiver 구현}
 BroacastReceiver에는 추상 메서드가 하나뿐이고 나머지 메서드는 사용할 일이 많지 않다.
@@ -46,9 +46,9 @@ BroadcastReceiver를 등록하는 방식은 정적인 등록(statically publish)
 </receiver>
 \end{lstlisting}
 
-\url{http://developer.android.com/reference/android/content/Intent.html}에 보면 시스템의 Broadcast Intent Action 상수가 다수 정의돼 있다.\footnote{ACTION\_DATE\_CHANGED Action은 버그가 있다. 자정에만 오면 되는데 정오에도 전달되는 문제가 있다.
+Intent API 문서에 보면 시스템의 Broadcast Action 상수가 다수 정의돼 있다.\footnote{ACTION\_DATE\_CHANGED Action은 버그가 있다. 자정에만 오면 되는데 정오에도 전달되는 문제가 있다.
 %이후에 AlarmManagerService를 얘기할 때 다시 살펴보기로 하자.
-} 페이지에서 ``Broadcast Action:'' 으로 검색해보자.
+} API 문서에서 ``Broadcast Action:'' 으로 검색해보자.
 
 \begin{verbatim}
 ACTION_TIME_TICK
@@ -81,7 +81,7 @@ ACTION_SCREEN_OFF
 ACTION_SCREEN_ON
 \end{verbatim}
 
-시스템 Broadcast 관련 API 문서를 보면 `This is a protected intent that can only be sent by the system.' 메시지가 많이 나온다. 즉 해당 이벤트는 시스템이 발생시키는 것이지, 앱에서 발생시킬 수는 없는 것이다.
+문서를 보면 `This is a protected intent that can only be sent by the system.' 메시지가 많이 나온다. 즉 해당 이벤트는 시스템이 발생시키는 것이지, 앱에서 발생시킬 수는 없는 것이다.
 이런 protected intent를 발생시켜보면 SecurityException을 만나게 된다. 아래는 
 sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPLETED))를 실행한 결과 예외 스택이다.
 \begin{lstlisting}[frame=single] 
@@ -248,7 +248,8 @@ LocalBroadcastManager는 로컬 프로세스에서만 이벤트를 주고받을 
 시스템 Broadcast와는 구조가 완전히 다른데 ActivityManagerService를 거치지 않고 싱글톤인 LocalBroadcastManager에서 BroadcastReceiver를 등록하고 sendBroadcast()를 실행한다.
 
 \begin{lstlisting}[frame=single] 
-LocalBroadcastManager.getInstance(this).sendBroadcast(CalendarIntent.CHANGE_TIME);
+LocalBroadcastManager.getInstance(this)
+	.sendBroadcast(CalendarIntent.CHANGE_TIME);
 ...
 LocalBroadcastManager.getInstance(this).registerReceiver(..)
 \end{lstlisting}
@@ -390,7 +391,7 @@ ListView, GridView, StackView, AdapterViewFlipper(이 4개는 허니콤부터 �
 \begin{itemize}
 \item 애노테이션은 상속된 클래스는 해당하지 않기 때문에 위 목록에 있는 것의 하위 클래스도 RemoteViews에는 쓸 수 없다.
 \item 커스텀 뷰도 쓸 수 없다. 클래스 선언에 @RemoteView를 추가하면 될 것 같지만, 설치되는 프로세스인 Launcher에서 이 커스텀 뷰를 찾을 방법이 없어서 그렇다.\footnote{\url{http://yenliangl.blogspot.kr/2010\_05\_23\_archive.html}을 참고하자.}
-\item 최상위 클래스인 android.view.View는 쓸 수 없다. 레이아웃에 내용을 구분하기 위한 단순 라인 구분자(line separator)를 만들 때는 View에 background color을 넣으면 됐지만, RemoteViews에서는 TextView 같은 지원되는 뷰 클래스로 대체해야 한다.(이 경우 레이아웃에서 Lint warning에 나온다. 이런 warning은 무시하자.)
+\item 최상위 클래스인 android.view.View는 쓸 수 없다. 레이아웃에 내용을 구분하기 위한 단순 라인 구분자(line separator)를 만들 때는 View에 background color을 넣으면 됐지만, RemoteViews에서는 TextView 같은 지원되는 뷰 클래스로 대체해야 한다.(이 경우 레이아웃에서 Lint warning에 나온다. 이런 warning은 무시하자).
 \end{itemize}
 
 RemoteViews는 뷰 계층 상에 있는 레이아웃 리소스 id를 대상으로 작업(TextView라면 텍스트 변경, 사이즈 변경, 텍스트 색상 변경 등)을 전달한다.
@@ -472,9 +473,9 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888); 
 \end{verbatim}
 createBitmap()의 세 번째 파라미터는 Bitmap.Config API 문서에서 보면, 투명 Bitmap을 생성하기 위해서 ARGB\_8888을 적용한 것이다.
-그런데 이 옵션은 픽셀당 4 byte를 차지하고 있다.(투명 Alpha 값이 없는 RGB\_565의 2배) 갤노트4의 경우를 보면 해상도가 2560x1440이므로 곱하기를 하면 14,745,600 byte가 나온다. 즉 createBitmap() 만으로도 14M 가량을 사용하게 되는 셈인데, 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
+그런데 이 옵션은 픽셀당 4 byte를 차지하고 있다(투명 Alpha 값이 없는 RGB\_565의 2배). 갤노트4의 경우를 보면 해상도가 2560x1440이므로 곱하기를 하면 14,745,600 byte가 나온다. 즉 createBitmap() 만으로도 14M 가량을 사용하게 되는 셈인데, 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
 
 기존에는 문제가 없던 것이 특히 최신 단말에서 App Widget에서 createBitmap() 실행 중에 OutOfMemoryError로 죽는다면 이것을 원인으로 보면 거의 맞다.
 단말 스펙이 높아지면서 해상도가 좋아지는데, 앱 프로세스에서 사용할 수 있는 가용 메모리는 비례해서 커지지 않아서 발생하는 문제이다.
 이때는 App Widget을 프로세스 분리하는 방법을 한번 고려해보자.
-App Widget 개수가 많다면 여러 개를 프로세스 분리하는 것보다 하나만 하는 것이 관리가 수월하므로, Service로 App Widget 업데이트 로직을 넘기고 Service를 프로세스 분리해도 된다.
+App Widget 개수가 많다면 그 갯수만큼 프로세스 분리하는 것보다 1개만 분리하는 게 관리가 수월하므로, Service로 App Widget 업데이트 로직을 넘기고 Service를 프로세스 분리해도 된다.

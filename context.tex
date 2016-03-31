@@ -60,7 +60,7 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
 \end{itemize}
 
 이제 또 다른 질문이 있을 수 있다. 그럼 ContextImpl은 앱에서 싱글톤으로 단 하나의 인스턴스를 가지고서 ContextWrapper에 전달하는가 하는 것이다.
-이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개 메서드가 함께 있는 것을 보면 싱글톤이 아닌 것을 유추해볼 수 있다. \footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
+이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개의 메서드가 별도로 있는 것을 보면 싱글톤이 아닌 것을 유추해볼 수 있다. \footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
 
 Activity, Service, Application 각 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있다. 다만 Application은 앱에서 하나 밖에 없으므로 getApplicationContext()은 어디서나 동일한 Context를 리턴한다.\\
 
