@@ -567,6 +567,9 @@ InputDispatching 타임아웃은 네이티브 소스에서 /frameworks/base/serv
 \begin{lstlisting}[frame=single] 
 	const nsecs_t DEFAULT_INPUT_DISPATCHING_TIMEOUT = 5000 * 1000000LL; // 5 sec
 \end{lstlisting}
+화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 `안드로이드의 모든 것 분석과 포팅' 책을 참고하자.\footnote{최신 버전과 차이나는 부분이 있으니 개념 위주로 보도록 하자.} 기본 내용은 네이티브 단에서 입력 이벤트가 전달된다는 것이다. InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
+
+앱에서 이벤트를 전달받는 부분도 살펴보자. Activity는 Window(PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. WindowInputEventReceiver에서 전달받는 파라미터는 InputEvent로 MotionEvent와 KeyEvent의 상위 추상 클래스이다.\\
 
 InputDispatcher.cpp에서 주요 메서드는 dispatchMotionLocked()와 dispatchKeyLockd()인데 각각 터치 이벤트와 키 이벤트를 전달한다. 이때 findFocusedWindowTargetsLocked() 메서드에서 이벤트를 전달할 윈도우를 먼저 찾는데, isWindowReadyForMoreInputLocked() 메서드를 통해서 기존 이벤트를 처리하느라 대기해야 하는 지를 판단한다.
 이때 이벤트를 전달하지 않고 기다리다가 타임아웃 시간이 지나면 onANRLocked() 메서드를 호출하고, com.android.server.input.InputManagerService의 notifyANR() 메서드를 거쳐서 ActivityManagerService의 appNotResponding() 메서드에 이른다.\\
@@ -607,8 +610,6 @@ Home, Power 키는 앱과 별개로 동작하고 ANR 발생과는 무관하다.\
 BroadcastReceiver는 기본 타임아웃이 1분이다. 그런데 예를 들어 50초 동안 onReceive()가 실행되고 있을 때, Activity 화면을 터치하면 어떨까? 당연히 ANR 발생 가능성이 높다. onReceive() 실행이 다 끝난 다음에 터치 이벤트가 전달되는데, 50초 동안이나 잡고 있다면 onReceive() 실행과 겹치는 앞의 45초 사이의 터치는 5초 내에 처리가 되지 않아 ANR이 발생한다.
 따라서 BroadcastReceiver나 Service도 Activity가 떠 있는 상태라면, 타임아웃 시간을 5초라고 생각하는 것이 낫다.
 그러려면 Broadcast의 경우에는 결국 오래 걸리는 작업은 Service로 넘겨서 실행하는 방법이 있고, Service에서는 또 백그라운드 스레드를 이용해야 한다.\\
-
-마지막으로 앱에서 이벤트를 전달받는 부분을 살펴보자. Activity는 Window(PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. WindowInputEventReceiver에서 전달받는 파라미터는 InputEvent로 MotionEvent와 KeyEvent의 상위 추상 클래스이다. 
 
 %필자도 테스트하다가 혼동한 부분이 있는데, 세 가지 타임아웃은 별개로 동작한다. 서로 영향을 주고받는 부분이 없으므로 각각 따로 생각하면 된다.\\
 % http://developer.android.com/training/managing-audio/volume-playback.html
