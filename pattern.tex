@@ -33,7 +33,7 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
         mAppContext = context;
         ...
     }
- \end{lstlisting} 
+\end{lstlisting} 
 9라인에서 context.getApplicationContext()를 사용함으로써 원래 계속 떠있고 하나뿐인 Application을 Context로 쓰겠다는 의미이다.
 많은 안드로이드 책에서도 싱글톤을 만들 때 신경쓰지 않고서 Context를 그대로 전달한 것을 볼 수 있는데 따라하면 안 된다.
 특히 SQLiteOpenHelper를 상속한 DB Helper를 싱글톤으로 사용하면서 Context를 그대로 전달한 경우가 많다.\\
@@ -41,22 +41,15 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
 % http://stackoverflow.com/questions/3346080/android-references-to-a-context-and-memory-leaks 에도 나옴
 
 이제 조금 더 들어가서 이 내용을 검증하는 방법도 알아보자.
-이론적으로 맞는데 정말 그런지 확인할 수 있는 방법이 있을까?
-검증 방법이 있다면 다른 쪽에도 응용할 수 있을 듯 하여 테스트 방법을 생각해보았다.\\
+이론적으로 맞는데 정말 그런지 확인할 수 있는 방법이 있을까? 
 
-검증 내용은 다음과 같다. 
+방법은 3가지가 있는데, 여기서 검증할 내용은 다음과 같다. 
 \begin{itemize}
 \item 싱글톤에 그대로 넘긴 Activity가 GC가 되지 않는가?
 \item getApplicationContext()로 싱글톤에 넘기면 Activity는 적절한 시기에 GC가 이뤄지는가?
 \end{itemize}
 
-검증 방법은 다음과 같다.
-\begin{itemize}
-\item GC될 때 불리는 finalize() 메서드를 Activity에서 오버라이드하여 Log를 남긴다.
-\item 메모리 사용량을 지속적으로 늘려보면서 finalize() 메서드가 불리는 지 확인한다.
-\end{itemize}
-
-이제 3개의 클래스가 등장한다.\\ 
+검증을 위해서 이제 3개의 클래스가 등장한다.\\ 
 
 첫 번째는 싱글톤 클래스이다.
 \begin{lstlisting}[frame=single]
@@ -89,7 +82,7 @@ public class CalendarManager {
 \end{lstlisting}
 9라인(1)에서 Context를 직접 전달해서 인스턴스를 생성하였다.\\
 
-두 번째는 싱글톤을 사용하는 클래스이다.
+두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml에 android:configsChanges 속성을 따로 넣지 말자.
 \begin{lstlisting}[frame=single]
 public class CalendarRelatedActivity extends Activity {
 
@@ -121,7 +114,7 @@ public class CalendarRelatedActivity extends Activity {
 \item 19라인(2)에서 finalize() 메서드를 오버라이드하고 로그를 남겼다.
 \end{itemize}
 
-세 번째는 CalendarRelatedActivity의 Caller이고 메모리 사용량을 계속 키워보면서 테스트하는 클래스이다.
+세 번째는 CalendarRelatedActivity의 Caller이고 메모리 사용량을 계속 키워보면서 테스트하는 Activity이다.
 \begin{lstlisting}[frame=single]
 public class SingletonTestActivity extends Activity {
 
@@ -135,21 +128,45 @@ public class SingletonTestActivity extends Activity {
         startActivity(new Intent(this, CalendarRelatedActivity.class));
     }
     
+   
+	public void onClickButton2(View view) {
+		System.gc(); // (2)
+	}
+	
     private Bitmap bitmap;
 
     private int width = 480, height = 720;
 
-    public void onClickButton2(View view) { // (2)
+    public void onClickButton2(View view) { // (3)
         width *= 2;
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
 }
 \end{lstlisting}
+
+첫 번째 검증 방법은 다음과 같다.
+\begin{enumerate}
+\item CalendarRelatedActivity를 시작한다.
+\item 화면 방향을 가로/세로 여러 번 회전한다.
+\item Heap 덤프 결과를 확인한다.
+\end{enumerate}
+s
+\includegraphics[scale=0.65]{singletonproblem}
+
 \begin{itemize}
 \item 9라인(1)에서 CalendarRelatedActivity를 시작한다.
 \item 17라인(2)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키운다.
 \end{itemize}
+
+\begin{comment}
+검증 방법은 다음과 같다.
+\begin{itemize}
+\item GC될 때 불리는 finalize() 메서드를 Activity에서 오버라이드하여 Log를 남긴다.
+\item 메모리 사용량을 지속적으로 늘려보면서 finalize() 메서드가 불리는 지 확인한다.
+\end{itemize}
+\end{comment}
+
 
 이제 테스트 방법은 이렇다.
 \begin{enumerate}
