@@ -829,8 +829,10 @@ ThreadPoolExecutor에는 4개의 생성자가 있는데 ThreadFactory가 빠져�
 
 ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit,\\ BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler)\\
 
-파라미터 가운데서 corePoolSize나 maximumPoolSize는 이름만으로 이해될 것이다.
-pool의 스레드 개수가 coreSize보다 커진다면, 초과하는 개수만큼의 작업은 끝나고 나서는 스레드를 유지할 필요는 없다. keepAliveTime과 unit은 이때 바로 제거하지 않고 대기하는 시간이다. 보통 unit에는 TimeUnit.MINUTES나 TimeUnit.SECONDS를 사용한다.
+파라미터 가운데서 corePoolSize나 maximumPoolSize는 이름만으로 이해될 것이다. 
+pool의 스레드 개수가 coreSize보다 커진다면, 초과하는 개수만큼의 작업은 끝나고 나서는 스레드를 유지할 필요는 없다. 
+조금 혼동되는 부분이 ThreadPoolExecutor 생성자에서 corePoolSize만큼 미리 생성하는가 하면 그렇지는 않다. 해당 용도의  prestartCoreThread() 메서드는 별도로 존재한다. 기본적으로 execute()나 submit()을 호출하는 순간에 실행중인 스레드 개수가 corePoolSize보다 적으면 새로 스레드를 추가하는 형태이다.
+keepAliveTime과 unit은 이때 바로 제거하지 않고 대기하는 시간이다. 보통 unit에는 TimeUnit.MINUTES나 TimeUnit.SECONDS를 사용한다.
 workQueue도 내용상 중요하다. pool에서는 corePoolSize 개수만큼 유지하려 하고 추가로 요청이 들어오면 workQueue에 쌓는다. 이 workQueue 개수 제한이 넘으면 pool의 스레드 개수를 늘리는 것을 고려해야 한다. workQueue에 쓸 수 있는 것은 세 가지이다.
 \begin{itemize}
 \item ArrayBlockingQueue: Queue 개수 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다
@@ -909,11 +911,12 @@ new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
     new SynchronousQueue<Runnable>());
 \end{verbatim}
 
-\item newSingleThreadExecutor(): 단일 스레드를 사용해서 순차적으로 처리한다. workQueue는 개수 제한이 없다.
+\item newSingleThreadExecutor(): 단일 스레드를 사용해서 순차적으로 처리한다. workQueue는 개수 제한이 없다. 
 \begin{verbatim}
-new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, 
-	new LinkedBlockingQueue<Runnable>()
+new FinalizableDelegatedExecutorService
+	(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>())
 \end{verbatim}
+newFixedThreadPool(1)과 동일한 결과를 리턴하는 것으로 보이는데, 다시 FinalizableDelegatedExecutorService로 Wrapping하였다. Wrapping의 효과는 스레드 개수를 1이 아닌 다른 값으로 변경하지 못하게 하는 것이다. 단순히 newFixedThreadPool(1)로 리턴된 것은 ThreadPoolExecutor로 캐스팅해서 setCorePoolSize()나 setMaximumPoolSize() 메서드로 스레드 개수를 변경할 수 있다.
 
 \item newScheduledThreadPool(int corePoolSize): corePoolSize 개수의 ScheduledThreadPoolExecutor를 만든다.
 \begin{verbatim}
