@@ -137,13 +137,18 @@ public class SingletonTestActivity extends Activity {
 
     private int width = 480, height = 720;
 
-    public void onClickButton2(View view) { // (3)
+    public void onClickButton3(View view) { // (3)
         width *= 2;
         bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     }
 
 }
 \end{lstlisting}
+\begin{itemize}
+\item 9라인(1)에서 CalendarRelatedActivity를 시작한다.
+\item 15라인(2)에서 직접 System.gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 System.gc()를 직접 호출하는 것은 일반적으로 권장되지 않는다. 여기서는 테스트를 위해서 사용하는 것이다.
+\item 22라인(2)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키운다.
+\end{itemize}
 
 첫 번째 검증 방법은 다음과 같다.
 \begin{enumerate}
@@ -151,13 +156,10 @@ public class SingletonTestActivity extends Activity {
 \item 화면 방향을 가로/세로 여러 번 회전한다.
 \item Heap 덤프 결과를 확인한다.
 \end{enumerate}
-s
-\includegraphics[scale=0.65]{singletonproblem}
 
-\begin{itemize}
-\item 9라인(1)에서 CalendarRelatedActivity를 시작한다.
-\item 17라인(2)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키운다.
-\end{itemize}
+\includegraphics[scale=0.39]{singletonproblem}
+결과를 보면 CalendarRelatedActivity 인스턴스가 6개나 되었다. 
+
 
 \begin{comment}
 검증 방법은 다음과 같다.
