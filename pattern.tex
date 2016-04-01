@@ -43,7 +43,7 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
 이제 조금 더 들어가서 이 내용을 검증하는 방법도 알아보자.
 이론적으로 맞는데 정말 그런지 확인할 수 있는 방법이 있을까? 
 
-방법은 3가지가 있는데, 여기서 검증할 내용은 다음과 같다. 
+방법은 2가지가 있는데, 여기서 검증할 내용은 다음과 같다. 
 \begin{itemize}
 \item 싱글톤에 그대로 넘긴 Activity가 GC가 되지 않는가?
 \item getApplicationContext()로 싱글톤에 넘기면 Activity는 적절한 시기에 GC가 이뤄지는가?
@@ -82,7 +82,7 @@ public class CalendarManager {
 \end{lstlisting}
 9라인(1)에서 Context를 직접 전달해서 인스턴스를 생성하였다.\\
 
-두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml에 android:configsChanges 속성을 따로 넣지 말자.
+두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml의 Activity 선언에 android:configsChanges 속성을 따로 넣지 말자.
 \begin{lstlisting}[frame=single]
 public class CalendarRelatedActivity extends Activity {
 
@@ -110,11 +110,11 @@ public class CalendarRelatedActivity extends Activity {
 }
 \end{lstlisting}
 \begin{itemize}
-\item 9라인(1)에서 싱글톤 인스턴스를 가져오는데 Activity 자신인 this를 전달하였다.
-\item 19라인(2)에서 finalize() 메서드를 오버라이드하고 로그를 남겼다.
+\item 9라인(1)에서 싱글톤 인스턴스를 가져오는데 Activity 자신인 this를 전달한다.
+\item 19라인(2)에서 GC가 될때 불리는 finalize() 메서드를 오버라이드하고 로그를 남긴다.
 \end{itemize}
 
-세 번째는 CalendarRelatedActivity의 Caller이고 메모리 사용량을 계속 키워보면서 테스트하는 Activity이다.
+세 번째는 CalendarRelatedActivity의 Caller이면서, gc()를 호출하거나 메모리 사용량을 계속 키워서 GC를 유도하는 Activity이다.
 \begin{lstlisting}[frame=single]
 public class SingletonTestActivity extends Activity {
 
@@ -128,9 +128,8 @@ public class SingletonTestActivity extends Activity {
         startActivity(new Intent(this, CalendarRelatedActivity.class));
     }
     
-   
 	public void onClickButton2(View view) {
-		System.gc(); // (2)
+		Runtime.getRuntime().gc(); // (2)
 	}
 	
     private Bitmap bitmap;
@@ -146,38 +145,28 @@ public class SingletonTestActivity extends Activity {
 \end{lstlisting}
 \begin{itemize}
 \item 9라인(1)에서 CalendarRelatedActivity를 시작한다.
-\item 15라인(2)에서 직접 System.gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 System.gc()를 직접 호출하는 것은 일반적으로 권장되지 않는다. 여기서는 테스트를 위해서 사용하는 것이다.
-\item 22라인(2)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키운다.
+\item 15라인(2)에서 직접 gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 gc()를 직접 호출하는 것은 일반적으로 권장되지 않는다. 여기서는 단지 테스트를 위한 것이다. Activity가 onDestroy()까지 불리고서 바로 메모리에서 제거되는 것은 아니기 때문에 사용한다.
+\item 22라인(3)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키워가면서 GC를 유도한다. 15라인과 역할은 동일하다.
 \end{itemize}
 
 첫 번째 검증 방법은 다음과 같다.
 \begin{enumerate}
-\item CalendarRelatedActivity를 시작한다.
-\item 화면 방향을 가로/세로 여러 번 회전한다.
-\item Heap 덤프 결과를 확인한다.
-\end{enumerate}
-
-\includegraphics[scale=0.39]{singletonproblem}
-결과를 보면 CalendarRelatedActivity 인스턴스가 6개나 되었다. 
-
-
-\begin{comment}
-검증 방법은 다음과 같다.
-\begin{itemize}
-\item GC될 때 불리는 finalize() 메서드를 Activity에서 오버라이드하여 Log를 남긴다.
-\item 메모리 사용량을 지속적으로 늘려보면서 finalize() 메서드가 불리는 지 확인한다.
-\end{itemize}
-\end{comment}
-
-
-이제 테스트 방법은 이렇다.
-\begin{enumerate}
 \item SingletonTestActivity에서 onClickButton1()을 통해 CalendarRelatedActivity를 실행시킨다.
-\item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료시킨다. 이때 onDestory() 메서드가 불린다.
-\item SingletonTestActivity에서 onClickButton2()를 여러 번 실행하면서 로그와 메모리 상태를 확인한다.
+\item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료한다. 이때 onDestory() 메서드가 불린다.
+\item SingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인하면, CalendarRelatedActivity의 finalize() 메서드가 불리지 않는다. Heap Dump 결과로 확인해보면 CalendarManager에서 참조가 남아있는 것을 볼 수 있다. 
+\item 최근 앱에서 제거하거나 환경설정에서 앱을 강제 종료하고서 다시 CalendarRelatedActivity를 실행시킨다.
+\item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
+\item ingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
 \end{enumerate}
 
-이제 로그를 살펴보자.
+
+두 번째 검증 방법은 다음과 같다.
+\begin{enumerate}
+\item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료시킨다. 이때 onDestory() 메서드가 불린다.
+\item SingletonTestActivity에서 onClickButton3()를 여러 번 실행하면서 로그를 확인한다.
+\end{enumerate}
+
+로그 내용은 아래와 같다.
 \begin{lstlisting}[frame=single]
 09-02 20:46:40.909  20337-20337/com.naver.android.sample D/suribada: CalenderRelatedActivity onDestroy
 09-02 20:46:44.079  20337-20337/com.naver.android.sample D/dalvikvm: GC_FOR_ALLOC freed 201K, 31% free 8533K/12332K, paused 8ms, total 12ms
@@ -197,6 +186,9 @@ OOM이 될 때까지도 CalenderRelatedActivity의 finalize()가 불리지 않�
 
 이제 CalendarManager에서 주석으로 있던 부분으로 대체해서 테스트해보자.
 즉 context를 직접 쓰지 않고 context.getApplicationContext()를 전달한 것이다.
+
+첫 번째 검증 방법을 수행하면 finalize()가 정상적으로 불리는 것을 알 수 있다.
+두 번째 검증 방법을 수행하면 아래와 같은 로그를 보게 된다.
 \begin{lstlisting}[frame=single]
 09-02 20:51:27.099  25785-25785/com.naver.android.sample D/suribada: CalenderRelatedActivity onDestroy
 09-02 20:51:29.739  25785-25785/com.naver.android.sample D/dalvikvm: GC_FOR_ALLOC freed 199K, 31% free 8532K/12332K, paused 15ms, total 19ms
@@ -206,7 +198,7 @@ OOM이 될 때까지도 CalenderRelatedActivity의 finalize()가 불리지 않�
 ...
 09-02 20:51:36.829  25785-25785/com.naver.android.sample E/dalvikvm-heap: Out of memory on a 176947216-byte allocation.
 \end{lstlisting}
-4라인(1)에 바로 CalenderRelatedActivity의 finalize()가 불리었으니, GC가 정상적으로 된 것을 알 수 있다.
+4라인(1)에 바로 CalenderRelatedActivity의 finalize()가 불리었으니, 정상적으로 GC된 것을 알 수 있다.
 
 \section{마커 인터페이스}
 마커 인터페이스는 Effective Java Item 37에 내용이 있고, \url{http://blog.doortts.com/153}에도 간략히 나온다.
