@@ -669,29 +669,20 @@ public class BindingActivity extends Activity implements OnClickListener {
 %그래서 Bound Service에서는 ServiceConnection에서 불려지는 메서드에 따라 boolean 값을 바꾸어주거나 Service 참조를 null로 대입해서, 이 값을 if 문에서 한번씩 비교해보고서 Service의 로직을 실행한다.\\
 
 \subsection{bindService()를 쓰는 이유}
-그래도 ``왜 하필이면 bindService()를 써야 하는가?'' 하는 질문이 있을 수 있다. 한마디로 말하면 bindService를 통하지 않고서는 Binder\footnote{Remotable object에 대한 기본 인터페이스를 제공한다. android.os.IBinder API 문서를 확인하자.}에 접근할 방법이 없기 때문이다. Service에서 반드시 구현해야 할 메서드인 onBind() 메서드가 리턴하는 것이 IBinder 인터페이스이다.\\
+그래도 ``왜 하필이면 bindService()를 써야 하는가?'' 하는 질문이 있을 수 있다. 한마디로 말하면 bindService()를 통하지 않고서는 Binder\footnote{Remotable object에 대한 기본 인터페이스를 제공한다. android.os.IBinder API 문서를 확인하자.}에 접근할 방법이 없기 때문이다. Service에서 반드시 구현해야 할 메서드인 onBind() 메서드가 리턴하는 것이 IBinder 인터페이스이다.\\
 
-프레임워크 내부에서는 bindService()를 하지 않고 ServiceManager에 등록된 Binder 객체를 그대로 가져와서 사용한다.
+프레임워크 내부에서는 bindService()를 실행하지 않고 ServiceManager에 등록된 Binder 객체를 그대로 가져와서 사용한다.
 아래는 ContextImpl 소스의 일부분이다. Stub.asInterface() 메서드를 통해 Stub.Proxy 객체 인스턴스를 얻는다.
 \begin{lstlisting}[frame=single]
    static {
-        registerService(ACCESSIBILITY_SERVICE, new ServiceFetcher() {
-                public Object getService(ContextImpl ctx) {
-                    return AccessibilityManager.getInstance(ctx);
-                }});
-
+   		...
         registerService(ACCOUNT_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(ACCOUNT_SERVICE);
                     IAccountManager service = IAccountManager.Stub.asInterface(b);
                     return new AccountManager(ctx, service);
                 }});
-
-        registerService(ACTIVITY_SERVICE, new ServiceFetcher() {
-                public Object createService(ContextImpl ctx) {
-                    return new ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
-                }});
-
+		...
         registerService(ALARM_SERVICE, new StaticServiceFetcher() {
                 public Object createStaticService() {
                     IBinder b = ServiceManager.getService(ALARM_SERVICE);

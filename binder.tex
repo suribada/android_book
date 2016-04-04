@@ -751,7 +751,60 @@ MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보�
 		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 60 * 1000, pendingIntent);
 	}
 \end{lstlisting}
-PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에서는 RTC\_WAKEUP 옵션을 사용해서 Deep Sleep에서도 깨어나도록 하였다.\\
+PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에서는 RTC\_WAKEUP 옵션을 사용해서 Deep Sleep에서도 깨어나도록 하였다. 
+롤리팝 이후에는 JobScheduler를 쓰는 게 권장된다. AlarmManager는 재부팅하면 새로 다시 등록해야 하고 쓸 수 있는 옵션이 없는데 비해서, JobScheduler에 등록하는 JobInfo를 보면 재부팅해도 Job이 유지되는 옵션도 사용할 수 있고 네트워크가 연결되거나 충전 중일 때만 동작하게 할 수 있다(JobInfo.Builder API 문서를 보자).\\
+
+앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
+AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다시 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
+이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
+요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안 되었으면 남은 지연 시간을 재계산하는 것이다.
+\begin{lstlisting}[frame=single]
+	private TextView title;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ...
+		title = (TextView) findViewById(R.id.title);
+		registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON)); // (1)
+    }
+    
+    @Override
+	protected void onDestroy() {
+		unregisterReceiver(receiver); // (2)
+		super.onDestroy();
+	}
+	
+	private static final int DELAY_TIME = 2 * 60 * 1000;
+	private long executedRealtime;
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			long diff = SystemClock.elapsedRealtime() - executedRealtime; // (3)
+			handler.removeCallbacks(updateTimeTask); // (4)
+			handler.postDelayed(updateTimeTask, diff >= DELAY_TIME ? 0 : DELAY_TIME - diff); // (5)
+		}
+
+	};
+
+	private Runnable updateTimeTask = new Runnable() {
+
+		@Override
+		public void run() {
+			executedRealtime = SystemClock.elapsedRealtime(); // (6)
+			title.setText(new Date().toString());
+			handler.postDelayed(this, DELAY_TIME);
+		}
+
+	};
+
+	public void onClickButton(View view) {
+		handler.post(updateTimeTask); // (7)
+	}
+\end{lstlisting}
+
 
 USB 충전 외에도 Deep Sleep에 대해서 모호한 내용들이 있는데 간단하게 정리해보자.
 \begin{itemize}
