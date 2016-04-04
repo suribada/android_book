@@ -642,7 +642,7 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 \item system\_server도  가끔은 죽을 수 있다. 발생빈도가 낮지만, 시스템 상태가 좋지 않거나 메모리가 부족하다면 가능한 얘기이다. 이때 스택 트레이스에는 ``Caused by: java.lang.RuntimeException: system server dead?'' 메시지를 보여준다. system\_server는 물론 죽자마자 다시 살아나긴 한다.
 \end{itemize}
 
-매 호출마다 동일한 값을 리턴하므로, 이 경우에는 불필요한 호출을 줄이기 위해서 메모리(Application 인스턴스의 변수나, 싱글톤 인스턴스에 저장된 값)나 SharedPreferences 사용을 고려할 수 있다(앱 버전을 사용하는 이 경우에 한해서는 최신 IDE에서는 BuildConfig에 생성해주는 VERSION\_CODE, VERSION\_NAME 상수를 사용하는 것도 가능하다).
+매 호출마다 동일한 값을 리턴하므로, 이 경우에는 불필요한 호출을 줄이기 위해서 메모리(Application 인스턴스의 변수나, 싱글톤 인스턴스에 저장된 값)나 SharedPreferences 사용을 고려할 수 있다(앱 버전을 사용하는 이 경우에 한해서는 최신 IDE에서는 BuildConfig에 생성해주는 VERSION\_CODE, VERSION\_NAME 상수를 사용하는 것도 가능하다).\\
 
 동일한 결과를 리턴하는 이런 특수한 케이스가 아니더라도 가능하면 리모트 호출을 줄이는 방안을 생각하자. 
 시스템 Broadcast를 LocalBroadcastManager로 변경하는 것도 리모트 호출을 줄이는 하나의 예이다. 
@@ -766,7 +766,7 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
         super.onCreate(savedInstanceState);
         ...
 		title = (TextView) findViewById(R.id.title);
-		registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON)); // (1)
+		registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON)); //(1)
     }
     
     @Override
@@ -784,7 +784,8 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
 		public void onReceive(Context context, Intent intent) {
 			long diff = SystemClock.elapsedRealtime() - executedRealtime; // (3)
 			handler.removeCallbacks(updateTimeTask); // (4)
-			handler.postDelayed(updateTimeTask, diff >= DELAY_TIME ? 0 : DELAY_TIME - diff); // (5)
+			handler.postDelayed(updateTimeTask, 
+				diff >= DELAY_TIME ? 0 : DELAY_TIME - diff); // (5)
 		}
 
 	};

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  1 APR 2016 17:45
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  4 APR 2016 22:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1288,6 +1288,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 163--164
 
  []
 
+
+LaTeX Warning: Reference `subsubsec:icspadding' on page 12 undefined on input l
+ine 189.
+
 [12]
 Underfull \hbox (badness 10000) in paragraph at lines 266--268
 
@@ -1516,6 +1520,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 623--626
  []
 
 
+LaTeX Warning: Reference `src:LooperThread' on page 32 undefined on input line 
+627.
+
+
+LaTeX Warning: Reference `src:LooperThread' on page 32 undefined on input line 
+629.
+
+
+LaTeX Warning: Reference `src:LooperThread' on page 32 undefined on input line 
+630.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 627--633
 
  []
@@ -1542,14 +1558,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 663--669
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [34]
+
+LaTeX Warning: Reference `src:HandlerThreadSample' on page 35 undefined on inpu
+t line 744.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 734--746
 
  []
 
 
+LaTeX Warning: Reference `src:HandlerThreadSample' on page 35 undefined on inpu
+t line 747.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 747--749
 
  []
+
+
+LaTeX Warning: Reference `src:HandlerThreadSample' on page 35 undefined on inpu
+t line 753.
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 750--754
@@ -1565,6 +1594,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 755--761
 Underfull \hbox (badness 10000) in paragraph at lines 762--765
 
  []
+
+
+LaTeX Warning: Reference `src:HandlerThreadSample' on page 35 undefined on inpu
+t line 766.
 
 [35]
 Underfull \hbox (badness 10000) in paragraph at lines 823--827
@@ -1585,98 +1618,109 @@ Underfull \hbox (badness 10000) in paragraph at lines 830--831
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 850--851
+Underfull \hbox (badness 10000) in paragraph at lines 852--853
 
  []
 
 [37]
-Underfull \hbox (badness 10000) in paragraph at lines 871--872
+Underfull \hbox (badness 10000) in paragraph at lines 873--874
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 874--876
+Underfull \hbox (badness 10000) in paragraph at lines 876--878
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 877--878
+Underfull \hbox (badness 10000) in paragraph at lines 879--880
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 879--883
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 894--896
+Underfull \hbox (badness 10000) in paragraph at lines 881--885
 
  []
 
 [38]
-Overfull \hbox (11.54755pt too wide) in paragraph at lines 900--901
+
+LaTeX Warning: Reference `subsec:messenger' on page 39 undefined on input line 
+886.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 896--898
+
+ []
+
+
+Overfull \hbox (11.54755pt too wide) in paragraph at lines 902--903
 []\EU1/lmr/m/n/10 newFixedThreadPool(int nThreads): \EU1/NanumMyeongjo(0)/m/n/1
 0 파 라 미 터 로 전 달 되 는 고 정 개 수 까 지 스 레 드 를 생 성 한 다. \EU1/lmr/m/n/10 workQueue
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 925--926
+Overfull \hbox (34.97565pt too wide) in paragraph at lines 917--917
+ []\T1/CourierNew(0)/m/n/10 (new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISEC
+ONDS, new LinkedBlockingQueue<Runnable>())[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 928--929
 
  []
 
 [39] [40] [41]
-Underfull \hbox (badness 10000) in paragraph at lines 1046--1047
+Underfull \hbox (badness 10000) in paragraph at lines 1049--1050
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1048--1049
+Underfull \hbox (badness 10000) in paragraph at lines 1051--1052
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1054--1055
+Underfull \hbox (badness 10000) in paragraph at lines 1057--1058
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1059--1062
+Underfull \hbox (badness 10000) in paragraph at lines 1062--1065
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1063--1065
+Underfull \hbox (badness 10000) in paragraph at lines 1066--1068
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1066--1075
+Underfull \hbox (badness 10000) in paragraph at lines 1069--1078
 
  []
 
 [42]
-Underfull \hbox (badness 10000) in paragraph at lines 1085--1087
+Underfull \hbox (badness 10000) in paragraph at lines 1088--1090
+
+ []
+
+[43]
+Underfull \hbox (badness 10000) in paragraph at lines 1105--1106
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1102--1103
+Underfull \hbox (badness 10000) in paragraph at lines 1107--1108
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1104--1105
+Underfull \hbox (badness 10000) in paragraph at lines 1114--1116
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1111--1113
-
- []
-
-[43] [44]
-Underfull \hbox (badness 10000) in paragraph at lines 1175--1179
+[44]
+Underfull \hbox (badness 10000) in paragraph at lines 1178--1182
 
  []
 
@@ -1836,6 +1880,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 237--241
  []
 
 [55] [56]
+
+LaTeX Warning: Reference `flow' on page 57 undefined on input line 297.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 292--318
 
  []
@@ -1844,6 +1892,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 292--318
 Underfull \hbox (badness 10000) in paragraph at lines 320--323
 
  []
+
+
+LaTeX Warning: Reference `sec:singleton' on page 57 undefined on input line 331
+.
+
+
+LaTeX Warning: Reference `sec:asynctask' on page 57 undefined on input line 332
+.
 
 [57]
 LaTeX Font Info:    Try loading font information for EU1+mono on input line 339
@@ -2065,6 +2121,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 39--40
 Underfull \hbox (badness 10000) in paragraph at lines 41--42
 
  []
+
+
+LaTeX Warning: Reference `sec:dumpsys' on page 67 undefined on input line 43.
 
 [67]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -2313,6 +2372,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 208--210
  []
 
 
+LaTeX Warning: Reference `SleepService' on page 84 undefined on input line 215.
+
+
+
+LaTeX Warning: Reference `SleepService' on page 84 undefined on input line 221.
+
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 215--224
 
  []
@@ -2398,39 +2465,51 @@ Underfull \hbox (badness 10000) in paragraph at lines 672--673
 
 File: service-binding-tree-lifecycle.png Graphic file (type QTm)
 <use  "service-binding-tree-lifecycle.png" >
-Underfull \hbox (badness 10000) in paragraph at lines 707--712
-
- []
-
-[95]
-Underfull \hbox (badness 10000) in paragraph at lines 713--716
+Underfull \hbox (badness 10000) in paragraph at lines 698--703
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 717--719
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [95]
+Underfull \hbox (badness 10000) in paragraph at lines 704--707
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 708--710
 
  []
 
 [96]
-Underfull \hbox (badness 10000) in paragraph at lines 748--749
+Underfull \hbox (badness 10000) in paragraph at lines 739--740
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 769--773
+Underfull \hbox (badness 10000) in paragraph at lines 760--764
 
  []
 
-[97] [98]
+[97]
+
+LaTeX Warning: Reference `sec:messagequeue' on page 98 undefined on input line 
+771.
+
+[98]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [99]
 [100] [101]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [102])
-(./contentprovider.tex [103]
+ [102]
+
+LaTeX Warning: Reference `subsec:binding_special' on page 103 undefined on inpu
+t line 977.
+
+) (./contentprovider.tex [103]
 Chapter 7.
 
 Underfull \hbox (badness 5231) in paragraph at lines 6--6
@@ -2598,6 +2677,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 457--458
 Underfull \hbox (badness 10000) in paragraph at lines 474--478
 
  []
+
+
+LaTeX Warning: Reference `src:provider' on page 114 undefined on input line 481
+.
 
 [114]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -3017,6 +3100,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 207--208
  []
 
 
+LaTeX Warning: Reference `application' on page 141 undefined on input line 209.
+
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 221--223
 
  []
@@ -3153,6 +3240,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 620--626
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [156]
+Underfull \hbox (badness 10000) in paragraph at lines 645--646
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 651--652
 
  []
@@ -3182,29 +3274,29 @@ Underfull \hbox (badness 10000) in paragraph at lines 685--687
 
  []
 
-
+[158]
 Underfull \hbox (badness 10000) in paragraph at lines 701--703
 
  []
 
-[158]
+
 Underfull \hbox (badness 10000) in paragraph at lines 723--729
 
  []
 
 [159]
-Underfull \hbox (badness 10000) in paragraph at lines 754--755
+Underfull \hbox (badness 10000) in paragraph at lines 754--756
 
  []
 
-[160]) (./pattern.tex [161]
+[160] [161]) (./pattern.tex [162]
 Chapter 11.
 
 Underfull \hbox (badness 10000) in paragraph at lines 10--13
 
  []
 
-[162
+[163
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 37--40
@@ -3221,57 +3313,50 @@ Underfull \hbox (badness 10000) in paragraph at lines 83--84
 
  []
 
-[163] [164]
-File: singletonproblem.png Graphic file (type QTm)
- <use  "singletonproblem.png" >
-Overfull \hbox (16.85774pt too wide) in paragraph at lines 159--160
-[][] 
- []
-
-[165]
-Underfull \hbox (badness 10000) in paragraph at lines 193--196
+[164] [165] [166]
+Underfull \hbox (badness 10000) in paragraph at lines 183--186
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 211--214
-
- []
-
-[166]
-Underfull \hbox (badness 10000) in paragraph at lines 259--261
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 262--265
+Underfull \hbox (badness 10000) in paragraph at lines 204--207
 
  []
 
 [167]
-Underfull \hbox (badness 10000) in paragraph at lines 311--314
+Underfull \hbox (badness 10000) in paragraph at lines 252--254
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 323--329
+Underfull \hbox (badness 10000) in paragraph at lines 255--258
 
  []
 
 [168]
-Underfull \hbox (badness 10000) in paragraph at lines 347--348
+Underfull \hbox (badness 10000) in paragraph at lines 304--307
 
  []
 
-[169] [170]
-Underfull \hbox (badness 10000) in paragraph at lines 452--454
+
+Underfull \hbox (badness 10000) in paragraph at lines 316--322
 
  []
 
-[171])
+[169]
+Underfull \hbox (badness 10000) in paragraph at lines 340--341
+
+ []
+
+[170] [171]
+Underfull \hbox (badness 10000) in paragraph at lines 445--447
+
+ []
+
+[172])
 No file android_note.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 170.
-[172]
+[173]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 170.
  (./android_note.aux)
 Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 170.
@@ -3280,15 +3365,21 @@ Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 170.
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 170.
  ) 
 Here is how much of TeX's memory you used:
- 27522 strings out of 493638
- 463251 string characters out of 6147976
- 769228 words of memory out of 5000000
- 30610 multiletter control sequences out of 15000+600000
+ 27503 strings out of 493638
+ 463051 string characters out of 6147976
+ 768436 words of memory out of 5000000
+ 30592 multiletter control sequences out of 15000+600000
  53620 words of font info for 87 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  68i,12n,71p,10453b,2248s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on android_note.pdf (172 pages).
+Output written on android_note.pdf (173 pages).
