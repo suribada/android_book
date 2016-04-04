@@ -567,7 +567,7 @@ InputDispatching 타임아웃은 네이티브 소스에서 /frameworks/base/serv
 \begin{lstlisting}[frame=single] 
 	const nsecs_t DEFAULT_INPUT_DISPATCHING_TIMEOUT = 5000 * 1000000LL; // 5 sec
 \end{lstlisting}
-화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 `안드로이드의 모든 것 분석과 포팅' 책을 참고하자.\footnote{최신 버전과 차이나는 부분이 있으니 개념 위주로 보도록 하자.} 기본 내용은 네이티브 단에서 입력 이벤트가 전달된다는 것이다. InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
+화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 `안드로이드의 모든 것 분석과 포팅' 책을 참고하자.\footnote{최신 버전과 차이나는 부분이 있으니 개념 위주로 보도록 하자.} 기본 내용은 커널에서 네이티브 단을 거쳐서 입력 이벤트가 전달된다는 것이다. InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
 
 앱에서 이벤트를 전달받는 부분도 살펴보자. Activity는 Window(PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. WindowInputEventReceiver에서 전달받는 파라미터는 InputEvent로 MotionEvent와 KeyEvent의 상위 추상 클래스이다.\\
 
@@ -948,7 +948,7 @@ AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때는, 즉 
     	}).start();
 	}
 \end{lstlisting}
-백그라운드 스레드 안에서 UI를 변경하므로 CalledFromWrongThreadException이 발생한다.
+백그라운드 스레드에서 UI를 변경하므로 CalledFromWrongThreadException이 발생한다.
 이를 해결하는 방법은 앞에서도 얘기했듯이 여러 버전이 있다.
 
 \begin{enumerate}
