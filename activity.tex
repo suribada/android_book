@@ -589,12 +589,12 @@ Context가 있다면 getResources().getConfigura\-tion()으로 가져와서 Conf
 \end{itemize}
 
 Configuration의 toString() 메서드를 출력하면서 확인한 내용도 얘기해보자. Configuration이 바뀔 때는 Application의 	onConfigurationChanged() 메서드가 먼저 불리고, 전면에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.
-화면 방향 관련해서 Configuration이 바뀌는 것은 전면에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity이 전면에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. ActivityA가 화면 방향 가로 고정이고 ActivityB가 따로 방향을 고정하지 않았다면 어떤 현상이 발생할까? ActivityA의 Configuration orientaton은 land로 고정된다. 이때 Configuration seq가 N이라고 하면, ActivityA에서는 아무리 화면을 회전해도 seq가 바뀌지 않는다. ActivityB로 전환하면 어떤 현상이 발생할까? 만일 세로 방향이었다면 ActivityB가 세로 방향으로 보여야 하기 때문에 orientation이 port로 바뀌면서 seq는 N+1이 된다. 만일 가로 방향이었다면 seq는 그대로이다. 이제 ActivityB를 회전하면 계속해서 seq가 늘어나면서 land$\leftrightarrow$port가 서로 바뀐다. 이제 ActivityB를 종료하고 ActivityA로 돌아오면 어떻게 될까? 이 시점에 orientaton이 land라면 seq가 더해지지 않는다. 그런데 orientaton이 port라면 ActivityA에 맞는 Configuration으로 변경되면서 orientaton이 land가 되고 seq는 더해진다. seq는 변경될 때마다 Application의 	onConfigurationChanged() 메서드가 불린다.\\
+화면 방향 관련해서 Configuration이 바뀌는 것은 포그라운드에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity이 포그라운드에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. ActivityA가 화면 방향 가로 고정이고 ActivityB가 따로 방향을 고정하지 않았다면 어떤 현상이 발생할까? ActivityA의 Configuration orientaton은 land로 고정된다. 이때 Configuration seq가 N이라고 하면, ActivityA에서는 아무리 화면을 회전해도 seq가 바뀌지 않는다. ActivityB로 전환하면 어떤 현상이 발생할까? 만일 세로 방향이었다면 ActivityB가 세로 방향으로 보여야 하기 때문에 orientation이 port로 바뀌면서 seq는 N+1이 된다. 만일 가로 방향이었다면 seq는 그대로이다. 이제 ActivityB를 회전하면 계속해서 seq가 늘어나면서 land$\leftrightarrow$port가 서로 바뀐다. 이제 ActivityB를 종료하고 ActivityA로 돌아오면 어떻게 될까? 이 시점에 orientaton이 land라면 seq가 더해지지 않는다. 그런데 orientaton이 port라면 ActivityA에 맞는 Configuration으로 변경되면서 orientaton이 land가 되고 seq는 더해진다. seq는 변경될 때마다 Application의 	onConfigurationChanged() 메서드가 불린다.\\
 
 앱의 Activity가 모두 종료되었을 때는 어떨까? 프로세스가 바로 종료되지 않고 Empty Process로 한동안 남아있는데, 이때도 전면에 있는 다른 앱의 Activity가 방향 회전할 때마다 Application의 onConfigurationChanged() 메서드는 불린다. 
 다른 앱의 Activity가 역시 방향 고정이라면 Application의 onConfigurationChanged() 메서드는 불리지 않는다. 보통 런처 앱은 방향 고정인 경우가 많아서 홈 화면에서 아무리 화면을 회전해도 다른 앱의 Configuration에 영향을 주지 않는다. 
-Activity가 남아 있는 채로 Home 키로 Background로 이동해도 마찬가지다. 전면에 있는 Activity가 아닌 것은 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
+Activity가 스택에 남아 있는 채로 Home 키로 Background로 이동해도 마찬가지다. 전면에 있는 Activity가 아닌 것은 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
 
-환경 설정에서 언어나 글꼴 크기를 변경할 때도 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 바뀐 Configiguration이 전달된다.
+환경 설정에서 언어나 글꼴 크기를 변경할 때도 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 변경된 Configiguration이 전달된다.
 
 
