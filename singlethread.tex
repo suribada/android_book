@@ -914,7 +914,8 @@ new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS,
 \item newSingleThreadExecutor(): 단일 스레드를 사용해서 순차적으로 처리한다. workQueue는 개수 제한이 없다. 
 \begin{verbatim}
 new FinalizableDelegatedExecutorService
-	(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>())
+	(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, 
+	new LinkedBlockingQueue<Runnable>())
 \end{verbatim}
 newFixedThreadPool(1)과 동일한 결과를 리턴하는 것으로 보이는데, 다시 FinalizableDelegatedExecutorService로 Wrapping하였다. Wrapping의 효과는 스레드 개수를 1이 아닌 다른 값으로 변경하지 못하게 하는 것이다. 단순히 newFixedThreadPool(1)로 리턴된 것은 ThreadPoolExecutor로 캐스팅해서 setCorePoolSize()나 setMaximumPoolSize() 메서드로 스레드 개수를 변경할 수 있다.
 

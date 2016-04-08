@@ -752,12 +752,13 @@ MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보�
 	}
 \end{lstlisting}
 PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에서는 RTC\_WAKEUP 옵션을 사용해서 Deep Sleep에서도 깨어나도록 하였다. 
-롤리팝 이후에는 JobScheduler를 쓰는 게 권장된다. AlarmManager는 재부팅하면 새로 다시 등록해야 하고 쓸 수 있는 옵션이 없는데 비해서, JobScheduler에 등록하는 JobInfo를 보면 재부팅해도 Job이 유지되는 옵션도 사용할 수 있고 네트워크가 연결되거나 충전 중일 때만 동작하게 할 수 있다(JobInfo.Builder API 문서를 보자).\\
+롤리팝 이후에는 JobScheduler를 쓰는 게 권장된다. AlarmManager는 재부팅하면 다시 Alarm을 등록해야 하고 쓸만한 옵션이 없는데 비해서, JobScheduler에 등록하는 JobInfo를 보면 재부팅해도 Job이 유지되는 옵션도 사용할 수 있고 네트워크가 연결되거나 충전 중일 때만 동작하게 할 수도 있다(JobInfo.Builder API 문서를 보자).\\
 
 앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
 AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다시 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
 이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
-요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안 되었으면 남은 지연 시간을 재계산하는 것이다.
+요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안 되었으면 남은 지연 시간을 재계산하는 것이다. 
+좀더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep에 들어간 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안 되었지만 스크린이 ON되는 순간 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.
 \begin{lstlisting}[frame=single]
 	private TextView title;
 
@@ -802,10 +803,15 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
 	};
 
 	public void onClickButton(View view) {
-		handler.post(updateTimeTask); // (7)
+		handler.post(updateTimeTask);
 	}
 \end{lstlisting}
-
+\begin{itemize}
+\item 8라인(1)과 13라인(2)에서 ACTION\_SCREEN\_ON Action에 대한 BroadcastReceiver를 등록하고 해제한다. onCreate()와 onDestroy()에서 처리하는 이유는, 화면을 OFF하는 순간 onStop()까지 실행되기 때문에 onStop()에서 unregisterReceiver()를 실행하면 ACTION\_SCREEN\_ON Action을 받을 수 없게 되기 때문이다.
+\item 32라인에서 45라인까지는 일반적인 UI 반복 패턴인데, 36라인(6)에서 현재 run()을 실행한 부팅 이후 시간(Deep Sleep과 상관없는 시간)을 저장해두는 것이 다르다.
+\item 화면이 ON되는 순간 24라인(3)에서 시간차를 계산하고, 25라인(4)에서 기존 Delayed Message를 제거한다.
+\item 26라인(5)에서 시간차가 2분보다 크다면 지연 시간을 0으로 해서 즉시 실행하게 하고, 그렇지 않다면 남은 시간을 가지고서 다시 지연 시간을 전달한다.
+\end{itemize}
 
 USB 충전 외에도 Deep Sleep에 대해서 모호한 내용들이 있는데 간단하게 정리해보자.
 \begin{itemize}

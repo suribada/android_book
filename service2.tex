@@ -312,8 +312,24 @@ public class SleepThreadService extends Service {
 \end{lstlisting}
 
 \section{Bound Service}
-Bound Service는 Service에서 제공하는 메서드를 다른 컴포넌트에서 호출할 수 있게 한 것으로 사용 절차는 간단하다. 먼저 BindService()를 실행하고 필요한 메서드를 실행한다.\\
+Bound Service는 Service에서 제공하는 메서드를 다른 컴포넌트에서 호출할 수 있게 한 것으로 사용 절차는 간단하다. 먼저 bindService() 메서드를 실행해서 Binding된 이후에 필요한 메서드를 실행한다.\\
 
+Context 클래스에 있는 bindService()의 메서드 시그너처는 아래와 같다.\\
+public abstract boolean  bindService (Intent service, ServiceConnection conn, int flags)\\
+\begin{itemize}
+\item 첫 번째 파라미터인 service는 대상 Service를 가리킨다.
+\item 두 번째 파라미터인 conn은 Service에 연결되고 연결이 끊길 때의 Callback이다.
+\item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 비트합으로 넣을 수도 있다. ICS부터 추가된 상수들은 주로 Service 프로세스의 우선 순위와 관련된 것이고, 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CREATE이다.\\
+
+BIND\_AUTO\_CREATE을 쓸 때만 bindService()를 실행할 때 Service가 없다면 새로 Service를 생성한다. 이 옵션이 없다면 어디선가 startService()를 하지 않았다면 bindService()에서 연결 Callback이 불리지 않게 된다.
+즉 Started \& Bound Service가 아니라면 BIND\_AUTO\_CREATE 옵션은 필수적이다. 
+이 옵션의 역할은 그 밖에도 더 있다. 
+Service에 Binding된 클라이언트가 여러 개 있을 때 stopService()를 실행하면 어떤 일이 발생할까? 이 옵션이 있다면 stopService()를 실행해도 Service가 종료되지 않는데, 옵션이 없는 경우에는 연결이 끊기고서 바로 Service의 onDestroy()가 불린다.
+옵션이 있는 경우 unbindService()를 클라이언트마다 모두 실행해야 Service의 onDestroy()가 불린다.
+Binding된 Client가 남아 있다면 Service 프로세스가 메모리 문제 등으로 종료되었다가도 다시 Service 프로세스가 살아나나서 재연결되는 것도 이 옵션이 있을 때만 가능한다. 
+\end{itemize}
+
+Bound Service의 용도를 이제 생각해보자.
 최신 뉴스나 인기검색어, 날씨처럼 업데이트가 필수적인 데이터가 있다. 이런 데이터를 앱에서 쓰는 방법은 어떤 게 있을까?
 \begin{enumerate}
 \item XML이나 JSON으로 데이터를 리턴하는 API 서버를 만들고, 앱에서 HTTP 호출을 통해 데이터에 접근한다.
@@ -504,7 +520,7 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 \end{lstlisting}
 \begin{itemize}
 \item 3라인(1)에서 커넥션 Callback인 ServiceConnection을 생성하였다. 7라인(2)의 Stub.asInterface() 메서드를 통해서 로컬인 경우는 Stub 인스턴스, 리모트인 경우는 Binder Proxy 인스턴스가 mIRemoteService에 대입된다.
-어떤 책에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다. Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다.\footnote{ApiDemos에서 RemoteService의 BindingActitivy를 테스트해보면 된다.}
+어떤 책에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다. Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다.
 \item 12라인(3)에서 연결이 끊겼을 때는 mIRemoteService를 null로 만든다.
 \item 20라인(4)에서 bindService에 ServiceConnection을 전달한다.
 \item 24라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected가 불리기 전일 수도 있고, Service 문제로 바인딩이 안 되었을 수도 있기 때문이다.
@@ -668,6 +684,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 % 내용 보강
 %그래서 Bound Service에서는 ServiceConnection에서 불려지는 메서드에 따라 boolean 값을 바꾸어주거나 Service 참조를 null로 대입해서, 이 값을 if 문에서 한번씩 비교해보고서 Service의 로직을 실행한다.\\
 
+\begin{comment}
 \subsection{bindService()를 쓰는 이유}
 그래도 ``왜 하필이면 bindService()를 써야 하는가?'' 하는 질문이 있을 수 있다. 한마디로 말하면 bindService()를 통하지 않고서는 Binder\footnote{Remotable object에 대한 기본 인터페이스를 제공한다. android.os.IBinder API 문서를 확인하자.}에 접근할 방법이 없기 때문이다. Service에서 반드시 구현해야 할 메서드인 onBind() 메서드가 리턴하는 것이 IBinder 인터페이스이다.\\
 
@@ -692,10 +709,11 @@ public class BindingActivity extends Activity implements OnClickListener {
 		....
 	}                
 \end{lstlisting}
+\end{comment}
 
 \subsection{바인딩의 특성}
 \label{subsec:binding_special}
-리모트/로컬 바인딩 사용 방법을 얘기했으니, 이제 바인딩의 특성을 더 얘기해보자.
+리모트/로컬 바인딩 사용 방법을 얘기했으니, 이제 바인딩의 특성을 더 얘기해보자. 앞에서 얘기한 BIND\_AUTO\_CREATE 옵션에 대해서 다시 한번 언급하는 것이다. 
 bindService()를 호출하면 Service와 엮이는 클라이언트가 하나씩 늘어난다고 보면 된다. 
 이렇게 엮인 클라이언트가 남아있다면 어느 클라이언트에서 stopService()를 실행해도 종료되지 않는다. 모든 클라이언트가 unbindService() 메서드를 호출해서 Service와의 관계가 모두 정리되어야만 한다.\\
 \includegraphics[scale=0.5]{service-binding-tree-lifecycle}\\
@@ -768,7 +786,7 @@ Messenger는 Binder Callback을 내부적으로 래핑해서 Bound Service와 �
 \item Messenger에는 2개의 생성자가 있다. Messenger(Handler target)는 Handler를 감싼 것으로 클라이언트와 Bound Service 양쪽에 있다. Messenger(IBinder target)는 Binder Proxy를 생성하는 것으로 클라이언트에 있다.
 \item aidl을 내부적으로 사용하는데 IMessenger 인터페이스로 되어 있다. 
 이름만으로 보면 Messenger가 IMessenger.Stub을 구현할 것 같은데 그렇지 않고, Handler의 내부 클래스인 MessengerImpl에서 IMessenger.Stub을 구현하고 있다. Stub에서는 Handler의 sendMessage() 메서드를 호출하기만 한다.
-\item \ref{sec:messagequeue}절의 Message 소스를 보면 replyTo라는 public 변수가 있다. Handler에 Message를 보내면서 응답을 보내는 곳을 replyTo에 지정할 수 있다.
+\item \ref{sec:messagequeue}절의 Message 소스를 보면 replyTo라는 public 변수가 있다. Handler에 Message를 보내면서 응답을 받을 곳을 replyTo에 지정할 수 있다.
 \item Messenger의 send() 메서드는 결과적으로 Binder 통신을 통해 Stub의 메서드를 호출한다. 리모트 통신이기 때문에 send() 메서드는 RemoteException을 던질 수 있다. 
 \end{itemize}
 
