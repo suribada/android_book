@@ -269,7 +269,7 @@ Flags에 전달하는 상수는 많다. Caller에서 쓸 수 있는 다양한 �
 \item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity들을 종료시킨다. 앞에서 얘기한 달력(A), 일정상세(B), 일정수정(C) 화면이 스택상에 있다면, B를 띄울 때 이 플래그를 사용하면 C는 사라지고 B에 원하는 일정을 보여주는 식이다. 보통 FLAG\_ACTIVITY\_SINGLE\_TOP 플래그와 같이 쓰이고, 이때 Callee는 남아있어서 onNewIntent() 메서드에 새로운 Intent가 전달된다. FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰이면 Callee는 종료하고서 새로 onCreate()부터 실행된다.
 % 단독으로 쓰임: B종료->A종료->A시작->C종료
 % 같이 쓰임: B종료->A onNewIntent->C종료
-이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$ActivityB$\Rightarrow$Activi\-tyA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 이를 해결하는 방법으로 다음 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
+이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$ActivityB$\Rightarrow$Activi\-tyA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 이를 해결하는 방법으로 \ref{sec:alias} 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
 
 \item FLAG\_ACTIVITY\_CLEAR\_TASK: Callee가 시작하기 전에 관련한 스택이 모두 제거되고 Callee는 빈 태스크의 baseActivity가 된다. 이 플래그는 FLAG\_ACTIVITY\_NEW\_TASK와 함께 사용되어야 한다. 앱을 사용하면서 태스크에 여러 Activity를 쌓아놓았지만 로그아웃하고 다른 아이디로 로그인한다면, 이 플래그를 사용해서 Launcher Activity를 새로 시작하는 것이 적절할 것이다(허니콤부터 사용).
 \item FLAG\_ACTIVITY\_REORDER\_TO\_FRONT: 태스크에 Activity가 있으면 그 Activity를 스택의 맨 위로 올린다. 해당 Activity가 스택에 하나밖에 없어야만 하는 경우에 쓸 수 있다.
@@ -291,7 +291,7 @@ Flags를 쓸 때 제일 중요한 규칙은 가능한 최소한의 플래그만 
 어떻게든 운이 좋게 원하는 동작에 걸리면 된다는 생각보다는 의도가 명확해야만 한다. 그래야 내비게이션이 변경되어도 문제없이 대응할 수 있다. Callee의 launchMode 속성과 Caller의 Flags를 적절하게 사용해서 조합해야 하는 것은 물론이다. 
 % FLAG\_ACTIVITY\_CLEAR\_TOP과 FLAG\_ACTIVITY\_SINGLE\_TOP을 당연히 조합해야 한다고 봐야 하나?
 
-\section{<activity-alias>}
+\section{<activity-alias>}\label{sec:alias}
 AndroidManifest.xml에는 activity-alias 엘리먼트가 있어서 Activity의 별명을 지정해서 쓸 수 있다. 그런데 별명이 도대체 어디에 도움이 될까?
 \begin{comment}
 필자의 경우에 처음으로 activity-alias를 적용해 본 경우를 얘기해보자.
