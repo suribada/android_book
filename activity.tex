@@ -603,7 +603,7 @@ ActivityA만 있을 때는 세로 고정이었는데, 가로 화면인 ActivityB
 다른 앱의 Activity가 역시 방향 고정이라면 Application의 onConfigurationChanged() 메서드는 불리지 않는다. 보통 런처 앱은 방향 고정인 경우가 많아서 홈 화면에서 아무리 화면을 회전해도 다른 앱의 Configuration에 영향을 주지 않는다. 
 Activity가 스택에 남아 있는 채로 Home 키를 통해 백그라운드로 이동해도 마찬가지다. 포그라운드에 있는 Activity가 아닌 것은 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
 
-환경 설정에서 언어나 글꼴 크기를 변경할 때도 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 변경된 Configiguration이 전달된다.\\
+환경 설정에서 언어나 글꼴 크기를 변경할 때도 실행중인 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 변경된 Configiguration이 전달된다.\\
 
 
 

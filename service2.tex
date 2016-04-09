@@ -192,10 +192,10 @@ IntentService에서 내부적으로 구현한 onStartCommand() 메서드는 기�
 
 setIntentRedelivery(true)\\
 
-IntentService를 사용하다 보면 구조를 이해하지 못하면 문제들이 생겨난다. 
+IntentService를 사용할 때 내부 구조를 이해하지 못하면 생기는 문제가 있다. 
 한 예를 들어보자.\\
 
-백그라운드 스레드에서 Toast를 띄우려고 하면, Toast 내부 클래스 TN에서 new Handler()하는 부분이 있어서 Looper가 없다고 에러를 발생시킨다. 그럼 백그라운드 스레드에서 Looper.prepare()를 실행하면 어떤가 하면 Toast를 정상적으로 보여준다.\\
+백그라운드 스레드에서 Toast를 띄우려고 하면, Toast 내부 클래스 TN에서 new Handler()로 Hanlder 생정자를 사용하는 부분이 있어서 Looper가 없다고 에러를 발생시킨다. 그럼 백그라운드 스레드에서 Looper.prepare()를 실행하면 어떤가 하면 Toast를 정상적으로 보여준다.\\
 
 그럼 IntentService의 작업 스레드에서 동작하는 메서드인 onHandleIntent()에서 Toast를 띄운다면 어떨까. 
 내부적으로 사용하는 HandlerThread에서 이미 Looper.prepare()가 되어 있기 때문에 Toast가 뜨는 게 문제없어 보이고, 여기서 크래시가 나진 않지만 심각한 오동작이 가끔 발생한다.\\
