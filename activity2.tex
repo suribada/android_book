@@ -1,11 +1,11 @@
 \section{태스크}
 태스크는 간단하게 Activity 작업 묶음 단위라고 보면 된다. 사진 리스트를 보고(PictureListActivity), 사진 상세를 보고(PictureDetailActivity), 사진을 올리려고 카메라를 실행시킨다(Camera 앱).
-하나의 앱이 하나의 태스크가 아니라는 것을 염두에 두자. 물론 하나의 앱만 사용하면서, 필요에 의해 그 안에서 여러 태스크를 가질 수도 있다.\\
+한 앱이 한 태스크가 아니라는 것을 염두에 두자. 물론 하나의 앱만 사용하면서, 필요에 의해 그 안에서 여러 태스크를 가질 수도 있다.\\
 \includegraphics[scale=0.6]{diagram_backstack}
 
 Activity는 스택에 차례대로 쌓인다.(Back Stack으로 불린다.) 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 있지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
 
-단순하게 startActivity()를 실행해서 스택에 추가하고, Back 키로 제거해가면 아무 일도 없지만, 실제 앱에서는 다양한 경로의 Activity 접근이 이루어지기 때문에 내비게이션이 꼬이는 경우가 많이 생긴다. 이 때문에 태스크 관리가 필요하다.
+단순하게 startActivity()를 실행해서 스택에 추가하고 Back 키로 제거해가면 아무 일도 없지만, 실제 앱에서는 다양한 경로의 Activity 접근이 이루어지기 때문에 내비게이션이 꼬이는 경우가 많다. 이 때문에 태스크 관리가 필요하다.
 
 예를 들어보자. 
 \begin{enumerate}
@@ -20,7 +20,7 @@ Activity는 스택에 차례대로 쌓인다.(Back Stack으로 불린다.) 스�
 태스크는 화면에 포커스되어 있는 포그라운드 상태와, 화면에 보이지 않는 백그라운드 상태가 있다. 포그라운드에 있는 것은 Home 키를 통해서 언제든 백그라운드로 이동할 수 있다.
 백그라운드에 있는 것도 언제든 포그라운드로 이동할 수 있다. 앱 아이콘이나 Shortcut, App Widget, Notification을 통해 새로운 포그라운드 태스크가 될 수도 있다. Home 화면에 나와있는 경우는 Home 화면이 포그라운드 태스크이다.\\
 
-백그라운드 상태를 변경할 수 있는 메서드는 Activity에 moveTaskToBack(boolean nonRoot) 메서드가 있다. nonRoot에 true가 들어가면 어느 위치에서건 백그라운드로 이동할 수 있고, false인 경우에는 태스크 루트일 때만 가능하다. 
+백그라운드에서 포그라운드로 상태를 변경하는 메서드는 Activity에 moveTaskToBack(boolean nonRoot) 메서드가 있다. nonRoot에 true가 들어가면 어느 위치에서건 백그라운드로 이동할 수 있고, false인 경우에는 태스크 루트일 때만 가능하다. 
 메서드 시그너처를 보고서 파라미터의 용도를 볼 때마다 헷갈리는 걸 보면 잘 만든 메서드는 아닌 듯 하다. 메서드 시그너처를 moveTaskToBack(boolean onlyRoot) 이런 식으로 바꾸면 좀 낫지 않을까. \\
 
 이제 반대로 백그라운드에서 포그라운드로 상태를 변경하는 메서드는 있을까? 
@@ -34,9 +34,9 @@ List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서�
 예를 들어, 앱에서 startActivity()를 실행해서 브라우저를 열었다면 앱과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask lanuchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
 
 shell에서 dumpsys를 활용해서 태스크를 확인하면서 각 상황을 이해하도록 하자.
-adb shell dumpsys activity activities를 실행하거나, adb shell하고서 shell 안에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 써도 된다.\\
+adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 써도 된다.\\
 
-dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉션을 통해 파일로 저장하는 것을 권장한다. adb shell dumpsys activity a  $>$ tasks.txt 와 같이 사용한다. adb shell 안에서도 dumpsys를 할 수 있지만 shell 내에서는 리다이렉션이 되지 않는다.\\
+dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉션을 통해 파일로 저장하는 것을 권장한다. adb shell dumpsys activity a  $>$ tasks.txt 와 같이 사용한다. adb shell 내에서도 dumpsys를 할 수 있지만 shell 내에서는 리다이렉션이 되지 않는다.\\
 
 그래도 워낙 내용이 많긴 하다. 해당 앱 관련 내용만 볼 때는 grep 명령어를 활용하자. dumpsys activity a | grep com.example.android.supportv4 이런 식으로 하면 관련 라인만 볼 수 있다. 필자의 경우는 grep을 통해서 일부만 보면 필요한 정보를 빠뜨릴 수 있지 않나 생각해서 잘 안 쓰는 편이었는데, dumpsys 내용에 패키지명이 계속해서 들어가기 때문에 grep을 통해서 보는 편이 낫다.\\
 
@@ -191,7 +191,7 @@ intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 context.startActivity(intent);
 \end{lstlisting}
 
-이미 해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
+해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
 taskAffinity는 AndroidManifest.xml의 Activity 선언에 android:taskAffinity에 지정할 수 있고 속성이 없다면 디폴트 값은 패키지명이다.
 결국 taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_NEW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
 taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_NEW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
@@ -315,8 +315,8 @@ DetailActivity를 호출하는 쪽을 DetailWebActivity로 한꺼번에 바꿔�
         android:targetActivity=".MainActivity">
 \end{lstlisting}
 android:name에는 반드시 존재하는 클래스명을 넣을 필요는 없다. new Intent(Context packageContext, Class<?> cls)는 결과적으로 new Intent().setComponent(new ComponentName(String pkg, String cls))와 동일하다. 
-Shortcut 외에도 PendingIntent.getActivity() 메서드로 알람에 등록되어 링크가 남는 경우도 있다. 대체하는 화면이 존재한다면 activity-alias으로 기존 Activity 이름을 남겨두는 것을 고려하자.
-\item 앞 절에서 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계를 얘기했다. 동일한 이름의 Activity가 여러 개 있을 때, 이 Activity를 기준으로 ClearTop을 하면, 일반적인 요구사항은 맨 아래에 있는 것만 남기고 싶지만, 맨 위에 있는 것 기준으로 ClearTop이 된다. 이때 쓸 수 있는 방법이 Activity를 처음 시작할 때(즉 맨 아래 Activity) activity-alias를 사용하는 것이다. 그러면 activity-alias 이름으로  Activity Stack의 맨 아래에 남게 되어서, activity-alias 이름을 기준으로 startActivity()를 실행하면서 FLAG\_ACTIVITY\_CLEAR\_TOP 플래그가 전달되면 원하는 결과를 얻게 된다.
+Shortcut 외에도 PendingIntent.getActivity() 메서드로 알람에 등록되어 링크가 남는 경우도 있다. 대체하는 화면이 존재한다면 activity-alias로 기존 Activity 이름을 남겨두는 것을 고려하자.
+\item 앞 절에서 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계를 얘기했다. 동일한 Activity가 태스크에 여러 개 있을 때 이 Activity 또 다시 시작FLAG\_ACTIVITY\_CLEAR\_TOP 플래그를 사용해보자. 이때 맨 아래에 있는 Activity만 남기고 싶지만 맨 위에 있는 것 기준으로 ClearTop이 된다. 이때 쓸 수 있는 방법이 Activity를 처음 시작할 때(즉 맨 아래 Activity에) activity-alias를 사용하는 것이다. 그러면 activity-alias 이름으로  Activity Stack의 맨 아래에 남게 되어서, activity-alias 이름을 기준으로 startActivity()를 실행하면서 FLAG\_ACTIVITY\_CLEAR\_TOP 플래그가 전달되면 원하는 결과를 얻게 된다.
 \begin{lstlisting}[frame=single]
 	<activity-alias
     	android:name=".FirstActivityA"

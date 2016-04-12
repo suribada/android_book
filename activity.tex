@@ -89,11 +89,11 @@ startActivityForResult() 메서드 관련해서 몇 가지 내용을 살펴보�
 \item 두 Activity가 다른 태스크에 속해 있다면 onActivityResult()에서 결과를 다시 받을 수 없다.
 \item 결과를 돌려주는 Callee에서는 finish() 메서드 전에 setResult() 메서드를 호출해야 setResult(int resultCode, Intent data) 메서드 파라미터인 resultCode와 data가 Caller에 전달된다. 보통 이런 실수를 하지 않지만 기능을 추가하다 보면 위치를 잘못 잡을 때도 있다.
 \item setResult() 메서드를 호출하지 않으면 기본으로 RESULT\_CANCELED(0) 값이 전달된다. 일반적으로 RESULT\_OK(-1) 값을 넣지만, 임의로 원하는 정수값을 전달해도 된다.
-\item Activity A에서 startActivityForResult() 메서드로 Activity B를 호출하고 Activity B에서는 자신을 닫고 또 다른 Activity C를 호출하는 경우가 있다. 
-이때 Activity C에서 setResult()를 실행해서 전달한 것은 Activity A에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
-Activity C가 닫히는 순간 Activity A의 onActivityResult() 메서드가 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 Activity A에 전달되지 않고 resultCode는 RESULT\_CANCELED이면서 data == null이 될 뿐이다.  이런 경우에 값을 전달받기 위해서는, Activity B에서 ActivityC를 시작하기 위해서 startActivity()를 실행하면서 Intent에 Intent.FLAG\_ACTIVITY\_FORWARD\_RESULT 플래그를 추가하는 것이다.
+\item ActivityA에서 startActivityForResult() 메서드로 ActivityB를 호출하고 ActivityB에서는 자신을 닫고 또 다른 ActivityC를 호출하는 경우가 있다. 
+이때 ActivityC에서 setResult()를 실행해서 전달한 것은 ActivityA에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
+ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드가 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 ActivityA에 전달되지 않고 resultCode는 RESULT\_CANCELED이면서 data == null이 될 뿐이다.  이런 경우에 값을 전달받기 위해서는, ActivityB에서 ActivityC를 시작하기 위해서 startActivity()를 실행하면서 Intent에 Intent.FLAG\_ACTIVITY\_FORWARD\_RESULT 플래그를 추가하는 것이다.
 이 플래그는 startActivityForResult()에서 쓰려고 하면 ``android.util.AndroidRuntimeExce\-ption: FORWARD\_RESULT\_F\-LAG used while also requesting a result''  예외를 발생시킨다. 
-다시 말하면, Activity A에서 Activity B를 시작할 때는 startActivityForResult() 메서드를 사용하고, Activity B에서 Activity C를 시작할 때는 startActivity() 메서드를 사용하면서 플래그를 사용해야 한다. 
+다시 말하면, ActivityA에서 ActivityB를 시작할 때는 startActivityForResult() 메서드를 사용하고, ActivityB에서 ActivityC를 시작할 때는 startActivity() 메서드를 사용하면서 플래그를 사용해야 한다. 
 이런 식으로 하면 2개가 아닌 여러 개를 거쳐도 맨 아래에서 startActivityForResult()를 실행한 Activity에 값을 다시 전달할 수 있다.
 \end{itemize}
 
@@ -101,14 +101,14 @@ Activity C가 닫히는 순간 Activity A의 onActivityResult() 메서드가 불
 Activity가 전환되면서 생명주기 메소드가 어떻게 불리는지 알아보자.\\
 
 \underline{\bfseries Activity에서 다른 Activity를 시작할 때}\\
-Activity A에서 Activity B를 시작할 때, Activity A는 onPause()와 onStop()을 실행할 것이고
-Activity B는 onCreate()와 onResume()을 실행할 것이다.
-그런데 Activity A가 onStop()까지 실행되고 나서 Activity B가 onCreate()부터 실행되는 것이 아니다.
+ActivityA에서 ActivityB를 시작할 때, ActivityA는 onPause()와 onStop()을 실행할 것이고
+ActivityB는 onCreate()와 onResume()을 실행할 것이다.
+그런데 ActivityA가 onStop()까지 실행되고 나서 ActivityB가 onCreate()부터 실행되는 것이 아니다.
 순서는 다음과 같다.
 \begin{enumerate}
-\item Activity A는 onPause() 메서드를 실행한다(백그라운드로 이동).
-\item Activity B는 onCreate(), onStart(), onResume() 메서드를 실행하고 포커스를 갖는다(포그라운드로 이동).
-\item Activity A는 onStop() 메서드를 실행한다(A는 not visible. B가 전체 화면을 덮는 경우). B가 반투명이거나 다이얼로그 테마 Activity인 경우에는 onStop()을 실행하지 않는다(아직 visible이기 때문).
+\item ActivityA는 onPause() 메서드를 실행한다(백그라운드로 이동).
+\item ActivityB는 onCreate(), onStart(), onResume() 메서드를 실행하고 포커스를 갖는다(포그라운드로 이동).
+\item ActivityA는 onStop() 메서드를 실행한다(ActivityA는 not visible. ActivityB가 전체 화면을 덮는 경우). ActivityB가 반투명이거나 다이얼로그 테마 Activity인 경우에는 onStop()을 실행하지 않는다(아직 visible이기 때문).
 \end{enumerate}
 
 설명해보면 Caller는 일단 백그라운드로 가고, Callee가 포그라운드까지 온 다음에 Caller가 not visible 상태가 된다.
@@ -117,19 +117,19 @@ onStop()이 나중에 불리는 이유는 무엇일까?
 Callee가 뜨고 난 이후에야 onStop()이 필요한지 알 수 있기 때문이다.\\
 
 이 순서는 별게 아니지만 인지해야 하는 경우가 있다. 
-Activity A에서 변경된 값을 Activity B에서 사용하고자 한다.
-이때 Activity A에서 매 이벤트마다 
-SharedPreferences나 DB에 저장하지는 않고 Activity A가 끝날 때만 저장하기로 했다.
-이때 onStop() 메서드에서 저장하면 안 되고 onPause() 메서드에서 저장해야만, Activity B에서 이 값을 정상적으로 사용할 수 있다.\\
+ActivityA에서 변경된 값을 ActivityB에서 사용하고자 한다.
+이때 ActivityA에서 매 이벤트마다 
+SharedPreferences나 DB에 저장하지는 않고 ActivityA가 끝날 때만 저장하기로 했다.
+이때 onStop() 메서드에서 저장하면 안 되고 onPause() 메서드에서 저장해야만, ActivityB에서 이 값을 정상적으로 사용할 수 있다.\\
 
 \underline{\bfseries 포그라운드 Activity가 닫힐 때}\\
 앞과 반대 경우이다. 
-Activity A에서 Activity B를 시작하고, 이번에는 Activity B를 닫으면 Activity A를 다시 보게 된다.
+ActivityA에서 ActivityB를 시작하고, 이번에는 ActivityB를 닫으면 ActivityA를 다시 보게 된다.
 이때의 순서는 역순이다.
 \begin{enumerate}
-\item Activity B는 onPause() 메서드를 실행한다(백그라운드로 이동).
-\item Activity A는 onRestart(), onStart(), onResume() 메서드를 실행한다(포그라운드로 이동).
-\item Activity B는 onStop(), onDestroy() 메서드를 실행한다(종료).
+\item ActivityB는 onPause() 메서드를 실행한다(백그라운드로 이동).
+\item ActivityA는 onRestart(), onStart(), onResume() 메서드를 실행한다(포그라운드로 이동).
+\item ActivityB는 onStop(), onDestroy() 메서드를 실행한다(종료).
 \end{enumerate}
 
 
@@ -565,7 +565,7 @@ ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity(다이얼로그 테�
 \subsection{Configuration 확인}
 마지막으로 Configuration을 확인하는 방법과 Configuration이 변경되는 타이밍에 대해서 더 알아보자.\\
  
-Configuration 내용을 확인하기 위해서는 Context 인스턴스에서 getResources().getConfigura\-tion()으로 가져와서 Configuration의 toString() 메서드로 출력하면 된다. 
+Configuration 내용을 보기 위해서는 Context 인스턴스에서 getResources().getConfigura\-tion()으로 가져와서 Configuration의 toString() 메서드로 출력하면 된다. 
 \begin{lstlisting}[frame=single]
 {1.0 450mcc5mnc ko_KR ldltr sw360dp w360dp h567dp 480dpi nrml port finger -keyb/v/h -nav/h s.28}
 {1.0 450mcc5mnc ko_KR ldltr sw360dp w598dp h335dp 480dpi nrml land finger -keyb/v/h -nav/h s.29}
@@ -575,7 +575,7 @@ Configuration 내용을 확인하기 위해서는 Context 인스턴스에서 get
 \end{lstlisting}
 값이 14개가 나오는데 실제 단말에서는 커스텀 데이터가 더 나오기도 한다. 1, 2라인은 화면을 회전한 것이고 4, 5라인은 설정에서 글꼴 크기를 키우고서 화면을 회전한 것이다.
 \begin{itemize}
-\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다.  `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시노트4에서는 값이 1.09로 나오기도 했다.
+\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다. `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시노트4에서는 값이 1.09로 나오기도 했다.
 \item 두 번째는 mcc, mnc 값이다. \url{http://mcclist.com}에 따르면 450은 한국의 국가 코드이고 5는 SK Telecom의 통신사 코드이다.
 \item 세 번째는 locale 값이다.
 \item 네 번째 ldltr은 screenLayout 값이다.
@@ -587,7 +587,7 @@ Configuration 내용을 확인하기 위해서는 Context 인스턴스에서 get
 \item 열한 번째 finger는 touchScreen 값이다.
 \item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden의 의미다. -keyb는 키가 없다는 의미다.(마이너스로 생각하면 된다.)
 \item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가  있으므로 navigation 타입이 없다는 것이다. 
-\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 값이다. 
+\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
 \end{itemize}
 
 이제 Configuration이 변경되는 시점에 대해 확인한 내용을 얘기해보자.. Configuration이 바뀔 때는 Application의 onConfigurationChanged() 메서드가 먼저 불리고, 포그라운드에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.
