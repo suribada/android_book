@@ -821,7 +821,8 @@ public class MessengerService extends Service {
 	public static final String WEATHER_TEXT = "weatherText";
 	public static final String TEMPERATURE = "temperature";
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1); // (1)
+	private final ScheduledExecutorService scheduler 
+		= Executors.newScheduledThreadPool(1); // (1)
 
 	private ArrayList<Messenger> clients = new ArrayList<>(); // (2)
 
@@ -899,16 +900,16 @@ public class MessengerService extends Service {
 \end{lstlisting}
 \begin{itemize}
 \item 4$\sim$6라인은 클라이언트에서 들어오는 Message의 what에 해당하는 값이고, 9라인은 클라이언트에 보내는 Message의 what에 해당하는 값이다.
-\item 56라인(9)에서 바로 날씨 정보를 가져온다. 첫 번째 클라이언트가 bindService()를 호출하면 이때 onCreate()가 호출되고 곧바로 날씨 정보를 가져오겠다는 의미이다.
-\item 14라인(1)에서 스레드 개수가 1개인 ScheduledThreadPoolExecutor을 생성한다. 80라인(13)의 파라미터를 보면 즉시 태스크를 실행하고 그 이후에는 1분마다 실행한다.
-\item 16라인(2)에서 클라이언트 Messenger 목록을 clients 변수에 유지한다.
-\item 20라인(3)의 Handler는 클라이언트에서 들어오는 Message를 처리하는 용도이다.
-\item 50라인(8)에서 Handler를 감싼 Messenger를 생성하고, 이것을 84라인(14)의 onBind() 메서드에서 messenger.getBinder()로 클라이언트에 전달한다.
-\item 26라인(4)에서 MSG\_REGISTER\_CLIENT 값이 들어오면 replyTo에 전달되는 Messenger를 클라이언트 목록에 추가한다.
-\item 63라인(10)의 Runnable Task에서는 날씨 정보를 가져와서 Bundle에 담고서 클라이언트 목록에 send() 메서드로 전달한다. foreach 문을 사용하지 않고 인덱스가 높은 숫자부터 쓴 이유는 클라이언트가 dead 상태인 경우에 RemoteException이 발생하는데 75라인(12)에서 클라이언트 목록에서 해당 클라이언트를 제거해도 문제가 없게 하려는 것이다.
-\item 70라인(11)에 lastData에 최신 값을 저장하고서, 27라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Bound된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
-\item 37라인(6)에서 MSG\_UNREGISTER\_CLIENT 값이 들어오면 클라이언트 목록에서 제거한다.
-\item 40라인(7)에서 MSG\_REFRESH 값이 들어오면 기존 ScheduleFuture를 취소하고 새로 날씨 정보를 가져온다.
+\item 57라인(9)에서 바로 날씨 정보를 가져온다. 첫 번째 클라이언트가 bindService()를 호출하면 이때 onCreate()가 호출되고 곧바로 날씨 정보를 가져오겠다는 의미이다.
+\item 15라인(1)에서 스레드 개수가 1개인 ScheduledThreadPoolExecutor을 생성한다. 81라인(13)의 파라미터를 보면 즉시 태스크를 실행하고 그 이후에는 1분마다 실행한다.
+\item 17라인(2)에서 클라이언트 Messenger 목록을 clients 변수에 유지한다.
+\item 21라인(3)의 Handler는 클라이언트에서 들어오는 Message를 처리하는 용도이다.
+\item 50라인(8)에서 Handler를 감싼 Messenger를 생성하고, 이것을 85라인(14)의 onBind() 메서드에서 messenger.getBinder()로 클라이언트에 전달한다.
+\item 27라인(4)에서 MSG\_REGISTER\_CLIENT 값이 들어오면 replyTo에 전달되는 Messenger를 클라이언트 목록에 추가한다.
+\item 64라인(10)의 Runnable Task에서는 날씨 정보를 가져와서 Bundle에 담고서 클라이언트 목록에 send() 메서드로 전달한다. foreach 문을 사용하지 않고 인덱스가 높은 숫자부터 쓴 이유는 클라이언트가 dead 상태인 경우에 RemoteException이 발생하는데 76라인(12)에서 클라이언트 목록에서 해당 클라이언트를 제거해도 문제가 없게 하려는 것이다.
+\item 71라인(11)에 lastData에 최신 값을 저장하고서, 28라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Bound된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
+\item 38라인(6)에서 MSG\_UNREGISTER\_CLIENT 값이 들어오면 클라이언트 목록에서 제거한다.
+\item 41라인(7)에서 MSG\_REFRESH 값이 들어오면 기존 ScheduleFuture를 취소하고 새로 날씨 정보를 가져온다.
 \end{itemize}
 
 이제 클라이언트 코드를 보자.
@@ -921,7 +922,9 @@ public class MessengerActivity extends Activity {
 			switch (msg.what) {
 				case MessengerService.MSG_WEATHER:
 					Bundle bundle = msg.getData();
-					weather.setText(bundle.getString(MessengerService.WEATHER_TEXT) + ", Temparature: " + bundle.getInt(MessengerService.TEMPERATURE));
+					weather.setText(bundle.getString(MessengerService.WEATHER_TEXT) 
+						+ ", Temparature: " + bundle.getInt(
+						MessengerService.TEMPERATURE));
 					break;
 				default:
 					super.handleMessage(msg);
@@ -934,7 +937,8 @@ public class MessengerActivity extends Activity {
 	private ServiceConnection serviceConnection = new ServiceConnection() {
 
 		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) { // (2)
+		public void onServiceConnected(ComponentName className, 
+				IBinder service) { // (2)
 			outMessenger = new Messenger(service);
 			try {
 				Message msg = Message.obtain(null, MessengerService.MSG_REGISTER_CLIENT);
@@ -942,13 +946,15 @@ public class MessengerActivity extends Activity {
 				outMessenger.send(msg); // (3)
 			} catch (RemoteException e) {
 			}
-			Toast.makeText(MessengerActivity.this, "Connected.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MessengerActivity.this, "Connected.", 
+				Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName className) {
 			outMessenger = null;
-			Toast.makeText(MessengerActivity.this, "Disconnected.", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MessengerActivity.this, "Disconnected.",
+				Toast.LENGTH_SHORT).show();
 		}
 
 	};
@@ -967,7 +973,8 @@ public class MessengerActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		bindService(new Intent(this, MessengerService.class), serviceConnection, Context.BIND_AUTO_CREATE);
+		bindService(new Intent(this, MessengerService.class), serviceConnection, 
+			Context.BIND_AUTO_CREATE);
 	}
 
 	@Override
@@ -975,7 +982,8 @@ public class MessengerActivity extends Activity {
 		super.onStop();
 		if (outMessenger != null) {
 			try {
-				Message msg = Message.obtain(null, MessengerService.MSG_UNREGISTER_CLIENT);
+				Message msg = Message.obtain(null, 
+					MessengerService.MSG_UNREGISTER_CLIENT);
 				msg.replyTo = inMessenger;
 				outMessenger.send(msg);
 			} catch (RemoteException e) {
@@ -985,7 +993,8 @@ public class MessengerActivity extends Activity {
 	}
 
 	public void onClickRefresh(View view) { // (5)
-		Toast.makeText(MessengerActivity.this, "Refresh.", Toast.LENGTH_SHORT).show();
+		Toast.makeText(MessengerActivity.this, "Refresh.", 
+			Toast.LENGTH_SHORT).show();
 		if (outMessenger != null) {
 			try {
 				Message msg = Message.obtain(null, MessengerService.MSG_REFRESH);
