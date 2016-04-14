@@ -77,7 +77,8 @@ ResultReceiver 사용 샘플은 아래와 같다. 먼저 Activity의 내용을 �
      		public void run() {
          		Log.d(TAG, "SyncService started");
          		SystemClock.sleep(10000);
-         		final ResultReceiver receiver= intent.getParcelableExtra(Constant.EXTRA_RECEIVER); // (1)
+         		final ResultReceiver receiver 
+         			= intent.getParcelableExtra(Constant.EXTRA_RECEIVER); // (1)
          		receiver.send(Constant.SYNC_COMPLETED, null); // (2)
          		stopSelf();
      		}
@@ -87,7 +88,7 @@ ResultReceiver 사용 샘플은 아래와 같다. 먼저 Activity의 내용을 �
    		return START_NOT_STICKY;
 	}
 \end{lstlisting}	
-9라인(1)에서 Intent에서 ResultReceiver를 꺼내오고, 작업을 다한 후에 10라인(2)에서 send() 메서드를 호출해서 SYNC\_COMPLETED라는 결과를 다시 보낸다. 여기서는 메시지를 하나만 보냈지만 작업 진행률이나 실패 메시지와 같은 다양한 결과를 보낼 수 있을 것이다.
+10라인(1)에서 Intent에서 ResultReceiver를 꺼내오고, 작업을 다한 후에 11라인(2)에서 send() 메서드를 호출해서 SYNC\_COMPLETED라는 결과를 다시 보낸다. 여기서는 메시지를 하나만 보냈지만 작업 진행률이나 실패 메시지와 같은 다양한 결과를 보낼 수 있을 것이다.
 
 \subsection{Service 재시작 방식}
 가용 메모리가 낮고 포커스를 갖고 있는 Activity의 시스템 리소스를 복구해야 할 때, 안드로이드 시스템은 Service를 강제 종료시키기도 한다. 
@@ -153,7 +154,8 @@ Service는 intent-filter의 android:priority 속성값\footnote{\url{http://deve
 
 intent-filter를 적용하지 않고 외부에서 서비스를 직접 시작할 수도 있다. 바로 명시적 인텐트를 사용하는 것이다.
 \begin{lstlisting}[frame=single]
-ComponentName cName = new ComponentName("com.example.android.apis", "com.example.android.apis.app.ServiceStartArguments");
+ComponentName cName = new ComponentName("com.example.android.apis",
+	"com.example.android.apis.app.ServiceStartArguments");
 startService(new Intent().setComponent(cName));
 \end{lstlisting}
 
@@ -285,12 +287,10 @@ ThreadPoolExecutor에 스레드 개수를 1로 고정하면 스레드 풀에 하
 % 만일 이 값이 따로 없다면 crash
 \begin{lstlisting}[frame=single]
 public class SleepThreadService extends Service {
-
-	....
 	
-	private ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 0, TimeUnit.SECONDS, 
-			new SynchronousQueue<Runnable>(), new ThreadPoolExecutor.DiscardPolicy());
-	
+	private ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 
+		0, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), 
+		new ThreadPoolExecutor.DiscardPolicy());	
 	....
 		
 	@Override
@@ -362,23 +362,25 @@ interface IRemoteService {
 public interface IRemoteService extends android.os.IInterface {
 	public static abstract class Stub extends android.os.Binder
 			implements com.suribada.calendar.IRemoteService { // (1)
-		private static final java.lang.String DESCRIPTOR = "com.suribada.calendar.IRemoteService";
+		private static final java.lang.String DESCRIPTOR 
+			= "com.suribada.calendar.IRemoteService";
 
 		public Stub() {
 			this.attachInterface(this, DESCRIPTOR); // (2)
 		}
 
-		public static com.suribada.calendar.IRemoteService asInterface( // (3) 
-				android.os.IBinder obj) {
+		public static com.suribada.calendar.IRemoteService asInterface(  
+				android.os.IBinder obj) { // (3)
 			if ((obj == null)) {
 				return null;
 			}
 			android.os.IInterface iin = obj.queryLocalInterface(DESCRIPTOR); // (4)
-			if (((iin != null) && (iin instanceof com.suribada.calendar.IRemoteService))) {
+			if (((iin != null) 
+					&& (iin instanceof com.suribada.calendar.IRemoteService))) {
 				return ((com.suribada.calendar.IRemoteService) iin);
 			}
-			return new com.suribada.calendar.IRemoteService.Stub.Proxy(
-					obj);
+			return new com.suribada.calendar.IRemoteService
+				.Stub.Proxy(obj);
 		}
 
 		@Override
@@ -387,9 +389,9 @@ public interface IRemoteService extends android.os.IInterface {
 		}
 
 		@Override
-		public boolean onTransact(int code, android.os.Parcel data, // (5)
+		public boolean onTransact(int code, android.os.Parcel data,
 				android.os.Parcel reply, int flags)
-				throws android.os.RemoteException {
+				throws android.os.RemoteException { // (5)
 			switch (code) {
 			case INTERFACE_TRANSACTION: {
 				reply.writeString(DESCRIPTOR);
@@ -410,8 +412,8 @@ public interface IRemoteService extends android.os.IInterface {
 			return super.onTransact(code, data, reply, flags);
 		}
 
-		private static class Proxy implements // (7)
-				com.suribada.calendar.IRemoteService {
+		private static class Proxy implements 
+				com.suribada.calendar.IRemoteService { // (7)
 			private android.os.IBinder mRemote;
 
 			Proxy(android.os.IBinder remote) {
@@ -438,8 +440,8 @@ public interface IRemoteService extends android.os.IInterface {
 					_data.writeInterfaceToken(DESCRIPTOR); // (8)
 					_data.writeLong(calendarId);
 					_data.writeString(calendarType);
-					mRemote.transact(Stub.TRANSACTION_validCalendar, _data, // (9)
-							_reply, 0);
+					mRemote.transact(Stub.TRANSACTION_validCalendar, _data, 
+							_reply, 0); // (9)
 					_reply.readException();
 					_result = (0 != _reply.readInt());
 				} finally {
@@ -450,7 +452,8 @@ public interface IRemoteService extends android.os.IInterface {
 			}
 		}
 
-		static final int TRANSACTION_validCalendar = (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+		static final int TRANSACTION_validCalendar 
+			= (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
 	}
 
 	public boolean validCalendar(long calendarId, java.lang.String calendarType)
@@ -458,10 +461,10 @@ public interface IRemoteService extends android.os.IInterface {
 }
 \end{lstlisting}
 \begin{itemize}
-\item 52라인(7)의 Proxy와 2라인(1)의 Stub으로 구분되는 클라이언트와 서버는 Parcel을 가지고 데이터를 주고받는다. 
-\item 80라인(9)에서 Proxy에서 transact() 메서드를 호출하면 29라인(5)에서 Stub의 onTransact() 메서드가 호출된다.
-\item 77라인(8)에서 Parcel에 쓰기 시작하고 40라인(6)에서 읽기 시작한다.
-\item 10라인(3)의 asInterface() 메서드 내용을 보자. 7라인(2)에서 attachInterface()에 등록한 것을 15라인(4)의 queryLocalInterface() 메서드로 조회하게 된다. 동일한 프로세스에 있다면 Stub 인스턴스를 직접 사용하겠다는 것이다. 내부적으로 로컬일 수도 있고 리모트일 수도 있는 바인딩이 이때 결정된다.
+\item 55라인(7)의 Proxy와 3라인(1)의 Stub으로 구분되는 클라이언트와 서버는 Parcel을 가지고 데이터를 주고받는다. 
+\item 83라인(9)에서 Proxy에서 transact() 메서드를 호출하면 33라인(5)에서 Stub의 onTransact() 메서드가 호출된다.
+\item 79라인(8)에서 Parcel에 쓰기 시작하고 42라인(6)에서 읽기 시작한다.
+\item 12라인(3)의 asInterface() 메서드 내용을 보자. 8라인(2)에서 attachInterface()에 등록한 것을 16라인(4)의 queryLocalInterface() 메서드로 조회하게 된다. 동일한 프로세스에 있다면 Stub 인스턴스를 직접 사용하겠다는 것이다. 내부적으로 로컬일 수도 있고 리모트일 수도 있는 바인딩이 이때 결정된다.
 \end{itemize}
 
 Service에서는 추상 클래스인 Stub 구현체를 만든다.
@@ -508,12 +511,14 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 	@Override
 	public void onStart() {
 		super.start();
-		bindService(new Intent(IRemoteService.class.getName()), mConnection, Context.BIND_AUTO_CREATE); // (4)
+		bindService(new Intent(IRemoteService.class.getName()), mConnection,
+			Context.BIND_AUTO_CREATE); // (4)
 	}
 	
 	private void checkValid() {
 		if (mIRemoteServer != null) { // (5)
-			boolean valid = mIRemoteService.isValidCalendar(10L, CalendarType.NORMAL.name());
+			boolean valid = mIRemoteService.isValidCalendar(10L,
+				CalendarType.NORMAL.name());
 			....
 		}	
 	}
@@ -522,8 +527,8 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 \item 3라인(1)에서 커넥션 Callback인 ServiceConnection을 생성하였다. 7라인(2)의 Stub.asInterface() 메서드를 통해서 로컬인 경우는 Stub 인스턴스, 리모트인 경우는 Binder Proxy 인스턴스가 mIRemoteService에 대입된다.
 어떤 책에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다. Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다.
 \item 12라인(3)에서 연결이 끊겼을 때는 mIRemoteService를 null로 만든다.
-\item 20라인(4)에서 bindService에 ServiceConnection을 전달한다.
-\item 24라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected가 불리기 전일 수도 있고, Service 문제로 바인딩이 안 되었을 수도 있기 때문이다.
+\item 21라인(4)에서 bindService에 ServiceConnection을 전달한다.
+\item 25라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected가 불리기 전일 수도 있고, Service 문제로 바인딩이 안 되었을 수도 있기 때문이다.
 \end{itemize}
 
 로컬에서 호출 시에는 호출하는 스레드에서 실행되고, 리모트인 경우에는 Service가 속한 프로세스의 Binder 스레드 풀에서 실행된다. 
@@ -563,7 +568,7 @@ public class LocalService extends Service {
 	public IBinder onBind(Intent intent) {
 		return mBinder; // (2)
 	}
-6yj
+
 	public boolean validCalendar(long calendarId, CalendarType calendarType) {
 		....
 	}
@@ -589,7 +594,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 		Intent intent = new Intent(this, LocalService.class);
 		bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 	}
-;j'
+
 	@Override
 	protected void onStop() {
 		if (mService != null) {
@@ -734,7 +739,8 @@ bindService()를 통해 Bound되었으면 이제는 호출하는 쪽과 호출�
 		switch (URI_MATCHER.match(uri)) {
 			...
 			case VALID_CALENDAR:
-				return validCalendar(Long.parseLong(selectionArgs[0]),  CalendarType.valueOf(selectionArgs[1]));
+				return validCalendar(Long.parseLong(selectionArgs[0]), 
+					CalendarType.valueOf(selectionArgs[1]));
 				
 		}
 		throw new IllegalArgumentException("Unknown URI " + uri.toString());
@@ -754,13 +760,14 @@ bindService()를 통해 Bound되었으면 이제는 호출하는 쪽과 호출�
 		return cursor;
 	}
 \end{lstlisting}
-20라인(1)에서 DB Cursor가 아니고 직접 Cursor에 값을 채우는 방법으로 MatrixCursor를 사용하였다.\\
+21라인(1)에서 DB Cursor가 아니고 직접 Cursor에 값을 채우는 방법으로 MatrixCursor를 사용하였다.\\
 
 클라이언트에서는 아래와 같이 사용한다.
 \begin{lstlisting}[frame=single]
 	public boolean isValidCalendar(long calendarId, CalendarType type) {
-		Cursor cursor = contentResolver.query(Uri.withAppendedPath(CONTENT_URI, "valid_calendar"), 
-				null, null, new String[] {String.valueOf(calendarId), type.name()}, null);
+		Cursor cursor = contentResolver.query(Uri.withAppendedPath(CONTENT_URI, 
+			"valid_calendar"), null, null, 
+			new String[] {String.valueOf(calendarId), type.name()}, null);
 		return (cursor.getCount() > 0);
 	}
 \end{lstlisting}

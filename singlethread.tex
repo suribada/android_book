@@ -37,7 +37,8 @@ public class Hello {
 \end{lstlisting}
 
 안드로이드 애플리케이션의 메인 스레드는 뭔가 다른 특별한 것일까? 그렇지 않다. 
-안드로이드 프레임워크 내부 클래스인 android.app.ActivityThread가 바로 애플리케이션의 메인 클래스\footnote{실제로는 ZygoteInit이 시작점이지만 우리가 이해해야 하는 지점은 ActivityThread부터이다.}이고, ActivityThread의 main() 메서드가 애플리케이션의 시작 지점이다.
+안드로이드 프레임워크 내부 클래스인 android.app.ActivityThread가 바로 애플리케이션의 메인 클래스\footnote{실제로는 ZygoteInit이 시작점이지만 우리가 이해해야 하는 지점은 ActivityThread부터이다.}이고, ActivityThread의 main() 메서드가 애플리케이션의 시작 지점이다.\newpage
+
 \begin{lstlisting}[frame=single, caption=ActivityThread.java] 
 	public static void main(String[] args) {
 		SamplingProfilerIntegration.start();
@@ -188,8 +189,8 @@ Handler에는 기본 생성자 외에 Hanlder.Callback 또는 Looper가 전달�
 \item Handler(Looper looper, Handler.Callback callback)
 \end{itemize}
 
-Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성자와 어떤 관계일까? 기본 생성자는 바로 현재 스레드의 Looper를 사용하겠다는 의미이다.(Looper는 Thread Local Storage에 들어간다고 앞에서 얘기했다.)
-Handler 기본 생성자를 메인 스레드에서 사용한다면, 이미 ActivityThread에서 메인 Looper를 생성했기 때문에 메인 Looper를 사용하는 것이다. 이것이 우리가 만드는 코드에서 가장 많이 사용하는 방식이다.\\
+Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성자와 어떤 관계일까? 기본 생성자는 바로 현재 스레드의 Looper를 사용하겠다는 의미이다(Looper는 Thread Local Storage에 들어간다고 앞에서 얘기했다).
+메인 스레드에서 Handler 기본 생성자가 불린다면, 앱 프로세스가 시작할 때 ActivityThread에서 메인 Looper를 생성한 것을 사용하는 것이다. 이것이 우리가 만드는 코드에서 가장 많이 사용하는 방식이다.\\
 
 그럼 백그라운드 스레드에서 기본 생성자를 사용한다면 어떨까? 이때는 Looper가 준비되어 있지 않다면 RuntimeException을 발생시킨다. 
 ``Can't create handler inside thread that has not called Looper.prepare''
@@ -205,8 +206,8 @@ class LooperThread extends Thread {
 		Looper.prepare();
 
 		mHandler = new Handler() {
-        		public void handleMessage(Message msg) {
-            		// process incoming messages here
+        	public void handleMessage(Message msg) {
+            	// process incoming messages here
 			}
 		};
 
@@ -375,7 +376,8 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 		if (isBackPressedOnce) { // (2)
 			super.onBackPressed();
 		} else {
-			Toast.makeText(this, R.string.backpressed_message, Toast.LENGTH_SHORT).show(); // (3)
+			Toast.makeText(this, R.string.backpressed_message,
+				Toast.LENGTH_SHORT).show(); // (3)
 			isBackPressedOnce = true; // (4)
 			timerHandler.postDelayed(timerTask, 5000);	// (5)		
 		}
@@ -393,9 +395,9 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 \begin{itemize}
 \item 1라인(1)에서 isBackPressedOnce 변수가 종료 플래그이다. 최초 값은 false이다.
 \item 5라인(2)에서 종료 플래그가 true이면 종료한다. 최초 값이 false이기 때문에 처음에는 이 조건에 걸리지 않는다.
-\item 처음 Back 키를 누르면 8라인(3)에서 ``정말 종료하시겠습니까?''라는 토스트를 띄운다. 그리고서 9라인(4)에서 종료 플래그를 true로 바꾼다.
-\item 10라인(5)에서 postDelayed() 메서드로 5초 후에 할 작업을 지정한다.
-\item 14라인(6) 이하를 보면 Runnable Message는 종료 플래그를 다시 false로 되돌린다.
+\item 처음 Back 키를 누르면 9라인(3)에서 ``정말 종료하시겠습니까?''라는 토스트를 띄운다. 그리고서 10라인(4)에서 종료 플래그를 true로 바꾼다.
+\item 11라인(5)에서 postDelayed() 메서드로 5초 후에 할 작업을 지정한다.
+\item 15라인(6) 이하를 보면 Runnable Message는 종료 플래그를 다시 false로 되돌린다.
 \end{itemize}
 
 % 스크롤이나, 패닝 중에 쓰는 예도 필요하지 않을까?
@@ -404,7 +406,7 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 안드로이드 프레임워크에서도 내부적으로 Handler를 많이 사용한다. 메인 스레드에서 실행해야 하는 작업들이 Handler를 사용해서 내부적으로 메인 Looper의 MessageQueue를 통해서 순차적으로 진행된다.
 \begin{itemize}
 \item ActivityThread에 내부 클래스인 H는 Handler를 상속한다. 컴포넌트 생명주기 관련해서 모두 H를 거친다.(Message의 what에 해당하는 int 상수에 들어가는 값에 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STO\-P\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.)
-\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_RE\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).
+\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_R\-E\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).
 ICS까지는 ViewRootImpl이 Handler를 상속했지만, 젤리빈부터는 내부 클래스로 ViewRootHandler를 사용한다.
 ViewRootImpl에서 처음 그릴 때나 다시 그리기 필요한 경우(invalidate, 레이아웃 변경, Visibility 변경 등)는 Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
 % Activity의 Window마다 있다.
@@ -460,7 +462,7 @@ UI를 업데이트하는 메서드는 주로 setXxx()로 되어 있다. 커스�
 		invalidate();
 	}
 \end{lstlisting}
-다시 그리라는 의미로 위와 같이 invalidate() 메서드를 호출해야만 메인 Looper의 MessageQueue에 들어가서 다음 타이밍에 화면에 그려주게 된다. 이때 여기서 넣은 title 값을 onDraw()에서 반영하는 식이다.\\
+다시 그리라는 의미로 위와 같이 invalidate() 메서드를 호출해야만 메인 Looper의 MessageQueue에 들어가서 다음 타이밍에 화면에 그려주게 된다. 이때 여기서 넣은 title을 onDraw()에서 반영하는 식이다.\\
 
 invalidate()부터 시작하는 메서드를 따라가보자.
 \begin{enumerate}
@@ -668,6 +670,7 @@ HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드
 BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
 
 아래 코드를 한번 보자. 아직 버그가 있는 버전이고 이 버그를 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
+\newpage
 \begin{lstlisting}[frame=single, caption=HandlerThread 사용 예제(버그 존재), label=src:HandlerThreadSample] 
  	private Handler favoriteHandler;
     private Looper favoriteLooper;
@@ -683,10 +686,9 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 
             @Override
             public void handleMessage(Message msg) { // (3)
-                MessageFavorite messageFavorite 
-                		= (MessageFavorite) msg.obj;
+                MessageFavorite messageFavorite = (MessageFavorite) msg.obj;
                 favoriteDao.updateMessageFavorite(messageFavorite.id, 
-                		messageFavorite.favorite);
+                	messageFavorite.favorite);
             }
 
         };
@@ -696,9 +698,8 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 	private class MessageAdapter extends ArrayAdapter<Message> {
 		
 		@Override
-        public View getView(int position, View convertView, 
-        			ViewGroup parent) {	
-        		....
+        public View getView(int position, View convertView, ViewGroup parent) {	
+        	....
 			holder.favorite.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -726,9 +727,9 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 \begin{itemize}
 \item 9라인(1)에서 HandlerThread를 시작하였다. HandlerThread는 Thread를 상속한 것이라는 걸 기억하자.
 \item 10라인(2)에서 Handler를 생성하면서 HandlerThread에서 만든 Looper를 전달하였다.
-\item 38라인(4)에서 체크박스를 선택/해제할 때마다 Handler에 Message를 보낸다.
+\item 36라인(4)에서 체크박스를 선택/해제할 때마다 Handler에 Message를 보낸다.
 \item 14라인(3)에서 Message를 받아서 DB에 반영한다.
-\item 48라인(5)에서 Looper를 종료한다. 
+\item 46라인(5)에서 Looper를 종료한다. 
 \end{itemize}
 
 작동방식이 그리 어려워 보이진 않는다.
@@ -773,14 +774,14 @@ MessageQueue.IdleHandler API 문서를 보면 Message를 모두 처리하고서 
 \begin{lstlisting}[frame=single, caption=Handler 스레드 사용 예제(Fixed), label=src:HandlerThreadSample2] 
  	@Override
     public void onCreate(Bundle savedInstanceState) {
-    		....
+    	....
         HandlerThread handlerThread
                 = new HandlerThread("Favorite Processing Thread") {
 
             @Override
             protected void onLooperPrepared() { // (1)
                 getLooper().myQueue().addIdleHandler(
-                			new MessageQueue.IdleHandler() {
+                		new MessageQueue.IdleHandler() {
 
                     @Override
                     public boolean queueIdle() {
@@ -806,7 +807,7 @@ MessageQueue.IdleHandler API 문서를 보면 Message를 모두 처리하고서 
 \end{lstlisting}
 
 \begin{itemize}
-\item 8라인(1)에 onLooperPrepared() 메서드 안에서 IdleHandler를 등록한다. onLooperPrepared() 메서드는 HandlerThread에서 일종의 hook 메서드로 Looper.prepare()가 실행된 다음에 호출된다.
+\item 8라인(1)에서 IdleHandler를 등록한다. onLooperPrepared() 메서드는 HandlerThread에서 일종의 hook 메서드로 Looper.prepare()가 실행된 다음에 호출된다.
 \item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. isFinishing() == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
 \end{itemize}
 
@@ -900,29 +901,29 @@ Executors의 주요 팩토리 메서드는 아래와 같다.
 \begin{itemize}
 
 \item newFixedThreadPool(int nThreads): 파라미터로 전달되는 고정 개수까지 스레드를 생성한다. workQueue는 개수 제한이 없다.
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, 
     new LinkedBlockingQueue<Runnable>())
-\end{verbatim}
+\end{lstlisting}
 
 \item newCachedThreadPool(): 필요할 때 스레드를 생성하고 스레드의 개수는 제한이 없다. keepAliveTime이 60초로 길다는 것이 특징이다. 이 때문에 Cached라는 수식어가 붙었다.
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, 
     new SynchronousQueue<Runnable>());
-\end{verbatim}
+\end{lstlisting}
 
 \item newSingleThreadExecutor(): 단일 스레드를 사용해서 순차적으로 처리한다. workQueue는 개수 제한이 없다. 
-\begin{verbatim}
-new FinalizableDelegatedExecutorService
-	(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, 
+\begin{lstlisting}[frame=single] 
+new FinalizableDelegatedExecutorService(
+	new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, 
 	new LinkedBlockingQueue<Runnable>())
-\end{verbatim}
+\end{lstlisting}
 newFixedThreadPool(1)과 동일한 결과를 리턴하는 것으로 보이는데, 다시 FinalizableDelegatedExecutorService로 Wrapping하였다. Wrapping의 효과는 스레드 개수를 1이 아닌 다른 값으로 변경하지 못하게 하는 것이다. 단순히 newFixedThreadPool(1)로 리턴된 것은 ThreadPoolExecutor로 캐스팅해서 setCorePoolSize()나 setMaximumPoolSize() 메서드로 스레드 개수를 변경할 수 있다.
 
 \item newScheduledThreadPool(int corePoolSize): corePoolSize 개수의 ScheduledThreadPoolExecutor를 만든다.
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 new ScheduledThreadPoolExecutor(corePoolSize)
-\end{verbatim}
+\end{lstlisting}
 
 \end{itemize}
 
@@ -973,7 +974,8 @@ AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때는, 즉 
     		
     		@Override
         	public void run() {
-            	final Bitmap bitmap = loadImageFromNetwork("http://example.com/image.png");
+            	final Bitmap bitmap 
+            		= loadImageFromNetwork("http://example.com/image.png");
             	Message message = Message.obtain(mHandler, BITMAP_MSG, bitmap);
             	mHandler.sendMessage(message);
         	}
@@ -991,7 +993,8 @@ AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때는, 즉 
     	
     		@Override
         	public void run() {
-            	final Bitmap bitmap = loadImageFromNetwork("http://example.com/image.png");
+            	final Bitmap bitmap 
+            		= loadImageFromNetwork("http://example.com/image.png");
             	mHandler.post(new Runnable() {
             		
                 	public void run() {
@@ -1013,8 +1016,8 @@ AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때는, 즉 
     	
     		@Override
         	public void run() {
-            	final Bitmap bitmap =
-                    loadImageFromNetwork("http://example.com/image.png");
+            	final Bitmap bitmap
+            		= loadImageFromNetwork("http://example.com/image.png");
             	mImageView.post(new Runnable() {
                 	public void run() {
                     	mImageView.setImageBitmap(bitmap);
@@ -1074,7 +1077,7 @@ AsyncTask의 병렬 실행이 필요한 경우를 들어보자.
 로컬 데이터가 결과를 빨리 가져온다는 가정하에 AsyncTaskA에서는 멤버 변수에 데이터만 저장하고 AsyncTaskB의 onPostExecute()에서 조합해서 화면을 보여주었다.
 결과는 어땠을까? 아주 드물지만 로컬 데이터를 먼저 가져온다는 가정이 어긋나는 경우가 생겨서 에러를 발생시켰다. 
 작업량이 많고 적은 것으로 판단하면 안 된다.
-백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안 된다. 극단적으로 말하면 동작이 운에 따른 것이 된다.
+백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안 된다. 극단적으로 말하면 정상 동작 여부가 운에 따른 것이 된다.
 이런 문제가 제어가 어렵다면 차라리 `순차 실행'을 하는 게 나을 수도 있다.\\
 
 일반적으로 2개의 AsyncTask 간에 병렬 실행도 하면서 결과를 합해야 하는 경우에는 2가지 정도 방법을 사용한다.
@@ -1095,7 +1098,8 @@ AsyncTask 때문에 문제가 생기는 것은 화면 회전으로 인해 계속
 Activity가 화면 방향 고정이거나 android:configChanges 속성에 ``orientation''이 들어있지 않은 경우 화면 회전 시마다 Activity는 종료되고 새로 시작되는데 새로 시작되는 것은 다른 인스턴스이다. 
 AsyncTask가 아직 실행 중인 경우에는 기존 Activity도 메모리에서 제거되지 않는다. 빈번하게 화면을 회전할 때 OutOfMemoryError가 발생하는 원인 가운데 하나가 될 수 있다.
 `안드로이드 멀티스레딩' 책에서 제안한 방법은 Activity를 WeakReference로 한 정적 내부 클래스로 AsyncTask를 만드는 것인데, 번거로워서 쓰기에 망설여진다. Activity가 종료될 때 AsyncTask를 함께 종료하는 방법을 찾아보는 게 좋겠다. 이에 대해서는 바로 다음 절에서 살펴보자.  
-또 다른 대안으로는 Loader 프레임워크를 사용하는 방법도 있다. Loader 사용은 복잡하지만 충분히 고려할 만하다.\footnote{\url{http://developer.android.com/intl/ko/guide/components/loaders.html} 내용을 참고하자.}
+또 다른 대안으로는 Loader 프레임워크를 사용하는 방법도 있다.\footnote{\url{http://developer.android.com/intl/ko/guide/components/loaders.html} 내용을 참고하자.}
+Loader 사용은 복잡하지만 충분히 고려할 만하다. 
 
 \item AsyncTask를 순차 실행한다면(SERIAL\_EXECUTOR) 화면 회전 시마다 작업이 쌓이므로 갈수록 실행이 느려질 수 있다.
 
@@ -1176,9 +1180,9 @@ loadImageFromNetwork()에서 예외는 발생하지 않지만 null을 리턴하�
     	
 	}	
 \end{lstlisting}
-원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하는 것이 아니고,  성공 여부를 Boolean 값을 리턴해서 전달하고 있다. 
+원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하는 것이 아니고, 성공 여부를 Boolean 값을 리턴해서 전달하고 있다. 
 전달하고자 하는 결과값은 뜬금없이 AsyncTask의 멤버 변수에 대입돼서 onPostExecute()에서 사용한다.
-가능은 하지만 원래 AsyncTask의 사용 방식과 차이가 생긴다.\\
+가능한 방식이긴 하지만 원래 AsyncTask의 사용 방식과 차이가 생긴다.\\
 %3가지 패턴(Handler, tuple, 멤버 변수, true, false)
 
 군더더기 코드가 생겨나는데 이에 대한 대안으로 앞에서도 언급한 RxJava를 사용하기도 한다. RxJava에서는 예외에 대한 처리 방법을 기본으로 제공한다.
