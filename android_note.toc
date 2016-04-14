@@ -22,7 +22,7 @@
 \contentsline {subsection}{\numberline {3.2.1}ThreadPoolExecutor}{37}{subsection.3.2.1}
 \contentsline {subsection}{\numberline {3.2.2}ScheduledThreadPoolExecutor}{38}{subsection.3.2.2}
 \contentsline {subsection}{\numberline {3.2.3}Executors}{39}{subsection.3.2.3}
-\contentsline {section}{\numberline {3.3}AsyncTask}{40}{section.3.3}
+\contentsline {section}{\numberline {3.3}AsyncTask}{39}{section.3.3}
 \contentsline {subsection}{\numberline {3.3.1}병렬 실행 시 실행 순서}{42}{subsection.3.3.1}
 \contentsline {subsection}{\numberline {3.3.2}Activity 종료 시점과 불일치}{43}{subsection.3.3.2}
 \contentsline {subsection}{\numberline {3.3.3}AsyncTask 취소}{44}{subsection.3.3.3}
@@ -44,7 +44,7 @@
 \contentsline {subsection}{\numberline {5.2.4}android:configChanges 속성}{60}{subsection.5.2.4}
 \contentsline {subsection}{\numberline {5.2.5}Configuration 확인}{64}{subsection.5.2.5}
 \contentsline {section}{\numberline {5.3}태스크}{66}{section.5.3}
-\contentsline {subsection}{\numberline {5.3.1}태스크 상태}{66}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.1}태스크 상태}{67}{subsection.5.3.1}
 \contentsline {subsection}{\numberline {5.3.2}태스크 확인}{67}{subsection.5.3.2}
 \contentsline {subsection}{\numberline {5.3.3}taskAffinity}{70}{subsection.5.3.3}
 \contentsline {subsection}{\numberline {5.3.4}태스크 속성 부여}{71}{subsection.5.3.4}
@@ -63,44 +63,44 @@
 \contentsline {subsection}{\numberline {6.2.2}로컬 바인딩}{92}{subsection.6.2.2}
 \contentsline {subsection}{\numberline {6.2.3}바인딩의 특성}{95}{subsection.6.2.3}
 \contentsline {subsection}{\numberline {6.2.4}Messenger}{97}{subsection.6.2.4}
-\contentsline {chapter}{\numberline {7}ContentProvider}{104}{chapter.7}
-\contentsline {section}{\numberline {7.1}SQLite}{104}{section.7.1}
-\contentsline {subsection}{\numberline {7.1.1}DB Lock 문제}{108}{subsection.7.1.1}
-\contentsline {subsection}{\numberline {7.1.2}SQLiteOpenHelper}{111}{subsection.7.1.2}
-\contentsline {section}{\numberline {7.2}ContentProvider}{113}{section.7.2}
-\contentsline {subsection}{\numberline {7.2.1}ContentProvider 적용}{114}{subsection.7.2.1}
-\contentsline {subsection}{\numberline {7.2.2}배치 execute}{118}{subsection.7.2.2}
-\contentsline {section}{\numberline {7.3}SQLite/ContentProvider 관련 팁}{119}{section.7.3}
-\contentsline {subsection}{\numberline {7.3.1}쿼리 실행 확인}{119}{subsection.7.3.1}
-\contentsline {subsection}{\numberline {7.3.2}ContentProvider 예외 확인}{122}{subsection.7.3.2}
-\contentsline {chapter}{\numberline {8}BroadcastReceiver}{123}{chapter.8}
-\contentsline {section}{\numberline {8.1}BroadcastReceiver 구현}{123}{section.8.1}
-\contentsline {section}{\numberline {8.2}BroadcastReceiver 등록}{124}{section.8.2}
-\contentsline {section}{\numberline {8.3}Ordered Broadcast}{127}{section.8.3}
-\contentsline {section}{\numberline {8.4}Sticky Broadcast}{128}{section.8.4}
-\contentsline {section}{\numberline {8.5}LocalBroadcastManager}{129}{section.8.5}
-\contentsline {section}{\numberline {8.6}App Widget}{130}{section.8.6}
-\contentsline {subsection}{\numberline {8.6.1}App Widget 기본}{130}{subsection.8.6.1}
-\contentsline {subsection}{\numberline {8.6.2}RemoteViews}{132}{subsection.8.6.2}
-\contentsline {subsection}{\numberline {8.6.3}App Widget 업데이트}{133}{subsection.8.6.3}
-\contentsline {subsection}{\numberline {8.6.4}유의할 점}{134}{subsection.8.6.4}
-\contentsline {subsubsection}{메인 스레드 점유}{134}{section*.9}
-\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{134}{section*.10}
-\contentsline {subsubsection}{ICS부터 기본 패딩}{135}{section*.11}
-\contentsline {subsubsection}{고해상도 단말에서 Bitmap 생성시 메모리 문제}{135}{section*.12}
-\contentsline {chapter}{\numberline {9}Application}{136}{chapter.9}
-\contentsline {section}{\numberline {9.1}앱 초기화}{136}{section.9.1}
-\contentsline {section}{\numberline {9.2}Application Callback}{138}{section.9.2}
-\contentsline {section}{\numberline {9.3}프로세스 분리}{140}{section.9.3}
-\contentsline {chapter}{\numberline {10}시스템 서비스}{144}{chapter.10}
-\contentsline {section}{\numberline {10.1}네이티브 시스템 서비스}{145}{section.10.1}
-\contentsline {section}{\numberline {10.2}자바 시스템 서비스}{146}{section.10.2}
-\contentsline {section}{\numberline {10.3}dumpsys 명령어}{152}{section.10.3}
-\contentsline {section}{\numberline {10.4}시스템 서비스 이슈}{157}{section.10.4}
-\contentsline {subsection}{\numberline {10.4.1}빈번한 리모트 호출}{157}{subsection.10.4.1}
-\contentsline {subsection}{\numberline {10.4.2}전원 관리와 Deep Sleep}{157}{subsection.10.4.2}
-\contentsline {subsection}{\numberline {10.4.3}알람 등록과 제거}{162}{subsection.10.4.3}
-\contentsline {chapter}{\numberline {11}구현 패턴}{163}{chapter.11}
-\contentsline {section}{\numberline {11.1}싱글톤 패턴}{163}{section.11.1}
-\contentsline {section}{\numberline {11.2}마커 인터페이스}{167}{section.11.2}
-\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{171}{section.11.3}
+\contentsline {chapter}{\numberline {7}ContentProvider}{103}{chapter.7}
+\contentsline {section}{\numberline {7.1}SQLite}{103}{section.7.1}
+\contentsline {subsection}{\numberline {7.1.1}DB Lock 문제}{107}{subsection.7.1.1}
+\contentsline {subsection}{\numberline {7.1.2}SQLiteOpenHelper}{110}{subsection.7.1.2}
+\contentsline {section}{\numberline {7.2}ContentProvider}{112}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}ContentProvider 적용}{113}{subsection.7.2.1}
+\contentsline {subsection}{\numberline {7.2.2}배치 execute}{117}{subsection.7.2.2}
+\contentsline {section}{\numberline {7.3}SQLite/ContentProvider 관련 팁}{118}{section.7.3}
+\contentsline {subsection}{\numberline {7.3.1}쿼리 실행 확인}{118}{subsection.7.3.1}
+\contentsline {subsection}{\numberline {7.3.2}ContentProvider 예외 확인}{121}{subsection.7.3.2}
+\contentsline {chapter}{\numberline {8}BroadcastReceiver}{122}{chapter.8}
+\contentsline {section}{\numberline {8.1}BroadcastReceiver 구현}{122}{section.8.1}
+\contentsline {section}{\numberline {8.2}BroadcastReceiver 등록}{123}{section.8.2}
+\contentsline {section}{\numberline {8.3}Ordered Broadcast}{126}{section.8.3}
+\contentsline {section}{\numberline {8.4}Sticky Broadcast}{127}{section.8.4}
+\contentsline {section}{\numberline {8.5}LocalBroadcastManager}{128}{section.8.5}
+\contentsline {section}{\numberline {8.6}App Widget}{129}{section.8.6}
+\contentsline {subsection}{\numberline {8.6.1}App Widget 기본}{129}{subsection.8.6.1}
+\contentsline {subsection}{\numberline {8.6.2}RemoteViews}{131}{subsection.8.6.2}
+\contentsline {subsection}{\numberline {8.6.3}App Widget 업데이트}{132}{subsection.8.6.3}
+\contentsline {subsection}{\numberline {8.6.4}유의할 점}{133}{subsection.8.6.4}
+\contentsline {subsubsection}{메인 스레드 점유}{133}{section*.9}
+\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{133}{section*.10}
+\contentsline {subsubsection}{ICS부터 기본 패딩}{134}{section*.11}
+\contentsline {subsubsection}{고해상도 단말에서 Bitmap 생성시 메모리 문제}{134}{section*.12}
+\contentsline {chapter}{\numberline {9}Application}{135}{chapter.9}
+\contentsline {section}{\numberline {9.1}앱 초기화}{135}{section.9.1}
+\contentsline {section}{\numberline {9.2}Application Callback}{137}{section.9.2}
+\contentsline {section}{\numberline {9.3}프로세스 분리}{139}{section.9.3}
+\contentsline {chapter}{\numberline {10}시스템 서비스}{143}{chapter.10}
+\contentsline {section}{\numberline {10.1}네이티브 시스템 서비스}{144}{section.10.1}
+\contentsline {section}{\numberline {10.2}자바 시스템 서비스}{145}{section.10.2}
+\contentsline {section}{\numberline {10.3}dumpsys 명령어}{151}{section.10.3}
+\contentsline {section}{\numberline {10.4}시스템 서비스 이슈}{156}{section.10.4}
+\contentsline {subsection}{\numberline {10.4.1}빈번한 리모트 호출}{156}{subsection.10.4.1}
+\contentsline {subsection}{\numberline {10.4.2}전원 관리와 Deep Sleep}{156}{subsection.10.4.2}
+\contentsline {subsection}{\numberline {10.4.3}알람 등록과 제거}{161}{subsection.10.4.3}
+\contentsline {chapter}{\numberline {11}구현 패턴}{162}{chapter.11}
+\contentsline {section}{\numberline {11.1}싱글톤 패턴}{162}{section.11.1}
+\contentsline {section}{\numberline {11.2}마커 인터페이스}{166}{section.11.2}
+\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{170}{section.11.3}

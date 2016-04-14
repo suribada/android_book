@@ -1,12 +1,12 @@
 \chapter{안드로이드 프레임워크}
-먼저 안드로이드 프레임워크의 소프트웨어 스택에 대한 기본적인 내용과 프레임워크 소스 활용 방안, 그리고 안드이드 버전에 따른 이슈도 살펴보자.
+먼저 안드로이드 프레임워크의 소프트웨어 스택에 대한 기본적인 내용과 프레임워크 소스 활용 방안, 그리고 안드이드 버전에 따른 이슈를 살펴보자.
 
 \section{프레임워크 개요}
-아래는 여러 안드로이드 책에서도 많이 나오는 그림인데 각 스택에 대한 내용을 간단히 살펴보자.\\
+아래는 여러 안드로이드 책에도 많이 나오는 그림인데 각 스택에 대한 내용을 간단히 살펴보자.\\
 
 \includegraphics[scale=0.65]{system-architecture}
 \begin{itemize}
-\item 안드로이드에서 제공하는 기본 앱(Home, Camera, Dialer, Browser 등)과 일반 앱은 Applications 스택에 있고, Applications는 Application Framework 위에서 동작한다. 기본 앱은 소스가 공개돼 있으므로 참고 자료로 활용할 수 있다. 단말 제조사들은 일반적으로 기본 앱을 커스터마이징하고, 제조사 단말에 특화된 앱도 추가로 제공한다. 요점은 단말에 깔린 기본 앱과 우리가 만드는 앱은 동일한 레벨이라는 것이다. 다만 기본 앱은 시스템 권한을 쓸 수 있는 정도가 차이가 있다.
+\item 안드로이드에서 제공하는 기본 앱(Home, Camera, Dialer, Browser 등)과 일반 앱은 Applications 스택에 있고, Applications는 Application Framework 위에서 동작한다. 기본 앱은 소스가 공개돼 있으므로 참고 자료로 활용할 수 있다. 단말 제조사들은 일반적으로 기본 앱을 커스터마이징하고, 제조사 단말에 특화된 앱도 추가로 제공한다. 요점은 단말에 깔린 기본 앱과 우리가 만드는 앱은 동일한 레벨이라는 것이다. 다만 기본 앱은 시스템 권한을 쓸 수 있다는 게 다르다.
 
 \item Application Framework는 자바 기반의 여러 -Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다.(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다.) 각종 -Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
 
@@ -151,7 +151,7 @@ ICS(아이스크림 샌드위치) & 14 & 4.0-4.0.2\\ \cline{2-3}
 
 \subsection{호환성 모드}
 앱이 동작하는 안드로이드 버전을 지정하기 위해서는 AndroidManifest.xml에서 uses-sdk 항목에  android:min\-SdkVersion과 android:targetSdkVersion에 버전을 기재한다. 
-오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 채로 있는 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
+만든 지 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 채로 있는 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
 targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테스트해봤는데 앱 실행에 문제가 없다는 의미이고, 그 버전까지는 호환성 모드를 쓰지 않겠다는 뜻이다.\\
 
 호환성 모드는 안드로이드 버전이 올라가더라도 앱의 기존 동작이 바뀌는 것을 방지하기 위한 것이다.
@@ -166,14 +166,12 @@ targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테
 \begin{lstlisting}[frame=single]
 	public static <Params, Progress, Result> AsyncTask<Params,
 			Progress, Result> executeParallel(
-            AsyncTask<Params, Progress, Result> task,
-            Params... params) {
+            AsyncTask<Params, Progress, Result> task, Params... params) {
         if (task == null) {
             throw new IllegalArgumentException("task can not be null");
         }
         if (Build.VERSION.SDK_INT >= 11) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-            	params);
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         } else {
             task.execute(params);
         }
