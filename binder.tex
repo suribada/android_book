@@ -86,9 +86,7 @@ u0_a12    1385  355   1082344 150852 ffffffff 00000000 S com.android.systemui
 radio     1619  355   913032 24116 ffffffff 00000000 S com.android.phone
 u0_a134   1661  355   870396 21168 ffffffff 00000000 S com.skt.tbmon
 u0_a50    1675  355   870900 20432 ffffffff 00000000 S com.skt.apra
-system    1727  355   872452 18660 ffffffff 00000000 S com.qualcomm.services.location
-nfc       1739  355   883544 20352 ffffffff 00000000 S com.android.nfc
-system    1753  355   869324 16212 ffffffff 00000000 S com.qualcomm.wfd.service:wfd_service
+...
 u0_a110   1780  355   960648 126336 ffffffff 00000000 S com.pantech.launcher2
 u0_a197   1881  355   869196 16148 ffffffff 00000000 S com.android.smspush
 u0_a9     1976  355   1068200 37924 ffffffff 00000000 S com.google.android.gms
@@ -229,30 +227,30 @@ system\_server에서 여러 시스템 서비스를 제공하고, 이를 다른 �
 /system/bin/servicemanager 프로세스에 Stub을 등록하는 내용은 /frameworks/base/services/java/com/android/server/SystemServer.java\footnote{system\_server 프로세스의 메인 클래스이다.}에서 내부 클래스인 ServerThread의 initAndLoop() 메서드에서 볼 수 있다.
 
 \begin{lstlisting}[frame=single, caption=SystemServer.java] 
-	    display = new DisplayManagerService(context, wmHandler);
-	    ServiceManager.addService(Context.DISPLAY_SERVICE, display, true);
+	display = new DisplayManagerService(context, wmHandler);
+	ServiceManager.addService(Context.DISPLAY_SERVICE, display, true);
 	
-	    telephonyRegistry = new TelephonyRegistry(context);
-	    ServiceManager.addService("telephony.registry", telephonyRegistry);
+	telephonyRegistry = new TelephonyRegistry(context);
+	ServiceManager.addService("telephony.registry", telephonyRegistry);
 	
-	    ServiceManager.addService("scheduling_policy", new SchedulingPolicyService());
+	ServiceManager.addService("scheduling_policy", new SchedulingPolicyService());
 		
-		...
-		ActivityManagerService.setSystemProcess(); // (1)
+	...
+	ActivityManagerService.setSystemProcess(); // (1)
 		
-		...
-	    ServiceManager.addService("battery", battery);
+	...
+	ServiceManager.addService("battery", battery);
 	
-	    vibrator = new VibratorService(context);
-	    ServiceManager.addService("vibrator", vibrator);
+	vibrator = new VibratorService(context);
+	ServiceManager.addService("vibrator", vibrator);
 	
-		...
-	    inputManager = new InputManagerService(context, wmHandler);
-	    wm = WindowManagerService.main(context, power, display, inputManager,
-	            wmHandler, factoryTest != SystemServer.FACTORY_TEST_LOW_LEVEL,
-	            !firstBoot, onlyCore);
-	    ServiceManager.addService(Context.WINDOW_SERVICE, wm);
-	    ServiceManager.addService(Context.INPUT_SERVICE, inputManager);
+	...
+	inputManager = new InputManagerService(context, wmHandler);
+	wm = WindowManagerService.main(context, power, display, inputManager,
+	        wmHandler, factoryTest != SystemServer.FACTORY_TEST_LOW_LEVEL,
+	        !firstBoot, onlyCore);
+	ServiceManager.addService(Context.WINDOW_SERVICE, wm);
+	ServiceManager.addService(Context.INPUT_SERVICE, inputManager);
 \end{lstlisting}	    
 ServiceManager.addService() 메서드를 통해서 여러 Stub을 등록하는 것을 볼 수 있다.
 % /frameworks/base/core/java/android/os/ServiceManager.java
@@ -315,7 +313,8 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
 
         registerService(ACTIVITY_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
-                    return new ActivityManager(ctx.getOuterContext(), ctx.mMainThread.getHandler());
+                    return new ActivityManager(ctx.getOuterContext(), 
+                    	ctx.mMainThread.getHandler());
                 }});
 
         registerService(ALARM_SERVICE, new ServiceFetcher() {
@@ -327,36 +326,26 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
 		....
         registerService(LAYOUT_INFLATER_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
-                    return PolicyManager.makeNewLayoutInflater(ctx.getOuterContext());
+                    return PolicyManager.makeNewLayoutInflater(
+                    	ctx.getOuterContext());
                 }});
 
         registerService(LOCATION_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(LOCATION_SERVICE);
-                    return new LocationManager(ctx, ILocationManager.Stub.asInterface(b));
+                    return new LocationManager(ctx, 
+                    	ILocationManager.Stub.asInterface(b));
                 }});
 
         registerService(NETWORK_POLICY_SERVICE, new ServiceFetcher() {
             @Override
             public Object createService(ContextImpl ctx) {
-                return new NetworkPolicyManager(INetworkPolicyManager.Stub.asInterface(
-                        ServiceManager.getService(NETWORK_POLICY_SERVICE)));
+                return new NetworkPolicyManager(
+                	INetworkPolicyManager.Stub.asInterface(
+                    ServiceManager.getService(NETWORK_POLICY_SERVICE)));
             }
         });
-
-        registerService(NOTIFICATION_SERVICE, new ServiceFetcher() {
-                public Object createService(ContextImpl ctx) {
-                    final Context outerContext = ctx.getOuterContext();
-                    return new NotificationManager(
-                        new ContextThemeWrapper(outerContext,
-                                Resources.selectSystemTheme(0,
-                                        outerContext.getApplicationInfo().targetSdkVersion,
-                                        com.android.internal.R.style.Theme_Dialog,
-                                        com.android.internal.R.style.Theme_Holo_Dialog,
-                                        com.android.internal.R.style.Theme_DeviceDefault_Dialog)),
-                        ctx.mMainThread.getHandler());
-                }});
-
+		....
         registerService(POWER_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(POWER_SERVICE);
@@ -472,11 +461,12 @@ dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시�
 
         @Override
         protected void dump(FileDescriptor fd, PrintWriter pw, String[] args) {
-            if (mActivityManagerService.checkCallingPermission(android.Manifest.permission.DUMP)
+            if (mActivityManagerService.checkCallingPermission(
+            		android.Manifest.permission.DUMP)
                     != PackageManager.PERMISSION_GRANTED) {
                 pw.println("Permission Denial: can't dump meminfo from from pid="
-                        + Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
-                        + " without permission " + android.Manifest.permission.DUMP);
+                	+ Binder.getCallingPid() + ", uid=" + Binder.getCallingUid()
+                    + " without permission " + android.Manifest.permission.DUMP);
                 return;
             }
 
@@ -628,7 +618,8 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 \begin{lstlisting}[frame=single]
 	public static int getAppVersionCode() {
 		try {
-			return mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), Context.MODE_PRIVATE).versionCode;
+			return mContext.getPackageManager().getPackageInfo(
+				mContext.getPackageName(), Context.MODE_PRIVATE).versionCode;
 		} catch (PackageManager.NameNotFoundException ex) {
 			return -1;
 		}
@@ -724,7 +715,7 @@ MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보�
 이런 패턴은 DigitalClock이나 TextClock에서도 쓰이는데 내부적으로 DELAY\_TIME을 1초 이내로 줘서 매 간격마다 시간을 갱신한다. 
 우리가 사용하는 단말에서 화면에 나타나는 시계도 이런 형태로 구현되어 있다.
 단말을 옆에 한참 방치해놓다가, 화면을 ON하면 순식간에 시간이 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 즉 그 사이에 매 초마다 시간을 변경하지 않고 있다가, 화면을 ON하는 순간 현재 시간을 보여준 것이다.
-이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다.(실행이 중지된 것일뿐 Message가 사라진 것은 아니다.)
+이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일뿐 Message가 사라진 것은 아니다).
 그리고 CPU가 깨어난 순간 동작을 한 것인데, 만일 Delay Time이 큰 경우에는 어떨까?\\
 
 두 가지 실제 예를 들어보자.
@@ -745,10 +736,12 @@ MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보�
 이런 경우 일반적인 해결 방법은 AlarmManager를 쓰는 것이다. delay time도 잘 맞추어서 깨워주고 Deep Sleep에도 문제가 없다.
 \begin{lstlisting}[frame=single]
 	private void repeatUpdater() {
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, UpdaterReceiver.class),  
-				PendingIntent.FLAG_UPDATE_CURRENT);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, 
+			new Intent(this, UpdaterReceiver.class), 
+			PendingIntent.FLAG_UPDATE_CURRENT);
 		AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60 * 60 * 1000, pendingIntent);
+		am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 
+			60 * 60 * 1000, pendingIntent);
 	}
 \end{lstlisting}
 PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에서는 RTC\_WAKEUP 옵션을 사용해서 Deep Sleep에서도 깨어나도록 하였다. 
@@ -767,7 +760,8 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
         super.onCreate(savedInstanceState);
         ...
 		title = (TextView) findViewById(R.id.title);
-		registerReceiver(receiver, new IntentFilter(Intent.ACTION_SCREEN_ON)); //(1)
+		registerReceiver(receiver, 
+			new IntentFilter(Intent.ACTION_SCREEN_ON)); // (1)
     }
     
     @Override

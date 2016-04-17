@@ -24,7 +24,7 @@ onReceive()에서 startService()와 startActivity()를 둘 다 실행하는 경�
 
 onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도 있다.
 10초(포그라운드)/1분(백그라운드: 기본)내에 onReceive() 메서드 실행이 끝나야 한다. 10초/1분이 넘으면 ANR이 발생한다.
-메인 쓰레드에서 실행되므로 실제로는 1분/10초/5초도 아닌 훨씬 짧은 시간내에 처리가 완료되어야 한다. 그렇지 않으면 UI에서 버벅거림의 원인이 될 수 있다.\\
+메인 쓰레드에서 실행되므로 실제로는 1분/10초/5초도 아닌 훨씬 짧은 시간 내에 처리가 완료되어야 한다. 그렇지 않으면 UI에서 버벅거림의 원인이 될 수 있다.\\
 
 한 이벤트에 대해서 한 앱에 여러 BroadcastReceiver가 등록된 경우도 주의해야 한다.
 본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 문제가  없지만, 한 앱에서는 여러 개의 BroadcastReceiver가 있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.\\
@@ -109,14 +109,16 @@ PendingIntent를 setXxx() 메서드를 통해서 특정 시간에 동작하도�
 Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 하는 경우도 물론 있다.
 등록할 때는 먼저 IntentFilter를 생성해서 Action을 추가하고 BroadcastReceiver를 만든다. 그리고 IntentFilter와 BroadcastReceiver를 registerReceiver()에 파라미터로 전달한다.
 \begin{lstlisting}[frame=single] 
-	private static final String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
+	private static final String VOLUME_CHANGED_ACTION 
+		= "android.media.VOLUME_CHANGED_ACTION";
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(VOLUME_CHANGED_ACTION)) {
-				int value = intent.getIntExtra("android.media.EXTRA_VOLUME_STREAM_VALUE", -1);
+				int value = intent.getIntExtra(
+					"android.media.EXTRA_VOLUME_STREAM_VALUE", -1);
 				if (value > -1) {
 					mVolumeSeekBar.setProgress(value);
 				}
@@ -153,13 +155,16 @@ Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 
 	Intent launchIntent = pm.getLaunchIntentForPackage(context.getPackageName());
 	String className = launchIntent.getComponent().getClassName();
 	shortcutIntent.setClassName(context, className);
-	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+	shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK 
+		| Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 	shortcutIntent.addCategory(Intent.CATEGORY_LAUNCHER);
 
 	Intent intent = new Intent();
 	intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, context.getString(R.string.app_name));
-	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(context, R.drawable.icon));
+	intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, 
+		context.getString(R.string.app_name));
+	intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, 
+		Intent.ShortcutIconResource.fromContext(context, R.drawable.icon));
 	intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
 	intent.putExtra("duplicate", false);
 	context.sendBroadcast(intent);
@@ -248,8 +253,7 @@ LocalBroadcastManager는 로컬 프로세스에서만 이벤트를 주고받을 
 시스템 Broadcast와는 구조가 완전히 다른데 ActivityManagerService를 거치지 않고 싱글톤인 LocalBroadcastManager에서 BroadcastReceiver를 등록하고 sendBroadcast()를 실행한다.
 
 \begin{lstlisting}[frame=single] 
-LocalBroadcastManager.getInstance(this)
-	.sendBroadcast(CalendarIntent.CHANGE_TIME);
+LocalBroadcastManager.getInstance(this).sendBroadcast(CalendarIntent.CHANGE_TIME);
 ...
 LocalBroadcastManager.getInstance(this).registerReceiver(..)
 \end{lstlisting}
@@ -289,13 +293,13 @@ App Widget의 기본 특성을 알아보자.
 \item App Widget 변경은 Broadcast를 통한다. 주로 시스템(AppWidgetService)에서 sendBroadcast()를 호출하면 BroadcastReceiver의 onReceive() 메서드에서 App Widget에 작업을 하는 방식이다.
 아래는 ApiDemos에 있는 App Widget 선언이다.
 \begin{lstlisting}[frame=single] 
-        <receiver android:name=".appwidget.ExampleAppWidgetProvider">
-            <meta-data android:name="android.appwidget.provider"
-                    android:resource="@xml/appwidget_provider" />
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-        </receiver>
+    <receiver android:name=".appwidget.ExampleAppWidgetProvider">
+        <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_provider" />
+        <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+        </intent-filter>
+    </receiver>
 \end{lstlisting}
 여기서 중요한 것은 2라인에서 meta-data에 android.appwidget.provider가 전달된다는 것이다. 이를 통해 BroadcastReceiver는 App Widget 용도로 정해진다.
 \end{enumerate}
@@ -312,37 +316,52 @@ public class AppWidgetProvider extends BroadcastReceiver {
 		if (AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(action)) { // (1)
 			Bundle extras = intent.getExtras();
 			if (extras != null) {
-				int[] appWidgetIds = extras.getIntArray(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+				int[] appWidgetIds = extras.getIntArray(
+					AppWidgetManager.EXTRA_APPWIDGET_IDS);
 				if (appWidgetIds != null && appWidgetIds.length > 0) {
-					this.onUpdate(context, AppWidgetManager.getInstance(context), appWidgetIds);
+					this.onUpdate(context, AppWidgetManager.getInstance(context),
+						appWidgetIds);
 				}
 			}
-		} else if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) { // (2)
+		} else if (AppWidgetManager.ACTION_APPWIDGET_DELETED
+				.equals(action)) { // (2)
 			Bundle extras = intent.getExtras();
-			if (extras != null && extras.containsKey(AppWidgetManager.EXTRA_APPWIDGET_ID)) {
-				final int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
+			if (extras != null && extras.containsKey(
+					AppWidgetManager.EXTRA_APPWIDGET_ID)) {
+				final int appWidgetId = extras.getInt(
+					AppWidgetManager.EXTRA_APPWIDGET_ID);
 				this.onDeleted(context, new int[] { appWidgetId });
 			}
-		} else if (AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED.equals(action)) { // (3)
+		} else if (AppWidgetManager.ACTION_APPWIDGET_OPTIONS_CHANGED
+				.equals(action)) { // (3)
 			Bundle extras = intent.getExtras();
-			if (extras != null && extras.containsKey(AppWidgetManager.EXTRA_APPWIDGET_ID)
-					&& extras.containsKey(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS)) {
-				int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-				Bundle widgetExtras = extras.getBundle(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS);
-				this.onAppWidgetOptionsChanged(context, AppWidgetManager.getInstance(context), appWidgetId, 
-						widgetExtras);
+			if (extras != null && extras.containsKey(
+					AppWidgetManager.EXTRA_APPWIDGET_ID)
+					&& extras.containsKey(
+					AppWidgetManager.EXTRA_APPWIDGET_OPTIONS)) {
+				int appWidgetId = extras.getInt(
+					AppWidgetManager.EXTRA_APPWIDGET_ID);
+				Bundle widgetExtras = extras.getBundle(
+					AppWidgetManager.EXTRA_APPWIDGET_OPTIONS);
+				this.onAppWidgetOptionsChanged(context, 
+					AppWidgetManager.getInstance(context), appWidgetId, 
+					widgetExtras);
 			}
-		} else if (AppWidgetManager.ACTION_APPWIDGET_ENABLED.equals(action)) { // (4)
+		} else if (AppWidgetManager.ACTION_APPWIDGET_ENABLED
+				.equals(action)) { // (4)
 			this.onEnabled(context);
-		} else if (AppWidgetManager.ACTION_APPWIDGET_DISABLED.equals(action)) { // (5)
+		} else if (AppWidgetManager.ACTION_APPWIDGET_DISABLED
+				.equals(action)) { // (5)
 			this.onDisabled(context);
 		}
 	}
 
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, 
+			int[] appWidgetIds) {
 	}
 	
-	public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId,
+	public void onAppWidgetOptionsChanged(Context context, 
+			AppWidgetManager appWidgetManager, int appWidgetId, 
 			Bundle newOptions) {
 	}
 
@@ -363,7 +382,7 @@ public class AppWidgetProvider extends BroadcastReceiver {
 \item 5라인(1)에서 ACTION\_APPWIDGET\_UPDATE Action은 부팅 시, 최초 설치 시, update interval 경과 시에 호출된다. App Widget에서 가장 주요한 Intent Action이다.
 \item 13라인(2)에서 ACTION\_APPWIDGET\_DELETED Action은 인스턴스 하나가 삭제될 때 호출된다.
 \item 19라인(3)에서 ACTION\_APPWIDGET\_OPTIONS\_CHANGED Action은 App Widget이 새로운 사이즈로 레이아웃될때 호출된다.(젤리빈부터)
-\item 28라인(4)에서 ACTION\_APPWIDGET\_ENABLED Action은 최초 설치시에 호출된다.
+\item 28라인(4)에서 ACTION\_APPWIDGET\_ENABLED Action은 최초 설치 시에 호출된다.
 \item 30라인(5)에서 ACTION\_APPWIDGET\_DISABLED Action은 마지막 인스턴스가 삭제될 때 호출된다.
 \item ACTION\_APPWIDGET\_DELETED, ACTION\_OPTIONS\_CHANGED, ACTION\_ENABLED,\\
 ACTION\_DISABLED Action은 protected intent로 시스템에서만 보낼 수 있다.
@@ -404,7 +423,8 @@ setImageViewBitmap(), setImageViewUrl(), setTextColor(), setTextViewText() 같�
 \subsection{App Widget 업데이트}
 App Widget을 업데이트하는 주요 코드는 간단하다.
 \begin{lstlisting}[frame=single] 
-	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_provider); // (1)
+	RemoteViews views = new RemoteViews(context.getPackageName(), 
+		R.layout.appwidget_provider); // (1)
 	views.setTextViewText(R.id.appwidget_text, text); // (2)
 	....
 	appWidgetManager.updateAppWidget(appWidgetId, views); // (3)
@@ -443,7 +463,7 @@ onReceive() 메서드가 끝나자마자 프로세스 우선 순위가 낮아져
 
 \subsubsection{부팅 중에는 initialLayout만 보임}
 캘린더 일정 목록 App Widget이 있다고 하자. 
-DB에서 데이터를 가져와서 뿌려주고, 일정이 없다면 ``일정 목록이 없습니다.''라는 메시지를 보여준다.
+DB에서 데이터를 가져와서 보여주고, 일정이 없다면 ``일정 목록이 없습니다.''라는 메시지를 보여준다.
 일정 목록을 가져오고나면 목록이 없다는 메시지가 사라지기 때문에, 이 메시지가 있는 상태로 initialLayout을 설정해도 될 것 같은데 사용상의 문제가 있다.\\
 
 단말 전원을 새로 ON시키면 홈 스크린 화면이 보이고 나서 금방 부팅이 완료되는 것이 아니다. 
@@ -461,10 +481,10 @@ ICS 이전에는 셀 경계까지 꽉 채워서 App Widget을 배치했는데, t
 따라서 기존에 꽉 채우는 것을 기준으로 만든 App Widget은 레이아웃을 조정할 필요가 있다. 예를 들어, 일정 4개가 보이기로 한 일정 목록이 targetSdkVersion을 올리면 패딩 때문에 3개 반이 보이는 경우가 생긴다.
 %단말 별로 다른 Launcher를 사용하고 있고 패딩값이 모두 다른데 어떻게 계산할까? 바로 AppWidgetHostView의 getDefaultPaddingForWidget 메서드 리턴값을 가지고 사용 가능한 영역을 계산할 수 있다.
 
-\subsubsection{고해상도 단말에서 Bitmap 생성시 메모리 문제}
+\subsubsection{고해상도 단말에서 Bitmap 생성 시 메모리 문제}
 App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여기서 클릭을 하면 Activity를 띄워 상세 정보를 보여주는 식이다.\\
 
-그런데 캘린더 앱/시간표 앱 등 몇 가지 앱은 사용자의 요구로 인해 App Widget의 사이즈가 4x4나 5x5 정도까지 해서 단순 정보가 아닌 화면을 꽉 채운 정보를 전달하는 경우가 있다.
+그런데 캘린더나 시간표 같은 몇 가지 앱은 사용자의 요구로 인해 App Widget의 사이즈가 4x4나 5x5 정도까지 해서 단순 정보가 아닌 화면을 꽉 채운 정보를 전달하는 경우가 있다.
 그리고 RemoteViews에서 지원하는 일반적인 뷰 클래스로는 불가능하여 Bitmap을 생성하고, Bitmap에 내용을 그리고서 ImageView에 setBitmap()을 실행하는 경우가 있다.
 게다가 홈 스크린에서는 화면을 크게 차지하면 가급적 바탕화면도 보이도록 투명하게 만들기도 한다.\\
 
@@ -473,7 +493,7 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888); 
 \end{verbatim}
 createBitmap()의 세 번째 파라미터는 Bitmap.Config API 문서에서 보면, 투명 Bitmap을 생성하기 위해서 ARGB\_8888을 적용한 것이다.
-그런데 이 옵션은 픽셀당 4 byte를 차지하고 있다(투명 Alpha 값이 없는 RGB\_565의 2배). 갤노트4의 경우를 보면 해상도가 2560x1440이므로 곱하기를 하면 14,745,600 byte가 나온다. 즉 createBitmap() 만으로도 14M 가량을 사용하게 되는 셈인데, 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
+그런데 이 옵션은 픽셀당 4 byte를 차지하고 있다(투명 Alpha 값이 없는 RGB\_565의 2배). 갤노트4의 경우를 보면 해상도가 2560x1440이므로 곱하기를 하면 14,745,600 byte가 나온다. 즉 createBitmap()만으로도 14M 가량을 사용하게 되는 셈인데, 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
 
 기존에는 문제가 없었는데 특히 최신 단말에서 App Widget 생성하면서 Bitmap.createBitmap()에서 OutOfMemoryError가 발생한다면 이것을 원인으로 보면 거의 맞다.
 단말 스펙이 높아지면서 해상도가 좋아지는데, 앱 프로세스에서 사용할 수 있는 가용 메모리는 비례해서 커지지 않아서 발생하는 문제이다.

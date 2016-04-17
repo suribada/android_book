@@ -96,7 +96,7 @@ user_dict.db
 user_dict.db-journal
 \end{lstlisting}
 별게 아닌 명령어지만 한번쯤 실행해 볼 필요는 있다. 
-단말에 기본적으로 깔려있는 앱(캘린더, 주소록 등)은 기본적으로 ContentProvider를 제공하고, 다른 일반 앱에서 필요한 내용들(미디어 데이터, 시스템 설정 등)도 ContentProvider를 제공하고 있다.
+단말에 깔린 기본 앱(캘린더, 주소록 등)은 기본적으로 ContentProvider를 제공하고, 다른 일반 앱에서 필요한 내용들(미디어 데이터, 시스템 설정 등)도 ContentProvider를 제공하고 있다.
 \footnote{안드로이드에서 제공하는 ContentProvider는 android.provider 패키지에서 확인할 수 있다.\url{http://developer.android.com/reference/android/provider/package-summary.html}}\\
 
 위에서 db 파일 목록을 보면 db 확장자 외에도 db에 -journal이나 -wal, -shm이 붙은 파일이 있는 것을 볼 수 있다.
@@ -176,14 +176,15 @@ Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE\_MODE\_ON,
 Settings.System 클래스를 보고 내부적으로 db를 사용하고 있는 것을 알면, 여러 앱에서 사용 가능한 nonsecure \& public 값들을 추가로 넣을 수 있지 않을까? 예를 들어, 가장 최근 검색어를 여러 앱에서 공유할 수도 있다.
 아래 코드는 단말에서도 잘 동작한다. \\
 \begin{lstlisting}[frame=single]
-Settings.System.putString(context.getContentResolver(), "most_recent_keyword", "Hawaii");
+Settings.System.putString(context.getContentResolver(), "most_recent_keyword",
+	"Hawaii");
 Settings.System.getString(context.getContentResolver(), "most_recent_keyword");
 \end{lstlisting}
 
 단말에서는 AIRPLANE\_MODE\_ON 같은 특정 키에 대해서 업데이트를 막아놓은 것으로 해석하면 된다.\\
 
 
-sqlite shell에서 쓸 수 있는 명령어 모음은 아래 사이트를 참고하자. 두번째 사이트가 정리가 잘 되어 있다.\\
+sqlite shell에서 쓸 수 있는 명령어 모음은 아래 사이트를 참고하자. 두 번째 사이트가 정리가 잘 되어 있다.\\
 http://www.sqlite.org/lang.html\\
 http://www.tutorialspoint.com/sqlite/\\
 
@@ -212,14 +213,14 @@ Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로�
 \begin{itemize}
 \item UNLOCKED: 기본 상태이다. 읽기나 쓰기가 안 된다.
 \item SHARED: 읽기만 되고 쓰기는 안 된다. 여러 프로세스가 동시에 Shared Lock을 가질 수 있다. 하나 이상의 Shared Lock이 활성화되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
-\item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 하려고 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
+\item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
 \item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
 \item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 너무 크게 잡지 않도록 권장하는 것과 비슷하다. \\
 % 예를 들어 수차례의 HTTP call을 통해서 데이터를 가져와서 입력한다고 하면, Transaction을 먼저 시작하고, HTTP call을 하면 전체적인 Transaction 실행시간이 길어질 수 밖에 없다.
 \end{itemize}
 
 결국 CRUD에서 Read를 뺀 나머지 CUD에서 Exclusive Lock을 잡는 것 때문에 DB Lock 문제가 생긴다. 그러나 CUD에서도 Lock을 잡는게 짧은 시간이기 때문에 빈번하게 문제를 일으키지 않는다. 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 해야 하는 트랜잭션이다.
-SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.(\url{http://sqlite.org/lang\_transaction.html})\\
+SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}를 참고하자.}\\
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
 \begin{itemize}
@@ -651,13 +652,15 @@ ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOp
 operations.add(ContentProviderOperation.newInsert(NotePad.CONTENT_URI) // (1)
 	.withValue(NotePad.Notes.COLUMN_NAME_TITLE, "Lunch")
 	.withValue(NotePad.Notes.COLUMN_NAME_NOTE, "Kimchi")
-	.withValue(NotePad.COLUMN_NAME_CREATE_DATE, Long.valueOf(System.currentTimeMillis()))
+	.withValue(NotePad.COLUMN_NAME_CREATE_DATE, 
+		Long.valueOf(System.currentTimeMillis()))
 	.build());
 operations.add(ContentProviderOperation.newUpdate(NotePad.CONTENT_URI) // (2)
 	.withSelection(NotePad.Notes._ID + "=?", new String[] {3})
 	.withValue(NotePad.Notes.COLUMN_NAME_TITLE, "Lunch2")
 	.withValue(NotePad.Notes.COLUMN_NAME_NOTE, "Kimchi2")
-	.withValue(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, Long.valueOf(System.currentTimeMillis()))
+	.withValue(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, 
+		Long.valueOf(System.currentTimeMillis()))
 	.build());
 operations.add(ContentProviderOperation.newDelete(Memos.CONTENT_URI) // (3)
 	.withSelection(NotePad.Notes._ID + "=?", new String[] {5})
@@ -675,7 +678,8 @@ ContentProvider에서 트랜잭션을 써서 속도를 향상시키고 싶다면
 applyBatch(ArrayList$<$ContentProviderOperation$>$ operations) 메서드를 오버라이드하는 방법이 있다.
 \begin{lstlisting}[frame=single] 
 @Override
-public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations) {
+public ContentProviderResult[] applyBatch(
+		ArrayList<ContentProviderOperation> operations) {
 	SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 	db.beginTransaction();
 	try {
@@ -773,16 +777,21 @@ Connection pool for /data/data/com.android.providers.settings/databases/settings
       isPrimaryConnection: true
       onlyAllowReadOnlyOperations: false
       Most recently executed operations:
-        0: [2014-09-30 10:40:04.548] executeForLastInsertedRowId took 5ms - succeeded, sql="INSERT INTO system(value,name) VALUES (?,?)", bindArgs=["1", "volume_ring_last_audible_speaker"]
-        1: [2014-09-30 10:40:04.548] prepare took 0ms - succeeded, sql="INSERT INTO system(value,name) VALUES (?,?)"
+        0: [2014-09-30 10:40:04.548] executeForLastInsertedRowId took 5ms 
+        	- succeeded, sql="INSERT INTO system(value,name) VALUES (?,?)", 
+			bindArgs=["1", "volume_ring_last_audible_speaker"]
+        1: [2014-09-30 10:40:04.548] prepare took 0ms - succeeded, 
+        	sql="INSERT INTO system(value,name) VALUES (?,?)"
 	....
   Available non-primary connections:
     Connection #1:
       isPrimaryConnection: false
       onlyAllowReadOnlyOperations: true
       Most recently executed operations:
-        0: [2014-09-30 11:32:32.135] executeForCursorWindow took 0ms - succeeded, sql="SELECT _id, name, value FROM secure"
-        1: [2014-09-30 11:32:32.135] prepare took 0ms - succeeded, sql="SELECT _id, name, value FROM secure"
+        0: [2014-09-30 11:32:32.135] executeForCursorWindow took 0ms 
+        	- succeeded, sql="SELECT _id, name, value FROM secure"
+        1: [2014-09-30 11:32:32.135] prepare took 0ms - succeeded, 
+        	sql="SELECT _id, name, value FROM secure"
 	....
   Acquired connections:
     <none>
@@ -838,7 +847,8 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 
 						ContentValues values = new ContentValues();
 						values.put(WordTable.COLUMN_KEYWORD, "apple" + num);
-						values.put(WordTable.COLUMN_DEFINITION, "a round fruit " + num);
+						values.put(WordTable.COLUMN_DEFINITION, 
+							"a round fruit " + num);
 						values.put(WordTable.COLUMN_PRONUNCIATION, "aepl " + num);
 						values.put(WordTable.COLUMN_LAST_UPDATE_TIME,
 							System.currentTimeMillis());
@@ -881,7 +891,8 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 외부 프로세스에서 ContentProvider에 접근할 때 ContentProvider를 제공하는 쪽에서 문제가 발생하면, 예외 스택이 그대로 외부 프로세스에 전달되지 않는다.
 아래처럼 NullPointerException이 발생했지만, 왜 발생했는지 더 이상 스택이 보이지 않는 걸 볼 수 있다.
 \begin{lstlisting}[frame=single] 
-Caused by: java.lang.NullPointerException at android.os.Parcel.readException(Parcel.java:1471) 
+Caused by: java.lang.NullPointerException 
+	at android.os.Parcel.readException(Parcel.java:1471) 
 at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:185) 
 at android.database.DatabaseUtils.readExceptionFromParcel(DatabaseUtils.java:137) 
 at android.content.ContentProviderProxy.query(ContentProviderNative.java:413) 

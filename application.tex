@@ -64,14 +64,14 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 
 \item 7라인(2)에서 productRepository는 앱에서 싱글 인스턴스로 사용하기로 한다. Application을 통해서만 인스턴스를 가져온다는 규칙을 정한다면, 싱글톤 패턴 대신 사용 가능한 방식이다.  
 
-\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 라이브러리에 필요한 초기화를 Application의 onCreate()에서 하는 경우가 많다.\\
+\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 라이브러리에 필요한 초기화를 Application의 onCreate()에서 하는 경우가 많다.
 
-\item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리해야 할 작업을 안정적으로 처리하기 위해서 Service를 이용한다.\\
+\item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리해야 할 작업을 안정적으로 처리하기 위해서 Service를 이용한다.
 
 \item 12라인(3), 37라인(6)은 좋은 방법은 아닌 듯 하지만 많이 쓰는 방법이다. 
 메서드 호출 단계가 깊어지면서, 여러 클래스를 거칠 때 계속해서 생성자나 메서드에 Context를 파라미터에 전달하는 것은 번거롭다. 
 이때 ShoppingApplication.getApplication() 메서드를 통해서 Application 또는 Context에 접근할 수 있다.
-예를 들어, InputValidator 클래스에서 부적절한 입력을 받으면 특정 문자열을 리턴하는 메서드가 있다면,  ShoppingApplication.getApplication().getText(R.string.invalid\_input) 식으로 사용할 수 있다.\\
+예를 들어, InputValidator 클래스에서 부적절한 입력을 받으면 특정 문자열을 리턴하는 메서드가 있다면,  ShoppingApplication.getApplication().getText(R.string.invalid\_input) 식으로 사용할 수 있다.
 \end{itemize}
 
 많은 책에서 쇼핑카트의 예처럼 데이터 공유에 Application을 사용하면 된다고 하지만, 이 방식도 완벽한 것은 아니다.
@@ -117,7 +117,8 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 		registerActivityLifecycleCallbacks(activityLifecycleCallbacks); // (1)
 	}
 	
-	private ActivityLifecycleCallbacks activityLifecycleCallbacks = new ActivityLifecycleCallbacks() { // (2)
+	private ActivityLifecycleCallbacks activityLifecycleCallbacks 
+		= new ActivityLifecycleCallbacks() { // (2)
 		
 		@Override
 		public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -170,7 +171,7 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 \begin{itemize}
 \item 4라인(1)에서 ActivityLifeCycleCallBacks를 등록한다.
 \item 7라인(2)부터 ActivityLifeCycleCallBacks 인터페이스를 구현한 익명 클래스를 만든다. Activity의 각 생명주기마다 대응하는 메소드가 있다.
-\item 45라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기마다 메모리 정보를 알 수 있다.
+\item 45라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기에 따른 메모리 정보를 알 수 있다.
 \end{itemize}
 
 \begin{comment}
@@ -196,7 +197,7 @@ ActivityThread.main
 이제 프로세스 분리가 필요한 경우를 생각해보자.
 \begin{itemize}
 \item Activity 자체가 무거운 경우이다. 사진공유 앱에서 기본 카메라 앱을 실행시키지 않고 자신의 카메라 Activity를 가지고 있는 경우가 있는데, 이런 카메라 Activity는 별도 프로세스로 분리하는 것이 낫다.
-\item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행하다가 OutOfMemoryError가 발생할 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 가운데 가령 10\% 라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
+\item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행하다가 OutOfMemoryError가 발생할 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 단말에서 가령 10\% 라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
 Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 좋겠다. 정답은 없고 케이스별로 다르다.
 % 분리함으로써 변경이 많이 필요한 쪽보다는 간단하게 분리 가능하는 게 나을 것이다.
 \item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해 보자.
@@ -235,8 +236,10 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 	
 	private boolean isDefaultProcess() {
 		int pid = android.os.Process.myPid();
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);                      
-        List<RunningAppProcessInfo> processInfos = activityManager.getRunningAppProcesses();     
+        ActivityManager activityManager = (ActivityManager) getSystemService(
+        	Context.ACTIVITY_SERVICE);                      
+        List<RunningAppProcessInfo> processInfos 
+        	= activityManager.getRunningAppProcesses();     
 
         for (RunningAppProcessInfo each : processInfos) {                          
             if (each.pid == pid && each.processName.equals(getPackageName())) {                              
@@ -260,19 +263,21 @@ Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 이해를 돕기 위해서 샘플로 확인해보자.\\
 \underline{\bfseries 프로세스 A: 쓰기}
 \begin{lstlisting}[frame=single] 
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefernce", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        int value = new Random().nextInt(1000);
-        editor.putInt("randomValue", value);
-        editor.apply();
-        Toast.makeText(this, "write value=" + value, Toast.LENGTH_LONG).show();
+    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefernce", 
+    	Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    int value = new Random().nextInt(1000);
+    editor.putInt("randomValue", value);
+    editor.apply();
+    Toast.makeText(this, "write value=" + value, Toast.LENGTH_LONG).show();
 \end{lstlisting}
 
 \underline{\bfseries 프로세스 B: 읽기}
 \begin{lstlisting}[frame=single] 
-		SharedPreferences sharedPreferences = getSharedPreferences("MyPrefernce", Context.MODE_PRIVATE);
-        int value = sharedPreferences.getInt("randomValue", 0);
-        Toast.makeText(this, "read value=" + value, Toast.LENGTH_LONG).show();
+	SharedPreferences sharedPreferences = getSharedPreferences("MyPrefernce", 
+		Context.MODE_PRIVATE);
+    int value = sharedPreferences.getInt("randomValue", 0);
+    Toast.makeText(this, "read value=" + value, Toast.LENGTH_LONG).show();
 \end{lstlisting}
 
 프로세스 A에서 쓰기를 하고 프로세스 B에서 읽기를 하면 한번은 제대로 동작한다.
