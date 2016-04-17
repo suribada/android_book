@@ -133,7 +133,7 @@ quitSafely() 메서드는 sendMessageDelayed() 등을 써서 실행 시간을 �
 MessageQueue는 Message를 담고 있는 자료구조이다.
 MessageQueue의 구조는 ArrayBlockingQueue보다는 LinkedBlockingQueue에 가깝다. ArrayBlockingQueue는 배열에 노드를 추가하는 방식이지만, LinkedBlockingQueue는 다음 노드에 대한 링크를 변수로 가진다. 
 Array 구조에 비해서 Link 구조는 일반적으로 개수의 한계가 없고 삽입 속도가 빠르다. 
-대신 Array 구조는 랜덤 인덱스 접근이 가능하고 Link 구조는 순차 접근을 해야 한다. MessageQueue는 실행하기로 한 시간 순으로 삽입되어서 빠른 것부터 순차적으로 꺼내어진다.\\
+대신 Array 구조는 랜덤 인덱스 접근이 가능하고 Link 구조는 순차 접근을 해야 한다. MessageQueue는 실행시간 순으로 삽입되어서 빠른 것부터 순차적으로 꺼내어진다.\\
 
 먼저 Message 클래스를 보자.
 \begin{lstlisting}[frame=single, caption=Message.java] 
