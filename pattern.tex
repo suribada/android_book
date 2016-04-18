@@ -23,7 +23,8 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
     public static LocalBroadcastManager getInstance(Context context) {
         synchronized (mLock) {
             if (mInstance == null) {
-                mInstance = new LocalBroadcastManager(context.getApplicationContext());
+                mInstance = new LocalBroadcastManager(
+                	context.getApplicationContext());
             }
             return mInstance;
         }
@@ -97,7 +98,7 @@ public class CalendarRelatedActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		android.util.Log.d("suribada", "CalenderRelatedActivity onDestroy");
+		Log.d("suribada", "CalenderRelatedActivity onDestroy");
 		super.onDestroy();
 	}
 	
@@ -222,15 +223,15 @@ Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페
 	if (A || C || E) { 
 		someOperationX(); 
 	}
-	..
+	...
 	if (C || D || E) { 
 		someOperationY(); 
 	} 
-	..
+	...
 	if (B || D || E) { 
 		someOperationZ(); 
 	}
-	..
+	...
 \end{lstlisting}
 처음에는 이 방법도 쓸만한 것 같다.
 그런데 어느 날 카테고리가 추가되고 Operation도 여러 개 더해진다면 주의를 기울여야 한다.
@@ -291,15 +292,15 @@ Eclass extends Category implements Markable2, Markable3, Markable4 { }
 	if (this instanceof Markable2) { 
 		someOperationX();
 	}
-	..
+	...
 	if (this instanceof Markable3) { 
 		someOperationY(); 
 	} 
-	..
+	...
 	if (this instanceof Markable4) { 
 		someOperationZ();
 	}
-	..
+	...
 \end{lstlisting}
 이렇게 하면 상위 클래스에서 각 Operation 순서가 정해지고, 
 각 카테고리의 정책이 바뀌면 카테고리 클래스에서 implements하는 것만 조정하면 된다.
@@ -308,7 +309,8 @@ Eclass extends Category implements Markable2, Markable3, Markable4 { }
 마커 인터페이스는 파라미터가 많은 메서드를 호출할 때도 도움이 된다.
 아래와 같은 메서드 시그너처가 있다고 하자.
 \begin{lstlisting}[frame=single]
-	public static void showPhoneDialog(Context context, String phoneNumber, String keyword, boolean isNaverUser, boolean isKorean) {
+	public static void showPhoneDialog(Context context, String phoneNumber, 
+			String keyword, boolean isNaverUser, boolean isKorean) {
 		...
 	}
 \end{lstlisting}
@@ -324,11 +326,14 @@ Builder 패턴을 통해 파라미터 갯수를 줄이려는 노력을 할 수�
 그런데 이 기능에서는 showPhoneDialog()에서 하는 여러 작업 가운데 한 가지는 필요 없다는 얘기가 들려왔다.  내부에서 savePhoneState() 메서드를 호출하는데, 이 기능에서만은 savePhoneState() 메서드 호출이 불필요하다는 것이다.
 이때 고민이 된다. boolean 파라미터를 하나 추가하고서 이것으로 체크할까? 그러면 파라미터에 boolean이 3개 연속이 되어서 호출하는 쪽에서 더 혼동이 생길 것이다.
 \begin{lstlisting}[frame=single]
-	public static void showPhoneDialog(Context context, String phoneNumber, String keyword, boolean isNaverUser, boolean isKorean) {
-		showPhoneDialog(context, phoneNumber, keyword, isNaverUser, isKorean, false);
+	public static void showPhoneDialog(Context context, String phoneNumber, 
+			String keyword, boolean isNaverUser, boolean isKorean) {
+		showPhoneDialog(context, phoneNumber, keyword, isNaverUser, isKorean, 
+			false);
 	}
 
-	public static void showPhoneDialog(Context context, String phoneNumber, String keyword, boolean isNaverUser, boolean isKorean, boolean ignorePhoneState) {
+	public static void showPhoneDialog(Context context, String phoneNumber, 
+			String keyword, boolean isNaverUser, boolean isKorean, boolean ignorePhoneState) {
 		...
 		if (!ignorePhoneState) {
 			savePhoneState();
@@ -348,7 +353,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \end{lstlisting}
 
 \begin{lstlisting}[frame=single]
-	public static void showPhoneDialog(Context context, String phoneNumber, String keyword, boolean isNaverUser, boolean isKorean) {
+	public static void showPhoneDialog(Context context, String phoneNumber, 
+			String keyword, boolean isNaverUser, boolean isKorean) {
 		...
 		if (!context instanceof IgnorePhoneState) {
 			savePhoneState();
@@ -414,7 +420,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+    		Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_result, container, false);
         TextView result = (TextView) view.findViewById(R.id.result);
         int sum = getArguments().getInt(LEFT) + getArguments().getInt(RIGHT);
@@ -433,7 +440,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+    		Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_result, container, false);
         TextView result = (TextView) view.findViewById(R.id.result);
         int sum = left + right;
@@ -456,7 +464,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
 \begin{lstlisting}[frame=single]
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, 
+    		Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_result, container, false);
         TextView result = (TextView) view.findViewById(R.id.result);
         if (savedInstanceState != null) {

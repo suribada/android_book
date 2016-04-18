@@ -319,7 +319,7 @@ public abstract boolean  bindService (Intent service, ServiceConnection conn, in
 \begin{itemize}
 \item 첫 번째 파라미터인 service는 대상 Service를 가리킨다.
 \item 두 번째 파라미터인 conn은 Service에 연결되고 연결이 끊길 때의 Callback이다.
-\item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 비트합으로 넣을 수도 있다. ICS부터 추가된 상수들은 주로 Service 프로세스의 우선 순위와 관련된 것이고, 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CREATE이다.\\
+\item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 비트합으로 넣을 수도 있다. ICS부터 추가된 상수들은 주로 Service 프로세스의 우선순위와 관련된 것이고, 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CREATE이다.\\
 
 BIND\_AUTO\_CREATE을 쓸 때만 bindService()를 실행할 때 Service가 없다면 새로 Service를 생성한다. 이 옵션이 없다면 어디선가 startService()를 하지 않았다면 bindService()에서 연결 Callback이 불리지 않게 된다.
 즉 Started \& Bound Service가 아니라면 BIND\_AUTO\_CREATE 옵션은 필수적이다. 
@@ -904,7 +904,7 @@ public class MessengerService extends Service {
 \item 15라인(1)에서 스레드 개수가 1개인 ScheduledThreadPoolExecutor을 생성한다. 81라인(13)의 파라미터를 보면 즉시 태스크를 실행하고 그 이후에는 1분마다 실행한다.
 \item 17라인(2)에서 클라이언트 Messenger 목록을 clients 변수에 유지한다.
 \item 21라인(3)의 Handler는 클라이언트에서 들어오는 Message를 처리하는 용도이다.
-\item 50라인(8)에서 Handler를 감싼 Messenger를 생성하고, 이것을 85라인(14)의 onBind() 메서드에서 messenger.getBinder()로 클라이언트에 전달한다.
+\item 51라인(8)에서 Handler를 감싼 Messenger를 생성하고, 이것을 85라인(14)의 onBind() 메서드에서 messenger.getBinder()로 클라이언트에 전달한다.
 \item 27라인(4)에서 MSG\_REGISTER\_CLIENT 값이 들어오면 replyTo에 전달되는 Messenger를 클라이언트 목록에 추가한다.
 \item 64라인(10)의 Runnable Task에서는 날씨 정보를 가져와서 Bundle에 담고서 클라이언트 목록에 send() 메서드로 전달한다. foreach 문을 사용하지 않고 인덱스가 높은 숫자부터 쓴 이유는 클라이언트가 dead 상태인 경우에 RemoteException이 발생하는데 76라인(12)에서 클라이언트 목록에서 해당 클라이언트를 제거해도 문제가 없게 하려는 것이다.
 \item 71라인(11)에 lastData에 최신 값을 저장하고서, 28라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Bound된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
@@ -922,9 +922,9 @@ public class MessengerActivity extends Activity {
 			switch (msg.what) {
 				case MessengerService.MSG_WEATHER:
 					Bundle bundle = msg.getData();
-					weather.setText(bundle.getString(MessengerService.WEATHER_TEXT) 
-						+ ", Temparature: " + bundle.getInt(
-						MessengerService.TEMPERATURE));
+					weather.setText(bundle.getString(
+						MessengerService.WEATHER_TEXT) + ", Temparature: " 
+						+ bundle.getInt(MessengerService.TEMPERATURE));
 					break;
 				default:
 					super.handleMessage(msg);
@@ -941,12 +941,13 @@ public class MessengerActivity extends Activity {
 				IBinder service) { // (2)
 			outMessenger = new Messenger(service);
 			try {
-				Message msg = Message.obtain(null, MessengerService.MSG_REGISTER_CLIENT);
+				Message msg = Message.obtain(null,
+					MessengerService.MSG_REGISTER_CLIENT);
 				msg.replyTo = inMessenger;
 				outMessenger.send(msg); // (3)
 			} catch (RemoteException e) {
 			}
-			Toast.makeText(MessengerActivity.this, "Connected.", 
+			Toast.makeText(MessengerActivity.this, "Connected.",
 				Toast.LENGTH_SHORT).show();
 		}
 
@@ -973,7 +974,7 @@ public class MessengerActivity extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		bindService(new Intent(this, MessengerService.class), serviceConnection, 
+		bindService(new Intent(this, MessengerService.class), serviceConnection,
 			Context.BIND_AUTO_CREATE);
 	}
 
@@ -982,7 +983,7 @@ public class MessengerActivity extends Activity {
 		super.onStop();
 		if (outMessenger != null) {
 			try {
-				Message msg = Message.obtain(null, 
+				Message msg = Message.obtain(null,
 					MessengerService.MSG_UNREGISTER_CLIENT);
 				msg.replyTo = inMessenger;
 				outMessenger.send(msg);
@@ -993,11 +994,12 @@ public class MessengerActivity extends Activity {
 	}
 
 	public void onClickRefresh(View view) { // (5)
-		Toast.makeText(MessengerActivity.this, "Refresh.", 
+		Toast.makeText(MessengerActivity.this, "Refresh.",
 			Toast.LENGTH_SHORT).show();
 		if (outMessenger != null) {
 			try {
-				Message msg = Message.obtain(null, MessengerService.MSG_REFRESH);
+				Message msg = Message.obtain(null, 
+					MessengerService.MSG_REFRESH);
 				msg.replyTo = inMessenger;
 				outMessenger.send(msg);
 			} catch (RemoteException e) {
@@ -1009,9 +1011,9 @@ public class MessengerActivity extends Activity {
 \end{lstlisting}
 \begin{itemize}
 \item \ref{subsec:binding_special}절에서 얘기한 가이드대로 onStart()와 onStop() 메서드에서 bindService()와 unbindService() 메서드를 호출한다.
-\item 3라인(1)의 Handler는 클라이언트에 전달되는 Message를 처리하는 용도이다. 이것을 감싼 Messenger를 41라인에서(4) outMessenger로 생성한다.
-\item 22라인(2)의 onServiceConnnected() 콜백 안에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입해서 27라인(3)에서 Service에 등록하라는 Message를  보낸다.
-\item 72라인(5)은 [Refresh] 버튼을 클릭할 때 동작이다. Service에 날씨 정보를 갱신하라는 Message를 보낸다.
+\item 3라인(1)의 Handler는 클라이언트에 전달되는 Message를 처리하는 용도이다. 이것을 감싼 Messenger를 47라인(4)에서 outMessenger로 생성한다.
+\item 25라인(2)의 onServiceConnnected() 콜백 안에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입해서 31라인(3)에서 Service에 등록하라는 Message를  보낸다.
+\item 80라인(5)은 [Refresh] 버튼을 클릭할 때 동작이다. Service에 날씨 정보를 갱신하라는 Message를 보낸다.
 \end{itemize}
 
 이 샘플을 통해 Bound Service를 사용하는 한 가지 장점을 알 수 있다. 각 클라이언트에서 네트워크를 통한 API 호출을 매번 하지 않고 Service 한 곳에서만 네트워크 통신을 하고 모든 클라이언트에 결과를 반영할 수 있는 구조가 가능하다. 샘플처럼  Messenger를 이용하면 더 단순해진다.

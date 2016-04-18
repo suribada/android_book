@@ -92,15 +92,15 @@
 \contentsline {section}{\numberline {9.1}앱 초기화}{135}{section.9.1}
 \contentsline {section}{\numberline {9.2}Application Callback}{137}{section.9.2}
 \contentsline {section}{\numberline {9.3}프로세스 분리}{139}{section.9.3}
-\contentsline {chapter}{\numberline {10}시스템 서비스}{143}{chapter.10}
-\contentsline {section}{\numberline {10.1}네이티브 시스템 서비스}{144}{section.10.1}
-\contentsline {section}{\numberline {10.2}자바 시스템 서비스}{145}{section.10.2}
-\contentsline {section}{\numberline {10.3}dumpsys 명령어}{151}{section.10.3}
-\contentsline {section}{\numberline {10.4}시스템 서비스 이슈}{156}{section.10.4}
-\contentsline {subsection}{\numberline {10.4.1}빈번한 리모트 호출}{156}{subsection.10.4.1}
-\contentsline {subsection}{\numberline {10.4.2}전원 관리와 Deep Sleep}{156}{subsection.10.4.2}
-\contentsline {subsection}{\numberline {10.4.3}알람 등록과 제거}{161}{subsection.10.4.3}
-\contentsline {chapter}{\numberline {11}구현 패턴}{162}{chapter.11}
-\contentsline {section}{\numberline {11.1}싱글톤 패턴}{162}{section.11.1}
-\contentsline {section}{\numberline {11.2}마커 인터페이스}{166}{section.11.2}
-\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{170}{section.11.3}
+\contentsline {chapter}{\numberline {10}시스템 서비스}{142}{chapter.10}
+\contentsline {section}{\numberline {10.1}네이티브 시스템 서비스}{143}{section.10.1}
+\contentsline {section}{\numberline {10.2}자바 시스템 서비스}{144}{section.10.2}
+\contentsline {section}{\numberline {10.3}dumpsys 명령어}{150}{section.10.3}
+\contentsline {section}{\numberline {10.4}시스템 서비스 이슈}{154}{section.10.4}
+\contentsline {subsection}{\numberline {10.4.1}빈번한 리모트 호출}{154}{subsection.10.4.1}
+\contentsline {subsection}{\numberline {10.4.2}전원 관리와 Deep Sleep}{155}{subsection.10.4.2}
+\contentsline {subsection}{\numberline {10.4.3}알람 등록과 제거}{159}{subsection.10.4.3}
+\contentsline {chapter}{\numberline {11}구현 패턴}{161}{chapter.11}
+\contentsline {section}{\numberline {11.1}싱글톤 패턴}{161}{section.11.1}
+\contentsline {section}{\numberline {11.2}마커 인터페이스}{165}{section.11.2}
+\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{169}{section.11.3}

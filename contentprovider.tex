@@ -1,5 +1,5 @@
 \chapter{ContentProvider}
-\section{SQLite}
+\section{SQLite}\label{sec:sqlite}
 SQLite는 로컬 DB이지만 속도가 그렇게 빠르지는 않다. 딱 혼자서 쓸 수 있는 정도라고 생각하자.
 SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를 통해서 접근하고 사용한다.\footnote{안드로이드 프레임워크에서 사용하는 네이티브 메서드는 jni를 이용해서 /frameworks/base/core/jni/android\_database\_SQLiteConnection.cpp 소스에 연결된다.
 안드로이드와 SQLite를 연결해주는 것은 /external/sqlite/android/sqlite3\_android.cpp이고,
@@ -379,11 +379,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 가능하면 DB를 하나로 사용하는 것이 좋지만, 상황상 어쩔 수 없는 케이스도 있고 DB Lock 문제를 효과적으로 대응하기 위해서 DB를 분리할 수도 있다(읽기 전용 데이터를 위한 DB, 읽기+쓰기 용도 DB).\\
 
 테이블이 동일하고 데이터 구조가 다른 게 없다면 그때는 어떡할까? 이를테면 로그인 기반의 앱이라면, 공통으로 사용하는 데이터를 위한 공통 DB가 있고 각 사용자별 DB가 있을 수 있다. 각 사용자별 DB는 당연히 동일한 테이블 구조를 갖고 있다. 이때는 DB 파일명을 상수를 만들지 않고 동적으로 전달하면 된다.
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
     DatabaseHelper(Context context) {
         super(context, getAuth().getLoginId() + ".db", null, DATABASE_VERSION);
     }
-\end{verbatim}
+\end{lstlisting}
 
 \item 생성자의 세번째 파라미터는 거의 null을 넣는다. 
 쿼리 결과로 Cursor 구현체인 SQLiteCursor를 쓰지 않는다면, Cursor 구현을 생성하는 Factory인 
@@ -625,7 +625,7 @@ public class NotePadProvider extends ContentProvider {
 }
 \end{lstlisting}
 \begin{itemize}
-\item ContentProvider를 사용하면 멀티 스레드 환경에서 Lock 문제가 없이 잘 동작하기 때문에 ContentProvider를 쓰면 Lock을 제어한다고 오해하는 경우가 있다. 
+\item ContentProvider를 사용하면 멀티 스레드 환경에서 Lock 문제가 없이 잘 동작하기 때문에 ContentProvider에서 Lock을 제어한다고 오해하는 경우가 있다. 
 Lock 문제가 발생하지 않는 것은 ContentProvider를 써서 그런 것이 아니라 ContentProvider를 만드는 일반적인 패턴으로 인한 것이다.
 45라인(1)을 보면 onCreate() 메서드에서 Database Helper를 하나 생성해놓고 이것을 사용하고 있다.
 onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고, 하나의 ContentProvider는 단말에서 오직 하나만 존재하기 때문에 Database Helper도 오직 하나뿐이다. 따라서 내부적으로 명령어가 serialization 되면서 Lock 문제가 없는 것이다.
@@ -648,7 +648,8 @@ query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드�
 ContentProvider에서는 여러 명령어를 한꺼번에 실행할 수 있는 applyBatch() 메서드를  제공한다. 
 applyBatch() 메서드를 보면 속도 향상을 위해서 트랜잭션을 쓰는 것으로 혼동할 수도 있지만, 실제로 하는 일은 ContentProviderOperation 목록을 한꺼번에 전송해놓고 순차적으로 수행하는 것에 지나지 않는다. 
 \begin{lstlisting}[frame=single] 
-ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
+ArrayList<ContentProviderOperation> operations 
+	= new ArrayList<ContentProviderOperation>();
 operations.add(ContentProviderOperation.newInsert(NotePad.CONTENT_URI) // (1)
 	.withValue(NotePad.Notes.COLUMN_NAME_TITLE, "Lunch")
 	.withValue(NotePad.Notes.COLUMN_NAME_NOTE, "Kimchi")
@@ -669,8 +670,8 @@ operations.add(ContentProviderOperation.newDelete(Memos.CONTENT_URI) // (3)
 mContext.getContentResolver().applyBatch(NotePad.AUTHORITY, operations); // (4)
 \end{lstlisting}
 \begin{itemize}
-\item 2라인(1), 7라인(2), 13라인(3)에서 ContentProviderOperation(Insert/Update/Delete용)을 ArrayList에 추가한다. newInsert/newUpdate/newDelete 같은 메서드는 Builder 패턴을 사용해서 ContentProviderOperation 인스턴스를 만들어 낸다.
-\item 17라인(4)에서 applyBatch() 메소드를 통해 ArrayList에 쌓아둔 작업들을 한꺼번에 보낸다.
+\item 3라인(1), 9라인(2), 16라인(3)에서 ContentProviderOperation(Insert/Update/Delete용)을 ArrayList에 추가한다. newInsert/newUpdate/newDelete 같은 메서드는 Builder 패턴을 사용해서 ContentProviderOperation 인스턴스를 만들어 낸다.
+\item 20라인(4)에서 applyBatch() 메소드를 통해 ArrayList에 쌓아둔 작업들을 한꺼번에 보낸다.
 \end{itemize}
 
 다른 프로세스에서 실행한다면 Binder를 거쳐야 하는데, 하나씩 명령어를 주고받는 것보다 한꺼번에 보내는 것으로 속도 향상은 있지만 트랜잭션을 쓰는 것처럼 속도 향상이 큰 것은 아니다.
@@ -782,7 +783,7 @@ Connection pool for /data/data/com.android.providers.settings/databases/settings
 			bindArgs=["1", "volume_ring_last_audible_speaker"]
         1: [2014-09-30 10:40:04.548] prepare took 0ms - succeeded, 
         	sql="INSERT INTO system(value,name) VALUES (?,?)"
-	....
+	...
   Available non-primary connections:
     Connection #1:
       isPrimaryConnection: false
@@ -792,7 +793,7 @@ Connection pool for /data/data/com.android.providers.settings/databases/settings
         	- succeeded, sql="SELECT _id, name, value FROM secure"
         1: [2014-09-30 11:32:32.135] prepare took 0ms - succeeded, 
         	sql="SELECT _id, name, value FROM secure"
-	....
+	...
   Acquired connections:
     <none>
   Connection waiters:
@@ -825,8 +826,8 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 			public void run() {
 				Log.d("suribada", "Thread1 start");
 				SQLiteDatabase db = dbHelper.getReadableDatabase();
-				Cursor cursor = db.query(WordTable.TABLE_NAME, // (3)
-					null, null, null, null, null, WordTable.COLUMN_KEYWORD);
+				Cursor cursor = db.query(WordTable.TABLE_NAME, 
+					null, null, null, null, null, WordTable.COLUMN_KEYWORD); // (3)
 				Log.d("suribada", "cursor.count=" + cursor.getCount());
 				cursor.close();
 			}
@@ -867,9 +868,9 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 \begin{itemize}
 \item 7라인(1)에서 스레드에서 공통으로 사용할 dbHelper 변수를 생성하였다. DB Lock 문제가 발생하지 않으려면 하나의 dbHelper를 사용해야 한다.
 \item 11라인(2)과 25라인(4)에서 2개의 스레드를 시작한다.
-\item 첫 번째 스레드는 단순 조회이다.
-\item 두 번째 스레드는 데이터를 10개 입력하는데 44라인(6)에서 1초간 sleep하기 때문에(시간이 걸리는 것을 시뮬레이션) 최소 실행 시간은 10초이다. 32라인(5)에서 트랜잭션을 시작하고 48라인(7)에서 트랜잭션을 종료한다.
-\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(beginTransaction)이, 첫 번째 스레드의 17라인(query)보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialized 되기 때문에 두 번째 스레드의 48라인(endTransaction)까지 첫 번째 스레드의 17라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
+11라인의 스레드는 단순 조회이다.
+25라인의 스레드는 데이터를 10개 입력하는데 45라인(6)에서 1초간 sleep하기 때문에(시간이 걸리는 것을 시뮬레이션) 최소 실행 시간은 10초이다. 32라인(5)에서 트랜잭션을 시작하고 49라인(7)에서 트랜잭션을 종료한다.
+\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction) 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialized 되기 때문에 두 번째 스레드의 49라인(endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
 \end{itemize}
 
 이 상황은 앞서 얘기한 동기화를 하느라고 조회 쿼리가 늦어지는 것과 동일한 케이스이다. 
