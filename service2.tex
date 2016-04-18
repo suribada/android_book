@@ -291,7 +291,7 @@ public class SleepThreadService extends Service {
 	private ThreadPoolExecutor exec = new ThreadPoolExecutor(1, 1, 
 		0, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), 
 		new ThreadPoolExecutor.DiscardPolicy());	
-	....
+	...
 		
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -299,14 +299,14 @@ public class SleepThreadService extends Service {
 
 			@Override
 			public void run() {
-				....
+				...
 				stopSelf();
 			}
 		});
 		return START_STICKY;
 	}
 	
-	....
+	...
 
 } 
 \end{lstlisting}
@@ -481,7 +481,7 @@ public class RemoteService extends Service {
 		@Override
         public boolean validCalendar(long calendarId, String calendarType) {
 			CalendarType type = CalendarType.vaueOf(calendarType);
-            ....
+            ...
         }
         
     }; 
@@ -519,7 +519,7 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 		if (mIRemoteServer != null) { // (5)
 			boolean valid = mIRemoteService.isValidCalendar(10L,
 				CalendarType.NORMAL.name());
-			....
+			...
 		}	
 	}
 \end{lstlisting}
@@ -570,7 +570,7 @@ public class LocalService extends Service {
 	}
 
 	public boolean validCalendar(long calendarId, CalendarType calendarType) {
-		....
+		...
 	}
 
 }
@@ -585,7 +585,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		....
+		...
 	}
 
 	@Override
@@ -609,10 +609,10 @@ public class BindingActivity extends Activity implements OnClickListener {
 		if (id == R.id.check) {
 			if (mService != null) {
 				boolean valid = mService.validCalendar(10L, CalendarType.NORMAL);
-				....
+				...
 			}
 		}
-		....		
+		...
 	}
 
 	private ServiceConnection mConnection = new ServiceConnection() {
@@ -630,7 +630,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 
 	};
 
-	....
+	...
 	
 }
 \end{lstlisting}
@@ -655,7 +655,7 @@ public class LocalService extends Service {
 
 		@Override
 		public boolean validCalendar(long calendarId, CalendarType calendarType) {
-			....
+			...
 		}
 
 	}
@@ -666,7 +666,7 @@ public class LocalService extends Service {
 \begin{lstlisting}[frame=single]
 public class BindingActivity extends Activity implements OnClickListener {
 	private IRemoteService mService;
-	....
+	...
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 
@@ -682,7 +682,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 
 	};
 
-	....
+	...
 	
 }
 \end{lstlisting}
@@ -711,7 +711,7 @@ public class BindingActivity extends Activity implements OnClickListener {
                     IAlarmManager service = IAlarmManager.Stub.asInterface(b);
                     return new AlarmManager(service);
                 }});
-		....
+		...
 	}                
 \end{lstlisting}
 \end{comment}

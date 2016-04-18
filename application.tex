@@ -113,7 +113,7 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 \begin{lstlisting}[frame=single] 
 	@Override
 	public void onCreate() {
-		....
+		...
 		registerActivityLifecycleCallbacks(activityLifecycleCallbacks); // (1)
 	}
 	
@@ -229,7 +229,7 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 \begin{lstlisting}[frame=single] 
 	@Override
 	public void onCreate() {
-		....
+		...
 		if (isDefaultProcess()) {
 			startService(new Intent(this, CategoryUpdaterService.class));
 		}

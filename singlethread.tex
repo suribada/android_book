@@ -149,7 +149,7 @@ public final class Message implements Parcelable {
 
 	public Messenger replyTo;
 	
-	....
+	...
 
 	/* package */long when;
 
@@ -161,7 +161,7 @@ public final class Message implements Parcelable {
 
 	/* package */Message next;
 	
-	....
+	...
 }
 \end{lstlisting}
 MessageQueue에 들어가는 android.os.Message에는 public 변수에 int arg1, int arg2, Object obj,
@@ -699,7 +699,7 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 		
 		@Override
         public View getView(int position, View convertView, ViewGroup parent) {	
-        	....
+        	...
 			holder.favorite.setOnClickListener(new View.OnClickListener() {
 
                 @Override
@@ -774,7 +774,7 @@ MessageQueue.IdleHandler API 문서를 보면 Message를 모두 처리하고서 
 \begin{lstlisting}[frame=single, caption=Handler 스레드 사용 예제(Fixed), label=src:HandlerThreadSample2] 
  	@Override
     public void onCreate(Bundle savedInstanceState) {
-    	....
+    	...
         HandlerThread handlerThread
                 = new HandlerThread("Favorite Processing Thread") {
 
@@ -797,7 +797,7 @@ MessageQueue.IdleHandler API 문서를 보면 Message를 모두 처리하고서 
 
         };
         handlerThread.start();
-        ....
+        ...
 	}
 	
 	@Override

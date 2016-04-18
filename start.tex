@@ -307,14 +307,14 @@ public class ViewCompat {
 
     public static final int OVER_SCROLL_NEVER = 2;
     
-    ....
+    ...
     
     interface ViewCompatImpl { //(1)
         public boolean canScrollHorizontally(View v, int direction);
         public boolean canScrollVertically(View v, int direction);
         public int getOverScrollMode(View v);
         public void setOverScrollMode(View v, int mode);
-        ....
+        ...
     }
 
     static class BaseViewCompatImpl implements ViewCompatImpl { // (2)
@@ -330,11 +330,11 @@ public class ViewCompat {
         public void setOverScrollMode(View v, int mode) {
             // Do nothing; API doesn't exist
         }
-        ....
+        ...
     }
 
     static class EclairMr1ViewCompatImpl extends BaseViewCompatImpl { // (3)
-        ....
+        ...
     }
 
     static class GBViewCompatImpl extends EclairMr1ViewCompatImpl { // (4)
@@ -349,7 +349,7 @@ public class ViewCompat {
     }
 
     static class HCViewCompatImpl extends GBViewCompatImpl {
-      	....
+      	...
     }
 
     static class ICSViewCompatImpl extends HCViewCompatImpl {
@@ -361,19 +361,19 @@ public class ViewCompat {
         public boolean canScrollVertically(View v, int direction) {
             return ViewCompatICS.canScrollVertically(v, direction);
         }
-        ....
+        ...
     }
 
     static class JBViewCompatImpl extends ICSViewCompatImpl {
-        ....
+        ...
     }
 
     static class JbMr1ViewCompatImpl extends JBViewCompatImpl {
-    	....
+    	...
     }
 
     static class KitKatViewCompatImpl extends JbMr1ViewCompatImpl {
-        ....
+        ...
     }
 
     static final ViewCompatImpl IMPL;
@@ -412,7 +412,7 @@ public class ViewCompat {
         IMPL.setOverScrollMode(v, overScrollMode);
     }
 
- 	....
+ 	...
 }
 
 \end{lstlisting}

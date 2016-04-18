@@ -361,7 +361,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + MainTable.TABLE_NAME + " ("
 				+ MainTable._ID + " INTEGER PRIMARY KEY,"
 				+ MainTable.COLUMN_NAME_DATA + " TEXT" + ");");
-		....
+		...
 	}
 
 	@Override
@@ -426,7 +426,7 @@ public static DatabaseHelper extends SQLiteOpenHelper  {
    }
  
    private DatabaseHelper(Context context) {
-       ....
+       ...
    }
 }
 \end{lstlisting}
@@ -498,7 +498,7 @@ public class NotePadProvider extends ContentProvider {
 		sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 		sUriMatcher.addURI(NotePad.AUTHORITY, "notes", NOTES);
 		sUriMatcher.addURI(NotePad.AUTHORITY, "notes/#", NOTE_ID);
-		....
+		...
 	}
 
 	static class DatabaseHelper extends SQLiteOpenHelper {
@@ -520,7 +520,7 @@ public class NotePadProvider extends ContentProvider {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			....
+			...
 		}
 	}
 
@@ -533,7 +533,7 @@ public class NotePadProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		....
+		...
 		SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
 		Cursor c = qb.query(db, // The database to query
@@ -577,7 +577,7 @@ public class NotePadProvider extends ContentProvider {
 		if (values.containsKey(NotePad.Notes.COLUMN_NAME_CREATE_DATE) == false) {
 			values.put(NotePad.Notes.COLUMN_NAME_CREATE_DATE, now);
 		}
-		....
+		...
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		long rowId = db.insert(NotePad.Notes.TABLE_NAME,
 				NotePad.Notes.COLUMN_NAME_NOTE, 

@@ -430,7 +430,7 @@ App Widget을 업데이트하는 주요 코드는 간단하다.
 	RemoteViews views = new RemoteViews(context.getPackageName(),
 		R.layout.appwidget_provider); // (1)
 	views.setTextViewText(R.id.appwidget_text, text); // (2)
-	....
+	...
 	appWidgetManager.updateAppWidget(appWidgetId, views); // (3)
 \end{lstlisting}
 \begin{itemize}
