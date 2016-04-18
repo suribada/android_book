@@ -64,7 +64,7 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 
 \item 7라인(2)에서 productRepository는 앱에서 싱글 인스턴스로 사용하기로 한다. Application을 통해서만 인스턴스를 가져온다는 규칙을 정한다면, 싱글톤 패턴 대신 사용 가능한 방식이다.  
 
-\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 라이브러리에 필요한 초기화를 Application의 onCreate()에서 하는 경우가 많다.
+\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 Application의 onCreate()에서 라이브러리에 필요한 초기화를 하는 경우가 많다.
 
 \item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리해야 할 작업을 안정적으로 처리하기 위해서 Service를 이용한다.
 
@@ -147,7 +147,8 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 		}
 		
 		@Override
-		public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+		public void onActivitySaveInstanceState(Activity activity, 
+				Bundle outState) {
 			logMemInfo(activity, "saveInstanceState");
 		}
 		
@@ -170,8 +171,8 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 \end{lstlisting}
 \begin{itemize}
 \item 4라인(1)에서 ActivityLifeCycleCallBacks를 등록한다.
-\item 7라인(2)부터 ActivityLifeCycleCallBacks 인터페이스를 구현한 익명 클래스를 만든다. Activity의 각 생명주기마다 대응하는 메소드가 있다.
-\item 45라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기에 따른 메모리 정보를 알 수 있다.
+\item 8라인(2)부터 ActivityLifeCycleCallBacks 인터페이스를 구현한 익명 클래스를 만든다. Activity의 각 생명주기마다 대응하는 메소드가 있다.
+\item 47라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기에 따른 메모리 정보를 알 수 있다.
 \end{itemize}
 
 \begin{comment}

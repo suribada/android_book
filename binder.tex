@@ -233,7 +233,8 @@ system\_server에서 여러 시스템 서비스를 제공하고, 이를 다른 �
 	telephonyRegistry = new TelephonyRegistry(context);
 	ServiceManager.addService("telephony.registry", telephonyRegistry);
 	
-	ServiceManager.addService("scheduling_policy", new SchedulingPolicyService());
+	ServiceManager.addService("scheduling_policy", 
+		new SchedulingPolicyService());
 		
 	...
 	ActivityManagerService.setSystemProcess(); // (1)
@@ -323,7 +324,7 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
                     IAlarmManager service = IAlarmManager.Stub.asInterface(b);
                     return new AlarmManager(service, ctx);
                 }});
-		....
+		...
         registerService(LAYOUT_INFLATER_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     return PolicyManager.makeNewLayoutInflater(
@@ -345,7 +346,7 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
                     ServiceManager.getService(NETWORK_POLICY_SERVICE)));
             }
         });
-		....
+		...
         registerService(POWER_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     IBinder b = ServiceManager.getService(POWER_SERVICE);
@@ -353,7 +354,7 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
                     return new PowerManager(ctx.getOuterContext(),
                             service, ctx.mMainThread.getHandler());
                 }});
-		....
+		...
         registerService(TELEPHONY_SERVICE, new ServiceFetcher() {
                 public Object createService(ContextImpl ctx) {
                     return new TelephonyManager(ctx.getOuterContext());
@@ -363,7 +364,7 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
                 public Object createService(ContextImpl ctx) {
                     return new SystemVibrator(ctx);
                 }});
-		....
+		...
     }
 \end{lstlisting}
 AccountManager나 AlarmManager를 보면 Binder Proxy를 감싼 객체임을 바로 알수 있는데, 대부분 이와 유사하게 되어 있다.\\

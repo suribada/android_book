@@ -1,5 +1,5 @@
 \chapter{구현 패턴}
-디자인 패턴을 공부하고 나면 어디든 다 쓰고 싶은데, 필요한 지점에 필요한 만큼만 쓰는 것이 좋다.
+디자인 패턴을 공부하고 나면 어디든 다 쓰고 싶은데, 꼭 필요한 때에만 쓰는 것이 좋다.
 이 장에서는 디자인 패턴 외에도 복잡한 앱을 개발하는 데 도움이 될 만한 패턴을 이야기 해보자.
 %항목에 따라서 동의하기 어려운 게 있다면, 이런 생각이 있다는 정도로 넘어가도 좋겠다.
 
@@ -174,7 +174,7 @@ public class SingletonTestActivity extends Activity {
 09-02 20:46:44.079  20337-20337/com.naver.android.sample I/dalvikvm-heap: Grow heap (frag case) to 16.449MB for 5529616-byte allocation
 09-02 20:46:48.119  20337-20337/com.naver.android.sample D/dalvikvm: GC_FOR_ALLOC freed 2719K, 37% free 11216K/17736K, paused 8ms, total 11ms
 09-02 20:46:48.129  20337-20337/com.naver.android.sample I/dalvikvm-heap: Grow heap (frag case) to 24.342MB for 11059216-byte allocation
-....
+...
 09-02 20:46:59.589  20337-20337/com.naver.android.sample D/dalvikvm: GC_FOR_ALLOC freed 43201K, 49% free 92216K/179752K, paused 13ms, total 14ms
 09-02 20:46:59.589  20337-20337/com.naver.android.sample I/dalvikvm-heap: Forcing collection of SoftReferences for 176947216-byte allocation
 09-02 20:46:59.609  20337-20337/com.naver.android.sample D/dalvikvm: GC_BEFORE_OOM freed 9K, 49% free 92206K/179752K, paused 15ms, total 15ms
@@ -182,7 +182,7 @@ public class SingletonTestActivity extends Activity {
 \end{lstlisting}
 
 계속 메모리 사용량이 늘어가면서 마지막 라인에서 OOM이 발생했는데, 여기서 포인트는 OOM이 발생했다는 것이 아니다.
-OOM이 될 때까지도 CalenderRelatedActivity의 finalize()가 불리지 않았다.
+OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지 않았다.
 즉 CalenderRelatedActivity는 GC 대상이 끝까지 아니었다는 것이다.\\
 
 이제 CalendarManager에서 주석으로 있던 부분으로 대체해서 테스트해보자.
@@ -333,7 +333,8 @@ Builder 패턴을 통해 파라미터 갯수를 줄이려는 노력을 할 수�
 	}
 
 	public static void showPhoneDialog(Context context, String phoneNumber, 
-			String keyword, boolean isNaverUser, boolean isKorean, boolean ignorePhoneState) {
+			String keyword, boolean isNaverUser, boolean isKorean, 
+			boolean ignorePhoneState) {
 		...
 		if (!ignorePhoneState) {
 			savePhoneState();
