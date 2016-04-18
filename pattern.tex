@@ -83,7 +83,7 @@ public class CalendarManager {
 \end{lstlisting}
 9라인(1)에서 Context를 직접 전달해서 인스턴스를 생성하였다.\\
 
-두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml의 Activity 선언에 android:configsChanges 속성을 따로 넣지 말자.
+두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml의 Activity 선언에 android:configChanges 속성을 따로 넣지 말자.
 \begin{lstlisting}[frame=single]
 public class CalendarRelatedActivity extends Activity {
 
@@ -156,7 +156,7 @@ public class SingletonTestActivity extends Activity {
 \item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료한다. 이때 onDestory() 메서드가 불린다.
 \item SingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인하면, CalendarRelatedActivity의 finalize() 메서드가 불리지 않는다. Heap Dump 결과로 확인해보면 CalendarManager에서 참조가 남아있는 것을 볼 수 있다. 
 \item 최근 앱에서 제거하거나 환경설정에서 앱을 강제 종료하고서 다시 CalendarRelatedActivity를 실행시킨다.
-\item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
+\item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump 결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
 \item ingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
 \end{enumerate}
 
@@ -239,14 +239,14 @@ Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페
 이 복잡도를 해결하는 시도는 아래처럼 할 수 있다.
 \begin{itemize}
 \item 상위 클래스에는 someOperationXxx() 메서드를 모두 구현한다.
-\item 각 카테고리를 나타내는 하위 클래스를 만들어서 someOperationXxx()를 순차적으로 호출하거나, 필요한 경우 오버라이드한다(오버라이드 필요성은 있다. 메일을 보낼때 특정 문구가 필요한 경우가 그런 예일 것이다).
+\item 각 카테고리를 나타내는 하위 클래스를 만들어서 someOperationXxx()를 순차적으로 호출하거나, 필요한 경우 오버라이드한다(오버라이드 필요성은 있다. 메일을 보낼 때 특정 문구가 필요한 경우가 그런 예일 것이다).
 \end{itemize}
 
 이렇게 하면 해당 카테고리의 정책에 집중할 수 있어서 상황은 나아지지만 남은 문제점도 있다.
 \begin{itemize}
 \item 작업은 순서가 중요한 경우가 많다. 해당 카테고리의 특정 API를 네트워크 호출하고, 그 결과를 DB에 저장하는 경우를 예로 들 수 있다.
 하위 클래스에서 상위 클래스의 메서드를 여러 개 호출하는 식이면, 순서를 잘못 호출할 가능성이 생긴다.
-\item 카테고리가 추가될 때 기존 카테고리와 유사한 부분이 많다면, 이를 또 상속받고 싶은 유혹이 생긴다.
+\item 카테고리가 추가될 때 기존 카테고리와 유사한 부분이 많다면, 이를 또 상속하고 싶은 유혹이 생긴다.
 카테고리끼리의 상속은 정책이 바뀐다면 뜯어고칠 부분이 많아진다.
 \end{itemize}
 
@@ -320,7 +320,7 @@ Eclass extends Category implements Markable2, Markable3, Markable4 { }
 이렇게 파라미터가 많은 메서드에서, 동일한 타입이 연달아 나오는 경우 실수할 가능성이 많다. 
 showPhoneDialog() 메서드에서 phoneNumber와 keyword, 그리고 isNaverUser와 isKorean은 타입이 동일하기 때문에 호출하는 쪽에서 데이터를 반대로 넣을 수 있다.
 타입은 맞기 때문에 컴파일러에서는 검증할 게 없고, 결국 사람이 제대로 값을 써주어야 한다.
-Builder 패턴을 통해 파라미터 갯수를 줄이려는 노력을 할 수도 있다. 그래도 아직은 파라미터가 아주 많지는 않으니까(5개 이내) 파라미터를 더 늘리지 않는 쪽에 주의해보자.\\
+Builder 패턴을 통해 파라미터 개수를 줄이려는 노력을 할 수도 있다. 그래도 아직은 파라미터가 아주 많지는 않으니까(5개 이내) 파라미터를 더 늘리지 않는 쪽에 주의해보자.\\
 
 앱에 새로운 기능을 추가하면서 여러 화면이 생겼고, 여기서도 showPhoneDialog() 메서드를 호출하였다.
 그런데 이 기능에서는 showPhoneDialog()에서 하는 여러 작업 가운데 한 가지는 필요 없다는 얘기가 들려왔다.  내부에서 savePhoneState() 메서드를 호출하는데, 이 기능에서만은 savePhoneState() 메서드 호출이 불필요하다는 것이다.
@@ -461,8 +461,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \item FragmentState에 속한 것이 아닌, 두 번째 방식처럼 우리가 만든 Fragment의 변수들은 당연히 저장이 안 된다.
 \end{itemize}
 
-두 번째 방법에서도 값을 유지할 수는 있는데, 바로 
-Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
+두 번째 방법에서도 값을 유지할 수는 있는데, 바로 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
 \begin{lstlisting}[frame=single]
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 

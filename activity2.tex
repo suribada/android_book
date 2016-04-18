@@ -1,6 +1,6 @@
 \section{태스크}
 태스크는 간단하게 Activity 작업 묶음 단위라고 보면 된다. 사진 리스트를 보고(PictureListActivity), 사진 상세를 보고(PictureDetailActivity), 사진을 올리려고 카메라를 실행시킨다(Camera 앱).
-한 앱이 한 태스크가 아니라는 것을 염두에 두자. 물론 하나의 앱만 사용하면서, 필요에 의해 그 안에서 여러 태스크를 가질 수도 있다.\\
+한 앱이 한 태스크가 아니라는 것을 염두에 두자. 물론 한 앱만 사용하는 중에도 필요에 의해 여러 태스크를 가질 수도 있다.\\
 \includegraphics[scale=0.6]{diagram_backstack}
 
 Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 있지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
@@ -287,7 +287,7 @@ Passcode 입력 화면 채로 Home 버튼을 이용해서 Background로 보내�
 \end{comment}
 
 Flags를 쓸 때 제일 중요한 규칙은 가능한 최소한의 플래그만 전달하는 것이다.
-진행하는 프로젝트에서 setFlags 메서드에 5개의 플래그를 조합해서 전달하는 것을 본 적도 있는데, 잘 따져보니 2개만 전달하면 문제가 없는 것이었다.
+진행하는 프로젝트에서 setFlags() 메서드에 5개의 플래그를 조합해서 전달하는 것을 본 적도 있는데, 잘 따져보니 2개만 전달하면 문제가 없는 것이었다.
 어떻게든 운이 좋게 원하는 동작에 걸리면 된다는 생각보다는 의도가 명확해야만 한다. 그래야 내비게이션이 변경되어도 문제없이 대응할 수 있다. Callee의 launchMode 속성과 Caller의 Flags를 적절하게 사용해서 조합해야 하는 것은 물론이다. 
 % FLAG\_ACTIVITY\_CLEAR\_TOP과 FLAG\_ACTIVITY\_SINGLE\_TOP을 당연히 조합해야 한다고 봐야 하나?
 
@@ -306,7 +306,7 @@ DetailActivity를 호출하는 쪽을 DetailWebActivity로 한꺼번에 바꿔�
 \end{comment}
 \begin{enumerate}
 \item 기존에 있던 Activity가 없어졌을 때 사용할 수 있다.
-예를 들어, SplashPage가 맨 처음 뜨는 화면이었는데, SplashPage를 제거하고 바로 MainActivity를 보여기로 했다.
+예를 들어, SplashPage가 맨 처음 뜨는 화면이었는데, SplashPage를 제거하고 바로 MainActivity를 보여주기로 했다.
 그런데 SplashPage에 대한 링크가 Shortcut과 같이 기존 버전에서 남아있는 경우가 있다.
 기존 Shortcut은 이제 MainActivity를 바라보도록 해야 하는데, 이때 쓰는 것이 바로 activity-alias이다.
 \begin{lstlisting}[frame=single]

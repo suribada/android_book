@@ -37,7 +37,7 @@ servicemanager
 % http://www.vogella.com/tutorials/AndroidServices/article.html
 %안드로이드에서는 API와 internal에서 시스템 서비스를 구분하는 것이 약간 차이가 있다. 두 가지를 동일한 것으로 이해하고 있다면 혼동이 생기므로, 차이를 정리하고 넘어가도록 하자.
 시스템 서비스는 우리가 만드는 Service처럼 따로 실행할 필요가 없고, 시스템에서 이미 존재하고 실행 중인 서비스를 앱에서 이용하는 것이다.
-일반적으로 시스템 서비스는 자바 시스템 서비스와 네이티브 시스템 서비스 두 그룹으로 분류한다.\\
+시스템 서비스는 자바 시스템 서비스와 네이티브 시스템 서비스라는 두 그룹으로 분류한다.\\
 
 아래는 adb shell에서 ps 실행 결과이다.\\
 \begin{lstlisting}[frame=single] 
@@ -106,7 +106,7 @@ u0_a15    12207 355   906192 25548 ffffffff 00000000 S com.android.vending
 ...
 \end{lstlisting}
 
-여기서 /system/bin/mediaserver, /system/bin/surfaceflinger 두 가지가 네이티브 시스템 서비스 프로세스이다. 그리고 system\_server가 자바 시스템 서비스 프로세스이다.
+여기서 /system/bin/mediaserver, /system/bin/surfaceflinger 2개가 네이티브 시스템 서비스 프로세스이다. 그리고 system\_server가 자바 시스템 서비스 프로세스이다.
 
 \section{네이티브 시스템 서비스}
 네이티브 시스템 서비스는 앱에서 일반적으로 직접 접근해서 사용하지 않는다.
@@ -198,7 +198,7 @@ LayoutInflator를 가져오는 메서드는 세 가지가 있다.
 DownloadService 위치는 프레임워크 소스상에서 packages/providers/DownloadProvider 디렉터리에 있고, Service를 상속한 일반 Service이다. 
 DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, ConnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
 \item SensorManager는 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩해 놓는다.
-\item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
+\item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
 \item 롤리팝에는 com.android.server.SystemService가 추가되어서 Service 클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
 \begin{tabular}[fontsize=\tiny]{|l|l|} \hline
 Service & Stub 구현 내부 클래스 \\ \hline
@@ -367,13 +367,13 @@ ActivityManagerService, WindowManagerService, PackageManagerService, LocationMan
 		...
     }
 \end{lstlisting}
-AccountManager나 AlarmManager를 보면 Binder Proxy를 감싼 객체임을 바로 알수 있는데, 대부분 이와 유사하게 되어 있다.\\
+AccountManager나 AlarmManager를 보면 Binder Proxy를 감싼 객체임을 바로 알 수 있는데, 대부분 이와 유사하게 되어 있다.\\
 
 % http://developer.android.com/reference/android/content/Context.html
 
 \section{dumpsys 명령어}\label{sec:dumpsys}
 adb shell에서 가장 많이 실행하는 명령어 가운데 하나가 앞에서도 여러 차례 언급한 dumpsys이다. 
-dumpsys만을 쓰면 너무 많은 정보가 나오고, dumpsys activity나 dumpsys package 처럼 원하는 정보에 한정해서 보는 것이 좋다.
+dumpsys 명령어만 사용하면 너무 많은 정보가 나오고, dumpsys activity나 dumpsys package처럼 원하는 정보에 한정해서 보는 것이 좋다.
 그런데 dumpsys 다음에 들어가는 옵션 항목은 어떤 것이 있을까? 이를 아는 방법은 바로 shell에서 service list\footnote{/frameworks/native/cmds/service/service.cpp에 있다.}를 실행하는 것이다.
 % Android Graphics Architecture.pdf 참고할 것
 \begin{lstlisting}[frame=single] 
@@ -451,7 +451,7 @@ clone(:) 앞에 있는 문자열이 바로 dumpsys 다음에 올 수 있는 값�
 항목의 어떤 내용을 출력하는지는 ActivityManagerService, AlarmManagerService 등 시스템 서비스 클래스의 dump() 메서드를 보면 된다. 앞에서 안드로이드 버전마다 dumpsys 결과가 차이가 있다고 언급하였는데, 버전이 올라가면서 dump() 메서드는 클래스에 새로 추가된 여러 멤버 변수값과 함께 더 상세한 내용을 출력하고 있다.\\
 
 service list 결과에서 clone(:) 뒤에 [] 공백으로 나오는 것은 Binder Stub을 등록한 것이 아닌 Binder를 만들어서 일부러 등록한 것이다. dump 용도의 서비스가 등록된 것이다.
-dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시스템 서비스는 없다. 위에서 ActivityManagerService.setSystemProcess() 메서드 7라인을 보면 ServiceManager.addService(``meminfo'', new MemBinder(m))가 있다.
+dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시스템 서비스는 없다. 위에서 ActivityManagerService.setSystemProcess() 메서드의 7라인을 보면 ServiceManager.addService(``meminfo'', new MemBinder(m))가 있다.
 이제 ActivityManagerService의 정적 내부 클래스인 MemBinder를 찾아보면 별 게 없고, Binder를 상속하고 dump() 메서드가 유일한 메서드일 뿐이다.
 \begin{lstlisting}[frame=single]
     static class MemBinder extends Binder {
@@ -627,7 +627,7 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 	}
 \end{lstlisting}
 
-이제 매 호출시마다 getAppVersionCode() 메서드를 호출하는 건 어떨까?
+이제 매 호출 시마다 getAppVersionCode() 메서드를 호출하는 건 어떨까?
 2가지 정도 문제점을 생각할 수 있다.
 \begin{itemize}
 \item 당연한 얘기지만 빈번한 호출로 부하를 발생시킨다.
@@ -716,7 +716,7 @@ MessageQueue에 Message가 들어갔는데, 실행이 안 되는 것처럼 보�
 이런 패턴은 DigitalClock이나 TextClock에서도 쓰이는데 내부적으로 DELAY\_TIME을 1초 이내로 줘서 매 간격마다 시간을 갱신한다. 
 우리가 사용하는 단말에서 화면에 나타나는 시계도 이런 형태로 구현되어 있다.
 단말을 옆에 한참 방치해놓다가, 화면을 ON하면 순식간에 시간이 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 즉 그 사이에 매 초마다 시간을 변경하지 않고 있다가, 화면을 ON하는 순간 현재 시간을 보여준 것이다.
-이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일뿐 Message가 사라진 것은 아니다).
+이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일 뿐 Message가 사라진 것은 아니다).
 그리고 CPU가 깨어난 순간 동작을 한 것인데, 만일 Delay Time이 큰 경우에는 어떨까?\\
 
 두 가지 실제 예를 들어보자.
@@ -752,7 +752,7 @@ PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에�
 AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다시 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
 이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
 요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안 되었으면 남은 지연 시간을 재계산하는 것이다. 
-좀더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep에 들어간 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안 되었지만 스크린이 ON되는 순간 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.
+좀 더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep에 들어간 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안 되었지만 스크린이 ON되는 순간 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.
 \begin{lstlisting}[frame=single]
 	private TextView title;
 
@@ -810,7 +810,7 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
 
 USB 충전 외에도 Deep Sleep에 대해서 모호한 내용들이 있는데 간단하게 정리해보자.
 \begin{itemize}
-\item 환경 설정에서 절전모드하고는 상관이 없다. 절전 모드에서는 더 Deep Sleep이 잘 될지 않을까 하는 막연한 생각이 들지만 관련이 없다.
+\item 환경설정에서 절전모드와 Deep Sleep은 상관이 없다. 절전 모드에서는 더 Deep Sleep이 잘 될지 않을까 하는 막연한 생각이 들지만 관련이 없다.
 \item USB 디버깅 옵션을 해제해야 Deep Sleep이 된다고 인터넷에 나오기도 하는데 전혀 그렇지 않다.
 \end{itemize}
 
@@ -834,7 +834,7 @@ Deep Sleep 상태에서 깨어나는 방법은 기본적으로 Interrupt에 의�
 Sleep 관련해서 우리가 살펴봐야 하는 클래스는 system\_server에서 실행중인 PowerManagerService이다.
 PowerManagerService의 상태를 보기 위해 dumpsys power를 한번 실행해보자. 
 
-PowerManagerService는 젤리빈 4.2에서부터 추가된 DreamService 때문에 소스가 더 많이 복잡해졌다. 디바이스에 따라서 화면 보호기(ScreenSaver)라고 하기도 하고, DayDream이라고 하기도 하는데, 도킹할 때/충전하는 동안/도킹이나 충전 중일때에 활성화하도록 설정할 수 있다.
+PowerManagerService는 젤리빈 4.2에서부터 추가된 DreamService 때문에 소스가 더 많이 복잡해졌다. 디바이스에 따라서 화면 보호기(ScreenSaver)라고 하기도 하고, DayDream이라고 하기도 하는데, 도킹할 때/충전하는 동안/도킹이나 충전 중일 때에 활성화하도록 설정할 수 있다.
 
 \begin{lstlisting}[frame=single]
 shell@C6903:/ $ dumpsys power

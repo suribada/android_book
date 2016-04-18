@@ -8,7 +8,7 @@ SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를
 SQLite db 파일은 /data/data/패키지/databases에 저장된다. 
 단말에서는 일반적으로 db 파일에 직접 접근할 수 없다(루팅한 것이 아니라면).\\
 
-개발 시에 에물레이터에서 db를 확인하는 방법으로는 2가지를 사용한다.
+개발 시에 에뮬레이터에서 db를 확인하는 방법으로는 2가지를 사용한다.
 \begin{itemize}
 \item shell을 통해서 쿼리를 실행한다.
 \item adb pull을 통해 db 파일을 가져와서, SQLite Database Browser 같은 툴로 데이터를 확인하고 쿼리를 실행한다.
@@ -111,7 +111,7 @@ sqlite3 /data/data/com.android.providers.settings/databases/settings.db
 \end{lstlisting}
 
 sqlite shell에서는 SQLite dot command라고 불리는 명령어 모음이 있다.
-말그대로 dot(.)으로 시작하고 다른 명령어처럼 semi-clone(;)을 쓰지는 않는다. 이 명령어 모음은 약 30여개가 되는데 단순 확인 용도이고 실제 사용하는 명령어는 몇 개 안 된다.
+말 그대로 dot(.)으로 시작하고 다른 명령어처럼 semi-clone(;)을 쓰지는 않는다. 이 명령어 모음은 약 30여 개가 되는데 단순 확인 용도이고 실제 사용하는 명령어는 몇 개 안 된다.
 .help로 명령어 목록을 보고 필요할 때 더 많은 기능을 활용해보자.
 sqlite shell을 끝내는 명령어는 .quit와 .exit 둘 다 사용한다.
 \begin{itemize}
@@ -214,12 +214,12 @@ Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로�
 \item UNLOCKED: 기본 상태이다. 읽기나 쓰기가 안 된다.
 \item SHARED: 읽기만 되고 쓰기는 안 된다. 여러 프로세스가 동시에 Shared Lock을 가질 수 있다. 하나 이상의 Shared Lock이 활성화되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
 \item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
-\item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
+\item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 Clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
 \item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 너무 크게 잡지 않도록 권장하는 것과 비슷하다. \\
 % 예를 들어 수차례의 HTTP call을 통해서 데이터를 가져와서 입력한다고 하면, Transaction을 먼저 시작하고, HTTP call을 하면 전체적인 Transaction 실행시간이 길어질 수 밖에 없다.
 \end{itemize}
 
-결국 CRUD에서 Read를 뺀 나머지 CUD에서 Exclusive Lock을 잡는 것 때문에 DB Lock 문제가 생긴다. 그러나 CUD에서도 Lock을 잡는게 짧은 시간이기 때문에 빈번하게 문제를 일으키지 않는다. 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 해야 하는 트랜잭션이다.
+결국 CRUD에서 Read를 뺀 나머지 CUD에서 Exclusive Lock을 잡는 것 때문에 DB Lock 문제가 생긴다. 그러나 CUD에서도 Lock을 잡는 게 짧은 시간이기 때문에 빈번하게 문제를 일으키지 않는다. 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 해야 하는 트랜잭션이다.
 SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}를 참고하자.}\\
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
@@ -385,12 +385,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 \end{lstlisting}
 
-\item 생성자의 세번째 파라미터는 거의 null을 넣는다. 
+\item 생성자의 세 번째 파라미터는 거의 null을 넣는다. 
 쿼리 결과로 Cursor 구현체인 SQLiteCursor를 쓰지 않는다면, Cursor 구현을 생성하는 Factory인 
 SQLiteDatabase.CursorFactory를 새로 만들어서 파라미터에 전달할 수 있지만 필요한 경우가 사실상 없다.
 %쿼리 결과로 SQLiteCursor를 쓰지 않는 경우라면, Cursor를 생성하는 SQLiteDatabase.CursorFactory 를 새로 만들어서 넣는 게 가능하지만, 필요한 경우가 사실상 없다.
 
-\item DB 생성은 어느 시점에 될까? SQLiteOpenHelper 생성자가 해주는 것으로 생각할 수 있지만 그렇지 않다.
+\item DB 생성은 어느 시점에 될까? SQLiteOpenHelper 생성자에서 하는 것으로 생각할 수 있지만 그렇지 않다.
 실제로 DB 열기/생성(openOrCreate)은 SQLiteOpenHelper의 getReadableDatabase()나 getWritableDatabase() 메서드를 호출할 때이다.
 더 정확하게 얘기하면 SQLiteOpenHelper에는 SQLiteDatabase 인스턴스를 1개 가지고 있는데 이 인스턴스가 앞에 이미 생성되었으면 그것을 사용하고, 그렇지 않은 경우에 생성하고 onCreate()나 onUpgrade() 메서드가 실행된다.
 
@@ -439,7 +439,7 @@ DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 \item close() 메서드는 실제 호출할 일이 거의 없다.
 close()는 SQLiteDatabase 인스턴스의 close()를 호출하고, SQLiteDatabase 인스턴스를 null로 만든다.  매번 close()를 호출하지 않고서 SQLiteDatabase 인스턴스를 계속 재사용해도 문제가 없고, 또 다른 이유는 close() 시점 때문에 문제가 발생할 수 있다는 것이다.\\
 
-어느 쓰레드에서 getWritableDatabase()를 실행하고서 쿼리를 실행하려 한다고 하자. 다른 쓰레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 getWritableDatabase() 이후에 close()가 실행되고, 이것을 가지고 쿼리한다면  NullPointerException이 발생하게 된다. 
+어느 스레드에서 getWritableDatabase()를 실행하고서 쿼리를 실행하려 한다고 하자. 다른 스레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 getWritableDatabase() 이후에 close()가 실행되고, 이것을 가지고 쿼리한다면  NullPointerException이 발생하게 된다. 
 %  에러 메시지 보여주자
 \item onConfigure(SQLiteDatabase db) 메서드와 onOpen(SQLiteDatabase db) 메서드가 있다. onConfigure() 메서드는 SQLiteDatabase 생성/열기 이후, onCreate()와 onUpgrade() 메서드 전에 실행되는 것으로 write-ahead logging이나 foreign key support 같은 기능을 활성화하는 작업 등을 할 수 있다. onOpen() 메서드는 onCreate()와 onUpgrade() 이후에 database connection 설정을 변경할 때 사용한다.
 
@@ -870,7 +870,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 \item 11라인(2)과 25라인(4)에서 2개의 스레드를 시작한다.
 11라인의 스레드는 단순 조회이다.
 25라인의 스레드는 데이터를 10개 입력하는데 45라인(6)에서 1초간 sleep하기 때문에(시간이 걸리는 것을 시뮬레이션) 최소 실행 시간은 10초이다. 32라인(5)에서 트랜잭션을 시작하고 49라인(7)에서 트랜잭션을 종료한다.
-\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction) 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialized 되기 때문에 두 번째 스레드의 49라인(endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
+\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction) 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialization되기 때문에 두 번째 스레드의 49라인(endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
 \end{itemize}
 
 이 상황은 앞서 얘기한 동기화를 하느라고 조회 쿼리가 늦어지는 것과 동일한 케이스이다. 

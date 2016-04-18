@@ -285,7 +285,7 @@ private void createTables(SQLiteDatabase db) {
 시스템이 알아서 호출하는 메서드는 함부로 엮어 주지 말고, 위처럼 별도 메서드를 만들도록 하자. 그럼으로써 한쪽의 메서드가 변경될 필요가 있어도 다른 곳까지 신경쓰지 않아도 된다.
 ``기능이 완전히 동일한데?''하고 반문하는 경우도 있다. 혼자서 개발한다면 문제가 되지 않는다. 하지만 여러 사람이 개발하는 동안에 자신이 바꾸는 코드가 어디까지 영향을 주는 지 매번 생각해야 한다면 피곤할 수 밖에 없다. 
 코드를 읽은 것도 어려워진다. 
-필자의 경우에는 Activity에 로그인하는 기능이 있다는데, 아무리 봐도 로그인을 실행하는 코드가 보이지 않아서 어려움을 겪은 적이 있다. 
+필자의 경우에는 Activity에 로그인하는 기능이 있다는데, 아무리 봐도 로그인하는 코드가 보이지 않아서 어려움을 겪은 적이 있다. 
 원인은 코드 상에서 onActivityResult()를 직접 호출하고 그 안에서 로그인을 시도하는 것 때문이었다. onActivityResult()는 Callee에서 데이터를 받아서 처리하는 것이지 직접 호출하는 용도는 아니다.
 
 \section{Configuration 변경}
@@ -322,7 +322,7 @@ Configuration은 컴포넌트에서 사용하는 리소스를 결정하기 때�
 이를 위해 안드로이드에서 선택한 방법은 화면에서 하나씩 문자열을 찾아서 변경하지 않고 Activity를 재시작하고 변경된 리소스를 사용하는 것이다.
 화면 회전도 마찬가지다. 화면 회전에 따라 /res/layout-port와 /res/layout-land 디렉토리의 레이아웃을 교체하려면 Activity를 재시작한다. 참고로 Activity 외에 다른 컴포넌트는 재시작하지 않는다.\\
 
-Configuration 변경으로 인한 Activity 재시작은 하나의 인스턴스를 가지고 새로 초기화해서 재사용하는 것이 아니다. 기존 인스턴스는 onDestroy()까지 실행하고 새 인스턴스를 onCreate()부터 실행하는 것이다. 여기서 생길 수 있는 문제가 메모리 누수이다. Activity가 onDestroy()까지 불리었는데도 어느 곳에 Activity에 대한 참조가 남아있다면 이 Activity는 계속 GC 되지 않고 메모리를 차지하게 된다. 화면을 자꾸 회전할 때 OutOfMemoryError로 앱이 크래시된다면 원인은 메모리 누수 때문이다. 빈번하게 발생하는 Activity의 메모리 누수 상황을 나열해보자.
+Configuration 변경으로 인한 Activity 재시작은 하나의 인스턴스를 가지고 새로 초기화해서 재사용하는 것이 아니다. 기존 인스턴스는 onDestroy()까지 실행하고 새 인스턴스를 onCreate()부터 실행하는 것이다. 여기서 생길 수 있는 문제가 메모리 누수이다. Activity가 onDestroy()까지 불리었는데도 어느 곳에 Activity에 대한 참조가 남아있다면 이 Activity는 계속 GC 되지 않고 메모리를 차지하게 된다. 화면을 자꾸 회전할 때 OutOfMemoryError가 발생한다면 원인은 메모리 누수 때문이다. 빈번하게 발생하는 Activity의 메모리 누수 상황을 나열해보자.
 
 \begin{itemize}
 \item 떠있는 Activity에 특별한 작업을 하기 위해서 Activity 인스턴스를 Collection에 모아둔다. 최악의 상황으로 WeakReference를 사용한다고 해도 가능하면 피해야 한다. 기능 요구사항이나 레거시 코드 문제로 사용한 적은 있지만 권장되지 않는 방식이다. Activity 목록은 시스템이 알아서 관리하는 영역이기도 하고, Activity가 종료할 때 Collection에서 제거해야 하는데 빠뜨리는 실수가 발생할 가능성도 많다.
@@ -397,7 +397,7 @@ Configuration qualifier에 대한 상세 내용은 `Providing Resources' 문서�
 % mcclist.com에 mcc/mnc 리스트가 보인다. 통신사마다 다르게 리소스를 구성하고 싶을 때 사용한다.
 
 \subsection{데이터 복구}
-Configuration 변경으로 Activity가 재시작되어도 사용자 경험상 기존에 보던 화면을 가능하면 유지하는 것이 좋다. 예를 들어, ViewPager에서 플링(fling)을 통해 특정 페이지로 이동했을 때 Configuration 변경에도 동일한 페이지를 보여주려고 한다. 이때 상태를 임시 저장하고 복구하는 메서드인 onSaveInstanceState()와 onRestoreInstanceState()를 사용하면 된다. onRestoreInstanceState() 메서드에 전달되는 Bundle savedInstanceState 파라미터는 onCreate() 메서드에도 전달되지만, 대칭을 위해서 onRestoreInstanceState() 메서드에서 복구하는 로직을 많이 사용한다.
+Configuration 변경으로 Activity가 재시작되어도 사용자 경험상 기존에 보던 화면을 가능하면 유지하는 게 좋다. 예를 들어, ViewPager에서 플링(fling)을 통해 특정 페이지로 이동했을 때 Configuration 변경에도 동일한 페이지를 보여주려고 한다. 이때 상태를 임시 저장하고 복구하는 메서드인 onSaveInstanceState()와 onRestoreInstanceState()를 사용하면 된다. onRestoreInstanceState() 메서드에 전달되는 Bundle savedInstanceState 파라미터는 onCreate() 메서드에도 전달되지만, 대칭을 위해서 onRestoreInstanceState() 메서드에서 복구하는 로직을 많이 사용한다.
 % onSaveInstance 메소드는 onPause 이전에 호출된다. 
 % onRestoreInstanceState는 onCreate 메소드이후, onResume 메소드 이전에 실행된다.
 % 하니콤 이전과 이후에 대해서 확인 필요하다.
@@ -524,7 +524,7 @@ onConfigurationChanged()에서 getResource().getXxx() 메서드는 변경된 Con
 이것은 View의 생성자에서 해당 Configuration의 리소스를 대입하는 일반적인 구조 때문이다. 정확하게 얘기하면 android:layout\_width나 android:layout\_height는 View의 속성이라기보다 상위 ViewGroup의 속성으로, LayoutInflator의 inflate()에서 View 생성자에서 다른 속성은 모두 처리하고 나서, ViewGroup의 generateLayoutParams()를 실행해서 android:layout\_width나 android:layout\_height를 처리한다.
 즉, /res/layout/view\_list.xml에서 android 네임스페이스에 있는 값들은 LayoutInflator의 inflate() 실행 순간에 이미 대입되고, Configuration이 변경된다고 해서 다시 대입되지 않는다. 
 	
-\item textSize로 sp를 쓰지 않는다면 fontScale도 가능하다. UI가단순한 경우에는 권장사항대로 sp를 써도 되지만, UI가 복잡한 경우 디자인적인 문제로 textSize를 dp로 제한하는 경우가 많다.
+\item textSize로 sp를 쓰지 않는다면 fontScale도 가능하다. UI가 단순한 경우에는 권장사항대로 sp를 써도 되지만, UI가 복잡한 경우 디자인적인 문제로 textSize를 dp로 제한하는 경우가 많다.
 
 \item 다국어 대응을 하지 않는다면 locale을 넣을 수도 있다. 또는 화면의 일부만 다국어 대응을 할 수도 있다. 타이틀만 변경해도 된다면 onConfigurationChanged() 메서드에서 titleText.setText(R.string.title)와 같이 쓰면 해당 언어로 문자열이 쓰여진다.
 \end{itemize}
@@ -575,7 +575,7 @@ Configuration 내용을 보기 위해서는 Context 인스턴스에서 getResour
 \end{lstlisting}
 값이 14개가 나오는데 실제 단말에서는 커스텀 데이터가 더 나오기도 한다. 1, 2라인은 화면을 회전한 것이고 4, 5라인은 설정에서 글꼴 크기를 키우고서 화면을 회전한 것이다.
 \begin{itemize}
-\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다. `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시노트4에서는 값이 1.09로 나오기도 했다.
+\item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다. `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시 노트4에서는 값이 1.09로 나오기도 했다.
 \item 두 번째는 mcc, mnc 값이다. \url{http://mcclist.com}에 따르면 450은 한국의 국가 코드이고 5는 SK Telecom의 통신사 코드이다.
 \item 세 번째는 locale 값이다.
 \item 네 번째 ldltr은 screenLayout 값이다.
@@ -587,13 +587,13 @@ Configuration 내용을 보기 위해서는 Context 인스턴스에서 getResour
 \item 열한 번째 finger는 touchScreen 값이다.
 \item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden의 의미다. -keyb는 키가 없다는 의미다.(마이너스로 생각하면 된다.)
 \item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가  있으므로 navigation 타입이 없다는 것이다. 
-\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
+\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 전역적인 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
 \end{itemize}
 
 이제 Configuration이 변경되는 시점에 대해 확인한 내용을 얘기해보자.. Configuration이 바뀔 때는 Application의 onConfigurationChanged() 메서드가 먼저 불리고, 포그라운드에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.
 화면 방향 관련해서 Configuration이 바뀌는 것은 포그라운드에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity가 포그라운드에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. ActivityA가 화면 방향 가로 고정이고 ActivityB가 따로 방향을 고정하지 않았다면 어떤 현상이 발생할까? ActivityA의 Configuration orientaton은 land로 고정된다. 이때 Configuration seq가 N이라고 하면, ActivityA에서는 아무리 화면을 회전해도 seq가 바뀌지 않는다. ActivityB로 전환하면 어떤 현상이 발생할까? 만일 세로 방향이었다면 ActivityB가 세로 방향으로 보여야 하기 때문에 orientation이 port로 바뀌면서 seq는 N+1이 된다. 만일 가로 방향이었다면 seq는 그대로이다. 이제 ActivityB를 회전하면 계속해서 seq가 늘어나면서 land$\leftrightarrow$port가 서로 바뀐다. 이제 ActivityB를 종료하고 ActivityA로 돌아오면 어떻게 될까? 이 시점에 orientaton이 land라면 seq가 더해지지 않는다. 그런데 orientaton이 port라면 ActivityA에 맞는 Configuration으로 변경되면서 orientaton이 land가 되고 seq는 더해진다. seq는 변경될 때마다 Application의 onConfigurationChanged() 메서드가 불린다.\\
 
-Configuration은 한순간에 1개의 값만 존재한다. 예를 들어, ActivityA 위에 Dialog 테마 ActivityB가 있다고 하자. Dialog 테마 Activity에 android:screenOrientation을 지정하지 않으면(즉 unspecified라면) 배경에 있는 Activity의 방향을 따르므로 문제가 없는데, 이제 ActivityA의 android:screenOrientation=``land'이고 ActivityB의 android:screenOrientation=``port''로 다른 방향으로 해보자. 
+Configuration은 한순간에 1개의 값만 존재한다. 예를 들어, ActivityA 위에 다이얼로그 테마 ActivityB가 있다고 하자. 다이얼로그 테마 Activity에 android:screenOrientation을 지정하지 않으면(즉 unspecified라면) 배경에 있는 Activity의 방향을 따르므로 문제가 없는데, 이제 ActivityA의 android:screenOrientation=``land'이고 ActivityB의 android:screenOrientation=``port''로 다른 방향으로 해보자. 
 ActivityA만 있을 때는 세로 고정이었는데, 가로 화면인 ActivityB를 시작하면 배경에 있는 ActivityA까지 가로로 바뀌어 버린다. 여기서 재미있는 현상이 발생한다. android:configChanges에 방향 회전에 대응되어 있다면 ActivityA의 onConfigurationChanged() 메서드가 불리고 그렇지 않다면 ActivityA는 재시작한다.  필자의 경우도 android:screenOrientation이 land나 port로 지정되면 방향 전환에 대해서 android:configChanges는 필요없다고 생각했는데 이런 특이한 케이스도 있다는 것을 생각하자.\\
 
 % bg가 no option이고 fg가 landscape을 때 한번 landscape로 또 고정

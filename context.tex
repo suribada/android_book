@@ -65,7 +65,7 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
 Activity, Service, Application 각 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있고 getBaseContext()는 각각 다른 ContextImpl 인스턴스를 리턴한다. getApplicationContext()는 Application 인스턴스를 리턴하는 것으로 Application은 앱에서 하나 밖에 없으므로 어디서나 동일한 인스턴스를 반환한다.\\
 
 각 컴포넌트가 생성될 때마다 ContextImpl을 생성하지만 ContextImpl의 정적 초기화 블록(static initializer block)\footnote{http://warmz.tistory.com/50에서 초기화 블록 내용을 알아보자}에서 클래스가 최초 로딩될 때 안드로이드 시스템 서비스 매핑을 한번만 하고, 이후에는 매핑을 바로 사용하고 있다.
-시스템 서비스는 Context 클래스에서 XXX\_SERVICE로 있는 상수명으로 모두 매핑이 되어 있고, getSystemService(Context.ALARM\_SERVICE) 와 같이 Context가 전달되는 어디서든 시스템 서비스를 가져다 쓸 수 있다.\\
+시스템 서비스는 Context 클래스에서 XXX\_SERVICE와 같이 상수명으로 모두 매핑되어 있고, getSystemService(Context.ALARM\_SERVICE) 와 같이 Context가 전달되는 어디서든 시스템 서비스를 가져다 쓸 수 있다.\\
 
 \includegraphics[scale=0.5]{context}\\
 객체지향의 원칙에서 상속보다는 구성을 사용하라고 하는데, 이 클래스 다이어그램을 보면 원칙에 들어맞는다.
