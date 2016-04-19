@@ -24,8 +24,7 @@ Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울
 \end{itemize}
 
 \item 안드로이드는 리눅스 커널을 기반으로 불필요한 것은 제거하고(X-Window, glibc, 표준 리눅스 유틸리티 일부 등) 확장 패치한 것이다(Binder, Ashmem, Low Memory Killer 등).\\
-
-이 가운데 특히 Binder IPC는 프로세스 간 통신에 사용하는 방식이다. 
+이 가운데 Binder IPC는 프로세스 간 통신에 사용하는 방식이다. 
 Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC를 이용한 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데서 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있게 된다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 Binder Thread에 속한 것이다. 
 
 \end{itemize}
@@ -64,9 +63,9 @@ Stack Overflow에서 답변을 찾았다고 해도 그게 맞는 것인지 검�
 예를 들어보자.
 ListView의 아이템 레이아웃에 CheckBox가 있으면 ItemClick이 정상적으로 동작하지 않는다. 이런 내용은 책이나 강의에는 잘 안 나오기 때문에 처음 겪을 때 당황하게 된다. 
 StackOverflow에서 검색해보면 아이템 레이아웃의 CheckBox 속성에서 android:focusable=``false''로 하라고 나온다. 이 상태에서 어쨌든 문제가 해결된다.
-그런데 다른 ListView의 아이템 레이아웃에 ImageButton이 추가되었는데 또 ItemClick이 동작하지 않는다. 다시 검색을 해본다. 이런저런 얘기가 많은데 명확한 답변이 잘 안 보인다(그 가운데 물론 답이 있다). 역시 android:focusable=``false''를 쓰면 될까 했는데 해결되지 않는다. 이때 2가지를 찾아봐야 한다. 
+그런데 다른 ListView의 아이템 레이아웃에 ImageButton이 추가되었는데 또 ItemClick이 동작하지 않는다. 다시 검색을 해본다. 이런저런 얘기가 많은데 명확한 답변이 잘 안 보인다(그 가운데 물론 답이 있다). 역시 android:focusable=``false''를 써보지만 해결되지 않는다. 이때 2가지를 찾아봐야 한다. 
 \begin{enumerate}
-\item focusable이 ListView의 OnItemClickListener에 주는 영향이 있는가? focusable로 문제가 해결되지 않으니 다른 조건이 더 있을가?
+\item focusable 속성이 ListView의 OnItemClickListener에 주는 영향이 있는가? focusable 속성으로 문제가 해결되지 않으니 다른 조건이 더 있을가?
 \item ImageButton의 문제가 있을까?
 \end{enumerate}
 
@@ -85,7 +84,7 @@ ListView의 각 Item View는 일반적으로 ViewGroup이고 그 안에 focusabl
 
 프레임워크 소스는 각 단말 제조사에서 커스터마이징하는 경우가 많아서 예외 스택의 라인 번호가 차이가 있어 스택을 가지고 문제 위치를 쉽게 찾지 못한다. 이 때문에 프레임워크 소스를 그대로 사용하는 레퍼런스 폰인 Nexus 시리즈를 개발에 활용하는 것은 많은 도움이 된다. 앱 프로세스 내부에서 실행되는 클래스에 대해서는 디버깅 모드에서 Breakpoint를 잡아서 값을 확인할 수 있다.\\
 
-안드로이드 내부 구조를 다 파헤쳐볼 것도 아닌데, 전체 프레임워크 소스를 다운로드할 필요가 있을까 싶다. 필자의 경우에도 다운로드하는 걸 망설였지만, 다운로드하고서 많은 도움이 되었다. C/C++ 소스까지 깊이 이해하지는 않아도 대략이라도 내부 구조를 알 수 있고, 특히 앱의 크래시 문제를 잡는 데 쓸모가 있다. 
+안드로이드 내부 구조를 다 파헤쳐볼 것도 아닌데, 전체 프레임워크 소스를 다운로드할 필요가 있을까 싶다. 필자의 경우에도 다운로드하는 걸 망설였지만, 다운로드하고서 많은 도움이 되었다. C/C++ 소스까지 깊이 이해하지는 않아도 대략이라도 내부 구조를 알 수 있고, 특히 앱의 크래시 문제를 해결하는 데 쓸모가 있다. 
 안드로이드 동작 방식에 대한 이해와 경험으로 문제를 크래시를 해결하는 경우가 많지만, 실제 개발에서 크래시가 코어 자바 쪽에서 생기는 경우도 있다.
 아래와 같은 에러를 보게 된다면 원인을 어떻게 찾을 것인가. 두 번째 에러는 현장에서 수많은 크래시를 발생시킨 것이다.
 \begin{lstlisting}[frame=single]
@@ -181,7 +180,7 @@ targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테
 모든 버전에서 병렬 실행을 위해서 별도 메서드를 만든 적이 있었는데, AsyncTaskCompat을 바로 사용하면 된다.
 
 \item 메인 스레드 상에서 네트워크 통신이 진저브레드 API 레벨 9까지는 허용되었으나, 그 이후에는 에러를 발생시킨다. targetSdkVersion을 높여서 NetworkOnMainThreadException이 발생한다면, 스레드에서 네트워크 통신을 하도록 변경해야 한다.
-\item 하드웨어 가속(Hardware Acceleration)은 View에서 Canvas에 그리는 모든 작업을 GPU를 가지고 하는 것이다. 하드웨어 가속은 허니콤에서 처음 시작되었고 targetSdkVersion 14 이상에서는 디폴트 옵션이다. 하드웨어 가속을 사용할 때 눈에 띄는 속도 향상은 SlidingPaneLayout이나 여러 Sliding Menu 라이브러리에서 애니메이션시 끊김 현상이 없다는 것이다. 
+\item 하드웨어 가속(Hardware Acceleration)은 View에서 Canvas에 그리는 모든 작업을 GPU를 가지고 하는 것이다. 하드웨어 가속은 허니콤에서 처음 시작되었고 targetSdkVersion 14 이상에서는 디폴트 옵션이다. 하드웨어 가속을 사용할 때 눈에 띄는 속도 향상은 SlidingPaneLayout이나 여러 Sliding Menu 라이브러리에서 애니메이션 시 끊김 현상이 없다는 것이다. 
 필자의 경우도 애니메이션 끊김 현상이 단지 하드웨어 가속만으로 해결되는 경우를 여러 번 겪었다.
 그래서 가능하면 하드웨어 가속을 쓰는 게 좋지만 항상 속도가 향상되는 것은 아니다. \url{http://developer.android.com/intl/ko/guide/topics/graphics/hardware-accel.html}을 참고해서 테스트하고 수준별(Application, Activity, Window, View)로 오버라이드하는 방법을 사용하자.
 \item targetSdkVersion 14 이상에서는 App Widget에서 기본 패딩이 존재한다. 기존에는 셀의 사이즈를 꽉 채웠지만 targetSdkVersion이 올라가면 기본 패딩 때문에 App Widget의 실제 사이즈는 기존보다 작아진다. 관련해서 \ref{subsubsec:icspadding}절에 좀 더 상세하게 설명하였다.

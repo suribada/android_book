@@ -10,8 +10,8 @@ Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택
 예를 들어보자. 
 \begin{enumerate}
 \item 캘린더 앱은 달력 화면(A)에서 일정 상세 화면(B)으로 가고 다시 일정 수정 화면(C)으로 이동한다. 그러다가 Home 키를 눌러서 태스크를 백그라운드로 보낸다. 
-그런데 홈 스크린 화면에 일정목록 App Widget이 있어서 특정한 일정으로 이동할 수 있다. 그렇다면 이 특정한 일정 보기 화면은 앞에 있던 A, B, C 위에 B를 추가하면 될까? 아니면 C를 스택에서 없애고, B를 다시 로딩하게 할까?
-\item 사진 공유 앱에서 사진 목록 화면(A)에서 사진등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면 B'으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
+그런데 홈 스크린 화면에 일정 목록 App Widget이 있어서 특정한 일정으로 이동할 수 있다. 그렇다면 이 특정한 일정 보기 화면은 앞에 있던 A, B, C 위에 B를 추가하면 될까? 아니면 C를 스택에서 없애고, B를 다시 로딩하게 할까?
+\item 사진 공유 앱에서 사진 목록 화면(A)에서 등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면 B'으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
 \end{enumerate}
 
 각 앱에서 원하는 내비게이션 방식이 있는데, 태스크의 동작 방식을 이해하지 못한다면 사용자가 보고자 하는 화면이 아닌 엉뚱한 화면을 접하는 경우가 생긴다. 물론 이해가 간단하지 않고 많은 시행착오가 우리 앞에 기다리고 있다.
@@ -26,12 +26,12 @@ Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택
 이제 반대로 백그라운드에서 포그라운드로 상태를 변경하는 메서드는 있을까? 
 Activity가 보이지 않는 백그라운드 상태이기 때문에 Activity의 메서드로는 안 된다.
 바로 ActivityManager에서 
-List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서드를 통해서 가장 최근의 maxNum 개를 가져오고 moveTaskToFront(int taskId, int flags) 메서드에 RunningTaskInfo.id를 taskId에 전달하면 된다.\footnote{관련해서 \url{http://bonjwakim.tistory.com/15}를 참고하자.}
+List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서드를 통해서 가장 최근의 maxNum개를 가져오고 moveTaskToFront(int taskId, int flags) 메서드에 RunningTaskInfo.id를 taskId에 전달하면 된다.\footnote{관련해서 \url{http://bonjwakim.tistory.com/15}를 참고하자.}
 % 권한 필요
 
 \subsection{태스크 확인}
 눈으로 화면이 바뀌는 것을 기준으로 테스트하면 태스크가 정상적으로 동작하는지 확인하기 어렵다. Back 키로 이전 화면으로 돌아가면 잘 남아있다고 동일한 태스크라고 확신할 수 없다.
-예를 들어, 앱에서 startActivity()를 실행해서 브라우저를 열었다면 앱과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask lanuchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
+예를 들어, 앱에서 startActivity()를 실행해서 브라우저를 열었다면 앱과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask launchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
 
 shell에서 dumpsys를 활용해서 태스크를 확인하면서 각 상황을 이해하도록 하자.
 adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 써도 된다.\\
@@ -172,7 +172,7 @@ TaskRecord에는 app=null로 나오고, state=DESTROYED로 있는 것도 볼 수
 % 케이스를 좀 더 확인할 수 있을까?
 dumpsys 명령어는 개발 중에 현재 포커스된 Activity가 어떤 것인지 확인하는 데도 유용하다.
 테스트하면서 여러 Activity를 이동하는데, Activity가 많으면 현재 어느 Activity에 있는지 찾아가는 게 간단치 않다.
-이 명령어를 몰랐을 때는 시작 Activity부터 로직을 따라가서 현재 Activity를 찾기도 했다. ApiDemos에서 기능을 테스트해보다 관련 Activity를 찾아서 디렉토리를 뒤져본 기억들은 안드로이드 앱 개발자라면 가지고 있을 것이다.
+이 명령어를 몰랐을 때는 시작 Activity부터 로직을 따라가서 현재 Activity를 찾기도 했다. ApiDemos에서 기능을 테스트해보다 관련 Activity를 찾아서 디렉터리를 뒤져본 기억들은 안드로이드 앱 개발자라면 가지고 있을 것이다.
 
 \subsection{taskAffinity}
 Activity에서 startActivity()를 실행하는 게 많지만, 알람 같은 경우 BroadcastReceiver에서 startActivity()를 실행하는 것이 일반적이고 Service 실행 중에 Activity를 시작하는 상황도 있다. Application에서는 드물지만 이벤트를 항상 받기 위해서 Application에 BroacastReceiver를 등록하고 여기서 startActivity()를 실행하는 경우가 있다.
@@ -198,7 +198,7 @@ taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게
 별도로 속성을 줄 때는 android:taskAffinity=``:alarm'' 식으로 프로세스 분리할 때처럼 :(clone) 뒤에 구분자를 적는 것을 권장한다.\footnote{com.example.android.lifecycle.another 또는 :another와 같은 형식이 모두 가능하지만  another처럼 단순한 이름을 쓰는 것은 허용되지 않는다.}\\
 
 Activity 선언에 taskAffinity 속성을 따로 주는 경우를 알아보자. 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
-알람 앱에 알람 리스트 화면(AlarmClock), 알람 설정 화면(AlarmSettings), 알람 화면(AlarmAlert)과 같이 세 개의 화면이 있다고 하자. 
+알람 앱에 알람 리스트 화면(AlarmClock), 알람 설정 화면(AlarmSettings), 알람 화면(AlarmAlert)과 같이 3개의 화면이 있다고 하자. 
 만일 AlarmAlert 화면에 android:taskAffinity 속성이 따로 없다면 어떻게 될까?
 일정 시간이 되어 알람이 떴는데 그 순간에 알람 앱의 태스크가 포그라운드나 백그라운드에 이미 있을 수 있다. 
 그러면 AlarmAlert 화면이 뜰 때 백그라운드에 있다면 함께 포그라운드로 올라와서 맨 위에 AlarmAlert 화면이 있을 것이고, 포그라운드에 이미 있었다면 AlarmAlert 화면이 그 위에 추가되어서 포커스될 것이다.
@@ -255,7 +255,7 @@ ActivityB의 taskAffinity를 바꿔주면 어떨까? 결과적으로 태스크�
 \begin{comment}
 singleTask와 singleInstance는 굳이 비유하자면, singleTask는 무조건 새로운 가문을 만들겠다는 것이고, singleInstance는 혼자뿐인 독고다이라고 생각하면 될 듯 하다. 
 \end{comment}
-singleTask와 singleInstance launchMode는 특별한 상황에서만 사용한다. 사실 태스크 관련 테스트를 하면 제일 헷갈리는 게 이 부분이다.
+singleTask와 singleInstance launchMode는 특별한 상황에서만 사용한다. 사실 태스크 관련 테스트를 하면 제일 혼동되는 게 이 부분이다.
 
 \paragraph{Caller 속성 부여는 Intent Flags에 지정한다.}
 Intent에는 setFlags(int flags) 메서드와 addFlags(int flags) 메서드가 있다. 여기에 전달되는 값은 Intent 클래스의 int 상수인 FLAG\_ACTIVITY\_XXX 값이고, 비트합($|$)으로 여러 개를 전달할 수 있다. 
@@ -266,12 +266,12 @@ Flags에 전달하는 상수는 많다. Caller에서 쓸 수 있는 다양한 �
 \item FLAG\_ACTIVITY\_SINGLE\_TOP: singleTop launchMode와 동일한 효과를 갖는다.
 \item FLAG\_ACTIVITY\_NEW\_TASK: singleTask launchMode와 동일한 효과를 갖는다.
 
-\item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity들을 종료시킨다. 앞에서 얘기한 달력(A), 일정상세(B), 일정수정(C) 화면이 스택상에 있다면, B를 띄울 때 이 플래그를 사용하면 C는 사라지고 B에 원하는 일정을 보여주는 식이다. 보통 FLAG\_ACTIVITY\_SINGLE\_TOP 플래그와 같이 쓰이고, 이때 Callee는 남아있어서 onNewIntent() 메서드에 새로운 Intent가 전달된다. FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰이면 Callee는 종료하고서 새로 onCreate()부터 실행된다.
+\item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity들을 종료시킨다. 앞에서 얘기한 달력(A), 일정 상세(B), 일정 수정(C) 화면이 스택상에 있다면, B를 띄울 때 이 플래그를 사용하면 C는 사라지고 B에 원하는 일정을 보여주는 식이다. 보통 FLAG\_ACTIVITY\_SINGLE\_TOP 플래그와 같이 쓰이고, 이때 Callee는 남아있어서 onNewIntent() 메서드에 새로운 Intent가 전달된다. FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰이면 Callee는 종료하고서 새로 onCreate()부터 실행된다.
 % 단독으로 쓰임: B종료->A종료->A시작->C종료
 % 같이 쓰임: B종료->A onNewIntent->C종료
 이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$ActivityB$\Rightarrow$Activi\-tyA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 이를 해결하는 방법으로 \ref{sec:alias} 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
 
-\item FLAG\_ACTIVITY\_CLEAR\_TASK: Callee가 시작하기 전에 관련한 스택이 모두 제거되고 Callee는 빈 태스크의 baseActivity가 된다. 이 플래그는 FLAG\_ACTIVITY\_NEW\_TASK와 함께 사용되어야 한다. 앱을 사용하면서 태스크에 여러 Activity를 쌓아놓았지만 로그아웃하고 다른 아이디로 로그인한다면, 이 플래그를 사용해서 Launcher Activity를 새로 시작하는 것이 적절할 것이다(허니콤부터 사용).
+\item FLAG\_ACTIVITY\_CLEAR\_TASK: Callee가 시작하기 전에 관련한 스택이 모두 제거되고 Callee는 빈 태스크의 baseActivity가 된다. 이 플래그는 FLAG\_ACTIVITY\_NEW\_TASK와 함께 사용되어야 한다. 앱을 사용하면서 태스크에 여러 Activity를 쌓아놓았다가, 로그아웃하고 다른 아이디로 로그인한다면 이 플래그를 사용해서 Launcher Activity를 새로 시작하는 것이 적절할 것이다(허니콤부터 사용).
 \item FLAG\_ACTIVITY\_REORDER\_TO\_FRONT: 태스크에 Activity가 있으면 그 Activity를 스택의 맨 위로 올린다. 해당 Activity가 스택에 하나밖에 없어야만 하는 경우에 쓸 수 있다.
 그런데 여기서 주의할 게 2가지 있다. 
 \begin{itemize}
@@ -293,6 +293,7 @@ Flags를 쓸 때 제일 중요한 규칙은 가능한 최소한의 플래그만 
 
 \section{<activity-alias>}\label{sec:alias}
 AndroidManifest.xml에는 activity-alias 엘리먼트가 있어서 Activity의 별명을 지정해서 쓸 수 있다. 그런데 별명이 도대체 어디에 도움이 될까?
+
 \begin{comment}
 필자의 경우에 처음으로 activity-alias를 적용해 본 경우를 얘기해보자.
 해당 케이스는 이렇다.
@@ -304,6 +305,7 @@ AndroidManifest.xml에는 activity-alias 엘리먼트가 있어서 Activity의 �
 
 DetailActivity를 호출하는 쪽을 DetailWebActivity로 한꺼번에 바꿔주는 것도 가능하다. 소스 버전 관리툴이 있기 때문에 원복이나 다른 작업자와 충돌 문제가 웬만큼 커버된다.
 \end{comment}
+
 \begin{enumerate}
 \item 기존에 있던 Activity가 없어졌을 때 사용할 수 있다.
 예를 들어, SplashPage가 맨 처음 뜨는 화면이었는데, SplashPage를 제거하고 바로 MainActivity를 보여주기로 했다.
