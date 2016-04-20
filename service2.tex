@@ -100,10 +100,10 @@ Started Service에서는 onStartCommand() 메서드에서 리턴하는 int 상�
 public int onStartCommand(Intent intent, int flags, int startId)\\
 
 리턴값으로 사용되는 int 상수를 하나씩 살펴보자.\\
-\underline{\bfseries START\_NOT\_STICKY} startService()를 통해서 onStartedCommand() 메서드가 리턴된 상태에서 kill 되면 재시작하지 않는다. 명시적으로 startService()를 실행할 때만 의미가 있는 작업에 사용한다.
+\underline{\bfseries START\_NOT\_STICKY} startService()를 통해서 onStartCommand() 메서드가 리턴된 상태에서 kill 되면 재시작하지 않는다. 명시적으로 startService()를 실행할 때만 의미가 있는 작업에 사용한다.
 예를 들어, 화면에 보여줄 뉴스를 네트워크를 통해서 가져와서 저장할 수 있는데, 메모리 이슈로 인해 Service가 kill되었다면 다시 startService() 명령을 기다려서 최신 뉴스를 가져오는 것이 나을 것이다.\\
 
-\underline{\bfseries START\_STICKY} onStartCommand() 메서드의 기본 리턴 값이다. 정상적으로 종료되지 않았을 때 재시작한다. 재시작시에는 다시 onStartCommand()를 호출하는데 이때 Intent 매개변수가 null로 전달된다.
+\underline{\bfseries START\_STICKY} onStartCommand() 메서드의 기본 리턴 값이다. 정상적으로 종료되지 않았을 때 재시작한다. 재시작 시에는 다시 onStartCommand()를 호출하는데 이때 Intent 매개변수가 null로 전달된다.
 startService()를 실행할 때 Intent에 값을 전달하고 이 값을 startCommand() 메서드에서 사용할 때는 NullPointerException 발생 가능성이 있다. 
 전달된 Intent 값을 사용하지 않고 내부적인 상태만을 가지는 Service에 적합하다.
 예를 들면 서버 API 에 접근해서 날씨 정보를 가져와서 업데이트하는 것과 같이 지속적인 데이터 동기화 작업이 해당한다.\\
@@ -164,7 +164,7 @@ startService(new Intent().setComponent(cName));
 <service android:name=".app.ServiceStartArguments" android:exported="true" />
 \end{lstlisting}
 
-롤리팝부터는 암시적 인텐트로 Service를 시작하면 문제가 발생한다. startService(), bindeService() 둘 다 마찬가지다.
+롤리팝부터는 암시적 인텐트로 Service를 시작하면 문제가 발생한다. startService(), bindService() 둘 다 마찬가지다.
 AndroidManifest.xml에 targetSdkVersion을 21이상으로 하면 롤리팝 이상 단말에서 `java.lang.IllegalArgu\-mentException: Service Intent must be explicit'  예외가 발생하고, targetSdkVersion이 그 아래이면 호환 모드로 동작하여 예외가 발생하진 않지만 `W/ContextImpl: Implicit intents with startService are not safe: Intent { act=com.naver.android.sample.SYNC\_SERVICE (has extras) } android.content.ContextWrapper.startService:533 ...'과 같은 로그가 남는다. 
 관련해서 코드를 보려면 롤리팝 버전 ContextImpl의 validateServiceIntent() 메서드를 보자. 여기서도 targetSdkVersion을 체크하는 것을 볼 수 있다.\\
 
@@ -197,7 +197,7 @@ setIntentRedelivery(true)\\
 IntentService를 사용할 때 내부 구조를 이해하지 못하면 생기는 문제가 있다. 
 한 예를 들어보자.\\
 
-백그라운드 스레드에서 Toast를 띄우려고 하면, Toast 내부 클래스 TN에서 new Handler()로 Hanlder 생정자를 사용하는 부분이 있어서 Looper가 없다고 에러를 발생시킨다. 그럼 백그라운드 스레드에서 Looper.prepare()를 실행하면 어떤가 하면 Toast를 정상적으로 보여준다.\\
+백그라운드 스레드에서 Toast를 띄우려고 하면, Toast 내부 클래스 TN에서 new Handler()로 기본 생성자를 사용하는 부분이 있어서 Looper가 없다고 에러를 발생시킨다. 그럼 백그라운드 스레드에서 Looper.prepare()를 실행하면 어떤가 하면 Toast를 정상적으로 보여준다.\\
 
 그럼 IntentService의 작업 스레드에서 동작하는 메서드인 onHandleIntent()에서 Toast를 띄운다면 어떨까. 
 내부적으로 사용하는 HandlerThread에서 이미 Looper.prepare()가 되어 있기 때문에 Toast가 뜨는 게 문제없어 보이고, 여기서 크래시가 나진 않지만 심각한 오동작이 가끔 발생한다.\\
@@ -218,16 +218,16 @@ Toast는 가급적 메인 스레드에서만 띄우는 게 맞다. 백그라운�
 이렇게 한 의도는 여러 곳에서 startService()를 실행하는 경우에도 매번 실행하지 않고, 이미 시작되었으면 나머지는 skip하려는 의도를 가지고 만들어 본 것이다.
 skip이 필요한 경우를 얘기해 보자. 
 메모 앱 같은 경우 시작할 때도 동기화를 실행하고, 버튼을 눌러도 동기화를 실행하고, 메모를 추가했을 때도 동기화를 실행하려고 한다. 
-그런데 동기화 작업같은 경우 동시에 여러 개를 실행하면 문제 발생 소지가 있다. 
+그런데 동기화 작업 같은 경우 동시에 여러 개를 실행하면 문제 발생 소지가 있다. 
 앱 사용자는 이런 작업이 하나씩 끝날 때까지 대기하는 것이 아니기 때문에, 하다보면 여러 곳에서 시간이 겹친 채로 동기화를 실행할 수 있다.
-이때 한가지 작업에만 충실하고 나머지는 확실히 skip해야 하는데, 코드 \ref{SleepService}처럼 onCreate()에서 처리하는 방법도 가능하다. 
+이때 한 가지 작업에만 충실하고 나머지는 확실히 skip해야 하는데, 코드 \ref{SleepService}처럼 onCreate()에서 처리하는 방법도 가능하다. 
 onCreate()는 처음 startService()를 호출할 때만 실행하기 때문이다. 
 작업이 끝나면 확실히 stopSelf()를 호출한다면 문제가 없다. 다만 Service의 본래 사용 방식과 차이가 있다.\\
 
 IntentService가 skip 용도에 맞는 게 아닐까 하는 생각을 할 수도 있는데, 
 IntentService는 백그라운드 스레드 Looper의 MessageQueue에 넣고 순차적으로 하나씩 실행하는 것이므로 이 의도에는 맞지 않다. 여러 번 동기화를 `순차적으로' 실행하는 셈이 된다.\\
 
-onCreate() 메서드가 아닌 onStartCommand() 메서드에서 이런 skip 방식을 적용한 샘플을 보도록 하자.
+onCreate()가 아닌 onStartCommand() 메서드에서 이런 skip 방식을 적용한 샘플을 보도록 하자.
 \begin{lstlisting}[frame=single]
 public class SleepThreadService extends Service {
 
@@ -281,7 +281,7 @@ public class SleepThreadService extends Service {
 onStartCommand()는 메인 스레드에서 동작하기 때문에 단순한 boolean 값 가지고 체크가 가능하다.
 skip 시에는 START\_NOT\_STICKY를 리턴하는 것도 기억하도록 하자.\\
 
-자바의 concurrency 패키지를 사용한다면 TheadPoolExecutor를 직접 쓰는 방식도 가능하다. 위에서 사용한 Executors.newSingleThreadExecutor() 메서드 같은 정적 메서드는 일반적으로 많이 사용되는 TheadPoolExecutor를 팩토리 메서드로 만든 것이다.\\
+자바의 concurrency 패키지를 사용한다면 TheadPoolExecutor를 직접 쓰는 방식도 가능하다. 위에서 사용한 Executors.newSingleThreadExecutor() 메서드 같은 정적 메서드는 많이 사용되는 TheadPoolExecutor를 팩토리 메서드로 만든 것이다.\\
 
 ThreadPoolExecutor에 스레드 개수를 1로 고정하면 스레드 풀에 하나의 스레드만 사용하는데, 여기서 중요한 것은 마지막에 추가된 DiscardPolicy이다. 추가로 요청이 들어온다면 버리는 동작을 하는 것이다.
 % 만일 이 값이 따로 없다면 crash
@@ -326,15 +326,15 @@ BIND\_AUTO\_CREATE을 쓸 때만 bindService()를 실행할 때 Service가 없�
 이 옵션의 역할은 그 밖에도 더 있다. 
 Service에 Binding된 클라이언트가 여러 개 있을 때 stopService()를 실행하면 어떤 일이 발생할까? 이 옵션이 있다면 stopService()를 실행해도 Service가 종료되지 않는데, 옵션이 없는 경우에는 연결이 끊기고서 바로 Service의 onDestroy()가 불린다.
 옵션이 있는 경우 unbindService()를 클라이언트마다 모두 실행해야 Service의 onDestroy()가 불린다.
-Binding된 Client가 남아 있다면 Service 프로세스가 메모리 문제 등으로 종료되었다가도 다시 Service 프로세스가 살아나나서 재연결되는 것도 이 옵션이 있을 때만 가능한다. 
+Binding된 Client가 남아 있다면 Service 프로세스가 메모리 문제 등으로 종료되었다가도 다시 Service 프로세스가 살아나서 재연결되는 것도 이 옵션이 있을 때만 가능하다. 
 \end{itemize}
 
 Bound Service의 용도를 이제 생각해보자.
-최신 뉴스나 인기검색어, 날씨처럼 업데이트가 필수적인 데이터가 있다. 이런 데이터를 앱에서 쓰는 방법은 어떤 게 있을까?
+최신 뉴스나 인기 검색어, 날씨처럼 업데이트가 필수적인 데이터가 있다. 이런 데이터를 앱에서 쓰는 방법은 어떤 게 있을까?
 \begin{enumerate}
 \item XML이나 JSON으로 데이터를 리턴하는 API 서버를 만들고, 앱에서 HTTP 호출을 통해 데이터에 접근한다.
 \item HTTP 호출을 하고 결과도 객체로 리턴해주는 오픈 API jar를 만들어서, 앱에서는 jar를 이용해서 데이터에 접근한다.
-\item 서비스 앱에서 데이터를 제공하는 Bound Service를 만들고(이 안에서 HTTP 호출을 하고 객체를 리턴한다), 다른 앱에서는 bindService()를 실행하여 Service 데이터에 접근한다. 이를테면 검색 앱에서는 인기검색어 목록을 Bound Service로 외부에 제공할 수 있다.
+\item 서비스 앱에서 데이터를 제공하는 Bound Service를 만들고(이 안에서 HTTP 호출을 하고 객체를 리턴한다), 다른 앱에서는 bindService()를 실행하여 Service 데이터에 접근한다. 이를테면 검색 앱에서는 인기 검색어 목록을 Bound Service로 외부에 제공할 수 있다.
 Google Play In-app Billing도 이 방식을 사용하고 있다.
 \item bindService()를 실행하고 결과를 받는 것을 래핑한 jar를 만들어서, 다른 앱에서 이 jar를 이용한다. Google Play Services(\url{https://developers.google.com/android/guides/overview})가 이런 형태이다.\footnote{connect()와 disconnect() 메서드가 있는데, bindService()와 unbindService()를 내부적으로 호출해서 사용한다.}
 \end{enumerate}
@@ -342,7 +342,7 @@ Google Play In-app Billing도 이 방식을 사용하고 있다.
 아래로 갈수록 추상화 레벨이 높다. 추상화 레벨이 높은 게 좋은 게 아니라, 현재 시점에 맞는 적절한 방법을 선택하는 게 좋겠다. 오버 엔지니어링을 피하자는 얘기다.\\
 
 Bound Service는 구분해서 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding) 2가지를 얘기한다.
-혹자는 뭐하러 Local과 Remote를 구분하느냐고 말하기도 한다.
+혹자는 뭐 하러 Local과 Remote를 구분하느냐고 말하기도 한다.
 Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 있을 필요가 없다는 것이다. Remote Binding만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding은?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding을 별도로 얘기하게 되었다고 한다.\\
 
 \subsection{리모트 바인딩}
@@ -357,7 +357,7 @@ interface IRemoteService {
 }
 \end{lstlisting}
 
-이렇게 하면 gen 디렉터리에 IRemoteService.java가 생성된다. 아래 코드는 포맷팅을 한 것이고 실제로는 탭이 없이 빽빽하게 붙어있다. 이 소스는 별로 들여다 볼 일은 없지만 한 번쯤은 봐두는 게 좋다.
+이렇게 하면 gen 디렉터리에 IRemoteService.java가 생성된다. 아래 코드는 포매팅을 한 것이고 실제로는 탭이 없이 빽빽하게 붙어있다. 이 소스는 별로 들여다 볼 일은 없지만 한 번쯤은 봐두는 게 좋다.
 \begin{lstlisting}[frame=single]
 public interface IRemoteService extends android.os.IInterface {
 	public static abstract class Stub extends android.os.Binder
@@ -528,7 +528,7 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 어떤 책에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다. Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다.
 \item 12라인(3)에서 연결이 끊겼을 때는 mIRemoteService를 null로 만든다.
 \item 21라인(4)에서 bindService에 ServiceConnection을 전달한다.
-\item 25라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected가 불리기 전일 수도 있고, Service 문제로 바인딩이 안 되었을 수도 있기 때문이다.
+\item 25라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected()가 불리기 전일 수도 있고, Service 문제로 바인딩이 안 되었을 수도 있기 때문이다.
 \end{itemize}
 
 로컬에서 호출 시에는 호출하는 스레드에서 실행되고, 리모트인 경우에는 Service가 속한 프로세스의 Binder 스레드 풀에서 실행된다. 
@@ -800,7 +800,7 @@ Messenger는 Binder Callback을 내부적으로 래핑해서 Bound Service와 �
 %http://developer.android.com/intl/ko/reference/android/app/Service.html
 이제 날씨 정보를 업데이트하는 기능을 Messenger로 만들어보자. 요구 사항은 이렇다.
 \begin{itemize}
-\item 처음 Activity에서 bindService()를 하면, Bound Service에서 날씨 정보를 가져오고 내부에서 주기적으로(예제에서는 1분) 날씨 정보를 가져온다.
+\item 처음 Activity에서 bindService()를 실행하면, Bound Service에서 날씨 정보를 가져오고 내부에서 주기적으로(예제에서는 1분) 날씨 정보를 가져온다.
 \item 날씨 정보를 가져올 때마다 Bound된 Activity에 정보를 전달해서 화면에 보여준다.
 \item 추가로 클라이언트가 Bound되면 최신 날씨 정보를 클라이언트에 전달한다.
 \item 화면에는 [Refresh] 버튼이 있어서 이 버튼을 클릭하면, 날씨 정보를 새로 가져오고 Bound된 클라이언트 모두에 날씨 정보를 새로 전달한다.
@@ -909,7 +909,7 @@ public class MessengerService extends Service {
 \item 64라인(10)의 Runnable Task에서는 날씨 정보를 가져와서 Bundle에 담고서 클라이언트 목록에 send() 메서드로 전달한다. foreach 문을 사용하지 않고 인덱스가 높은 숫자부터 쓴 이유는 클라이언트가 dead 상태인 경우에 RemoteException이 발생하는데 76라인(12)에서 클라이언트 목록에서 해당 클라이언트를 제거해도 문제가 없게 하려는 것이다.
 \item 71라인(11)에 lastData에 최신 값을 저장하고서, 28라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Bound된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
 \item 38라인(6)에서 MSG\_UNREGISTER\_CLIENT 값이 들어오면 클라이언트 목록에서 제거한다.
-\item 41라인(7)에서 MSG\_REFRESH 값이 들어오면 기존 ScheduleFuture를 취소하고 새로 날씨 정보를 가져온다.
+\item 41라인(7)에서 MSG\_REFRESH 값이 들어오면 기존 ScheduledFuture를 취소하고 새로 날씨 정보를 가져온다.
 \end{itemize}
 
 이제 클라이언트 코드를 보자.

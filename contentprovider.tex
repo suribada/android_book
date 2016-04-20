@@ -6,7 +6,7 @@ SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를
 안드로이드에 들어가는 SQLite 소스는 /external/sqlite/dist/ 디렉터리에 있다. 여기서 주로 sqlite3.c를 보면 된다.}\\
 
 SQLite db 파일은 /data/data/패키지/databases에 저장된다. 
-단말에서는 일반적으로 db 파일에 직접 접근하거나 쿼리를 실행할 수 없다(루팅한 것이 아니라면).\footnote{http://stackoverflow.com/questions/9997976/android-pulling-sqlite-database-android-device를 참고해서 db 파일을 가져오는 방법도 알아보자.}
+단말에서는 일반적으로 db 파일에 직접 접근하거나 쿼리를 실행할 수 없다(루팅한 것이 아니라면).\footnote{http://stackoverflow.com/questions/9997976/android-pulling-sqlite-database-android-device를 참고해서 db 파일을 단말에서 가져오는 방법도 알아보자.}
 
 개발 시에 에뮬레이터에서 db를 확인하는 방법으로는 2가지를 사용한다.
 \begin{itemize}
@@ -224,7 +224,7 @@ SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
 \begin{itemize}
-\item defered: 말 그대로 Lock을 가능한 한 뒤로 미룬다. 트랜잭션을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고 첫 write operation이 있을때 Reserved Lock을 잡는다. 최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 스레드에서 DB 작업을 할 수 있다. 
+\item defered: 말 그대로 Lock을 가능한 한 뒤로 미룬다. 트랜잭션을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고 첫 write operation이 있을 때 Reserved Lock을 잡는다. 최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 스레드에서 DB 작업을 할 수 있다. 
 \item immediate: 트랜잭션을 시작할 때 Reserved Lock이 잡힌다. Reserved Lock은 2개 이상 잡힐 수 없으므로, 다른 immidate 트랜잭션을 시작할 수는 없다. 그래도 다른 프로세스나 스레드에서 읽기를 할 수는 있다.
 \item exclusive: 트랜잭션을 시작할 때부터 Exclusive Lock이 잡힌다. 따라서 트랜잭션의 시작부터 끝까지 다른 프로세스나 스레드에서 DB 작업을 도저히 할 수가 없다.
 \end{itemize}
@@ -248,7 +248,7 @@ exclusive 방식으로 트랜잭션을 시작한다.
 \end{lstlisting}
 
 허니콤부터 beginTransaction() 외에 beginTransactionNonExclusive() 메서드가 사용 가능하며, immediate behavior로 트랜잭션을 시작한다.
-결과적으로 우리가 트랜잭션에서 Lock 문제를 조금이라도 회피하기 위해서 쓸 수 있는 방법은 버전에 따라 다른 메서드를 호출하는 것이다.
+결과적으로 트랜잭션에서 Lock 문제를 조금이라도 회피하기 위해서 쓸 수 있는 방법은 버전에 따라 다른 메서드를 호출하는 것이다.
 \begin{lstlisting}[frame=single] 
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 		db.beginTransactionNonExclusive();
@@ -409,7 +409,7 @@ SQLiteOpenHelper의 onUpgrade(SQLiteDtabase db, int oldVersion, int newVersion) 
 예를 들어, 여러 칼럼이 있고 각 칼럼별로 정렬을 바꾸어주는 기능이 있다면, 정렬할 때마다 File IO를 하는 것보다는 메모리 DB에 담아놓고서 쿼리로 정렬하면 결과가 훨씬 빨라진다. 
 파일 DB에서 원시(raw) 데이터를 가져와서 조합해서 생성한 결과 목록을 메모리 DB에 저장해서 사용하는 것도 고려해 볼 수 있다.\\
 
-당연한 얘기지만 메모리 DB에서는 DB 버전 업그레이드가 의미가 없으므로 version은 신경쓸 필요 없다. 1로 해놓고 다시는 변경하지 말자.
+당연한 얘기지만 메모리 DB에서는 DB 버전 업그레이드가 의미가 없으므로 version은 신경쓸 필요 없다. 1로 놓고 다시는 변경하지 말자.
 
 \item Database Helper는 앱 전체에 걸쳐 하나의 인스턴스를 가지고 있어야 DB Lock 문제에서 자유롭다. 
 그래서 일반적으로 싱글톤 패턴을 만들어서 사용한다. 싱글톤 패턴에 대해서 11장에서 다시 설명하기로 한다.
