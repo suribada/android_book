@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  18 APR 2016 21:41
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  20 APR 2016 22:20
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1090,61 +1090,87 @@ File: se-ascii-print.def 2011/12/02 v1.10 stringenc: Printable ASCII characters
 
 
 ]
-(./android_note.toc
+Underfull \hbox (badness 10000) in paragraph at lines 68--70
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 71--74
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 75--77
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--81
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
+
+ []
+
+[2
+
+] (./android_note.toc
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 3.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 3.
- [2
+ [3
 
-] [3])
+] [4])
 \tf@toc=\write4
 \openout4 = `android_note.toc'.
 
 
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
-) [4]
-Underfull \hbox (badness 10000) in paragraph at lines 115--117
+) [5]
+Underfull \hbox (badness 10000) in paragraph at lines 130--132
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 118--119
+Underfull \hbox (badness 10000) in paragraph at lines 133--134
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 120--123
+Underfull \hbox (badness 10000) in paragraph at lines 135--138
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 124--125
+Underfull \hbox (badness 10000) in paragraph at lines 139--140
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 126--127
+Underfull \hbox (badness 10000) in paragraph at lines 141--142
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 128--129
+Underfull \hbox (badness 10000) in paragraph at lines 143--144
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--131
+Underfull \hbox (badness 10000) in paragraph at lines 145--146
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 132--133
+Underfull \hbox (badness 10000) in paragraph at lines 147--148
 
  []
 
-(./start.tex [5
+(./start.tex [6
 
 ]
 Chapter 1.
@@ -1159,7 +1185,7 @@ Overfull \hbox (9.93832pt too wide) in paragraph at lines 7--8
 [][] 
  []
 
-[6
+[7
 
 ]
 Overfull \hbox (1.55798pt too wide) in paragraph at lines 13--14
@@ -1184,119 +1210,115 @@ LaTeX Font Warning: Font shape `T1/CourierNew(0)/m/n' undefined
 (Font)              using `T1/cmr/m/n' instead on input line 15.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 26--27
+Underfull \hbox (badness 10000) in paragraph at lines 33--37
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 34--38
-
- []
-
-[7]
-Underfull \hbox (badness 10000) in paragraph at lines 39--40
-
- []
-
-File: sourcetree.png Graphic file (type QTm)
-<use  "sourcetree.png" >
-Underfull \hbox (badness 10000) in paragraph at lines 57--59
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 60--63
+Underfull \hbox (badness 10000) in paragraph at lines 38--39
 
  []
 
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 73--75
+File: sourcetree.png Graphic file (type QTm)
+ <use  "sourcetree.png" >
+Underfull \hbox (badness 10000) in paragraph at lines 56--58
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 76--80
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 81--83
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 84--85
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 86--87
+Underfull \hbox (badness 10000) in paragraph at lines 59--62
 
  []
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 114--116
+Underfull \hbox (badness 10000) in paragraph at lines 72--74
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--136
+Underfull \hbox (badness 10000) in paragraph at lines 75--79
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--82
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
+
+ []
+
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 113--115
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 116--135
 
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [10]
-Underfull \hbox (badness 10000) in paragraph at lines 137--140
+ [11]
+Underfull \hbox (badness 10000) in paragraph at lines 136--139
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 153--156
+Underfull \hbox (badness 10000) in paragraph at lines 152--155
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 157--160
-
- []
-
-[11]
-Underfull \hbox (badness 10000) in paragraph at lines 163--164
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 264--266
+Underfull \hbox (badness 10000) in paragraph at lines 156--159
 
  []
 
 [12]
-Underfull \hbox (badness 10000) in paragraph at lines 267--270
+Underfull \hbox (badness 10000) in paragraph at lines 162--163
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 282--283
+Underfull \hbox (badness 10000) in paragraph at lines 263--265
+
+ []
+
+[13]
+Underfull \hbox (badness 10000) in paragraph at lines 266--269
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 284--285
+Underfull \hbox (badness 10000) in paragraph at lines 281--282
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 297--298
+Underfull \hbox (badness 10000) in paragraph at lines 283--284
 
  []
 
-[13] [14]
+
+Underfull \hbox (badness 10000) in paragraph at lines 296--297
+
+ []
+
+[14] [15]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [15])
-(./singlethread.tex [16]
+ [16])
+(./singlethread.tex [17]
 Chapter 2.
 
 Underfull \hbox (badness 10000) in paragraph at lines 5--8
@@ -1308,9 +1330,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 24--27
 
  []
 
-[17
+[18
 
-] [18]
+] [19]
 Underfull \hbox (badness 10000) in paragraph at lines 125--129
 
  []
@@ -1320,7 +1342,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 133--137
 
  []
 
-[19]
+[20]
 Underfull \hbox (badness 10000) in paragraph at lines 167--170
 
  []
@@ -1330,7 +1352,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 171--175
 
  []
 
-[20]
+[21]
 Underfull \hbox (badness 10000) in paragraph at lines 192--194
 
  []
@@ -1340,7 +1362,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 195--198
 
  []
 
-[21]
+[22]
 Underfull \hbox (badness 10000) in paragraph at lines 218--219
 
  []
@@ -1350,7 +1372,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 220--225
 
  []
 
-[22]
+[23]
 Underfull \hbox (badness 10000) in paragraph at lines 264--265
 
  []
@@ -1370,12 +1392,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 283--285
 
  []
 
-[23] [24]
+[24] [25]
 Underfull \hbox (badness 10000) in paragraph at lines 368--369
 
  []
 
-[25]
+[26]
 Overfull \hbox (3.31866pt too wide) in paragraph at lines 409--413
 []\EU1/lmr/m/n/10 Touch \EU1/NanumMyeongjo(0)/m/n/10 나 \EU1/lmr/m/n/10 Redraw \
 EU1/NanumMyeongjo(0)/m/n/10 등 이 벤 트 처 리 를 위 한 \EU1/lmr/m/n/10 ViewRootImpl \EU1
@@ -1398,7 +1420,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 420--426
 
  []
 
-[26]
+[27]
 Underfull \hbox (badness 10000) in paragraph at lines 450--453
 
  []
@@ -1408,7 +1430,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 465--466
 
  []
 
-[27]
+[28]
 Underfull \hbox (badness 10000) in paragraph at lines 487--490
 
  []
@@ -1423,7 +1445,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 498--501
 
  []
 
-[28]
+[29]
 Underfull \hbox (badness 10000) in paragraph at lines 519--524
 
  []
@@ -1438,7 +1460,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 555--556
 
  []
 
-[29]
+[30]
 Underfull \hbox (badness 10000) in paragraph at lines 557--559
 
  []
@@ -1483,7 +1505,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 581--586
 
  []
 
-[30]
+[31]
 Underfull \hbox (badness 10000) in paragraph at lines 609--611
 
  []
@@ -1493,7 +1515,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 612--615
 
  []
 
-[31]
+[32]
 Chapter 3.
 
 Underfull \hbox (badness 10000) in paragraph at lines 625--628
@@ -1505,7 +1527,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 629--635
 
  []
 
-[32
+[33
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 656--657
@@ -1523,7 +1545,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 665--671
 
  []
 
-[33] [34]
+[34] [35]
 Underfull \hbox (badness 10000) in paragraph at lines 735--747
 
  []
@@ -1548,7 +1570,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 763--766
 
  []
 
-[35]
+[36]
 Underfull \hbox (badness 10000) in paragraph at lines 824--828
 
  []
@@ -1556,7 +1578,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 824--828
 
 Underfull \vbox (badness 3281) has occurred while \output is active []
 
- [36]
+ [37]
 Underfull \hbox (badness 10000) in paragraph at lines 829--830
 
  []
@@ -1567,102 +1589,102 @@ Underfull \hbox (badness 10000) in paragraph at lines 831--832
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 853--854
-
- []
-
-[37]
-Underfull \hbox (badness 10000) in paragraph at lines 874--875
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 877--879
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 880--881
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 882--886
+Underfull \hbox (badness 10000) in paragraph at lines 855--856
 
  []
 
 [38]
-Underfull \hbox (badness 10000) in paragraph at lines 897--899
+Underfull \hbox (badness 10000) in paragraph at lines 876--877
 
  []
 
 
-Overfull \hbox (11.54755pt too wide) in paragraph at lines 903--904
+Underfull \hbox (badness 10000) in paragraph at lines 879--881
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 882--883
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 884--888
+
+ []
+
+[39]
+Underfull \hbox (badness 10000) in paragraph at lines 899--901
+
+ []
+
+
+Overfull \hbox (11.54755pt too wide) in paragraph at lines 905--906
 []\EU1/lmr/m/n/10 newFixedThreadPool(int nThreads): \EU1/NanumMyeongjo(0)/m/n/1
 0 파 라 미 터 로 전 달 되 는 고 정 개 수 까 지 스 레 드 를 생 성 한 다. \EU1/lmr/m/n/10 workQueue
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 930--931
+Underfull \hbox (badness 10000) in paragraph at lines 932--933
 
  []
 
-[39] [40] [41]
-Underfull \hbox (badness 10000) in paragraph at lines 1053--1054
-
- []
-
-
+[40] [41] [42]
 Underfull \hbox (badness 10000) in paragraph at lines 1055--1056
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1061--1062
+Underfull \hbox (badness 10000) in paragraph at lines 1057--1058
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1066--1069
+Underfull \hbox (badness 10000) in paragraph at lines 1063--1064
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1070--1072
+Underfull \hbox (badness 10000) in paragraph at lines 1068--1071
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1073--1082
-
- []
-
-[42]
-Underfull \hbox (badness 10000) in paragraph at lines 1092--1094
+Underfull \hbox (badness 10000) in paragraph at lines 1072--1074
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1110--1111
+Underfull \hbox (badness 10000) in paragraph at lines 1075--1084
 
  []
 
 [43]
+Underfull \hbox (badness 10000) in paragraph at lines 1094--1096
+
+ []
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 1112--1113
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1119--1121
-
- []
-
 [44]
-Underfull \hbox (badness 10000) in paragraph at lines 1183--1187
+Underfull \hbox (badness 10000) in paragraph at lines 1114--1115
 
  []
 
-) (./context.tex [45]
+
+Underfull \hbox (badness 10000) in paragraph at lines 1121--1123
+
+ []
+
+[45]
+Underfull \hbox (badness 10000) in paragraph at lines 1185--1189
+
+ []
+
+) (./context.tex [46]
 Chapter 4.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--4
@@ -1674,7 +1696,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 5--7
 
  []
 
-[46
+[47
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 62--64
@@ -1697,12 +1719,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 70--74
 
  []
 
-[47]
+[48]
 Underfull \hbox (badness 10000) in paragraph at lines 83--84
 
  []
 
-) (./activity.tex [48]
+) (./activity.tex [49]
 Chapter 5.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--6
@@ -1718,7 +1740,7 @@ File: activity-lifecycle.png Graphic file (type QTm)
 <use  "activity-lifecycle.png" >
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [49
+ [50
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 22--23
@@ -1755,7 +1777,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 41--44
 
  []
 
-[50]
+[51]
 Underfull \hbox (badness 10000) in paragraph at lines 56--60
 
  []
@@ -1771,12 +1793,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 77--79
 
  []
 
-[51]
+[52]
 Underfull \hbox (badness 10000) in paragraph at lines 101--102
 
  []
 
-[52]
+[53]
 Underfull \hbox (badness 10000) in paragraph at lines 114--118
 
  []
@@ -1791,7 +1813,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 144--146
 
  []
 
-[53]
+[54]
 Underfull \hbox (badness 10000) in paragraph at lines 168--170
 
  []
@@ -1806,12 +1828,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 176--182
 
  []
 
-[54]
+[55]
 Underfull \hbox (badness 10000) in paragraph at lines 238--242
 
  []
 
-[55] [56]
+[56] [57]
 Underfull \hbox (badness 10000) in paragraph at lines 293--319
 
  []
@@ -1821,7 +1843,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 321--324
 
  []
 
-[57]
+[58]
 LaTeX Font Info:    Try loading font information for EU1+mono on input line 340
 .
 LaTeX Font Info:    No file EU1mono.fd. on input line 340.
@@ -1844,12 +1866,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 367--368
 Underfull \vbox (badness 10000) detected at line 389
  []
 
-[58]
+[59]
 Underfull \hbox (badness 10000) in paragraph at lines 400--405
 
  []
 
-[59]
+[60]
 Underfull \hbox (badness 10000) in paragraph at lines 406--409
 
  []
@@ -1879,7 +1901,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 424--427
 
  []
 
-[60]
+[61]
 Overfull \hbox (0.24394pt too wide) in paragraph at lines 435--443
 \EU1/lmr/m/n/10 mcc, mnc, locale, touchscreen, keyboard, keyboardHidden, naviga
 tion, orientation, screenLayout, uiMode,
@@ -1922,12 +1944,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 460--461
 
  []
 
-[61]
+[62]
 Underfull \hbox (badness 10000) in paragraph at lines 520--521
 
  []
 
-[62]
+[63]
 Underfull \hbox (badness 10000) in paragraph at lines 532--533
 
  []
@@ -1952,7 +1974,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 546--547
 
  []
 
-[63]
+[64]
 Overfull \hbox (11.21162pt too wide) in paragraph at lines 558--561
 \EU1/NanumMyeongjo(0)/m/n/10 하 지 않 고 \EU1/lmr/m/n/10 onConfigurationChanged() \
 EU1/NanumMyeongjo(0)/m/n/10 메 서 드 가 불 리 는 것 이 다 르 다. \EU1/lmr/m/n/10 ActivityA$
@@ -1975,7 +1997,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 566--567
 
  []
 
-[64]
+[65]
 Underfull \hbox (badness 10000) in paragraph at lines 593--595
 
  []
@@ -1990,7 +2012,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 602--605
 
  []
 
-[65]
+[66]
 Underfull \hbox (badness 10000) in paragraph at lines 606--607
 
  []
@@ -2007,7 +2029,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--22
 
  []
 
-[66]
+[67]
 Underfull \hbox (badness 10000) in paragraph at lines 23--25
 
  []
@@ -2040,11 +2062,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 41--42
 
  []
 
-[67]
+[68]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [68]
-[69]
+ [69]
+[70]
 Underfull \hbox (badness 10000) in paragraph at lines 194--199
 
  []
@@ -2061,7 +2083,7 @@ rt \EU1/NanumMyeongjo(0)/m/n/10 의 \EU1/mono/m/n/10 taskAffinity \EU1/NanumMyeo
 gjo(0)/m/n/10 를 다 르 게 세 팅 하 면, \EU1/mono/m/n/10 FLAG_ACTIVITY_NEW_TASK
  []
 
-[70]
+[71]
 File: diagram_multiple_instances.png Graphic file (type QTm)
  <use  "diagram_multiple_instances.png" >
 Underfull \hbox (badness 10000) in paragraph at lines 227--229
@@ -2073,7 +2095,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 230--231
 
  []
 
-[71]
+[72]
 Underfull \hbox (badness 10000) in paragraph at lines 232--234
 
  []
@@ -2098,7 +2120,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 261--263
 
  []
 
-[72]
+[73]
 Overfull \hbox (5.5627pt too wide) in paragraph at lines 279--280
 []\EU1/mono/m/n/10 Caller \EU1/NanumMyeongjo(0)/m/n/10 가 \EU1/mono/m/n/10 Activ
 ity \EU1/NanumMyeongjo(0)/m/n/10 일 때 만 정 상 적 으 로 \EU1/mono/m/n/10 REORDER \EU1/
@@ -2112,7 +2134,7 @@ Overfull \hbox (1.02072pt too wide) in paragraph at lines 279--280
 /n/10 FLAG_ACTIVI-
  []
 
-[73]) (./service.tex [74]
+[74]) (./service.tex [75]
 Chapter 6.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--3
@@ -2129,7 +2151,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--39
 
  []
 
-[75
+[76
 
 ]
 Overfull \hbox (5.38019pt too wide) in paragraph at lines 40--42
@@ -2138,7 +2160,7 @@ gjo(0)/m/n/10 될 가 능 성 을 알 아 보 기 위 해 서, []$[][][][] [] []
 [] [][][][][][][] [] [][][] [] [][][][][] [] [][][][][][][][][][] []
  []
 
-[76]
+[77]
 Underfull \hbox (badness 10000) in paragraph at lines 101--103
 
  []
@@ -2158,7 +2180,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 110--113
 
  []
 
-[77]
+[78]
 Underfull \hbox (badness 10000) in paragraph at lines 114--115
 
  []
@@ -2177,7 +2199,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 2--3
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [78]
+ [79]
 Underfull \hbox (badness 10000) in paragraph at lines 4--6
 
  []
@@ -2197,7 +2219,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 22--23
 
  []
 
-[79] [80]
+[80] [81]
 Underfull \hbox (badness 10000) in paragraph at lines 94--97
 
  []
@@ -2232,12 +2254,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 113--119
 
  []
 
-[81]
+[82]
 Underfull \hbox (badness 10000) in paragraph at lines 124--127
 
  []
 
-[82]
+[83]
 Underfull \hbox (badness 10000) in paragraph at lines 167--170
 
  []
@@ -2247,7 +2269,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 174--176
 
  []
 
-[83]
+[84]
 Underfull \hbox (badness 10000) in paragraph at lines 193--194
 
  []
@@ -2292,12 +2314,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 217--226
 
  []
 
-[84]
+[85]
 Underfull \hbox (badness 10000) in paragraph at lines 227--229
 
  []
 
-[85]
+[86]
 Underfull \hbox (badness 10000) in paragraph at lines 281--283
 
  []
@@ -2315,7 +2337,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 315--316
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [86]
+ [87]
 Underfull \hbox (badness 10000) in paragraph at lines 317--319
 
  []
@@ -2335,11 +2357,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 344--347
 
  []
 
-[87] [88]
+[88] [89]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [89]
-[90] [91]
+ [90]
+[91] [92]
 Underfull \hbox (badness 10000) in paragraph at lines 534--536
 
  []
@@ -2359,24 +2381,24 @@ Underfull \hbox (badness 10000) in paragraph at lines 551--553
 
  []
 
-[92]
+[93]
 Underfull \hbox (badness 10000) in paragraph at lines 578--579
 
  []
 
-[93]
+[94]
 Underfull \hbox (badness 10000) in paragraph at lines 637--640
 
  []
 
-[94]
+[95]
 File: service-binding-tree-lifecycle.png Graphic file (type QTm)
  <use  "service-binding-tree-lifecycle.png" >
 Underfull \hbox (badness 10000) in paragraph at lines 721--726
 
  []
 
-[95]
+[96]
 Underfull \hbox (badness 10000) in paragraph at lines 727--730
 
  []
@@ -2391,20 +2413,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 763--764
 
  []
 
-[96]
+[97]
 Underfull \hbox (badness 10000) in paragraph at lines 785--789
 
  []
 
-[97] [98]
+[98] [99]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [99]
-[100]
+ [100]
+[101]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [101])
-(./contentprovider.tex [102]
+ [102])
+(./contentprovider.tex [103]
 Chapter 7.
 
 Underfull \hbox (badness 5231) in paragraph at lines 6--6
@@ -2418,17 +2440,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 3--7
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 8--10
-
- []
-
-[103
+[104
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [104]
+ [105]
 Underfull \hbox (badness 10000) in paragraph at lines 98--101
 
  []
@@ -2438,7 +2455,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 102--107
 
  []
 
-[105]
+[106]
 Underfull \hbox (badness 10000) in paragraph at lines 163--164
 
  []
@@ -2468,7 +2485,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 174--178
 
  []
 
-[106]
+[107]
 Underfull \hbox (badness 10000) in paragraph at lines 184--185
 
  []
@@ -2498,7 +2515,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 218--220
 
  []
 
-[107]
+[108]
 Underfull \hbox (badness 10000) in paragraph at lines 222--224
 
  []
@@ -2508,7 +2525,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 232--235
 
  []
 
-[108]
+[109]
 Underfull \hbox (badness 10000) in paragraph at lines 268--270
 
  []
@@ -2538,7 +2555,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 342--344
 
  []
 
-[109]
+[110]
 Underfull \hbox (badness 10000) in paragraph at lines 345--347
 
  []
@@ -2548,12 +2565,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 377--380
 
  []
 
-[110]
+[111]
 Underfull \hbox (badness 10000) in paragraph at lines 407--411
 
  []
 
-[111]
+[112]
 Underfull \hbox (badness 10000) in paragraph at lines 439--441
 
  []
@@ -2563,7 +2580,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 449--450
 
  []
 
-[112]
+[113]
 Underfull \hbox (badness 10000) in paragraph at lines 458--459
 
  []
@@ -2573,28 +2590,28 @@ Underfull \hbox (badness 10000) in paragraph at lines 475--479
 
  []
 
-[113]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [114]
+[114]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [115]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [116]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [117]
 Overfull \hbox (4.75145pt too wide) in paragraph at lines 638--642
 []\EU1/mono/m/n/10 insert/update/delete \EU1/NanumMyeongjo(0)/m/n/10 메 서 드 에 서 
 쿼 리 실 행 후 에 \EU1/mono/m/n/10 getContext().getContentResolver().notifyChange(uri
 ,
  []
 
-[117]
+[118]
 Underfull \hbox (badness 10000) in paragraph at lines 764--766
 
  []
 
-[118]
+[119]
 Underfull \hbox (badness 10000) in paragraph at lines 802--803
 
  []
@@ -2609,7 +2626,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 807--810
 
  []
 
-[119] [120]
+[120] [121]
 Underfull \hbox (badness 10000) in paragraph at lines 884--886
 
  []
@@ -2624,7 +2641,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 904--905
 
  []
 
-) (./brodcastreceiver.tex [121]
+) (./brodcastreceiver.tex [122]
 Chapter 8.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--5
@@ -2651,7 +2668,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
 
-[122
+[123
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 25--28
@@ -2668,7 +2685,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 37--38
 
  []
 
-[123]
+[124]
 Overfull \hbox (4.44106pt too wide) in paragraph at lines 84--87
 \EU1/NanumMyeongjo(0)/m/n/10 면 \EU1/mono/m/n/10 SecurityException \EU1/NanumMye
 ongjo(0)/m/n/10 을 만 나 게 된 다. 아 래 는 \EU1/mono/m/n/10 sendBroadcast(new Intent(In
@@ -2699,7 +2716,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 103--108
 
  []
 
-[124]
+[125]
 Underfull \hbox (badness 10000) in paragraph at lines 147--151
 
  []
@@ -2711,7 +2728,7 @@ yeongjo(0)/m/n/10 을 설 치 하 는 것 도 \EU1/mono/m/n/10 Broadcast \EU1/Na
 )/m/n/10 를 통 해 서 한 다. \EU1/mono/m/n/10 com.android.launcher.action.INSTALL_SH-
  []
 
-[125]
+[126]
 Underfull \hbox (badness 10000) in paragraph at lines 180--182
 
  []
@@ -2731,7 +2748,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 191--193
 
  []
 
-[126]
+[127]
 Underfull \hbox (badness 10000) in paragraph at lines 194--196
 
  []
@@ -2764,7 +2781,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 225--226
 
  []
 
-[127]
+[128]
 Underfull \hbox (badness 10000) in paragraph at lines 248--252
 
  []
@@ -2787,15 +2804,15 @@ Underfull \hbox (badness 10000) in paragraph at lines 288--289
 
 Underfull \vbox (badness 1199) has occurred while \output is active []
 
- [128]
+ [129]
 Underfull \hbox (badness 10000) in paragraph at lines 311--313
 
  []
 
-[129]
+[130]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [130]
+ [131]
 Overfull \hbox (3.70992pt too wide) in paragraph at lines 391--394
 []\EU1/mono/m/n/10 ACTION_APPWIDGET_DELETED, ACTION_OPTIONS_CHANGED, ACTION_ENA
 BLED, 
@@ -2833,7 +2850,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 406--408
 
  []
 
-[131]
+[132]
 Underfull \hbox (badness 10000) in paragraph at lines 409--412
 
  []
@@ -2853,7 +2870,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 442--444
 
  []
 
-[132]
+[133]
 Underfull \hbox (badness 10000) in paragraph at lines 458--461
 
  []
@@ -2878,7 +2895,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 476--478
 
  []
 
-[133]
+[134]
 Underfull \hbox (badness 10000) in paragraph at lines 483--484
 
  []
@@ -2898,7 +2915,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 499--501
 
  []
 
-) (./application.tex [134]
+) (./application.tex [135]
 Chapter 9.
 
 Underfull \hbox (badness 10000) in paragraph at lines 2--5
@@ -2915,9 +2932,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 14--16
 
  []
 
-[135
+[136
 
-] [136]
+] [137]
 Underfull \hbox (badness 10000) in paragraph at lines 94--95
 
  []
@@ -2950,7 +2967,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 104--105
 
  []
 
-[137]
+[138]
 Underfull \hbox (badness 10000) in paragraph at lines 106--110
 
  []
@@ -2958,7 +2975,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 106--110
 
 Underfull \vbox (badness 2894) has occurred while \output is active []
 
- [138]
+ [139]
 Underfull \hbox (badness 10000) in paragraph at lines 192--194
 
  []
@@ -2968,7 +2985,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 195--197
 
  []
 
-[139]
+[140]
 Underfull \hbox (badness 10000) in paragraph at lines 207--208
 
  []
@@ -2983,7 +3000,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 223--225
 
  []
 
-[140]
+[141]
 Underfull \hbox (badness 10000) in paragraph at lines 259--263
 
  []
@@ -2998,7 +3015,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 289--292
 
  []
 
-) (./binder.tex [141]
+) (./binder.tex [142]
 Chapter 10.
 
 Underfull \hbox (badness 10000) in paragraph at lines 39--41
@@ -3010,7 +3027,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 42--43
 
  []
 
-[142
+[143
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 118--121
@@ -3020,8 +3037,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 118--121
 
 Underfull \vbox (badness 1142) has occurred while \output is active []
 
- [143]
-[144]
+ [144]
+[145]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: xetex
 * paper: a4paper
@@ -3059,7 +3076,7 @@ Overfull \hbox (33.53323pt too wide) in paragraph at lines 178--179
 [][] 
  []
 
-[145
+[146
 
 ]
 Overfull \hbox (7.29459pt too wide) in paragraph at lines 197--200
@@ -3067,7 +3084,7 @@ Overfull \hbox (7.29459pt too wide) in paragraph at lines 197--200
  Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MEDIA_MOUNTED,
  []
 
-[146
+[147
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 213--215
@@ -3079,23 +3096,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 216--218
 
  []
 
-[147]
+[148]
 Underfull \hbox (badness 10000) in paragraph at lines 256--259
 
  []
 
-[148]
+[149]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [149]
+ [150]
 Underfull \hbox (badness 10000) in paragraph at lines 370--371
 
  []
 
-[150]
+[151]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [151]
+ [152]
 Underfull \hbox (badness 10000) in paragraph at lines 449--452
 
  []
@@ -3107,12 +3124,12 @@ anumMyeongjo(0)/m/n/10 클 래 스 에 도 \EU1/mono/m/n/10 onTransact() \EU1/Na
 jo(0)/m/n/10 메 서 드 가 정 의 되 어 있 고, 여 기 서 \EU1/mono/m/n/10 DUMP_TRANSAC-
  []
 
-[152] [153]
+[153] [154]
 Underfull \hbox (badness 10000) in paragraph at lines 611--617
 
  []
 
-[154]
+[155]
 Underfull \hbox (badness 10000) in paragraph at lines 637--638
 
  []
@@ -3142,7 +3159,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 670--676
 
  []
 
-[155]
+[156]
 Underfull \hbox (badness 10000) in paragraph at lines 677--679
 
  []
@@ -3152,7 +3169,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 693--695
 
  []
 
-[156]
+[157]
 Underfull \hbox (badness 10000) in paragraph at lines 715--721
 
  []
@@ -3162,18 +3179,18 @@ Underfull \hbox (badness 10000) in paragraph at lines 748--750
 
  []
 
-[157]
+[158]
 Underfull \vbox (badness 6876) has occurred while \output is active []
 
- [158]
-[159]) (./pattern.tex [160]
+ [159]
+[160]) (./pattern.tex [161]
 Chapter 11.
 
 Underfull \hbox (badness 10000) in paragraph at lines 10--13
 
  []
 
-[161
+[162
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 38--41
@@ -3190,7 +3207,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 84--85
 
  []
 
-[162] [163] [164]
+[163] [164] [165]
 Underfull \hbox (badness 10000) in paragraph at lines 184--187
 
  []
@@ -3200,7 +3217,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 205--208
 
  []
 
-[165]
+[166]
 Underfull \hbox (badness 10000) in paragraph at lines 253--255
 
  []
@@ -3210,7 +3227,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 256--259
 
  []
 
-[166]
+[167]
 Underfull \hbox (badness 10000) in paragraph at lines 305--308
 
  []
@@ -3220,37 +3237,40 @@ Underfull \hbox (badness 10000) in paragraph at lines 318--324
 
  []
 
-[167]
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
+[168]
+Underfull \hbox (badness 10000) in paragraph at lines 346--347
 
  []
 
-[168] [169]
-Underfull \hbox (badness 10000) in paragraph at lines 453--455
+[169] [170]
+Underfull \hbox (badness 10000) in paragraph at lines 454--456
 
  []
 
-[170])
+[171])
 No file android_note.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 171.
-[171]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 171.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 186.
+[172]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 186.
  (./android_note.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 171.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 171.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 186.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 186.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 171.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 186.
  ) 
 Here is how much of TeX's memory you used:
  27517 strings out of 493638
  463113 string characters out of 6147976
- 789556 words of memory out of 5000000
+ 789262 words of memory out of 5000000
  30614 multiletter control sequences out of 15000+600000
  56350 words of font info for 83 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
  68i,12n,71p,10453b,2248s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on android_note.pdf (171 pages).
+Output written on android_note.pdf (172 pages).

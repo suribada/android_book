@@ -3,10 +3,10 @@
 SQLite는 로컬 DB이지만 속도가 그렇게 빠르지는 않다. 딱 혼자서 쓸 수 있는 정도라고 생각하자.
 SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를 통해서 접근하고 사용한다.\footnote{안드로이드 프레임워크에서 사용하는 네이티브 메서드는 jni를 이용해서 /frameworks/base/core/jni/android\_database\_SQLiteConnection.cpp 소스에 연결된다.
 안드로이드와 SQLite를 연결해주는 것은 /external/sqlite/android/sqlite3\_android.cpp이고,
-안드로이드에 들어가는 SQLite 소스는 /external/sqlite/dist/ 디렉토리에 있다. 여기서 주로 sqlite3.c를 보면 된다.}\\
+안드로이드에 들어가는 SQLite 소스는 /external/sqlite/dist/ 디렉터리에 있다. 여기서 주로 sqlite3.c를 보면 된다.}\\
 
 SQLite db 파일은 /data/data/패키지/databases에 저장된다. 
-단말에서는 일반적으로 db 파일에 직접 접근할 수 없다(루팅한 것이 아니라면).\\
+단말에서는 일반적으로 db 파일에 직접 접근하거나 쿼리를 실행할 수 없다(루팅한 것이 아니라면).\footnote{http://stackoverflow.com/questions/9997976/android-pulling-sqlite-database-android-device를 참고해서 db 파일을 가져오는 방법도 알아보자.}
 
 개발 시에 에뮬레이터에서 db를 확인하는 방법으로는 2가지를 사용한다.
 \begin{itemize}
