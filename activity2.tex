@@ -258,7 +258,7 @@ singleTask와 singleInstance는 굳이 비유하자면, singleTask는 무조건 
 singleTask와 singleInstance launchMode는 특별한 상황에서만 사용한다. 사실 태스크 관련 테스트를 하면 제일 혼동되는 게 이 부분이다.
 
 \paragraph{Caller 속성 부여는 Intent Flags에 지정한다.}
-Intent에는 setFlags(int flags) 메서드와 addFlags(int flags) 메서드가 있다. 여기에 전달되는 값은 Intent 클래스의 int 상수인 FLAG\_ACTIVITY\_XXX 값이고, 비트합($|$)으로 여러 개를 전달할 수 있다. 
+Intent에는 setFlags(int flags) 메서드와 addFlags(int flags) 메서드가 있다. 여기에 전달되는 값은 Intent 클래스의 int 상수인 FLAG\_ACTIVITY\_XXX 값이고, 비트 OR 값($|$)으로 여러 개를 전달할 수 있다. 
 Intent Flags에 전달하는 값이 Callee의 lanuchMode와 배치되는 경우에는 Callee의 launchMode가 우선한다.\\
 
 Flags에 전달하는 상수는 많다. Caller에서 쓸 수 있는 다양한 옵션이 있는데 그 가운데 주요한 것을 얘기해보자.

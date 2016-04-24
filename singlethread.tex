@@ -1084,7 +1084,7 @@ AsyncTask의 병렬 실행이 필요한 경우를 들어보자.
 
 일반적으로 2개의 AsyncTask 간에 병렬 실행도 하면서 결과를 합해야 하는 경우에는 2가지 정도 방법을 사용한다.
 \begin{itemize}
-\item 멤버 변수에 비트합을 사용한다. 2개의 AsyncTask가 끝나면 각각 비트를 합하고 둘 다 충족했다면 onPostExcecute() 메서드에서 데이터를 조합해서 보여준다. 예외가 나오는 케이스도 고려해야만 한다. 
+\item 멤버 변수에 비트 OR 연산을 사용한다. 2개의 AsyncTask가 끝나면 각각 비트를 합하고 둘 다 충족했다면 onPostExcecute() 메서드에서 데이터를 조합해서 보여준다. 예외가 나오는 케이스도 고려해야만 한다. 
 \item CountDownLatch를 이용해서 AsyncTask 간에 다른 한 쪽의 작업이 끝날 때까지 대기했다가 이후에 데이터를 조합한다. 이 방식은 \url{http://suribada.com/wp/?p=13}을 참고하자.
 \end{itemize}
 
