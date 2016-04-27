@@ -86,10 +86,9 @@ ActivityThread는 클래스명 때문에 Thread를 상속한 게 아닐까 하�
 Looper 클래스\footnote{\url{http://developer.android.com/reference/android/os/Looper.html}}는 내용이 단순하다. Looper에서 필요한 내용을 알아보자.
 \begin{itemize}
 \item TLS(Thread Local Storage)에 Looper를 넣는다. 구체적으로 ThreadLocal<Looper>에 set() 메서드로 새로운 Looper를 추가하고 get() 메서드로 Looper를 가져오는데, 각 스레드별로 다른 Looper가 반환된다.
-Looper.prepare()를 통해 스레드별로 Looper를 생성하고, 특히 메인 스레드의 Looper는 ActivityThread에서 Looper.prepareMainLooper()를 통해서 생성되고, Looper.getMainLooper()를 통해서 어디서든 가져올 
-수 있다.
+Looper.prepare()를 통해 스레드별로 Looper를 생성하고, 특히 메인 스레드의 Looper는 ActivityThread에서 Looper.prepareMainLooper()를 통해서 생성되고, Looper.getMainLooper()를 통해서 어디서든 가져올 수 있다.
 \item Looper별로 MessageQueue를 가진다. 특히 메인 스레드에서는 이 MessageQueue를 통해서 UI 작업에서 경합 상태를 해결한다. 
-개발 중에 Queue 구조가 필요할 때 java.util.Queue의 여러 구현체를 사용할 수도 있지만 Looper 사용도 고려해보자. 특히 스레드별로 다른 Queue를 사용할 때는 Looper를 사용하는 게 더 단순해질 수 있다.(결론적으로는 Handler를 사용하는 것이다.)
+개발 중에 Queue 구조가 필요할 때 java.util.Queue의 여러 구현체를 사용할 수도 있지만 Looper 사용도 고려해보자. 특히 스레드별로 다른 Queue를 사용할 때는 Looper를 사용하는 게 더 단순해질 수 있다(결론적으로는 Handler를 사용하는 것이다).
 \end{itemize}
 
 Looper.loop() 메서드의 주요 코드를 보자.
@@ -180,7 +179,7 @@ Handler는 Message를 MessageQueue에 넣는 기능과 MessageQueue에서 꺼내
 
 \subsection{Handler 생성}
 Handler를 사용하려면 먼저 생성자를 이해해야 한다. 
-Handler에는 기본 생성자 외에 Hanlder.Callback 또는 Looper가 전달되는 생성자들이 있다. 
+Handler에는 기본 생성자 외에 Hanlder.Callback 또는 Looper가 전달되는 것들이 있다. 
 당연한 얘기지만 내부적으로 파라미터가 가장 많은 4번째 생성자를 다른 생성자에서 호출한다.
 \begin{itemize}
 \item Handler()
@@ -218,7 +217,7 @@ class LooperThread extends Thread {
 LooperThread에서 스레드를 시작하면 Looper.loop()에 무한 반복문이 있기 때문에 해당 스레드는 종료되지 않고, mHandler에서 sendXxx(), postXxx() 메서드를 사용하면 스레드 내에서 handleMessage() 메서드를 실행한다.\\
 
 그런데 앱을 만들다 보면 가끔 위에 얘기한 RuntimeException을 만나는 경우가 있다.
-예를 들어, 어떤 메서드가 단순하게 TextView의 setText()를 실행하는 것이지만, 메서드 호출을 하는 곳이 여러 군데이거나 메서드 호출 스택이 깊어서 어디서 호출하는지 금방 파악이 안 되는 경우도 있다.
+예를 들어, 어떤 메서드가 단순하게 TextView의 setText()를 실행하는 것이지만, 메서드 호출을 하는 곳이 여러 군데이거나 메서드 호출 스택이 깊어서 어디서 호출하는지 금방 파악이 안되는 경우도 있다.
 여러 곳에서 사용하는 메서드라면 메인 스레드뿐 아니라 백그라운드 스레드에서도 호출할 가능성이 있다. 
 new Handler()로 생성하고 post() 메서드를 통해서 TextView를 변경하려 하는데, Handler 생성을 메인 스레드에서 하는지 백그라운드 스레드에서 하는지 모호한 경우가 있다.
 메인 스레드라면 이미 메인 Looper가 있는데 백그라운드 스레드라면 대응하는 Looper가 당장 없을 때 RuntimeException을 만나게 된다.\\
@@ -246,7 +245,7 @@ process() 메서드는 메인 스레드에서 호출한다면 문제가 없지�
 	}
 \end{lstlisting}	
 백그라운드 스레드에서는 Looper가 연결되어 있지 않다면 RuntimeException이 발생한다.
-UI 업데이트이기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안 되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 여러 생성자 가운데 세 번째 생성자를 사용하면 된다.
+UI 업데이트이기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 여러 생성자 가운데 세 번째 생성자를 사용하면 된다.
 \begin{lstlisting}[frame=single] 
 	public void process(BadgeListener listner) {
 		int count = ...
@@ -287,7 +286,7 @@ FrontOfQueue & sendMessageAtFrontOfQueue(Message msg)
 \item Message의 what 값만을 전달하는 sendEmptyMessage(), sendEmptyMessageDelayed(), sendEmptyMessageAtTime() 메서드가 있다.
 \item -Delayed로 끝나는 메서드는 내부적으로 -AtTime 메서드를 호출한다. 현재 uptimeMillis에 delayMillis를 더한 값이 uptimeMillis 파라미터에 들어간다.
 \item postAtFrontOfQueue() 메서드는 특별한 상황이 아니면 쓰지 말라는 가이드가 있다. 
-권한 문제나 심각한 서버 문제처럼, 앱을 더 이상 사용할 수 없는 특별한 때가 아니면 사용할 일이 없다. 남용하면 안 되는 메서드이다.
+권한 문제나 심각한 서버 문제처럼, 앱을 더 이상 사용할 수 없는 특별한 때가 아니면 사용할 일이 없다. 남용하면 안되는 메서드이다.
 \end{itemize}
 
 Looper.loop() 메서드에서 호출하는 Handler의 dispatchMessage() 메서드를 보자.
@@ -448,7 +447,7 @@ Handler는 정확한 지연 시간(delay time)을 보장하지는 않는다. Mes
 		});
 \end{lstlisting}
 2라인(1)과 11라인(2)에서 각각 Runnable 메시지를 보냈다. 2라인(1)에서 첫 번째 메시지는 먼저 보냈지만 200ms 이후에 실행되는 것이고, 11라인(2)에서 보낸 두 번째 메시지는 즉시 실행되지만 sleep() 시간을 포함하여 500ms가 걸리는 작업이 되었다. 단일 스레드의 규칙 때문에 먼저 처리해야 하는 것을 다 끝내야만, 뒤의 것을 처리할 수 있다. ``200 delay''라는 로그는 따라서 200ms가 아닌 최소 500ms 이후에 남게 된다.
-결론적으로 지정한 지연 시간이 지나고서 정확히 실행된다고 가정하면 안 된다. 예처럼 200ms 간격을 두었다면 그 사이에 여러 Message가 MessageQueue에 쌓일 가능성이 있다.(Activity를 시작하거나, 클릭 이벤트를 여러 번 처리하거나)
+결론적으로 지정한 지연 시간이 지나고서 정확히 실행된다고 가정하면 안된다. 예처럼 200ms 간격을 두었다면 그 사이에 여러 Message가 MessageQueue에 쌓일 가능성이 있다.(Activity를 시작하거나, 클릭 이벤트를 여러 번 처리하거나)
 이건 하나의 예이지만 실제 이런 케이스는 적지 않다. 메인 스레드에서 다른 메시지를 처리하느라고 내가 당장 하려는 작업이 지연되는 케이스이다.\\
 
 
@@ -495,7 +494,7 @@ invalidate()에서 ViewRootImpl을 거쳐서 scheduleTraversals()를 하면서 M
 그렇지는 않다. View에서는 mPrivateFlags라는 플래그를 사용해서 한 메서드 내에서 invalidate()를 여러 번 호출해도 ViewRootImpl까지 전달되는 것은 첫 번째 호출 뿐이다. View의 invalidateInternal() 메서드 시작 부분에서 mPrivateFlags 값으로 체크하는 if 조건문이 그 내용이다.
 조건문은 꽤 복잡하다. 첫 번째 invalidate()를 호출하면 if 문 내에서 플래그를 변경해서 다음 invalidate() 호출에서는 invalidateInternal() 메서드에서 걸러져서 ViewRootImpl까지는 도달하지 않는다.\\
 
-invalidate() 메서드가 계속 막혀서도 안 된다. 
+invalidate() 메서드가 계속 막혀서도 안된다. 
 한번 그려진 다음에 다시 invalidate()하는 경우는 다시 또 그려야 한다.
 View의 mPrivateFlags는 package private 변수로 View, ViewGroup, ViewRootImpl 세 군데에서 적절하게 변경해서 이 문제를 해결하고 있다.\\
 
@@ -516,7 +515,7 @@ View의 draw() 시작 부분에 있어서 invalidateInternal()를 통해서 View
 \end{comment}
 
 \section{ANR}
-``Application Not Responding''(ANR)\\
+\textbf{``Application Not Responding''(ANR)}\\
 개발 또는 사용 중에 흔하게 볼 수 있는 메시지이다. 이 메시지를 통해 메인 스레드를 오랫동안 Blocking할 때에 계속할 것인지, 프로세스를 종료할 것인지 사용자에게 묻는 과정을 거친다. 
 아무리 잘 만들어도 단말 상태가 좋지 않으면 발생할 수 있는 것이라서 완벽하게 피할 수는 없다. 따라서 ANR 가능 케이스를 최대한 줄이는 것이 그나마 가능한 목표다.
 안드로이드 프레임워크에서 ANR 관련한 내용은 
@@ -666,7 +665,7 @@ HandlerThread가 필요한 곳은 어디일까?
 그런데 사용자는 선택/해제를 마구 바꾸기도 하는데, 이 때문에 좀 더 세심한 처리가 필요하다.
 만일 체크 상태가 바뀔 때마다 스레드를 생성하거나 스레드 풀에서 스레드를 가져다가 DB에 반영하면 어떤 일이 벌어질까? 스레드 실행은 start()를 실행한 순서대로 되지 않기 때문에 선택$\rightarrow$해제$\rightarrow$선택을 했지만, DB에 반영할 때는 선택$\rightarrow$선택$\rightarrow$해제 순으로 반영하여 최종 결과를 잘못 반영할 가능성이 있다. 
 즉 실행 순서를 순차적으로 맞추어야 하는데, 바로 HandlerThread가 필요한 지점이다.\footnote{허니콤 이후의 AsyncTask도 순차 실행이 기본 동작이지만, AsyncTask는 백그라운드 스레드와 UI 스레드를 구분하고 데이터를 전달하는 목적에 더 적합하다.}
-HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드 스레드에서 무한루프를 만들고 BlockingQueue를 매개로 하여 백그라운드 스레드에서는 take를 실행하고 외부에서는 put을 실행하는 형태를 만들어야 한다.
+HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드 스레드에서 무한루프를 만들고 BlockingQueue를 매개로 하여 무한루프문 내에서 take를 실행하고 외부에서 put을 실행하는 형태를 만들어야 한다.
 BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
 
 아래 코드를 한번 보자. 아직 버그가 있는 버전이고 이 버그를 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
@@ -755,14 +754,13 @@ DB 반영 내용이 많아서 시간이 걸린다고 가정해보자.
 
 \underline{\bfseries 2) Looper를 null 체크하는 시점 이후에 스레드가 시작되면 어떻게 되는가?}\\
 바로 타이밍 문제가 생긴다. 
-Looper.loop() 메소드는 무한 루프 상태이고 스레드는 그 스레드를 시작한 Activity를 참조하고 있으므로, onDestroy() 이후에도 Activity는 내내 GC가 안 되는 문제가 발생한다.
+Looper.loop() 메소드는 무한루프 상태이고 스레드는 그 스레드를 시작한 Activity를 참조하고 있으므로, onDestroy() 이후에도 Activity는 내내 GC가 안되는 문제가 발생한다.
 quit()이나 quitSafely()를 호출해야만 GC 문제가 생기지 않는다.
-null 체크를 해도 안 되고 안 해도 문제인 상황에 다른 해법이 있을까?
-바로 한 가지가 있다.\\
+null 체크를 해도 안되고 안 해도 문제인 상황에 다른 해법이 있을까?\\
 
-MessageQueue.IdleHandler API 문서를 보면, IdleHandler 인터페이스를 가지고서 Message를 모두 처리하고서 휴식 상태일 때 할 일을 지정할 수 있다.
+MessageQueue.IdleHandler API 문서를 보면, IdleHandler 인터페이스를 가지고서 MessageQueue의 Message를 모두 처리하고서 휴식 상태일 때 할 일을 지정할 수 있다.
 인터페이스의 유일한 메서드인 queueIdle()은, IdleHandler를 계속 사용하려면 true를 리턴하고 아니면 false를 리턴한다. 다시 말해서 false를 리턴하면 idle 상태가 될 때마다 queueIdle() 메서드가 실행된다.
-결론적으로 IdleHandler를 등록해서 Activity가 종료되고 모든 Message가 처리되어서 idle 상태가 되었을 때 Looper.quit()을 실행하면 된다.\\
+결론적으로 IdleHandler를 등록해서 Activity가 종료되고 모든 MessageQueue가 idle 상태가 되었을 때 Looper.quit()을 실행하면 된다.\\
 
 코드 \ref{src:HandlerThreadSample}과 달라지는 부분은 두 군데이다.
 \begin{itemize}
@@ -1078,8 +1076,8 @@ AsyncTask의 병렬 실행이 필요한 경우를 들어보자.
 2개를 각각 AsyncTask로 만들고 로컬 데이터를 가져오는 것을 먼저 시작하고(AsyncTaskA) 서버 데이터를 가져오는 것을 바로 다음에 시작하였다(AsyncTaskB). 
 로컬 데이터가 결과를 빨리 가져온다는 가정하에 AsyncTaskA에서는 멤버 변수에 데이터만 저장하고 AsyncTaskB의 onPostExecute()에서 조합해서 화면을 보여주었다.
 결과는 어땠을까? 아주 드물지만 로컬 데이터를 먼저 가져온다는 가정이 어긋나는 경우가 생겨서 에러를 발생시켰다. 
-작업량이 많고 적은 것으로 판단하면 안 된다.
-백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안 된다. 극단적으로 말하면 정상 동작 여부가 운에 따른 것이 된다.
+작업량이 많고 적은 것으로 판단하면 안된다.
+백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안된다. 극단적으로 말하면 정상 동작 여부가 운에 따른 것이 된다.
 이런 문제가 제어가 어렵다면 차라리 `순차 실행'을 하는 게 나을 수도 있다.\\
 
 일반적으로 2개의 AsyncTask 간에 병렬 실행도 하면서 결과를 합해야 하는 경우에는 2가지 정도 방법을 사용한다.
