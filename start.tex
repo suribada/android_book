@@ -112,7 +112,7 @@ libcore는 기반이 되는 자바 버전이 바뀌기 전에는 거의 변경�
 
 \section{안드로이드 버전}
 안드로이드는 버전에 따라 차이가 많기 때문에, 내용 설명에서 안드로이드 버전을 가지고 얘기하는 경우가 많다. 
-표로 먼저 정리해놓고 내용에서 참고하도록 하자. 표에서는 굳이 본문에서 언급되지 않는 하위 버전은 제외하였다.\\
+표로 먼저 정리해놓고 내용에서 참고하도록 하자. 굳이 본문에서 언급되지 않는 하위 버전은 표에서 제외하였다.\\
 
 \begin{tabular}{|c|c|c|}\hline
 코드네임 & API 레벨 & 안드로이드 버전 \\ \hline
@@ -134,7 +134,7 @@ ICS(아이스크림 샌드위치) & 14 & 4.0-4.0.2\\ \cline{2-3}
 마시멜로 & 23 & 6.0\\ \hline 
 \end{tabular}\\
 
-코드네임과 API 레벨이 일대일 매핑되지 않고, API 레벨과 안드로이드 버전도 마찬가지로 매핑되지 않아서 혼동되는 경우도 많다. 안드로이드 버전의 앞자리 숫자가 바뀌는 변화가 있는 11(허니콤), 14(ICS), 21(롤리팝), 23(마시멜로)는 기억하도록 하자.
+코드네임과 API 레벨이 일대일 매핑되지 않고, API 레벨과 안드로이드 버전도 마찬가지로 매핑되지 않아서 혼동되는 경우도 많다. 안드로이드 버전의 앞자리 숫자가 바뀌는 11(허니콤), 14(ICS), 21(롤리팝), 23(마시멜로)는 기억하도록 하자.
 이 책에서는 설명에서 주로 코드네임으로 언급하고, 한 코드네임 안에서 여러 API 레벨이 있는 경우 구분이 필요할 때 API 레벨까지 언급하기로 한다. 
 여러 API 레벨이 있는데 코드네임만 언급하는 경우는 가장 낮은 API 레벨부터 해당하는 경우이다. 이를테면 허니콤이라고 하면 API 레벨 11 안드로이드 3.0을 얘기한다.\\
 
@@ -178,13 +178,13 @@ targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테
         return task;
     }
 \end{lstlisting}
-모든 버전에서 병렬 실행을 위해서 별도 메서드를 만든 적이 있었는데, AsyncTaskCompat을 바로 사용하면 된다.
+모든 버전에서 병렬 실행을 위해서 별도 메서드를 만든 적이 있었는데, AsyncTaskCompat을 바로 사용하도록 하자.
 
-\item 메인 스레드 상에서 네트워크 통신이 진저브레드 API 레벨 9까지는 허용되었으나, 그 이후에는 에러를 발생시킨다. targetSdkVersion을 높여서 NetworkOnMainThreadException이 발생한다면, 스레드에서 네트워크 통신을 하도록 변경해야 한다.
+\item 메인 스레드 상에서 네트워크 통신이 진저브레드 API 레벨 9까지는 허용되었으나, 그 이후에는 에러를 발생시킨다. targetSdkVersion을 높여서 NetworkOnMainThreadException이 발생한다면, 백그라운드 스레드에서 네트워크 통신을 하도록 변경해야 한다.
 \item 하드웨어 가속(Hardware Acceleration)은 View에서 Canvas에 그리는 모든 작업을 GPU를 가지고 하는 것이다. 하드웨어 가속은 허니콤에서 처음 시작되었고 targetSdkVersion 14 이상에서는 디폴트 옵션이다. 하드웨어 가속을 사용할 때 눈에 띄는 속도 향상은 SlidingPaneLayout이나 여러 Sliding Menu 라이브러리에서 애니메이션 시 끊김 현상이 없다는 것이다. 
 필자의 경우도 애니메이션 끊김 현상이 단지 하드웨어 가속만으로 해결되는 경우를 여러 번 겪었다.
 그래서 가능하면 하드웨어 가속을 쓰는 게 좋지만 항상 속도가 향상되는 것은 아니다. \url{http://developer.android.com/intl/ko/guide/topics/graphics/hardware-accel.html}을 참고해서 테스트하고 수준별(Application, Activity, Window, View)로 오버라이드하는 방법을 사용하자.
-\item targetSdkVersion 14 이상에서는 App Widget에서 기본 패딩이 존재한다. 기존에는 셀의 사이즈를 꽉 채웠지만 targetSdkVersion이 올라가면 기본 패딩 때문에 App Widget의 실제 사이즈는 기존보다 작아진다. 관련해서 \ref{subsubsec:icspadding}절에 좀 더 상세하게 설명하였다.
+\item targetSdkVersion 14 이상에서는 App Widget에서 기본 패딩이 존재한다. 기존에는 셀의 사이즈를 꽉 채웠지만 targetSdkVersion이 올라가면 기본 패딩 때문에 App Widget의 실제 사이즈는 기존보다 작아진다. 관련해서 \ref{subsubsec:icspadding}절에 더 상세하게 설명하였다.
 \item targetSdkVersion 21 이상에서는 startService()나 bindService()를 실행할 때 명시적 인텐트를 사용해야 한다.
 \end{itemize}
 
