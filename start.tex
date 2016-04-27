@@ -6,11 +6,11 @@
 
 \includegraphics[scale=0.65]{system-architecture}
 \begin{itemize}
-\item 안드로이드에서 제공하는 기본 앱(Home, Camera, Dialer, Browser 등)과 일반 앱은 Applications 스택에 있고, Applications는 Application Framework 위에서 동작한다. 기본 앱은 소스가 공개돼 있으므로 참고 자료로 활용할 수 있다. 단말 제조사들은 일반적으로 기본 앱을 커스터마이징하고, 제조사 단말에 특화된 앱도 추가로 제공한다. 요점은 단말에 깔린 기본 앱과 우리가 만드는 앱은 동일한 레벨이라는 것이다. 다만 기본 앱은 시스템 권한을 쓸 수 있다는 게 다르다.
+\item 안드로이드에서 제공하는 기본 앱(Home, Camera, Dialer, Browser 등)과 일반 앱은 Applications 스택에 있고, Applications는 Application Framework 스택 위에서 동작한다. 기본 앱은 소스가 공개돼 있으므로 참고 자료로 활용할 수 있다. 단말 제조사들은 일반적으로 기본 앱을 커스터마이징하고, 제조사 단말에 특화된 앱도 추가로 제공한다. 요점은 단말에 깔린 기본 앱과 우리가 만드는 앱은 동일한 레벨이라는 것이다. 다만 기본 앱은 시스템 권한을 쓸 수 있다는 게 다르다.
 
-\item Application Framework는 자바 기반의 여러 -Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다.(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다.) 각종 -Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
+\item Application Framework는 자바 기반의 여러 -Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다). 각종 -Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
 
-\item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XM\-LPullParser 등 자바 클래스와 안드로이드 기본 리소스가 포함되어 있다.
+\item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XM\-LPullParser 등 자바 클래스와 안드로이드 기본 리소스(android.R)가 포함되어 있다.
 
 \item Dalvik Virtual Machine은 자바/C/C++로 작성되어 있다(롤리팝에서는 Dalvik을 대체한 ART가 적용).\footnote{\url{https://source.android.com/devices/tech/dalvik/art.html}를 참고하자.} Register 기반의 가상 머신(Virtual Machine)으로 자바 가상 머신보다 명령이 단순하고 속도가 빠르다.
 Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울 수 있다. J2SE/J2EE 자바 애플리케이션을 만들다보면 여러 가상 머신 인스턴스는 당연한 얘기지만, J2ME에는 여러 Midlet이 하나의 가상 머신에서 돌아가는 방식이었고 안드로이드에서는 이 방식을 변경하였다.
@@ -25,13 +25,14 @@ Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울
 
 \item 안드로이드는 리눅스 커널을 기반으로 불필요한 것은 제거하고(X-Window, glibc, 표준 리눅스 유틸리티 일부 등) 확장 패치한 것이다(Binder, Ashmem, Low Memory Killer 등).\\
 이 가운데 Binder IPC는 프로세스 간 통신에 사용하는 방식이다. 
-Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC를 이용한 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데서 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있게 된다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 Binder Thread에 속한 것이다. 
+Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC를 이용한 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데서 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있는 것이다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), 다른 프로세스에서 접근할 때는 이 스레드 풀을 통해서 접근한다.
+DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 Binder Thread에 속한 것이다. 
 
 \end{itemize}
 % 안드로이드 SDK는 Java 프로그래밍 언어를 사용하여 안드로이드 플랫폼 상의 애플리케이션 개발에 필요한 API들과 도구들을 제공한다.(kandroid)
 \section{프레임워크 소스}
 4.X 이상 버전은 Android SDK Manager를 이용해서 Sources for Android SDK를 선택해서 자바 소스를 다운로드할 수 있고, IDE에서 소스를 연결해서 보는 경우에 유용하다. 
-2.X 버전의 소스를 확인하거나 네이티브까지 소스를 확인하려면, https://android.googlesource.com에서 관련 소스를 다운로드하면 된다.\footnote{\url{http://source.android.com/source/downloading.html}을 참고하자.} 참고로 3.X 허니콤 소스는 공개되어 있지 않다. 
+2.X 버전의 소스를 확인하거나 네이티브까지 소스를 확인하려면, \url{https://android.googlesource.com}에서 관련 소스를 다운로드하면 된다.\footnote{\url{http://source.android.com/source/downloading.html}을 참고하자.} 참고로 3.X 허니콤 소스는 공개되어 있지 않다. 
 3.X는 태블릿 전용 버전이고, 소스가 공개되어 이 버전이 폰에 이식된다면 파편화 문제가 심각해질 우려가 있어서 비공개로 결정되었다고 한다.
 커널 소스는 \url{https://source.android.com/source/building-kernels.html}을 참고해서 별도로 다운로드한다.\\
  
@@ -70,15 +71,15 @@ StackOverflow에서 검색해보면 아이템 레이아웃의 CheckBox 속성에
 \end{enumerate}
 
 먼저 ListView의 OnItemClickListener에 View의 focusable 속성이 주는 영향을 찾아보자. setOnItemClickListener() 메서드는 ListView의 상위 클래스인 AdapterView에 있다. 
-여기에서 OnItemClickListener를 사용하는 위치를 찾아보면 performItemClick() 메서드이고, 또 다시 호출 위치를 따라가보면 AbsListView의 onTouchUp() 메서드에서 Child View의 hasFocusable() 리턴값이 true일 때는 클릭이 동작하지 않는 것을 볼 수 있다. Child View의 다른 조건은 보이지 않는다.\\
+여기에서 OnItemClickListener를 사용하는 위치를 찾아보면 performItemClick() 메서드이고, 또 다시 호출 위치를 따라가보면 AbsListView의 onTouchUp() 메서드에서 Child View의 hasFocusable() == true일 때는 클릭이 동작하지 않는 것을 볼 수 있다. Child View의 다른 조건은 보이지 않는다.\\
 
 이제 CheckBox의 focusable 기본값은 어디에 있을까? 이 값은 style에 지정되어 있다.
-CheckBox의 style은 /frameworks/base/core/res/res/values/styles.xml\footnote{<sdk>/platforms/android-XX/data/res 아래에서도 볼 수 있다.}에서 ``Widget.CompoundButton.CheckBox''를 보면 된다.\footnote{CheckBox 소스를 보면 defStyleAttr 파라미터 자리에 com.android.internal.R.attr.checkboxStyle이 있다. attrs.xml을 보면 checkboxStyle에 reference로 지정되어 있는데 다른 곳에서 정의한다는 의미이다. themes.xml에서 보면 ``@style/Widget.CompoundButton.CheckBox''로 다시 정의된 것을 볼 수 있다.}
-parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는데, 바로 CheckBox의 style은 ``Widget.CompoundButton'' style을 상속한다. 여기서 focusable == true로 되어있다.
+CheckBox의 style은 /frameworks/base/core/res/res/values/styles.xml\footnote{<sdk>/platforms/android-XX/data/res 아래에서도 볼 수 있다.}에서 ``Widget.CompoundButton.CheckBox''를 보면 된다.\footnote{CheckBox 소스를 보면 defStyleAttr 파라미터 자리에 com.android.internal.R.attr.checkboxStyle이 있다. attrs.xml을 보면 checkboxStyle에 reference로 지정되어 있는데 다른 곳에서 정의한다는 의미이다. 결국 themes.xml에서 보면 ``@style/Widget.CompoundButton.CheckBox''로 다시 정의된 것을 볼 수 있다.}
+parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는데, 바로 CheckBox의 style은 ``Widget.CompoundButton'' style을 상속한다. 여기서 android:focusable 속성이 true로 되어 있다.
 따라서 레이아웃에서 CheckBox 속성을 android:focusable=``false''로 하면 style이 다시 오버라이드되어 ListView에서 정상적으로 ItemClick이 동작한다.\\
 
-프레임워크 리소스에서 styles.xml을 보면 CheckBox, RadioButton, ToggleButton, Switch, SeekBar, EditText, ImageButton 등 위젯이 focusable == true로 되어 있다. 이런 위젯이 ListView에 포함된다면 주의해야 한다.
-ListView의 각 Item View는 일반적으로 ViewGroup이고 그 안에 focusable 위젯을 가지고 있으므로 다른 방법도 가능하다. 바로 ViewGroup 레이아웃 속성에 android:descendantFocusability=``blocksDescendants''를 넣으면 된다. 이 속성은 ViewGroup의 hasFocusable() 메서드에서 체크하고 있다.\\
+프레임워크 리소스에서 styles.xml을 보면 CheckBox, RadioButton, ToggleButton, Switch, SeekBar, EditText, ImageButton 등 위젯의 android:focusable 속성이 true이다. 이런 위젯이 ListView에 포함된다면 주의해야 한다.
+ListView의 각 아이템 레이아웃은 일반적으로 ViewGroup이고 그 안에 focusable 위젯을 가지고 있다면 다른 방법도 가능하다. 바로 ViewGroup 레이아웃 속성에 android:descendantFocusability=``blocksDescendants''를 넣으면 된다. 이 속성은 ViewGroup의 hasFocusable() 메서드에서 체크하고 있다.\\
 
 요점은 검색만으로 문제를 해결하고 왜 그런지를 모른다면 ListView에서 CheckBox나 ImageButton은 각각의 Tip으로만 남고 까먹기도 쉽다. 프레임워크 소스 레벨에서 검증해보면, 다음에 비슷한 문제를 맞닥뜨려도 어디서부터 문제를 찾으면 되는지 알 수 있다.\\
 
@@ -105,7 +106,7 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: length=2; index=2
 \end{lstlisting}
 
 안드로이드에서 사용하는 코어 자바 라이브러리는 JDK에서 자바 소스를 찾으면 안 된다. 
-코어 자바 라이브러리는 Apache Harmony를 기반으로 만든 것이다.\footnote{안드로이드 N에서는 Open JDK 기반으로 변경된다고 한다} 2011년도에 Apache Harmony는 종료되었지만 안드로이드에서는 이후에도 조금씩 업데이트하고 있다. 
+코어 자바 라이브러리는 Apache Harmony를 기반으로 만든 것이다.\footnote{안드로이드 N에서는 Open JDK 기반으로 변경된다고 한다.} 2011년도에 Apache Harmony는 종료되었지만 안드로이드에서는 이후에도 조금씩 업데이트하고 있다. 
 코어 자바 소스는 /libcore/luni/src/main/java 디렉터리 아래에서 찾고 해당 라인 위치에서 원인을 찾아서 해결해야 한다.  
 libcore는 기반이 되는 자바 버전이 바뀌기 전에는 거의 변경되지 않으므로, 한 버전을 다운로드해서 여러 버전에서 참고해볼 수 있다. 프로요까지 자바5, 킷캣까지는 자바6, 현재 최신 버전은 자바7 기반이다.
 
