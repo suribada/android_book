@@ -120,7 +120,7 @@ Callee가 뜨고 난 이후에야 onStop()이 필요한지 알 수 있기 때문
 ActivityA에서 변경된 값을 ActivityB에서 사용하고자 한다.
 이때 ActivityA에서 매 이벤트마다 
 SharedPreferences나 DB에 저장하지는 않고 ActivityA가 끝날 때만 저장하기로 했다.
-이때 onStop() 메서드에서 저장하면 안 되고 onPause() 메서드에서 저장해야만, ActivityB에서 이 값을 정상적으로 사용할 수 있다.\\
+이때 onStop() 메서드에서 저장하면 안되고 onPause() 메서드에서 저장해야만, ActivityB에서 이 값을 정상적으로 사용할 수 있다.\\
 
 \underline{\bfseries 포그라운드 Activity가 닫힐 때}\\
 앞과 반대 경우이다. 

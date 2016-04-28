@@ -1,96 +1,99 @@
-\BOOKMARK [0][-]{chapter*.3}{이 책의 구성}{}% 1
-\BOOKMARK [0][-]{chapter.1}{안드로이드 프레임워크}{}% 2
-\BOOKMARK [1][-]{section.1.1}{프레임워크 개요}{chapter.1}% 3
-\BOOKMARK [1][-]{section.1.2}{프레임워크 소스}{chapter.1}% 4
-\BOOKMARK [1][-]{section.1.3}{안드로이드 버전}{chapter.1}% 5
-\BOOKMARK [2][-]{subsection.1.3.1}{호환성 모드}{section.1.3}% 6
-\BOOKMARK [2][-]{subsection.1.3.2}{버전 체크}{section.1.3}% 7
-\BOOKMARK [0][-]{chapter.2}{메인 스레드와 Handler}{}% 8
-\BOOKMARK [1][-]{section.2.1}{메인 스레드}{chapter.2}% 9
-\BOOKMARK [1][-]{section.2.2}{Looper}{chapter.2}% 10
-\BOOKMARK [1][-]{section.2.3}{Message와 MessageQueue}{chapter.2}% 11
-\BOOKMARK [1][-]{section.2.4}{Handler}{chapter.2}% 12
-\BOOKMARK [2][-]{subsection.2.4.1}{Handler 생성}{section.2.4}% 13
-\BOOKMARK [2][-]{subsection.2.4.2}{Handler 동작}{section.2.4}% 14
-\BOOKMARK [2][-]{subsection.2.4.3}{Handler 용도}{section.2.4}% 15
-\BOOKMARK [2][-]{subsection.2.4.4}{타이밍 이슈}{section.2.4}% 16
-\BOOKMARK [1][-]{section.2.5}{UI 업데이트}{chapter.2}% 17
-\BOOKMARK [1][-]{section.2.6}{ANR}{chapter.2}% 18
-\BOOKMARK [0][-]{chapter.3}{백그라운드 스레드}{}% 19
-\BOOKMARK [1][-]{section.3.1}{HandlerThread}{chapter.3}% 20
-\BOOKMARK [1][-]{section.3.2}{스레드 풀}{chapter.3}% 21
-\BOOKMARK [2][-]{subsection.3.2.1}{ThreadPoolExecutor}{section.3.2}% 22
-\BOOKMARK [2][-]{subsection.3.2.2}{ScheduledThreadPoolExecutor}{section.3.2}% 23
-\BOOKMARK [2][-]{subsection.3.2.3}{Executors}{section.3.2}% 24
-\BOOKMARK [1][-]{section.3.3}{AsyncTask}{chapter.3}% 25
-\BOOKMARK [2][-]{subsection.3.3.1}{병렬 실행 시 실행 순서}{section.3.3}% 26
-\BOOKMARK [2][-]{subsection.3.3.2}{Activity 종료 시점과 불일치}{section.3.3}% 27
-\BOOKMARK [2][-]{subsection.3.3.3}{AsyncTask 취소}{section.3.3}% 28
-\BOOKMARK [2][-]{subsection.3.3.4}{예외 처리 메서드 부재}{section.3.3}% 29
-\BOOKMARK [0][-]{chapter.4}{Context}{}% 30
-\BOOKMARK [0][-]{chapter.5}{Activity}{}% 31
-\BOOKMARK [1][-]{section.5.1}{생명주기}{chapter.5}% 32
-\BOOKMARK [2][-]{subsection.5.1.1}{startActivity\(\)와 startActivityForResult\(\)}{section.5.1}% 33
-\BOOKMARK [2][-]{subsection.5.1.2}{Activity 전환}{section.5.1}% 34
-\BOOKMARK [2][-]{subsection.5.1.3}{생명주기 메서드 사용 시 주의점}{section.5.1}% 35
-\BOOKMARK [1][-]{section.5.2}{Configuration 변경}{chapter.5}% 36
-\BOOKMARK [2][-]{subsection.5.2.1}{리소스 반영}{section.5.2}% 37
-\BOOKMARK [2][-]{subsection.5.2.2}{Configuration\040qualifier}{section.5.2}% 38
-\BOOKMARK [2][-]{subsection.5.2.3}{데이터 복구}{section.5.2}% 39
-\BOOKMARK [2][-]{subsection.5.2.4}{android:configChanges 속성}{section.5.2}% 40
-\BOOKMARK [2][-]{subsection.5.2.5}{Configuration 확인}{section.5.2}% 41
-\BOOKMARK [1][-]{section.5.3}{태스크}{chapter.5}% 42
-\BOOKMARK [2][-]{subsection.5.3.1}{태스크 상태}{section.5.3}% 43
-\BOOKMARK [2][-]{subsection.5.3.2}{태스크 확인}{section.5.3}% 44
-\BOOKMARK [2][-]{subsection.5.3.3}{taskAffinity}{section.5.3}% 45
-\BOOKMARK [2][-]{subsection.5.3.4}{태스크 속성 부여}{section.5.3}% 46
-\BOOKMARK [1][-]{section.5.4}{<activity-alias>}{chapter.5}% 47
-\BOOKMARK [0][-]{chapter.6}{Service}{}% 48
-\BOOKMARK [1][-]{section.6.1}{Started\040Service}{chapter.6}% 49
-\BOOKMARK [2][-]{subsection.6.1.1}{Service 재시작 방식}{section.6.1}% 50
-\BOOKMARK [2][-]{subsection.6.1.2}{멀티 스레드 이슈}{section.6.1}% 51
-\BOOKMARK [2][-]{subsection.6.1.3}{암시적 인텐트로 서비스 실행}{section.6.1}% 52
-\BOOKMARK [2][-]{subsection.6.1.4}{IntentService}{section.6.1}% 53
-\BOOKMARK [2][-]{subsection.6.1.5}{Service 중복 실행 방지}{section.6.1}% 54
-\BOOKMARK [1][-]{section.6.2}{Bound\040Service}{chapter.6}% 55
-\BOOKMARK [2][-]{subsection.6.2.1}{리모트 바인딩}{section.6.2}% 56
-\BOOKMARK [2][-]{subsection.6.2.2}{로컬 바인딩}{section.6.2}% 57
-\BOOKMARK [2][-]{subsection.6.2.3}{바인딩의 특성}{section.6.2}% 58
-\BOOKMARK [2][-]{subsection.6.2.4}{Messenger}{section.6.2}% 59
-\BOOKMARK [0][-]{chapter.7}{ContentProvider}{}% 60
-\BOOKMARK [1][-]{section.7.1}{SQLite}{chapter.7}% 61
-\BOOKMARK [2][-]{subsection.7.1.1}{DB Lock 문제}{section.7.1}% 62
-\BOOKMARK [2][-]{subsection.7.1.2}{SQLiteOpenHelper}{section.7.1}% 63
-\BOOKMARK [1][-]{section.7.2}{ContentProvider}{chapter.7}% 64
-\BOOKMARK [2][-]{subsection.7.2.1}{ContentProvider 적용}{section.7.2}% 65
-\BOOKMARK [2][-]{subsection.7.2.2}{배치 execute}{section.7.2}% 66
-\BOOKMARK [1][-]{section.7.3}{SQLite/ContentProvider 관련 팁}{chapter.7}% 67
-\BOOKMARK [2][-]{subsection.7.3.1}{쿼리 실행 확인}{section.7.3}% 68
-\BOOKMARK [2][-]{subsection.7.3.2}{ContentProvider 예외 확인}{section.7.3}% 69
-\BOOKMARK [0][-]{chapter.8}{BroadcastReceiver}{}% 70
-\BOOKMARK [1][-]{section.8.1}{BroadcastReceiver 구현}{chapter.8}% 71
-\BOOKMARK [1][-]{section.8.2}{BroadcastReceiver 등록}{chapter.8}% 72
-\BOOKMARK [1][-]{section.8.3}{Ordered\040Broadcast}{chapter.8}% 73
-\BOOKMARK [1][-]{section.8.4}{Sticky\040Broadcast}{chapter.8}% 74
-\BOOKMARK [1][-]{section.8.5}{LocalBroadcastManager}{chapter.8}% 75
-\BOOKMARK [1][-]{section.8.6}{App\040Widget}{chapter.8}% 76
-\BOOKMARK [2][-]{subsection.8.6.1}{App Widget 기본}{section.8.6}% 77
-\BOOKMARK [2][-]{subsection.8.6.2}{RemoteViews}{section.8.6}% 78
-\BOOKMARK [2][-]{subsection.8.6.3}{App Widget 업데이트}{section.8.6}% 79
-\BOOKMARK [2][-]{subsection.8.6.4}{유의할 점}{section.8.6}% 80
-\BOOKMARK [0][-]{chapter.9}{Application}{}% 81
-\BOOKMARK [1][-]{section.9.1}{앱 초기화}{chapter.9}% 82
-\BOOKMARK [1][-]{section.9.2}{Application\040Callback}{chapter.9}% 83
-\BOOKMARK [1][-]{section.9.3}{프로세스 분리}{chapter.9}% 84
-\BOOKMARK [0][-]{chapter.10}{시스템 서비스}{}% 85
-\BOOKMARK [1][-]{section.10.1}{네이티브 시스템 서비스}{chapter.10}% 86
-\BOOKMARK [1][-]{section.10.2}{자바 시스템 서비스}{chapter.10}% 87
-\BOOKMARK [1][-]{section.10.3}{dumpsys 명령어}{chapter.10}% 88
-\BOOKMARK [1][-]{section.10.4}{시스템 서비스 이슈}{chapter.10}% 89
-\BOOKMARK [2][-]{subsection.10.4.1}{빈번한 리모트 호출}{section.10.4}% 90
-\BOOKMARK [2][-]{subsection.10.4.2}{전원 관리와 Deep Sleep}{section.10.4}% 91
-\BOOKMARK [2][-]{subsection.10.4.3}{알람 등록과 제거}{section.10.4}% 92
-\BOOKMARK [0][-]{chapter.11}{구현 패턴}{}% 93
-\BOOKMARK [1][-]{section.11.1}{싱글톤 패턴}{chapter.11}% 94
-\BOOKMARK [1][-]{section.11.2}{마커 인터페이스}{chapter.11}% 95
-\BOOKMARK [1][-]{section.11.3}{Fragment 정적 생성}{chapter.11}% 96
+\BOOKMARK [1][-]{section.0.1}{대상 독자}{}% 1
+\BOOKMARK [1][-]{section.0.2}{에피소드}{}% 2
+\BOOKMARK [1][-]{section.0.3}{감사의 글}{}% 3
+\BOOKMARK [0][-]{chapter*.3}{이 책의 구성}{}% 4
+\BOOKMARK [0][-]{chapter.1}{안드로이드 프레임워크}{}% 5
+\BOOKMARK [1][-]{section.1.1}{프레임워크 개요}{chapter.1}% 6
+\BOOKMARK [1][-]{section.1.2}{프레임워크 소스}{chapter.1}% 7
+\BOOKMARK [1][-]{section.1.3}{안드로이드 버전}{chapter.1}% 8
+\BOOKMARK [2][-]{subsection.1.3.1}{호환성 모드}{section.1.3}% 9
+\BOOKMARK [2][-]{subsection.1.3.2}{버전 체크}{section.1.3}% 10
+\BOOKMARK [0][-]{chapter.2}{메인 스레드와 Handler}{}% 11
+\BOOKMARK [1][-]{section.2.1}{메인 스레드}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.2}{Looper}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.3}{Message와 MessageQueue}{chapter.2}% 14
+\BOOKMARK [1][-]{section.2.4}{Handler}{chapter.2}% 15
+\BOOKMARK [2][-]{subsection.2.4.1}{Handler 생성}{section.2.4}% 16
+\BOOKMARK [2][-]{subsection.2.4.2}{Handler 동작}{section.2.4}% 17
+\BOOKMARK [2][-]{subsection.2.4.3}{Handler 용도}{section.2.4}% 18
+\BOOKMARK [2][-]{subsection.2.4.4}{타이밍 이슈}{section.2.4}% 19
+\BOOKMARK [1][-]{section.2.5}{UI 업데이트}{chapter.2}% 20
+\BOOKMARK [1][-]{section.2.6}{ANR}{chapter.2}% 21
+\BOOKMARK [0][-]{chapter.3}{백그라운드 스레드}{}% 22
+\BOOKMARK [1][-]{section.3.1}{HandlerThread}{chapter.3}% 23
+\BOOKMARK [1][-]{section.3.2}{스레드 풀}{chapter.3}% 24
+\BOOKMARK [2][-]{subsection.3.2.1}{ThreadPoolExecutor}{section.3.2}% 25
+\BOOKMARK [2][-]{subsection.3.2.2}{ScheduledThreadPoolExecutor}{section.3.2}% 26
+\BOOKMARK [2][-]{subsection.3.2.3}{Executors}{section.3.2}% 27
+\BOOKMARK [1][-]{section.3.3}{AsyncTask}{chapter.3}% 28
+\BOOKMARK [2][-]{subsection.3.3.1}{병렬 실행 시 실행 순서}{section.3.3}% 29
+\BOOKMARK [2][-]{subsection.3.3.2}{Activity 종료 시점과 불일치}{section.3.3}% 30
+\BOOKMARK [2][-]{subsection.3.3.3}{AsyncTask 취소}{section.3.3}% 31
+\BOOKMARK [2][-]{subsection.3.3.4}{예외 처리 메서드 부재}{section.3.3}% 32
+\BOOKMARK [0][-]{chapter.4}{Context}{}% 33
+\BOOKMARK [0][-]{chapter.5}{Activity}{}% 34
+\BOOKMARK [1][-]{section.5.1}{생명주기}{chapter.5}% 35
+\BOOKMARK [2][-]{subsection.5.1.1}{startActivity\(\)와 startActivityForResult\(\)}{section.5.1}% 36
+\BOOKMARK [2][-]{subsection.5.1.2}{Activity 전환}{section.5.1}% 37
+\BOOKMARK [2][-]{subsection.5.1.3}{생명주기 메서드 사용 시 주의점}{section.5.1}% 38
+\BOOKMARK [1][-]{section.5.2}{Configuration 변경}{chapter.5}% 39
+\BOOKMARK [2][-]{subsection.5.2.1}{리소스 반영}{section.5.2}% 40
+\BOOKMARK [2][-]{subsection.5.2.2}{Configuration\040qualifier}{section.5.2}% 41
+\BOOKMARK [2][-]{subsection.5.2.3}{데이터 복구}{section.5.2}% 42
+\BOOKMARK [2][-]{subsection.5.2.4}{android:configChanges 속성}{section.5.2}% 43
+\BOOKMARK [2][-]{subsection.5.2.5}{Configuration 확인}{section.5.2}% 44
+\BOOKMARK [1][-]{section.5.3}{태스크}{chapter.5}% 45
+\BOOKMARK [2][-]{subsection.5.3.1}{태스크 상태}{section.5.3}% 46
+\BOOKMARK [2][-]{subsection.5.3.2}{태스크 확인}{section.5.3}% 47
+\BOOKMARK [2][-]{subsection.5.3.3}{taskAffinity}{section.5.3}% 48
+\BOOKMARK [2][-]{subsection.5.3.4}{태스크 속성 부여}{section.5.3}% 49
+\BOOKMARK [1][-]{section.5.4}{<activity-alias>}{chapter.5}% 50
+\BOOKMARK [0][-]{chapter.6}{Service}{}% 51
+\BOOKMARK [1][-]{section.6.1}{Started\040Service}{chapter.6}% 52
+\BOOKMARK [2][-]{subsection.6.1.1}{Service 재시작 방식}{section.6.1}% 53
+\BOOKMARK [2][-]{subsection.6.1.2}{멀티 스레드 이슈}{section.6.1}% 54
+\BOOKMARK [2][-]{subsection.6.1.3}{암시적 인텐트로 서비스 실행}{section.6.1}% 55
+\BOOKMARK [2][-]{subsection.6.1.4}{IntentService}{section.6.1}% 56
+\BOOKMARK [2][-]{subsection.6.1.5}{Service 중복 실행 방지}{section.6.1}% 57
+\BOOKMARK [1][-]{section.6.2}{Bound\040Service}{chapter.6}% 58
+\BOOKMARK [2][-]{subsection.6.2.1}{리모트 바인딩}{section.6.2}% 59
+\BOOKMARK [2][-]{subsection.6.2.2}{로컬 바인딩}{section.6.2}% 60
+\BOOKMARK [2][-]{subsection.6.2.3}{바인딩의 특성}{section.6.2}% 61
+\BOOKMARK [2][-]{subsection.6.2.4}{Messenger}{section.6.2}% 62
+\BOOKMARK [0][-]{chapter.7}{ContentProvider}{}% 63
+\BOOKMARK [1][-]{section.7.1}{SQLite}{chapter.7}% 64
+\BOOKMARK [2][-]{subsection.7.1.1}{DB Lock 문제}{section.7.1}% 65
+\BOOKMARK [2][-]{subsection.7.1.2}{SQLiteOpenHelper}{section.7.1}% 66
+\BOOKMARK [1][-]{section.7.2}{ContentProvider}{chapter.7}% 67
+\BOOKMARK [2][-]{subsection.7.2.1}{ContentProvider 적용}{section.7.2}% 68
+\BOOKMARK [2][-]{subsection.7.2.2}{배치 execute}{section.7.2}% 69
+\BOOKMARK [1][-]{section.7.3}{SQLite/ContentProvider 관련 팁}{chapter.7}% 70
+\BOOKMARK [2][-]{subsection.7.3.1}{쿼리 실행 확인}{section.7.3}% 71
+\BOOKMARK [2][-]{subsection.7.3.2}{ContentProvider 예외 확인}{section.7.3}% 72
+\BOOKMARK [0][-]{chapter.8}{BroadcastReceiver}{}% 73
+\BOOKMARK [1][-]{section.8.1}{BroadcastReceiver 구현}{chapter.8}% 74
+\BOOKMARK [1][-]{section.8.2}{BroadcastReceiver 등록}{chapter.8}% 75
+\BOOKMARK [1][-]{section.8.3}{Ordered\040Broadcast}{chapter.8}% 76
+\BOOKMARK [1][-]{section.8.4}{Sticky\040Broadcast}{chapter.8}% 77
+\BOOKMARK [1][-]{section.8.5}{LocalBroadcastManager}{chapter.8}% 78
+\BOOKMARK [1][-]{section.8.6}{App\040Widget}{chapter.8}% 79
+\BOOKMARK [2][-]{subsection.8.6.1}{App Widget 기본}{section.8.6}% 80
+\BOOKMARK [2][-]{subsection.8.6.2}{RemoteViews}{section.8.6}% 81
+\BOOKMARK [2][-]{subsection.8.6.3}{App Widget 업데이트}{section.8.6}% 82
+\BOOKMARK [2][-]{subsection.8.6.4}{유의할 점}{section.8.6}% 83
+\BOOKMARK [0][-]{chapter.9}{Application}{}% 84
+\BOOKMARK [1][-]{section.9.1}{앱 초기화}{chapter.9}% 85
+\BOOKMARK [1][-]{section.9.2}{Application\040Callback}{chapter.9}% 86
+\BOOKMARK [1][-]{section.9.3}{프로세스 분리}{chapter.9}% 87
+\BOOKMARK [0][-]{chapter.10}{시스템 서비스}{}% 88
+\BOOKMARK [1][-]{section.10.1}{네이티브 시스템 서비스}{chapter.10}% 89
+\BOOKMARK [1][-]{section.10.2}{자바 시스템 서비스}{chapter.10}% 90
+\BOOKMARK [1][-]{section.10.3}{dumpsys 명령어}{chapter.10}% 91
+\BOOKMARK [1][-]{section.10.4}{시스템 서비스 이슈}{chapter.10}% 92
+\BOOKMARK [2][-]{subsection.10.4.1}{빈번한 리모트 호출}{section.10.4}% 93
+\BOOKMARK [2][-]{subsection.10.4.2}{전원 관리와 Deep Sleep}{section.10.4}% 94
+\BOOKMARK [2][-]{subsection.10.4.3}{알람 등록과 제거}{section.10.4}% 95
+\BOOKMARK [0][-]{chapter.11}{구현 패턴}{}% 96
+\BOOKMARK [1][-]{section.11.1}{싱글톤 패턴}{chapter.11}% 97
+\BOOKMARK [1][-]{section.11.2}{마커 인터페이스}{chapter.11}% 98
+\BOOKMARK [1][-]{section.11.3}{Fragment 정적 생성}{chapter.11}% 99

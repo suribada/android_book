@@ -24,7 +24,7 @@ Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택
 메서드 시그너처를 보고서 파라미터의 용도를 볼 때마다 헷갈리는 걸 보면 잘 만든 메서드는 아닌 듯 하다. 메서드 시그너처를 moveTaskToBack(boolean onlyRoot) 이런 식으로 바꾸면 좀 낫지 않을까. \\
 
 이제 반대로 백그라운드에서 포그라운드로 상태를 변경하는 메서드는 있을까? 
-Activity가 보이지 않는 백그라운드 상태이기 때문에 Activity의 메서드로는 안 된다.
+Activity가 보이지 않는 백그라운드 상태이기 때문에 Activity의 메서드로는 안된다.
 바로 ActivityManager에서 
 List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서드를 통해서 가장 최근의 maxNum개를 가져오고 moveTaskToFront(int taskId, int flags) 메서드에 RunningTaskInfo.id를 taskId에 전달하면 된다.\footnote{관련해서 \url{http://bonjwakim.tistory.com/15}를 참고하자.}
 % 권한 필요
@@ -216,7 +216,7 @@ Activity에 태스크 속성을 부여하는 방법에는 2가지가 있다. 속
 \includegraphics[scale=0.7]{diagram_multiple_instances}\\
 속성을 부여하는 2가지 방법은 하나는 불려지는 쪽(Callee )에서 `나를 이런 식으로 취급해줘(존재할거야)'가 있고, 또 하나는 부르는 쪽(Caller)에서 `널 이렇게 다뤄주겠어'하는 것이다. 그리고 2가지 방법의 조합도 있다.
 복잡하게 생각할 건 없다. 테스트하면서 원하는 내비게이션 형태를 만드는 과정이 조금 어려울 뿐이다.
-아래 설명을 위해서 \url{http://developer.android.com/intl/ko/training/basics/activity-lifecycle/pausing.html}에 있는 ActivityLifecycle.zip을 다운로드하고 변경하면서 테스트해 보자. 
+아래 설명을 위해서 \url{http://developer.android.com/intl/ko/training/basics/activity-lifecycle/pausing.html}에 있는 ActivityLifecycle.zip을 다운로드하고 변경하면서 테스트해보자. 
 이 샘플에는 ActivityA, ActivityB, ActivityC, DialogActivity(다이얼로그 테마)까지 4개의 Activity가 있다.
 
 \paragraph{Callee 속성 부여는 AndroidManifest.xml의 Activity 선언에 android:launchMode로 한다.}
@@ -227,10 +227,10 @@ launchMode에는 standard, singleTop, singleTask, singleInstance 네 가지가 �
 \item singleTask: 인스턴스는 하나뿐이다. 별도의 태스크로 Activity 인스턴스가 이미 있다면 새로 생성하지 않고, onNewInent() 메서드로 Intent를 전달한다. 
 Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성한다. 스택에는 새로운 Activitity를 추가할 수 있다.\\
 
-ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 바로 taskAffinity가 동일할 때는 아무 의미가 없다. 새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면,  ActivityA 위에 그대로 뜨게 된다. 이 내용에 대해서 명시적으로 언급된 부분은 찾지 못했지만 여러 테스트에서도 동일한 결과를 보여 주었다. 이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해 보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC는 스택에서 제거된다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다. singleTask launchMode의 효과가 전혀 없는 게 아니다.\\
+ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 바로 taskAffinity가 동일할 때는 아무 의미가 없다. 새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면,  ActivityA 위에 그대로 뜨게 된다. 이 내용에 대해서 명시적으로 언급된 부분은 찾지 못했지만 여러 테스트에서도 동일한 결과를 보여 주었다. 이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC는 스택에서 제거된다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다. singleTask launchMode의 효과가 전혀 없는 게 아니다.\\
 
-이번에는 ActivityB의 taskAffinity를 변경하고 테스트해 보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
-여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해 보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
+이번에는 ActivityB의 taskAffinity를 변경하고 테스트해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
+여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
 
 앞서 얘기했듯이 모바일 브라우저의 경우가 singleTask launchMode를 사용한다. 
 \begin{comment}

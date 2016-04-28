@@ -105,7 +105,7 @@ Caused by: java.lang.ArrayIndexOutOfBoundsException: length=2; index=2
 	....
 \end{lstlisting}
 
-안드로이드에서 사용하는 코어 자바 라이브러리는 JDK에서 자바 소스를 찾으면 안 된다. 
+안드로이드에서 사용하는 코어 자바 라이브러리는 JDK에서 자바 소스를 찾으면 안된다. 
 코어 자바 라이브러리는 Apache Harmony를 기반으로 만든 것이다.\footnote{안드로이드 N에서는 Open JDK 기반으로 변경된다고 한다.} 2011년도에 Apache Harmony는 종료되었지만 안드로이드에서는 이후에도 조금씩 업데이트하고 있다. 
 코어 자바 소스는 /libcore/luni/src/main/java 디렉터리 아래에서 찾고 해당 라인 위치에서 원인을 찾아서 해결해야 한다.  
 libcore는 기반이 되는 자바 버전이 바뀌기 전에는 거의 변경되지 않으므로, 한 버전을 다운로드해서 여러 버전에서 참고해볼 수 있다. 프로요까지 자바5, 킷캣까지는 자바6, 현재 최신 버전은 자바7 기반이다.

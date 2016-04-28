@@ -36,7 +36,7 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
     }
 \end{lstlisting} 
 9라인에서 context.getApplicationContext()를 사용함으로써 원래 계속 떠있고 하나뿐인 Application을 Context로 쓰겠다는 의미이다.
-많은 안드로이드 책에서도 싱글톤을 만들 때 신경쓰지 않고서 Context를 그대로 전달한 것을 볼 수 있는데 따라하면 안 된다.
+많은 안드로이드 책에서도 싱글톤을 만들 때 신경쓰지 않고서 Context를 그대로 전달한 것을 볼 수 있는데 따라하면 안된다.
 특히 SQLiteOpenHelper를 상속한 DB Helper를 싱글톤으로 사용하면서 Context를 그대로 전달한 경우가 많다.\\
 
 % http://stackoverflow.com/questions/3346080/android-references-to-a-context-and-memory-leaks 에도 나옴
@@ -458,7 +458,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \begin{itemize}
 \item Fragment에는 FragmentState라는 Parcelable한 내부 클래스가 있고 여기에 Fragment의 setArguments() 메서드에 전달한 Arguments Bundle을 저장한다.
 \item Activity의 onSaveInstanceState()에서 FragmentManagerImpl의 saveAllState()를 호출해서 FragmentState 값들을 저장한다.
-\item FragmentState에 속한 것이 아닌, 두 번째 방식처럼 우리가 만든 Fragment의 변수들은 당연히 저장이 안 된다.
+\item FragmentState에 속한 것이 아닌, 두 번째 방식처럼 우리가 만든 Fragment의 변수들은 당연히 저장이 안된다.
 \end{itemize}
 
 두 번째 방법에서도 값을 유지할 수는 있는데, 바로 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.

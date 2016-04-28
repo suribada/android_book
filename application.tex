@@ -201,7 +201,7 @@ ActivityThread.main
 \item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행하다가 OutOfMemoryError가 발생할 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 단말에서 가령 10\%라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
 Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 좋겠다. 정답은 없고 케이스별로 다르다.
 % 분리함으로써 변경이 많이 필요한 쪽보다는 간단하게 분리 가능하는 게 나을 것이다.
-\item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해 보자.
+\item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해보자.
 \end{itemize}
 
 Application도 AndroidManifest.xml에 android:process 값을 넣을 수는 있는데, 이 값은 앱의 컴포넌트가 실행되는 기본 프로세스를 얘기하는 것으로 프로세스 분리와는 의미가 다르다. 쓸 일이 거의 없다.\\
@@ -253,7 +253,7 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 
 프로세스 분리시 주의할 점을 얘기해보자.
 \begin{itemize}
-\item 당연한 얘기지만 간과해서는 안 되는 게 메모리가 공유되지 않는다는 것이다. 그래서 본래의 프로세스에서 캐시 용도로 만든 것이든 싱글톤 인스턴스에서 공유하는 값이든 별도 프로세스에서는 소용이 없다.
+\item 당연한 얘기지만 간과해서는 안되는 게 메모리가 공유되지 않는다는 것이다. 그래서 본래의 프로세스에서 캐시 용도로 만든 것이든 싱글톤 인스턴스에서 공유하는 값이든 별도 프로세스에서는 소용이 없다.
 앱을 만들다가 프로세스 분리한 것을 잊고서 왜 값이 안 나오는지 쓸데없이 고민한 경험을 가진 개발자도 있을 것이다.
 이때는 값을 따로 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용해야 한다.
 \item 분리된 프로세스에서는 SharedPreferences를 쓸 때 mode가 중요하다(허니콤 이상).
