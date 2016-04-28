@@ -74,7 +74,7 @@ public class Hello {
 \end{lstlisting}
 
 여기서 제일 중요한 곳은 28라인(1)이다. 
-Looper.loop() 메서드에는 무한반복문이 있어서 main() 메서드는 프로세스가 종료될 때까지 끝나지 않는다.
+Looper.loop() 메서드에는 무한 반복문이 있어서 main() 메서드는 프로세스가 종료될 때까지 끝나지 않는다.
 ActivityThread는 클래스명 때문에 Thread를 상속한 게 아닐까 하는 오해를 받기도 하지만 전혀 그렇지 않다.
 게다가 Activity만 관련돼 있는 것도 아니고 모든 컴포넌트들이 다 관련돼 있다.
 
@@ -85,8 +85,8 @@ ActivityThread는 클래스명 때문에 Thread를 상속한 게 아닐까 하�
 \section{Looper}
 Looper 클래스\footnote{\url{http://developer.android.com/reference/android/os/Looper.html}}는 내용이 단순하다. Looper에서 필요한 내용을 알아보자.
 \begin{itemize}
-\item TLS(Thread Local Storage)에 Looper를 넣는다. 구체적으로 ThreadLocal<Looper>에 set() 메서드로 새로운 Looper를 추가하고 get() 메서드로 Looper를 가져오는데, 각 스레드별로 다른 Looper가 반환된다.
-Looper.prepare()를 통해 스레드별로 Looper를 생성하고, 특히 메인 스레드의 Looper는 ActivityThread에서 Looper.prepareMainLooper()를 통해서 생성되고, Looper.getMainLooper()를 통해서 어디서든 가져올 수 있다.
+\item TLS(Thread Local Storage)에 Looper를 저장한다. 구체적으로 ThreadLocal<Looper>에 set() 메서드로 새로운 Looper를 추가하고 get() 메서드로 Looper를 가져오는데, 각 스레드별로 다른 Looper가 반환된다.
+Looper.prepare()를 통해 스레드별로 Looper를 생성하는데, 특히 메인 스레드의 Looper는 ActivityThread에서 Looper.prepareMainLooper()를 통해서 생성되고, Looper.getMainLooper()를 통해서 어디서든 가져올 수 있다.
 \item Looper별로 MessageQueue를 가진다. 특히 메인 스레드에서는 이 MessageQueue를 통해서 UI 작업에서 경합 상태를 해결한다. 
 개발 중에 Queue 구조가 필요할 때 java.util.Queue의 여러 구현체를 사용할 수도 있지만 Looper 사용도 고려해보자. 특히 스레드별로 다른 Queue를 사용할 때는 Looper를 사용하는 게 더 단순해질 수 있다(결론적으로는 Handler를 사용하는 것이다).
 \end{itemize}
@@ -119,8 +119,8 @@ Looper.loop() 메서드의 주요 코드를 보자.
     }
 \end{lstlisting}	
 \begin{itemize}
-\item 13라인(1)이 바로 메시지를 처리하는 부분이다. 
-for 루프를 돌면서 MessageQueue에서 다음 메시지를 꺼내서 13라인(3)에서 dispatchMessage()를 호출한다. 
+\item 13라인(3)이 바로 메시지를 처리하는 부분이다. 
+for 루프를 돌면서 MessageQueue에서 다음 Message를 꺼내서 13라인(3)에서 dispatchMessage()를 호출한다. 
 \item quit(), quitSafely() 메서드는 Looper를 종료한다. 구체적으로 MessageQueue의 quit() 메서드에 boolean 값을 전달하고, 9라인(1)의 queue.next()에서 null을 리턴하고 11라인(2)에서 for 루프가 종료된다.
 Looper API 문서에서 quit()과 quitSafely() 메서드 차이를 보도록 하자.
 quit() 메서드는 아직 처리되지 않은 Message는 모두 제거한다.
@@ -165,10 +165,10 @@ public final class Message implements Parcelable {
 \end{lstlisting}
 MessageQueue에 들어가는 android.os.Message에는 public 변수에 int arg1, int arg2, Object obj,
 Messenger replyTo, int what 5개가 있고 Message를 만들 때 이 변수에 값을 넣는다.
-Message에는 package private 변수도 여러 개 있다. android.os 패키지 아래에 Looper, Message, MessageQueue, Handler가 모두 있어서, 이들 클래스에서 Message의 package private 변수에 직접 접근한다. target이나 callback 같은 것들이 Handler에서 postXxx(), sendXxx() 메서드를 호출할 때 Message에 담겨서 MessageQueue에 들어간다. postXxx(), sendXxx() 메서드에서 실행하려는 시간(AtTime)이 전달되고, 나중에 호출한 것이라도 AtTime이 앞서면 Queue 중간에 삽입된다. 이것이 삽입이 쉬운 Link 구조를 사용한 이유이다.\\
+Message에는 package private 변수도 여러 개 있다. android.os 패키지 아래에 Looper, Message, MessageQueue, Handler도 있는데, 이들 클래스에서 Message의 package private 변수에 직접 접근한다. target이나 callback 같은 것들이 Handler에서 postXxx(), sendXxx() 메서드를 호출할 때 Message에 담겨서 MessageQueue에 들어간다. postXxx(), sendXxx() 메서드에서 실행하려는 시간(AtTime)이 전달되고, 나중에 호출한 것이라도 AtTime이 앞서면 Queue 중간에 삽입된다. 이것이 삽입이 쉬운 Link 구조를 사용한 이유이다.\\
 
 Message를 생성할 때는 오브젝트 풀(object pool)에서 가져오는 Message.obtain() 메서드나 Handler의 obtainMessage() 메서드를 사용하는 것을 권장한다. 내부적으로 Handler의 obtainMessage()는  Message.obtain()을 다시 호출한다.
-오브젝트 풀은 Message에 정적 변수로 있고(여기서도 Link로 연결됨) 최대 50개까지 Message를 저장한다. 그리고 Looper.loop() 메서드에서 Message를 처리하고 나서 recycleUnChecked() 메서드를 통해 Message를 초기화하고 최대 개수에 도달하지 않았다면 오브젝트 풀에 추가하는 형태이다.
+오브젝트 풀은 Message에 정적 변수로 있고(여기서도 Link로 연결됨) 최대 50개까지 Message를 저장한다. 그리고 Looper.loop() 메서드에서 Message를 처리하고 나서 recycleUnChecked() 메서드를 통해 Message를 초기화하고 최대 개수 50개에 도달하지 않았다면 오브젝트 풀에 추가하는 형태이다.
 new Message()와 같이 기본 생성자를 가지고서 값을 채워도 동작에는 문제가 없어 보이지만, Message 처리가 끝나면 불필요하게 풀에 추가하는 동작이 되어서 최대 개수에 이르는 건 시간 문제가 된다. 
 풀에서 가져와서(여분이 없으면 새로 생성) 풀에 돌려줘야지 따로 생성해서 풀에 돌려주는 건 불필요한 자원 낭비가 된다.\footnote{Handler를 통해 Message를 처리하는 게 아니라, 파라미터에 별도 객체를 만들지 않고 Message로 대신 사용해서 주고받는 경우에만 Message 기본 생성자로 쓰도록 하자.}\\
 
@@ -179,21 +179,22 @@ Handler는 Message를 MessageQueue에 넣는 기능과 MessageQueue에서 꺼내
 
 \subsection{Handler 생성}
 Handler를 사용하려면 먼저 생성자를 이해해야 한다. 
-Handler에는 기본 생성자 외에 Hanlder.Callback 또는 Looper가 전달되는 것들이 있다. 
-당연한 얘기지만 내부적으로 파라미터가 가장 많은 4번째 생성자를 다른 생성자에서 호출한다.
+Handler에는 기본 생성자 외에 Hanlder.Callback 또는 Looper가 전달되는 생성자들이 있다. 
 \begin{itemize}
 \item Handler()
 \item Handler(Handler.Callback callback)
 \item Handler(Looper looper)
 \item Handler(Looper looper, Handler.Callback callback)
 \end{itemize}
-
-Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성자와 어떤 관계일까? 기본 생성자는 바로 현재 스레드의 Looper를 사용하겠다는 의미이다(Looper는 Thread Local Storage에 들어간다고 앞에서 얘기했다).
-메인 스레드에서 Handler 기본 생성자가 불린다면, 앱 프로세스가 시작할 때 ActivityThread에서 메인 Looper를 생성한 것을 사용하는 것이다. 이것이 우리가 만드는 코드에서 가장 많이 사용하는 방식이다.\\
+당연한 얘기지만 내부적으로 파라미터가 가장 많은 4번째 생성자를 다른 생성자에서 호출한다.
+Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성자와 어떤 관계일까? 
+기본 생성자는 바로 현재 스레드의 Looper를 사용하겠다는 의미이다(Looper는 Thread Local Storage에 들어간다고 앞에서 얘기했다).
+메인 스레드에서 Handler 기본 생성자가 불린다면, 앱 프로세스가 시작할 때 ActivityThread에서 메인 Looper를 생성한 것을 사용한다. 
+이것이 우리가 UI 코드를 만들 때 많이 사용하는 방식이다.\\
 
 그럼 백그라운드 스레드에서 기본 생성자를 사용한다면 어떨까? 이때는 Looper가 준비되어 있지 않다면 RuntimeException을 발생시킨다. 
 ``Can't create handler inside thread that has not called Looper.prepare''
-이 메시지에 따르면 먼저 Looper.prepare()를 실행해서 해당 스레드에서 사용할 Looper를 준비해야 한다.(내부적으로 prepare() 메서드는 MessageQueue를 생성하는 것 말고는 별 게 없다.)\\
+이 메시지에 따르면 먼저 Looper.prepare()를 실행해서 해당 스레드에서 사용할 Looper를 준비해야 한다(내부적으로 prepare() 메서드는 MessageQueue를 생성하는 것 말고는 별 게 없다).\\
 
 Looper API 문서를 보면 백그라운드 스레드에서 Handler를 사용하는 방법이 나온다.
 
@@ -217,10 +218,10 @@ class LooperThread extends Thread {
 LooperThread에서 스레드를 시작하면 Looper.loop()에 무한 반복문이 있기 때문에 해당 스레드는 종료되지 않고, mHandler에서 sendXxx(), postXxx() 메서드를 사용하면 스레드 내에서 handleMessage() 메서드를 실행한다.\\
 
 그런데 앱을 만들다 보면 가끔 위에 얘기한 RuntimeException을 만나는 경우가 있다.
-예를 들어, 어떤 메서드가 단순하게 TextView의 setText()를 실행하는 것이지만, 메서드 호출을 하는 곳이 여러 군데이거나 메서드 호출 스택이 깊어서 어디서 호출하는지 금방 파악이 안되는 경우도 있다.
+예를 들어, 어떤 메서드가 단순하게 TextView의 setText()를 실행하지만, 메서드 호출을 하는 곳이 여러 군데이거나 메서드 호출 스택이 깊어서 어디서 호출하는지 금방 파악이 안되는 경우도 있다.
 여러 곳에서 사용하는 메서드라면 메인 스레드뿐 아니라 백그라운드 스레드에서도 호출할 가능성이 있다. 
 new Handler()로 생성하고 post() 메서드를 통해서 TextView를 변경하려 하는데, Handler 생성을 메인 스레드에서 하는지 백그라운드 스레드에서 하는지 모호한 경우가 있다.
-메인 스레드라면 이미 메인 Looper가 있는데 백그라운드 스레드라면 대응하는 Looper가 당장 없을 때 RuntimeException을 만나게 된다.\\
+메인 스레드라면 이미 메인 Looper가 있어서 문제가 되지 않는데, 백그라운드 스레드라면 대응하는 Looper가 당장 없을 때 RuntimeException을 만나게 된다.\\
 
 예를 들어, 아래 코드에서는 BadgeListener의 updateBadgeCount()에서 UI를 변경한다.
 \begin{lstlisting}[frame=single] 
@@ -245,7 +246,7 @@ process() 메서드는 메인 스레드에서 호출한다면 문제가 없지�
 	}
 \end{lstlisting}	
 백그라운드 스레드에서는 Looper가 연결되어 있지 않다면 RuntimeException이 발생한다.
-UI 업데이트이기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 여러 생성자 가운데 세 번째 생성자를 사용하면 된다.
+UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 여러 생성자 가운데 세 번째 생성자를 사용하면 된다.
 \begin{lstlisting}[frame=single] 
 	public void process(BadgeListener listner) {
 		int count = ...
@@ -260,7 +261,7 @@ UI 업데이트이기 때문에 백그라운드 스레드의 Looper를 생성해
 \end{lstlisting}
 
 \subsection{Handler 동작}
-Handler는 Message를 MessageQueue에 보내는 것과 Message를 처리하는 것을 함께 제공한다. post(), postAtTime(), postDelayed() 메서드를 통해서 Runnable 객체도 전달되는데, 실제로 Runnable도 내부적으로 Message에 포함되는 값이다.\\
+앞에서도 언급했듯이 Handler는 Message를 MessageQueue에 보내는 것과 Message를 처리하는 것을 함께 제공한다. post(), postAtTime(), postDelayed() 메서드를 통해서 Runnable 객체도 전달되는데, 실제로 Runnable도 내부적으로 Message에 포함되는 값이다.\\
 
 Handler에서 Message를 보내는 메서드 목록을 살펴보자.\\
 
@@ -315,10 +316,12 @@ dispatchMessage()는 public 메서드이다.
 \subsection{Handler 용도}
 Handler는 일반적으로 UI 갱신을 위해 사용된다. 관련해서 해당 케이스를 살펴보자.
 \begin{itemize}
-\item 네트워크나 DB 작업 등 스레드 작업 중에 UI를 업데이트한다. 
+\item 네트워크나 DB 작업 등 백그라운드 스레드 작업 중에 UI를 업데이트한다. 
 AsyncTask에서도 내부적으로 Handler를 이용해서 onPostExecute() 메서드를 실행한다.
+
 \item UI 작업 중에 다음 UI 갱신 작업을 MessageQueue에 넣어 예약한다. 작업 예약이 필요한 경우가 있다.
 예를 들어, Activity의 onCreate() 메서드에서 하지 못하는 여러 가지 일들이 있다. 소프트 키보드를 띄운다든가, ListView의 setSelection() 메서드를 호출한다든가 하는 것이 onCreate() 메서드에서는 잘 동작하지 않는다. 이때 Handler를 이용해서 현재 작업이 끝난 이후에 다음 타이밍을 기다려서 진행한다.
+
 \item 반복해서 UI를 갱신한다. DigitalClock이나 TextClock 같은 위젯도 Handler를 이용해서 현재 시간을 갱신하고 있다.
 반복적인 UI 갱신 패턴은 아래와 같다.
 \begin{lstlisting}[frame=single] 
@@ -339,6 +342,7 @@ AsyncTask에서도 내부적으로 Handler를 이용해서 onPostExecute() 메�
 	}
 \end{lstlisting}
 UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전달해서 계속 반복하게 된다.
+
 \item 시간을 제한할 때 사용한다. 안드로이드 내부적으로 ANR을 판단할 때도 사용하는 방법이다.
 아래 코드는 개발자 가이드에 있는 것인데, 블루투스 LE 디바이스를 스캔할 때 시간 제한을 둔 것이다.
 \begin{lstlisting}[frame=single] 
@@ -402,14 +406,19 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 % 스크롤이나, 패닝 중에 쓰는 예도 필요하지 않을까?
 \end{itemize}
 
-안드로이드 프레임워크에서도 내부적으로 Handler를 많이 사용한다. 메인 스레드에서 실행해야 하는 작업들이 Handler를 사용해서 내부적으로 메인 Looper의 MessageQueue를 통해서 순차적으로 진행된다.
+안드로이드 프레임워크에서도 내부적으로 Handler를 많이 사용한다. 
+메인 스레드에서 실행해야 하는 작업들이 Handler를 사용해서 내부적으로 메인 Looper의 MessageQueue를 통해서 순차적으로 진행된다.
 \begin{itemize}
-\item ActivityThread에 내부 클래스인 H는 Handler를 상속한다. 컴포넌트 생명주기 관련해서 모두 H를 거친다.(Message의 what에 해당하는 int 상수에 들어가는 값에 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STO\-P\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.)
+\item ActivityThread에 내부 클래스인 H는 Handler를 상속한다. 
+컴포넌트 생명주기 관련해서 모두 H를 거친다. Message의 what에 해당하는 int 상수에는 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STO\-P\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.
+
 \item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_R\-E\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).
 ICS까지는 ViewRootImpl이 Handler를 상속했지만, 젤리빈부터는 내부 클래스로 ViewRootHandler를 사용한다.
 ViewRootImpl에서 처음 그릴 때나 다시 그리기 필요한 경우(invalidate, 레이아웃 변경, Visibility 변경 등)는 Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
 % Activity의 Window마다 있다.
-\item Activity 내부에 Handler가 하나 있고 runOnUiThread() 메서드에서만 사용된다. 
+
+\item Activity에 멤버 변수로 Handler 인스턴스가 있고 runOnUiThread() 메서드에서만 사용된다. 
+
 \item View 내부에 Handler가 하나 있고 post()와 postDelayed() 메서드에서 사용된다.
 \end{itemize}
 
