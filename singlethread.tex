@@ -417,23 +417,24 @@ ICS까지는 ViewRootImpl이 Handler를 상속했지만, 젤리빈부터는 내�
 ViewRootImpl에서 처음 그릴 때나 다시 그리기 필요한 경우(invalidate, 레이아웃 변경, Visibility 변경 등)는 Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
 % Activity의 Window마다 있다.
 
-\item Activity에 멤버 변수로 Handler 인스턴스가 있고 runOnUiThread() 메서드에서만 사용된다. 
+\item Activity는 멤버 변수에 Handler가 있고 runOnUiThread() 메서드에서만 사용된다. 
 
-\item View 내부에 Handler가 하나 있고 post()와 postDelayed() 메서드에서 사용된다.
+\item View에는 ViewRootImpl에서 전달된 ViewRootHandler를 post()와 postDelayed() 메서드에서 사용한다.
+% ViewRootImpl의 performTravers에서 ViewGroup의 dispatchAttachedToWindow() 메서드를 호출하면서 연결된다.
 \end{itemize}
 
 \subsection{타이밍 이슈}
-개발하다 보면 수많은 타이밍 이슈를 접하게 된다. 원하는 시점과 실제 동작에서 차이가 있는 경우가 생기는데, 이런 타이밍 이슈는 메인 스레드와 Handler를 이해한다면 생각보다 단순해진다.\\
+개발하다 보면 수많은 타이밍 이슈를 접하게 된다. 원하는 시점과 실제 동작에서 차이가 생기는데, 이런 타이밍 이슈는 메인 스레드와 Handler를 이해한다면 생각보다 단순해진다.\\
 
 Activity의 onCreate() 메서드에서 Handler의 post() 메서드를 실행하면, 실제 post() 메서드에 전달되는 Runnable이 호출되는 시점은 언제일까? onCreate() 다음일까 아니면 다른 어느 시점일까?
-메인 스레드에서는 한번에 한 작업 밖에 하지 못하고, 이 작업들이 서로 엉키지 않기 위해서 메인 Looper\footnote{Context의 getMainLooper()를 통해 가져올 수 있다.}의 MessageQueue에서 하나씩 꺼내서 처리한다는 것을 먼저 염두에 두자.
-각각의 생명주기 메서드는 MessageQueue에서 각각 꺼내지면서 실행되는 것일까 하는 의문을 가져볼 수 있다. 결과적으로 전혀 그렇지 않다.
+메인 스레드에서는 한 번에 한 작업 밖에 하지 못하고, 여러 작업이 서로 엉키지 않기 위해서 메인 Looper\footnote{Context의 getMainLooper()를 통해 가져올 수 있다.}의 MessageQueue에서 Message를 하나씩 꺼내서 처리한다는 것을 먼저 염두에 두자.
+각각의 생명주기 메서드는 MessageQueue에서 각각 꺼내지면서 실행되는 것인지 의문을 가져볼 수 있다. 결과적으로 전혀 그렇지 않다.
 MessageQueue에서 Message를 하나 꺼내오면 onCreate()에서 onResume()까지 쭉 실행된다.\footnote{ActivityThread의 handleLaunchActivity() 메서드를 참고하자.} 그럼 바로 답이 나온다. 
 onCreate()에서 Handler의 post()에 넣은 Runnable은 onResume() 이후에 실행된다.
-이미 MessageQueue에서 꺼내져서 실행중이기 때문에 도중에 postAtFrontOfQueue() 메서드를 실행해봐도 마찬가지로 onResume() 이후에 실행된다.\\
+이미 MessageQueue에서 꺼내져서 실행 중이기 때문에 도중에 postAtFrontOfQueue() 메서드를 실행해도 마찬가지로 onResume() 이후에 실행된다.\\
 
 %Application의 onCreate에서 Hanlder.post를 호출해도 onResume 메서드 이후에 실행되는 것을 볼 수 있다.\\
-Handler는 정확한 지연 시간(delay time)을 보장하지는 않는다. MessageQueue에서 먼저 나온 것이 오래 잡고 있다면 실행이 당연히 늦어진다. 지연 시간과 관련한 간단한 샘플을 보자.
+Handler는 정확한 지연 시간(delay time)을 보장하지는 않는다. MessageQueue에서 먼저 나온 Message 처리가 오래 걸린다면 실행이 당연히 늦어진다. 지연 시간과 관련한 간단한 샘플을 보자.
 \begin{lstlisting}[frame=single, caption=부정확한 지연시간] 
 		Handler handler = new Handler();
 		handler.postDelayed(new Runnable() { // (1)
@@ -455,15 +456,15 @@ Handler는 정확한 지연 시간(delay time)을 보장하지는 않는다. Mes
 			
 		});
 \end{lstlisting}
-2라인(1)과 11라인(2)에서 각각 Runnable 메시지를 보냈다. 2라인(1)에서 첫 번째 메시지는 먼저 보냈지만 200ms 이후에 실행되는 것이고, 11라인(2)에서 보낸 두 번째 메시지는 즉시 실행되지만 sleep() 시간을 포함하여 500ms가 걸리는 작업이 되었다. 단일 스레드의 규칙 때문에 먼저 처리해야 하는 것을 다 끝내야만, 뒤의 것을 처리할 수 있다. ``200 delay''라는 로그는 따라서 200ms가 아닌 최소 500ms 이후에 남게 된다.
-결론적으로 지정한 지연 시간이 지나고서 정확히 실행된다고 가정하면 안된다. 예처럼 200ms 간격을 두었다면 그 사이에 여러 Message가 MessageQueue에 쌓일 가능성이 있다.(Activity를 시작하거나, 클릭 이벤트를 여러 번 처리하거나)
-이건 하나의 예이지만 실제 이런 케이스는 적지 않다. 메인 스레드에서 다른 메시지를 처리하느라고 내가 당장 하려는 작업이 지연되는 케이스이다.\\
-
+2라인(1)과 11라인(2)에서 각각 Runnable Message를 보냈다. 2라인(1)에서 첫 번째 메시지는 먼저 보냈지만 200ms 이후에 실행되는 것이고, 11라인(2)에서 보낸 두 번째 Message는 즉시 실행되지만 sleep() 시간을 포함하여 500ms가 걸리는 작업이 되었다. 
+단일 스레드의 규칙 때문에 먼저 처리해야 하는 것을 다 끝내야만, 뒤의 것을 처리할 수 있다. ``200 delay''라는 로그는 따라서 200ms가 아닌 최소 500ms 이후에 남게 된다.
+결론적으로 지정한 지연 시간이 지나고서 정확히 실행된다고 가정하면 안된다. 예처럼 200ms 간격을 두었다면 그 사이에 여러 Message가 MessageQueue에 쌓일 가능성이 있다(Activity를 시작하거나, 클릭 이벤트를 여러 번 처리하거나).
+이건 하나의 예이지만 실제 이런 케이스는 적지 않다. 메인 스레드에서 다른 Message를 처리하느라고 내가 당장 하려는 작업이 지연되는 케이스이다.\\
 
 \section{UI 업데이트}
 %https://gist.github.com/jieyu/5125806
 UI 업데이트(TextView를 예로 들면 setText, setTextSize, setTextColor 등)에 대한 메커니즘을 간단히 살펴보자.
-UI를 업데이트하는 메서드는 주로 setXxx()로 되어 있다. 커스텀뷰를 만들면서 이런 setter 메서드를 작성할 때, POJO와 같이 단순 대입만 하는 실수를 한 경험이 있고 주위에서도 이런 실수를 보기도 했다. 
+UI를 업데이트하는 메서드는 주로 setXxx()로 되어 있다. 커스텀 뷰를 만들면서 이런 setter 메서드를 작성할 때, POJO와 같이 단순 대입만 하는 실수를 한 경험이 있고 주위에서도 이런 실수를 보기도 했다. 
 \begin{lstlisting}[frame=single]
 	public void setTitle(String title) {
 		this.title = title;

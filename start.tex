@@ -78,6 +78,8 @@ CheckBox의 style은 /frameworks/base/core/res/res/values/styles.xml\footnote{<s
 parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는데, 바로 CheckBox의 style은 ``Widget.CompoundButton'' style을 상속한다. 여기서 android:focusable 속성이 true로 되어 있다.
 따라서 레이아웃에서 CheckBox 속성을 android:focusable=``false''로 하면 style이 다시 오버라이드되어 ListView에서 정상적으로 ItemClick이 동작한다.\\
 
+ImageButton의 경우는 android:focusable=``false''가 반영이 되지 않는데, 그 이유는 ImageButton 생성자에서 setFocusable(true)을 실행해서 레이아웃의 속성을 다시 오버라이드하기 때문이다. 따라서 ListAdapter의 getView() 메서드에서 ImageButton에 setFocusable(false)를 실행해서 또다시 오버라이드하면 ItemClick 이 문제없이 동작한다.\\
+
 프레임워크 리소스에서 styles.xml을 보면 CheckBox, RadioButton, ToggleButton, Switch, SeekBar, EditText, ImageButton 등 위젯의 android:focusable 속성이 true이다. 이런 위젯이 ListView에 포함된다면 주의해야 한다.
 ListView의 각 아이템 레이아웃은 일반적으로 ViewGroup이고 그 안에 focusable 위젯을 가지고 있다면 다른 방법도 가능하다. 바로 ViewGroup 레이아웃 속성에 android:descendantFocusability=``blocksDescendants''를 넣으면 된다. 이 속성은 ViewGroup의 hasFocusable() 메서드에서 체크하고 있다.\\
 
@@ -151,7 +153,7 @@ ICS(아이스크림 샌드위치) & 14 & 4.0-4.0.2\\ \cline{2-3}
 
 \subsection{호환성 모드}
 앱이 동작하는 안드로이드 버전을 지정하기 위해서는 AndroidManifest.xml에서 uses-sdk 항목에  android:min\-SdkVersion과 android:targetSdkVersion에 버전을 기재한다. 
-만든 지 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 채로 있는 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
+만든 지 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
 targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테스트해봤는데 앱 실행에 문제가 없다는 의미이고, 그 버전까지는 호환성 모드를 쓰지 않겠다는 뜻이다.\\
 
 호환성 모드는 안드로이드 버전이 올라가더라도 앱의 기존 동작이 바뀌는 것을 방지하기 위한 것이다.
@@ -264,7 +266,7 @@ Version 2 (Android 3.2 and greater)
 앱에 들어가는 기능을 정할 때는 버전별 히스토리는 의미가 있지만, 앱 개발 시에 버전 관련한 주요 관심은 ``특정 클래스와 메서드가 이 버전에서 쓸 수 있는가''이다.
 런타임에 해당 단말 버전에서 사용하지 않는 클래스와 메서드가 호출된다면 크래시가 발생하므로, 앞의 AsyncTaskCompat과 같이 if 문을 사용해서 버전 체크를 하는 코드를 사용한다.\\
 
-별 게 아닌 것 같지만 앱을 배포하고서 많은 크래시를 유발하는 게 이 부분이다.
+별게 아닌 것 같지만 앱을 배포하고서 많은 크래시를 유발하는 게 이 부분이다.
 \footnote{필자의 경우도 버전 문제로 다량의 크래시를 유발했던 것을 고백하지 않을 수 없다.}
 모든 안드로이드 버전의 단말을 가지고 앱의 모든 기능을 테스트하는 게 아니기 때문에, if 문으로 분기하지 않거나 비교 레벨을 잘못 기재한 경우에 실제 사용자 단말에서 많은 크래시가 발생한다. 이때 즉시 문제를 수정해서 앱을 패치해보지만 이미 발생한 수많은 크래시는 어쩔 수 없다.\\
 
