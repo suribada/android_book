@@ -246,7 +246,7 @@ LoadedApk?
 
 \section{LocalBroadcastManager}
 Context의 sendBroadcast() 메서드는 Binder IPC를 통해 ActivityManagerService를 거쳐야 하므로 속도에서 이점이 크지 않다. 또한 Intent Action을 안다면 원치 않는 곳에서도 이벤트를 받아서 예기치 않는 일을 할 가능성도 있다.
-sendBroadcast()에서는 원하는 패키지만 전달받을 수 있도록 하는 방법을 제공하는가?
+sendBroadcast()에서는 원하는 패키지만 전달받을 수 있는 방법을 제공하는가?
 바로 Intent의 setPackage() 메서드로 Broadcast 범위를 줄일 수 있다. 
 다만 이 방식은 ICS부터 동작한다.\\
 
@@ -263,7 +263,7 @@ LocalBroadcastManager.getInstance(this).registerReceiver(..)
 
 LocalBroadcastManager가 좋은 점은 일반적으로 두 가지를 얘기한다.
 \begin{itemize}
-\item Broadcast하는 데이타가 다른 앱에서 캐치되지 않아서 더 안전하다.
+\item Broadcast하는 데이터가 다른 앱에서 캐치되지 않아서 더 안전하다.
 \item 글로벌 Broadcast보다 속도가 빠르다.
 \end{itemize}
 

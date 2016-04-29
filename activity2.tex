@@ -175,7 +175,7 @@ dumpsys 명령어는 개발 중에 현재 포커스된 Activity가 어떤 것인
 이 명령어를 몰랐을 때는 시작 Activity부터 로직을 따라가서 현재 Activity를 찾기도 했다. ApiDemos에서 기능을 테스트해보다 관련 Activity를 찾아서 디렉터리를 뒤져본 기억들은 안드로이드 앱 개발자라면 가지고 있을 것이다.
 
 \subsection{taskAffinity}
-Activity에서 startActivity()를 실행하는 게 많지만, 알람 같은 경우 BroadcastReceiver에서 startActivity()를 실행하는 것이 일반적이고 Service 실행 중에 Activity를 시작하는 상황도 있다. Application에서는 드물지만 이벤트를 항상 받기 위해서 Application에 BroacastReceiver를 등록하고 여기서 startActivity()를 실행하는 경우가 있다.
+Activity에서 startActivity()를 실행하는 것이 일반적이지만, BroadcastReceiver나 Service에서 startActivity()를 실행하기도 한다. 드물지만 Application에서는  이벤트를 항상 받기 위해서 Application에 BroacastReceiver를 등록하고 여기서 startActivity()를 실행하는 경우도 있다.
 그런데 Activity가 아닌 곳에서 startActivity()를 실행하는 경우에는 앱이 포그라운드에 있을 수도 있지만, 기본적으로 백그라운드에서 실행한다고 가정해야만 한다. Activity 외에 다른 컴포넌트에서 startActivity를 실행하면 아래와 같은 에러를 만날 때가 있다.
 \begin{lstlisting}[frame=single]
 09-07 08:49:32.314: E/AndroidRuntime(482): Caused by: android.util.AndroidRuntimeException: 
@@ -212,7 +212,7 @@ Home 키를 길러 눌러서 최근 앱 목록을 보면 2개가 떠있는 것�
 
 \subsection{태스크 속성 부여}
 Activity에 태스크 속성을 부여하는 방법에는 2가지가 있다. 속성을 아예 부여하지 않고서 개발할 수 있다면 행복하겠지만, 사용하다 보면 효율적이지 않은 부분이 생긴다.
-디폴트는 Activity가 인스턴스가 매번 새로 생성돼서 쌓이는 형태이다.\\
+디폴트는 Activity 인스턴스가 매번 새로 생성돼서 쌓이는 형태이다.\\
 \includegraphics[scale=0.7]{diagram_multiple_instances}\\
 속성을 부여하는 2가지 방법은 하나는 불려지는 쪽(Callee )에서 `나를 이런 식으로 취급해줘(존재할거야)'가 있고, 또 하나는 부르는 쪽(Caller)에서 `널 이렇게 다뤄주겠어'하는 것이다. 그리고 2가지 방법의 조합도 있다.
 복잡하게 생각할 건 없다. 테스트하면서 원하는 내비게이션 형태를 만드는 과정이 조금 어려울 뿐이다.

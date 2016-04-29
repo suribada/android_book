@@ -8,12 +8,12 @@
 \begin{itemize}
 \item 안드로이드에서 제공하는 기본 앱(Home, Camera, Dialer, Browser 등)과 일반 앱은 Applications 스택에 있고, Applications는 Application Framework 스택 위에서 동작한다. 기본 앱은 소스가 공개돼 있으므로 참고 자료로 활용할 수 있다. 단말 제조사들은 일반적으로 기본 앱을 커스터마이징하고, 제조사 단말에 특화된 앱도 추가로 제공한다. 요점은 단말에 깔린 기본 앱과 우리가 만드는 앱은 동일한 레벨이라는 것이다. 다만 기본 앱은 시스템 권한을 쓸 수 있다는 게 다르다.
 
-\item Application Framework는 자바 기반의 여러 -Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다). 각종 -Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
+\item Application Framework는 자바 기반의 여러 Manager가 있다. 내부적으로는 JNI를 연결해서 네이티브 C/C++로 작성된 것이 많다(Telephony Manager, Location Manager 등 주로 하드웨어 관련한 것이 그렇다). 각종 Manager는 system\_server라는 별도 프로세스에서 실행되고, 각각 시스템 서비스 형태로 있어서 앱에서는 Context의 getSystemService(String name) 메서드로 접근해서 사용한다. 별도의 프로세스에서 실행되므로 Binder IPC를 이용한 프로세스 간 통신이 필요하다.
 
 \item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XM\-LPullParser 등 자바 클래스와 안드로이드 기본 리소스(android.R)가 포함되어 있다.
 
 \item Dalvik Virtual Machine은 자바/C/C++로 작성되어 있다(롤리팝에서는 Dalvik을 대체한 ART가 적용).\footnote{\url{https://source.android.com/devices/tech/dalvik/art.html}를 참고하자.} Register 기반의 가상 머신(Virtual Machine)으로 자바 가상 머신보다 명령이 단순하고 속도가 빠르다.
-Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울 수 있다. J2SE/J2EE 자바 애플리케이션을 만들다보면 여러 가상 머신 인스턴스는 당연한 얘기지만, J2ME에는 여러 Midlet이 하나의 가상 머신에서 돌아가는 방식이었고 안드로이드에서는 이 방식을 변경하였다.
+Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울 수 있다. J2SE/J2EE 자바 애플리케이션을 만들다보면 여러 가상 머신 인스턴스는 당연한 얘기지만, J2ME에서는 여러 Midlet이 하나의 가상 머신에서 돌아가는 방식이었고 안드로이드에서는 이 방식을 변경하였다.
 
 \item Libraries에는 세 가지 범주의 라이브러리가 있다.\footnote{HAL(Hardware Abstraction Layer)는 별도로 나오기도 하고 Libraries에 포함하기도 한다.}
 \begin{itemize}
@@ -25,7 +25,7 @@ Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울
 
 \item 안드로이드는 리눅스 커널을 기반으로 불필요한 것은 제거하고(X-Window, glibc, 표준 리눅스 유틸리티 일부 등) 확장 패치한 것이다(Binder, Ashmem, Low Memory Killer 등).\\
 이 가운데 Binder IPC는 프로세스 간 통신에 사용하는 방식이다. 
-Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC를 이용한 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데서 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있는 것이다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), 다른 프로세스에서 접근할 때는 이 스레드 풀을 통해서 접근한다.
+Binder에서 많이 혼동되는 게 Binder IPC(Inter Process Communication)와 Binder RPC(Remote Procedure Call)라는 두 용어인데, IPC는 하부 메커니즘이고 RPC는 IPC의 용도(리모트 콜)이다. 우리가 만드는 컴포넌트 가운데 Service와 ContentProvider는 Binder를 통해서 다른 프로세스에서 접근할 수 있는 것이다. 앱 프로세스에서 Binder Thread라는 네이티브 스레드 풀이 있고(16개까지 생성), 다른 프로세스에서 접근할 때는 이 스레드 풀을 통해서 접근한다.
 DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 Binder Thread에 속한 것이다. 
 
 \end{itemize}

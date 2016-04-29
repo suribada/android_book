@@ -41,12 +41,12 @@ public class LifeCycleApplication extends Application {
 \url{http://developer.android.com/guide/components/processes-and-threads.html}를 보고 프로세스의 우선순위를 살펴보자.
 \begin{enumerate}
 \item Foreground 프로세스: 사용자와 상호작용하는 Activity를 가지고 있거나, 그런 Activity에 bound된 Service를 가지고 있거나, startForeground()를 호출한 foreground Service를 가지고 있거나, Service의 생명주기 메서드(onCreate, onStart, onStartCommand, onDestroy)를 실행 중인 Service를 가지고 있거나, onReceive()를 실행하는 BroadcastReceiver를 가지고 있는 경우이다.
-메모리가 부족할 때에도 가장 마지막까지 남아 있을 수 있는 프로세스이다.
+메모리가 부족할 때에도 가장 마지막까지 남아있을 수 있는 프로세스이다.
 \item Visible 프로세스: 포그라운드 컴포넌트를 가지고 있지는 않지만, 사용자가 보는 화면에 아직 영향이 있다. Activity로 보면 onPause()까지 실행되었지만 visible 상태인 것이다(다이얼로그 테마나 투명한 Activity가 가렸을 때이다).
 visible Activity에 bound된 Service를 가진 경우도 해당한다. 
 \item Service 프로세스: startService()로 실행했지만 위의 카테고리에는 들어가지 않는 Service를 가진 경우이다. 이런 것들은 사용자가 지금 보고 있는 것과 직접적인 연관은 없다.
-\item Background 프로세스: 보통 여러 백그라운드 프로세스가 존재한다.
-\item Empty 프로세스: 사용자가 Back 키로 종료를 하고 활성화된 컴포넌트가 없다면 Empty 프로세스가 된다. 이런 프로세스를 메모리에 갖고 있는 이유는 다음에 컴포넌트를 띄울 때 빠르게 띄우려고 하는 캐시 용도일 뿐이다. 가장 우선순위가 낮아서 리소스가 부족하면 가장 먼저 kill 대상이 된다.
+\item Background 프로세스: 보통 여러 개의 백그라운드 프로세스가 존재한다.
+\item Empty 프로세스: 사용자가 Back 키로 종료하고 활성화된 컴포넌트가 없다면 Empty 프로세스가 된다. 이런 프로세스를 메모리에 갖고 있는 이유는 다음에 컴포넌트를 띄울 때 빠르게 띄우려는 캐시 용도일 뿐이다. 가장 우선순위가 낮아서 리소스가 부족하면 가장 먼저 kill 대상이 된다.
 \end{enumerate}
 
 이 우선순위를 보고서 앞에서 제기한 작업의 안정성 문제를 보완할 수 있다. 우선순위상 위 단계로 올라갈 수 있다면 우리는 하려는 작업의 안정성을 보장할 수 있는 것이다. 
