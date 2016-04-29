@@ -667,7 +667,7 @@ HandlerThread가 필요한 곳은 어디일까?
 바로 UI와 관련없지만 단일 스레드에서 순차적인 작업\footnote{AsyncTask도  허니콤 이후부터 디폴트로 SERIAL\_EXECUTOR를 사용해서 순차적인 스레드 작업을 지원하고 있다.}이 필요할 때이다.(안드로이드 프레임워크에서는 IntentService가 HandlerThread를 내부적으로 사용하고 있다.)\\
 
 예를 들어, 아래 그림을 보면 각 항목의 오른 편에 favorite 표시 CheckBox가 있다.
-선택/해제하는 것을 실시간으로 DB에 반영해야 하는 요구사항이 있다.\\
+실시간으로 선택/해제를 DB에 반영해야 하는 요구 사항이 있다.\\
 \includegraphics[scale=0.65]{favorite_sample}
 
 사용자는 하나씩 천천히 선택/해제를 하지 않기 때문에, UI를 Blocking하지 않기 위해서 별도 스레드에서 DB에 반영하기로 했다.

@@ -236,7 +236,7 @@ onCreate() 메서드에서 유효성 여부를 체크하고 문제가 있을 때
 
 \subsubsection{on.Xxx() 메서드는 직접 호출하지 않음}
 onCreate(), onResume(), onPause(), onDestroy() 메서드를 직접 호출하는 경우는 거의 볼 수 없지만, onBackPressed() 같은 메서드를 호출하는 경우는 가끔 보게 된다.
-onBackPressed()는 기본 동작이 finish()를 호출하는 것이므로 일단 당장은 되지만, onBackPressed()는 요구사항에 따라 변경될 여지가 있는 메서드이다.
+onBackPressed()는 기본 동작이 finish()를 호출하는 것이므로 일단 당장은 되지만, onBackPressed()는 요구 사항에 따라 변경될 여지가 있는 메서드이다.
 사용 패턴을 알기 위해서 Back 키를 체크하는 코드가 들어갈 수도 있고, moveToTaskBack() 메서드처럼 태스크를 아예 백그라운드로 보내는 경우도 있다. 또는 Back 키를 막기 위해서 onBackPressed() 메서드에서 super.onBackPressed()를 쓰지 않고 비어있는 메서드로 오버라이드하기도 한다. 이때 onBackPressed()를 호출한 쪽은 동작에 문제가 생긴다. 
 다른 코드에 영향을 쉽게 받는 코드는 가능하면 작성하지 않는 것이 좋다.\\
 
@@ -325,7 +325,7 @@ Configuration은 컴포넌트에서 사용하는 리소스를 결정하기 때�
 Configuration 변경으로 인한 Activity 재시작은 하나의 인스턴스를 가지고 새로 초기화해서 재사용하는 것이 아니다. 기존 인스턴스는 onDestroy()까지 실행하고 새 인스턴스를 onCreate()부터 실행하는 것이다. 여기서 생길 수 있는 문제가 메모리 누수이다. Activity가 onDestroy()까지 불리었는데도 어느 곳에 Activity에 대한 참조가 남아있다면 이 Activity는 계속 GC 되지 않고 메모리를 차지하게 된다. 화면을 자꾸 회전할 때 OutOfMemoryError가 발생한다면 원인은 메모리 누수 때문이다. 빈번하게 발생하는 Activity의 메모리 누수 상황을 나열해보자.
 
 \begin{itemize}
-\item 떠있는 Activity에 특별한 작업을 하기 위해서 Activity 인스턴스를 Collection에 모아둔다. 최악의 상황으로 WeakReference를 사용한다고 해도 가능하면 피해야 한다. 기능 요구사항이나 레거시 코드 문제로 사용한 적은 있지만 권장되지 않는 방식이다. Activity 목록은 시스템이 알아서 관리하는 영역이기도 하고, Activity가 종료할 때 Collection에서 제거해야 하는데 빠뜨리는 실수가 발생할 가능성도 많다.
+\item 떠있는 Activity에 특별한 작업을 하기 위해서 Activity 인스턴스를 Collection에 모아둔다. 최악의 상황으로 WeakReference를 사용한다고 해도 가능하면 피해야 한다. 기능 요구 사항이나 레거시 코드 문제로 사용한 적은 있지만 권장되지 않는 방식이다. Activity 목록은 시스템이 알아서 관리하는 영역이기도 하고, Activity가 종료할 때 Collection에서 제거해야 하는데 빠뜨리는 실수가 발생할 가능성도 많다.
 \item Activity의 내부 클래스나 익명 클래스의 인스턴스가 Activity에 대한 참조를 갖고 있기 때문에, 외부에 리스너로 등록한 경우에 해제도 반드시 되어야만 한다. 메모리 누수의 많은 부분을 차지하고 있다. 내부 클래스에서 SomeActivity.this를 쓸 수 있는 상황, 즉 Activity 참조를 갖는 것을 없애기 위해 단순 내부 클래스는 정적 내부 클래스를 만드는 것이 권장된다.
 이때 Activity의 변수나 메소드에 꼭 접근할 일이 있다면 정적 내부 클래스 생성자에 WeakReference로 Activity를 전달하기도 한다. 
 그러면서 코드가 복잡해지는데 문제가 심각하다면 고려할 수 있는 방법이다. 
@@ -428,7 +428,7 @@ DialogActivity가 뜨면 아직 배경으로 보이는 ActivityB의 onSaveInstan
 \subsection{android:configChanges 속성}
 앞에서도 얘기했듯이 Configuration 변경 가운데서 가장 빈번하게 발생하는 것은 화면 회전이다. 화면 회전 시에 매번 재시작해서 Activity 초기화 때문에 느려지는 것이나 상태 저장/복구에 부담을 느낄 때, 재시작을 방지하기 위해서 AndroidManifest.xml의 Activity 선언에 지정하는 속성은 2가지가 있다.
 \begin{itemize}
-\item android:screenOrientation 속성을 ``portrait''나 ``landscape''로 고정해서 회전해도 화면은 그대로이고 재시작이 일어나지 않게 한다. 화면이 상대적으로 작은 2.X 버전에서는 고정해서 쓰는 경우가 많았는데, 태블릿을 지원하는 3.X 버전 이후에는 많이 쓰이지 않는다. 게임 앱과 같이 용도가 확실한 것에도 화면 방향을 고정하는데, 요구사항에 맞다면 쓸 수 있는 옵션이다. 이때 화면 회전 시에도 Configuration은 변경되지 않는다.
+\item android:screenOrientation 속성을 ``portrait''나 ``landscape''로 고정해서 회전해도 화면은 그대로이고 재시작이 일어나지 않게 한다. 화면이 상대적으로 작은 2.X 버전에서는 화면 방향을 고정하는 경우가 많았는데, 태블릿을 지원하는 3.X 버전 이후에는 많이 쓰이지 않는다. 게임 앱과 같이 용도가 확실한 것에도 화면 방향을 고정하는데, 요구 사항에 맞다면 쓸 수 있는 옵션이다. 이때 화면 회전 시에도 Configuration은 변경되지 않는다.
 \item android:configChanges 속성에 ``orientation''을 지정해서 화면 회전 시에는 재시작하지 않고 Activity의 onConfigurationChanged() 메서드에서 회전 시에 할 작업을 지정한다.
 \end{itemize}
 
