@@ -54,13 +54,13 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
     }
 \end{lstlisting}
 \begin{itemize}
-\item 3라인(1), 7라인(2)에서 base 파라미터에 들어가는 것은 Context의 여러 메서드를 직접 구현한 ContextImpl 클래스이다. ContextImpl은 앱에서 생성해서 사용할 수 있는 public 클래스는 아니지만, 소스는 공개되어 있으니 한번씩은 살펴보도록 하자
+\item 3라인(1), 7라인(2)에서 base 파라미터에 전달되는 것은 Context의 여러 메서드를 직접 구현한 ContextImpl 인스턴스이다. ContextImpl은 앱에서 생성해서 사용할 수 있는 public 클래스는 아니지만, 소스는 공개되어 있으니 한번씩은 살펴보도록 하자
 \item ContextWrapper의 여러 메서드는 base의 메서드를 그대로 다시 호출하고 있다.(3, 4, 5, 6)
 \item Activity, Service, Application은 3라인(1)의 생성자를 사용하지 않고, 실제로는 7라인(2)의 attachBaseContext()를 사용하고 있다.
 \end{itemize}
 
 이제 또 다른 질문을 해보자. 그럼 ContextImpl은 앱에서 싱글톤으로 단 하나의 인스턴스를 가지고서 ContextWrapper에 전달하는가?
-이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개의 메서드가 별도로 있는 것을 보면 싱글톤이 아닌 것을 유추해볼 수 있다.\footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
+이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개의 메서드가 따로 있는 것을 보면 싱글톤이 아닌 것을 유추해볼 수 있다.\footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
 
 Activity, Service, Application 각 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있고 getBaseContext()는 각각 다른 ContextImpl 인스턴스를 리턴한다. getApplicationContext()는 Application 인스턴스를 리턴하는 것으로 Application은 앱에서 하나 밖에 없으므로 어디서나 동일한 인스턴스를 반환한다.\\
 
