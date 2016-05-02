@@ -246,7 +246,7 @@ process() 메서드는 메인 스레드에서 호출한다면 문제가 없지�
 	}
 \end{lstlisting}	
 백그라운드 스레드에서는 Looper가 연결되어 있지 않다면 RuntimeException이 발생한다.
-UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 여러 생성자 가운데 세 번째 생성자를 사용하면 된다.
+UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성해도 도움이 안되고, 바로 메인 Looper를 사용해야 한다. 메인 Looper와 연결된 Handler를 사용하는 것으로 Handler의 세 번째 생성자를 사용하면 된다.
 \begin{lstlisting}[frame=single] 
 	public void process(BadgeListener listner) {
 		int count = ...
