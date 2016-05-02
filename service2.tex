@@ -1,8 +1,8 @@
 \section{Started Service}
-Started Service는 Context의 startService() 메서드를 통해서 시작된다. 이것 역시 startService()를 호출하는 시점에 Service가 바로 시작되는 것이 아니고, 메인 Looper MessageQueue에 들어가서 메인 스레드를 쓸 수 있는 시점에 Service가 시작된다. startService() 메서드는 곧바로 ComponentName을 리턴하고 다음 라인을 진행한다. startService()는 Intent Bundle에 파라미터를 전달하고 Service에 작업을 하도록 요청해놓는 것 뿐이다.\\
+Started Service는 Context의 startService() 메서드로 시작된다. 이것 역시 startService()를 호출하는 시점에 Service가 바로 시작되는 것이 아니고, 메인 Looper MessageQueue에 들어가서 메인 스레드를 쓸 수 있는 시점에 Service가 시작된다. startService() 메서드는 곧바로 ComponentName을 리턴하고 다음 라인을 진행한다. startService()는 Intent Bundle에 파라미터를 전달하고 Service에 작업을 하도록 요청하는  것 뿐이다.\\
 
-Service는 startService() 메서드를 통해 처음 생성되는 경우에는 onCreate 메서드를 거쳐서 onStartCommand() 메서드를 실행하며, 그 이후에 startService()를 실행할 때면 onCreate() 메서드는 거치지 않고 onStartCommand() 메서드가 실행된다.
-onCreate() 메서드 역할은 Service에 필요한 리소스 등을 준비해 놓은 작업을 하고, onStartCommand() 메서드 역할은 이름 그대로 명령을 매번 처리하는 것이다. 그래서 Activity와는 다르게 onCreate() 메서드에는 Intent가 전달되지 않는다.\\
+startService() 메서드를 통해 Service가 처음 생성되는 경우에는 onCreate()를 거쳐서 onStartCommand() 메서드를 실행하며, 그 이후에 startService()를 실행하면 onCreate() 메서드는 거치지 않고 onStartCommand() 메서드가 실행된다.
+onCreate() 메서드 역할은 Service에 필요한 리소스 등을 준비해 놓은 작업을 하고, onStartCommand() 메서드는 이름 그대로 명령을 매번 처리하는 역할을 한다. 그래서 Activity와는 다르게 onCreate() 메서드에는 Intent가 전달되지 않는다.\\
 
 \begin{comment}
 쉬운 이해를 위해서, 비유를 들어 얘기해보자.\\
@@ -10,13 +10,13 @@ onCreate() 메서드 역할은 Service에 필요한 리소스 등을 준비해 �
 \end{comment}
 
 명령을 던져놓고 Service에서 그 명령을 알아서 실행하는 것에 Started Service를 사용한다고 생각하자.
-표준 패턴은 onStartCommand()에서 백그라운드 스레드를 생성해서
-백그라운드 상에서 작업을 진행하고, onStartCommand()를 바로 리턴한다. 이런 패턴을 알지 못하고서 필자가 처음 앱을 개발할 때 겪은 문제도 있다. Service에 명령을 보내고서 화면에 작업중이라는 표시의 애니메이션을 실행하고, 작업이 끝나면 애니메이션을 중지하는 기능이다. 
-그런데 Service의  onStartCommand() 메서드에서 스레드를 사용하지 않고 작업을 진행해서 메인 스레드를 점유하고 있으니, 역시 메인 스레드를 사용하는 애니메이션이 동작할 리가 없었다. 원리를 이해하면 아무 것도 아니지만 당시에는 당황했던 기억이 있다.\\
+표준 패턴은 onStartCommand()에서 백그라운드 스레드를 생성하고 
+스레드에서 작업을 진행하고, onStartCommand()를 바로 리턴한다. 이런 패턴을 알지 못하고서 필자가 처음 앱을 개발할 때 겪은 문제도 있다. Service에 명령을 보내고서 화면에 작업 중이라는 표시의 애니메이션을 실행하고, 작업이 끝나면 애니메이션을 중지하는 기능이다.
+그런데 Service의  onStartCommand() 메서드에서 백그라운드 스레드를 사용하지 않고 작업을 진행해서 메인 스레드를 점유하고 있으니, 역시 메인 스레드를 사용하는 애니메이션이 동작하지 않는 문제가 생겼다. 원리를 이해하면 아무 것도 아니지만 당시에는 당황했던 기억이 있다.\\
 
-Service에서 작업 진행 상황에 따라 Activity에 메시지를 보내려고 한다면 일반적으로 Broadcast를 사용한다.
+Service에서 작업 진행 상황에 따라 Activity에 메시지를 보내려면 일반적으로 Broadcast를 사용한다.
 예를 들어, 서버와 동기화를 하는 SyncService가 있고 화면에서 버튼이나 메뉴로 SyncService를 시작한다. 
-동기화를 하는 도중에는 ProgressBar로 `진행중'을 표시하고 동기화가 끝날 때는 ProgressBar를 없애고 종료 메시지를 표시하고자 한다.
+동기화를 하는 도중에는 ProgressBar로 `진행중'을 표시하고 동기화가 끝나면 ProgressBar를 없애고 종료 메시지를 표시하고자 한다.
 이때 Activity에서는 BroadcastReceiver를 등록하고 Service에서는 sendBroadcast()를 실행하는 식이다.\\
 
 또 다른 방식으로는 Intent에 ResultReceiver를 전달하고 Service에서 ResultReceiver에 값을 되돌려줄 수도 있다. 단방향 메시지 전달이라면 이 방식이 간편하다.\\
