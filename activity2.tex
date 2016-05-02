@@ -1,9 +1,9 @@
 \section{태스크}
 태스크는 간단하게 Activity 작업 묶음 단위라고 보면 된다. 사진 리스트를 보고(PictureListActivity), 사진 상세를 보고(PictureDetailActivity), 사진을 올리려고 카메라를 실행시킨다(Camera 앱).
-한 앱이 한 태스크가 아니라는 것을 염두에 두자. 물론 한 앱만 사용하는 중에도 필요에 의해 여러 태스크를 가질 수도 있다.\\
+1개의 앱이 1개의 태스크가 아니라는 것을 염두에 두자. 물론 1개의 앱만 사용하는 중에도 필요에 의해 여러 태스크를 가질 수도 있다.\\
 \includegraphics[scale=0.6]{diagram_backstack}
 
-Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 있지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
+Activity는 스택에 차례대로 쌓인다(Back Stack이라 불린다). 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 있지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
 
 단순하게 startActivity()를 실행해서 스택에 추가하고 Back 키로 제거해가면 아무 일도 없지만, 실제 앱에서는 다양한 경로의 Activity 접근이 이루어지기 때문에 내비게이션이 꼬이는 경우가 많다. 이 때문에 태스크 관리가 필요하다.
 
@@ -11,10 +11,10 @@ Activity는 스택에 차례대로 쌓인다(Back Stack으로 불린다). 스택
 \begin{enumerate}
 \item 캘린더 앱은 달력 화면(A)에서 일정 상세 화면(B)으로 가고 다시 일정 수정 화면(C)으로 이동한다. 그러다가 Home 키를 눌러서 태스크를 백그라운드로 보낸다. 
 그런데 홈 스크린 화면에 일정 목록 App Widget이 있어서 특정한 일정으로 이동할 수 있다. 그렇다면 이 특정한 일정 보기 화면은 앞에 있던 A, B, C 위에 B를 추가하면 될까? 아니면 C를 스택에서 없애고, B를 다시 로딩하게 할까?
-\item 사진 공유 앱에서 사진 목록 화면(A)에서 등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면 B'으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
+\item 사진 공유 앱에서 사진 목록 화면(A)에서 등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면(B')으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
 \end{enumerate}
 
-각 앱에서 원하는 내비게이션 방식이 있는데, 태스크의 동작 방식을 이해하지 못한다면 사용자가 보고자 하는 화면이 아닌 엉뚱한 화면을 접하는 경우가 생긴다. 물론 이해가 간단하지 않고 많은 시행착오가 우리 앞에 기다리고 있다.
+각 앱에서 원하는 내비게이션 방식이 있는데, 태스크의 동작 방식을 이해하지 못한다면 사용자가 보려는 화면이 아닌 엉뚱한 화면을 접하는 경우가 생긴다. 물론 이해가 간단하지 않고 많은 시행착오가 우리 앞에 기다리고 있다.
 
 \subsection{태스크 상태}
 태스크는 화면에 포커스되어 있는 포그라운드 상태와, 화면에 보이지 않는 백그라운드 상태가 있다. 포그라운드에 있는 것은 Home 키를 통해서 언제든 백그라운드로 이동할 수 있다.
@@ -38,7 +38,8 @@ adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 du
 
 dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉션을 통해 파일로 저장하는 것을 권장한다. adb shell dumpsys activity a  $>$ tasks.txt 와 같이 사용한다. adb shell 내에서도 dumpsys를 할 수 있지만 shell 내에서는 리다이렉션이 되지 않는다.\\
 
-그래도 워낙 내용이 많긴 하다. 해당 앱 관련 내용만 볼 때는 grep 명령어를 활용하자. dumpsys activity a | grep com.example.android.supportv4 이런 식으로 하면 관련 라인만 볼 수 있다. 필자의 경우는 grep을 통해서 일부만 보면 필요한 정보를 빠뜨릴 수 있지 않나 생각해서 잘 안 쓰는 편이었는데, dumpsys 내용에 패키지명이 계속해서 들어가기 때문에 grep을 통해서 보는 편이 낫다.\\
+그래도 워낙 내용이 많긴 하다. 해당 앱 관련 내용만 볼 때는 grep 명령어를 활용하자. dumpsys activity a | grep com.example.android.supportv4 이런 식으로 하면 관련 라인만 볼 수 있다. 
+필자의 경우는 grep을 통해서 일부만 보면 필요한 정보를 빠뜨릴 수 있지 않나 생각해서 잘 안 쓰는 편이었는데, dumpsys 내용에 패키지명이 계속해서 들어가기 때문에 grep을 통해서 보는 편이 낫다.\\
 
 아래는 adb shell dumpsys activity a를 실행한 결과이다. 참고로 안드로이드 버전마다 dumpsys 결과는 다를 수 있다. \ref{sec:dumpsys} 절에서 dumpsys 명령어를 상세히 보기로 한다.
 \lstset{basicstyle=\fontfamily{mono}\selectfont\scriptsize}
@@ -175,8 +176,8 @@ dumpsys 명령어는 개발 중에 현재 포커스된 Activity가 어떤 것인
 이 명령어를 몰랐을 때는 시작 Activity부터 로직을 따라가서 현재 Activity를 찾기도 했다. ApiDemos에서 기능을 테스트해보다 관련 Activity를 찾아서 디렉터리를 뒤져본 기억들은 안드로이드 앱 개발자라면 가지고 있을 것이다.
 
 \subsection{taskAffinity}
-Activity에서 startActivity()를 실행하는 것이 일반적이지만, BroadcastReceiver나 Service에서 startActivity()를 실행하기도 한다. 드물지만 Application에서는  이벤트를 항상 받기 위해서 Application에 BroacastReceiver를 등록하고 여기서 startActivity()를 실행하는 경우도 있다.
-그런데 Activity가 아닌 곳에서 startActivity()를 실행하는 경우에는 앱이 포그라운드에 있을 수도 있지만, 기본적으로 백그라운드에서 실행한다고 가정해야만 한다. Activity 외에 다른 컴포넌트에서 startActivity를 실행하면 아래와 같은 에러를 만날 때가 있다.
+Activity에서 startActivity()를 실행하는 것이 일반적이지만, BroadcastReceiver나 Service에서 startActivity()를 실행하기도 한다. 드물지만 Application에서는 이벤트를 항상 받기 위해서 Application에 BroacastReceiver를 등록하고 여기서 startActivity()를 실행하는 경우도 있다.
+그런데 Activity가 아닌 곳에서 startActivity()를 실행하는 경우에는 앱이 포그라운드에 있을 수도 있지만, 기본적으로 백그라운드에서 실행한다고 가정해야만 한다. Activity 외에 다른 컴포넌트에서 startActivity()를 실행하면 아래와 같은 에러를 만날 때가 있다.
 \begin{lstlisting}[frame=single]
 09-07 08:49:32.314: E/AndroidRuntime(482): Caused by: android.util.AndroidRuntimeException: 
 Calling startActivity() from outside of an Activity  context requires 
@@ -192,12 +193,12 @@ context.startActivity(intent);
 \end{lstlisting}
 
 해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
-taskAffinity는 AndroidManifest.xml의 Activity 선언에 android:taskAffinity에 지정할 수 있고 속성이 없다면 디폴트 값은 패키지명이다.
+taskAffinity는 AndroidManifest.xml의 Activity 선언에 android:taskAffinity로 지정할 수 있고 속성이 없다면 디폴트 값은 패키지명이다.
 결국 taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_NEW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
 taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_NEW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
 별도로 속성을 줄 때는 android:taskAffinity=``:alarm'' 식으로 프로세스 분리할 때처럼 :(clone) 뒤에 구분자를 적는 것을 권장한다.\footnote{com.example.android.lifecycle.another 또는 :another와 같은 형식이 모두 가능하지만  another처럼 단순한 이름을 쓰는 것은 허용되지 않는다.}\\
 
-Activity 선언에 taskAffinity 속성을 따로 주는 경우를 알아보자. 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
+Activity 선언에 taskAffinity 속성을 별도로 하는 경우를 알아보자. 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
 알람 앱에 알람 리스트 화면(AlarmClock), 알람 설정 화면(AlarmSettings), 알람 화면(AlarmAlert)과 같이 3개의 화면이 있다고 하자. 
 만일 AlarmAlert 화면에 android:taskAffinity 속성이 따로 없다면 어떻게 될까?
 일정 시간이 되어 알람이 떴는데 그 순간에 알람 앱의 태스크가 포그라운드나 백그라운드에 이미 있을 수 있다. 
