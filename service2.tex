@@ -335,10 +335,9 @@ Binding된 클라이언트가 남아 있다면 Service 프로세스가 메모리
 \end{itemize}
 
 Bound Service의 용도를 이제 생각해보자.
-Bound Service는 클라이언트가 일단 Binding되면, Service에서 제공하는 기능을 클라이언트에서 접근 가능한 것으로 이해하면 된다.
 최신 뉴스나 인기 검색어, 날씨처럼 업데이트가 필수적인 데이터가 있다. 이런 데이터를 앱에서 쓰는 방법은 어떤 게 있을까?
 \begin{enumerate}
-\item XML이나 JSON으로 데이터를 리턴하는 API 서버를 만들고, 앱에서 HTTP 호출을 통해 데이터에 접근한다.
+\item XML이나 JSON으로 결과를 리턴하는 API 서버를 만들고, 앱에서 HTTP 호출을 통해 데이터에 접근한다.
 \item HTTP 호출을 하고 결과도 객체로 리턴해주는 오픈 API jar를 만들어서, 앱에서는 jar를 이용해서 데이터에 접근한다.
 \item 서비스 앱에서 데이터를 제공하는 Bound Service를 만들고(이 안에서 HTTP 호출을 하고 객체를 리턴한다), 다른 앱에서는 bindService()를 실행하여 Service 데이터에 접근한다. 이를테면 검색 앱에서는 인기 검색어 목록을 Bound Service로 외부에 제공할 수 있다.
 Google Play In-app Billing도 이 방식을 사용하고 있다.
@@ -347,12 +346,15 @@ Google Play In-app Billing도 이 방식을 사용하고 있다.
 3번과 4번에서 Bound Service를 언급하였다. 
 아래로 갈수록 추상화 레벨이 높다. 추상화 레벨이 높은 게 좋은 게 아니라, 현시점에 맞는 적절한 방법을 선택하는 게 좋다. 오버엔지니어링을 피하자는 얘기다.\\
 
+네트워크 데이터를 조회하는 예를 들었지만, 이처럼 한 곳에서 특화된 기능을 내/외부 프로세스의 여러 클라이언트에게 제공하는 용도에 Bound Service를 사용할 수 있다. 단순한 데이터 제공에는 ContentProvider도 가능하지만, Bound Service에서는 CallBack을 이용한 상호 작용이 가능하다.\\
+
 Bound Service는 구분해서 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding)으로 2가지를 얘기한다.
-혹자는 뭐 하러 Local과 Remote를 구분하느냐고 말하기도 한다.
-Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 필요가 없다는 것이다. Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
+혹자는 Local/Remote 구분이 불필요하다고 하기도 한다.
+Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 필요가 없다는 것이다. 
+Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
 
 \subsection{리모트 바인딩}
-Remote Binding Service를 만드는 것이 어렵지는 않다. aidl 인터페이스를 작성한 다음에 Service에서 Stub 인터페이스 구현해주면 된다.
+Remote Binding Service를 만드는 것이 어렵지는 않다. aidl 인터페이스를 작성한 다음에 Service에서 Stub 인터페이스를 구현해주면 된다.
 간단한 샘플을 가지고 먼저 알아보자. 
 IRemoteService.aidl을 아래와 같이 작성하였다. 
 \begin{lstlisting}[frame=single]
@@ -363,7 +365,8 @@ interface IRemoteService {
 }
 \end{lstlisting}
 
-이렇게 하면 gen 디렉터리에 IRemoteService.java가 생성된다. 아래 코드는 포매팅을 한 것이고 실제로는 탭이 없이 빽빽하게 붙어있다. 이 소스는 별로 들여다 볼 일은 없지만 한 번쯤은 봐두는 게 좋다.
+이렇게 하면 이클립스에서는 gen 디렉터리에, 안드로이드 스튜디오에서는 build/generated/source/aidl 디렉터리에 IRemoteService.java가 생성된다. 
+아래 코드는 포매팅을 한 것이고 실제로는 탭이 없이 빽빽하게 붙어있다. 이 소스는 별로 들여다볼 일은 없지만 한 번쯤은 봐두는 게 좋다.
 \begin{lstlisting}[frame=single]
 public interface IRemoteService extends android.os.IInterface {
 	public static abstract class Stub extends android.os.Binder
@@ -470,7 +473,7 @@ public interface IRemoteService extends android.os.IInterface {
 \item 55라인(7)의 Proxy와 3라인(1)의 Stub으로 구분되는 클라이언트와 서버는 Parcel을 가지고 데이터를 주고받는다. 
 \item 83라인(9)에서 Proxy에서 transact() 메서드를 호출하면 33라인(5)에서 Stub의 onTransact() 메서드가 호출된다.
 \item 79라인(8)에서 Parcel에 쓰기 시작하고 42라인(6)에서 읽기 시작한다.
-\item 12라인(3)의 asInterface() 메서드 내용을 보자. 8라인(2)에서 attachInterface()에 등록한 것을 16라인(4)의 queryLocalInterface() 메서드로 조회하게 된다. 동일한 프로세스에 있다면 Stub 인스턴스를 직접 사용하겠다는 것이다. 내부적으로 로컬일 수도 있고 리모트일 수도 있는 바인딩이 이때 결정된다.
+\item 12라인(3)의 asInterface() 메서드의 내용을 보자. 8라인(2)에서 attachInterface()에 등록한 것을 16라인(4)의 queryLocalInterface() 메서드로 조회하게 된다. 동일한 프로세스에 있다면 Stub 인스턴스를 직접 사용하겠다는 것이다. 내부적으로 로컬일 수도 있고 리모트일 수도 있는 바인딩이 이때 결정된다.
 \end{itemize}
 
 Service에서는 추상 클래스인 Stub 구현체를 만든다.
@@ -496,7 +499,7 @@ public class RemoteService extends Service {
 \end{lstlisting}
 
 다른 컴포넌트에서 Service를 바인딩해서 사용하는 것도 복잡하지는 않다. 
-bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으로 사용할 ServiceConnection 인스턴스를 전달한다.
+bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으로 사용할 ServiceConnection 인스턴스를 bindService() 메서드에 파라미터로 전달한다.
 \begin{lstlisting}[frame=single]
 	private IRemoteService mIRemoteService;
 
@@ -531,15 +534,14 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 \end{lstlisting}
 \begin{itemize}
 \item 3라인(1)에서 커넥션 Callback인 ServiceConnection을 생성하였다. 7라인(2)의 Stub.asInterface() 메서드를 통해서 로컬인 경우는 Stub 인스턴스, 리모트인 경우는 Binder Proxy 인스턴스가 mIRemoteService에 대입된다.
-어떤 문서에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다.
+어떤 책에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다.
 Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다(물론 Context.BIND\_AUTO\_CREATE 옵션을 사용할 때이다).
 \item 12라인(3)에서 연결이 끊겼을 때는 mIRemoteService를 null로 만든다.
 \item 21라인(4)에서 bindService에 ServiceConnection을 전달한다.
 \item 25라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected()가 불리기 전일 수도 있고, Service 문제로 바인딩이 안되었을 수도 있기 때문이다.
 \end{itemize}
 
-로컬에서 호출 시에는 호출하는 스레드에서 실행되고, 리모트인 경우에는 Service가 속한 프로세스의 Binder 스레드 풀에서 실행된다. 
-스레드 풀에서 실행되기 때문에 Remote Binding Service는 스레드 안전하게 만들어져야만 한다.\\
+로컬에서 호출 시에는 호출하는 스레드에서 실행된다. 반면 리모트 호출인 경우에는 Service가 속한 프로세스의 Binder 스레드 풀에서 실행되기 때문에 Remote Binding Service는 스레드 안전하게 만들어져야만 한다.\\
 
 리모트 바인딩으로 커버 가능하지만 굳이 로컬 바인딩을 얘기하는 이유는 있다. 바로 리모트 바인딩을 지원하려면 Marshaling/Unmarshaling을 해야 하기 때문에 
 aidl 인터페이스에 쓸 수 있는 데이터 타입이 제한된다.\footnote{\url{http://developer.android.com/guide/components/aidl.html}을 참고하자.}\\
@@ -552,15 +554,16 @@ aidl에서 기본적으로 지원하는 타입을 보자.
 \item Map: 역시 구현체인 HashMap 같은 건 쓸 수 없다. 제네릭은 지원하지 않는다.
 \end{enumerate}
 Serializable 인터페이스 구현 클래스나 enum 같은 건 될 거 같은데 역시 안된다.
-그럼 우리가 만드는 클래스들은 어떻게 지원할까 하면 바로 Parcelable 인터페이스를 구현하면 된다. 
-Parcelable로 만들지 않으면 aidl에 import도 되지 않는다(aidl 파일과 동일한 패키지에 있는 클래스도 import 해야 한다).\\
+그럼 우리가 만드는 클래스는 어떻게 지원할까 하면 바로 Parcelable 인터페이스를 구현하면 된다. 
+Parcelable로 만들지 않으면 aidl에 import도 되지 않는다(aidl 파일과 동일한 패키지에 있는 클래스도 import해야 한다).\\
 
-여기에 바로 고민이 생긴다. 전달해야 하는 객체가 복잡하거나 객체의 수가 많다면 이것을 Parcelable로 만드는 것이 만만치 않다.
+여기에 바로 고민이 생긴다. 전달하는 객체가 복잡하거나 객체의 수가 많다면 이것을 Parcelable로 만드는 것이 만만치 않다.
 로컬 바인딩은 이 문제에서 자유롭다. 나도 쓸 수 있고 남도 쓸 수 있게 만들려면 규칙대로(Parcelable) 만들어야 하지만, 혼자서만 쓰겠다면 규칙대로 할 필요가 없는 것이다.\\
 
 \subsection{로컬 바인딩}
 로컬 바인딩은 리모트 바인딩보다 간단하게 만들 수 있다.
-validCalendar() 메서드에 리모트 바인딩에서는 쓰지 못했던 enum 타입을 파라미터로 전달하는 것도 가능하다. 일반적인 로컬 바인딩 샘플을 보자.
+validCalendar() 메서드에 리모트 바인딩에서는 쓰지 못했던 enum 타입을 파라미터로 전달하는 것도 가능하다. 
+일반적인 로컬 바인딩 샘플을 보자.
 \begin{lstlisting}[frame=single]
 public class LocalService extends Service {
 	private final IBinder mBinder = new LocalBinder();
@@ -643,12 +646,12 @@ public class BindingActivity extends Activity implements OnClickListener {
 \end{lstlisting}
 42라인(1)에서 리모트 바인딩과 달리 onServiceConnected() 메서드에서 결국 얻어내는 것은 LocalService 인스턴스이다.
 안드로이드에서 컴포넌트 간에 직접적으로 인스턴스 접근은 가능하지 않는데 Binder 객체를 통해서 직접 접근할 수 있게 한 것이다. 
-인스턴스를 얻었으니 그 이후에는 Service의 메서드를 직접 호출하는 방식으로 사용하면 된다. 리모트 바인딩도 사용이 어려운 건 아닌데 로컬 바인딩은 더 간단하다.\\
+인스턴스를 얻었으니 그 이후에는 Service의 메서드를 직접 호출하는 방식으로 사용하면 된다. 
+리모트 바인딩도 사용이 어려운 건 아닌데 로컬 바인딩은 더 간단하다.\\
 
 그런데 여기서 만든 로컬 바인딩 샘플을 보면 뭔가 억지로 끼워 맞춘 느낌이 있다. Service의 메서드를 직접 호출할 수 없으니 바인딩을 통해서 Service 레퍼런스를 가져오고 그 다음은 Service 메서드를 직접 호출하는 것에 불과하다.
-리모트 바인딩과 기본 형태도 차이가 있다. 비슷한 형태로 하려면 아래처럼 변경해 볼 수 있다.
-먼저 앞에서 IRemoteService.aidl 파일은 그대로 IRemoteService 인터페이스로 만든다.
-LocalBinder에서 IRemoteService를 구현한다. Stub을 구현하는 것과 유사하다.
+리모트 바인딩과 기본 형태도 차이가 있다. 비슷한 형태로 하려면 아래처럼 변경해볼 수 있다.
+먼저 앞에서 IRemoteService.aidl 파일은 그대로 IRemoteService 인터페이스로 만들고, Stub 구현과 유사하게 LocalBinder에서 IRemoteService를 구현한다. 
 \begin{lstlisting}[frame=single]  
 public class LocalService extends Service {
 	private final IBinder mBinder = new LocalBinder();
@@ -732,11 +735,11 @@ bindService()를 호출하면 Service와 엮이는 클라이언트가 하나씩 
 이 그림에서 마름모꼴 분기점은 Started \& Bound Service의 경우인데, 앞에서 얘기했듯이 가능하면 생각하지 않는 것이 좋다.\\
 
 기본적으로 Bound Service에서 bindService()를 실행한 클라이언트가 모두 unbindService()를 호출한다면, Service에서는 onUnbind()가 호출되고 onDestroy()까지 호출된다.
-Activity에서 Bound Service를 사용할 때는 onStart()와 onStop()에서 bindService()와 unbindService()를 각각 호출하는 것을 권장하고 있다. unbindService()를 실행 시에 연결되어 있는 클라이언트 수가 0가 되면 Service는 종료될 수 있음을 생각해보자. onResume/onPause에서 bind/unbind 하는 경우 onResume/onPause는 빈번하게 트랜지션이 일어나는데(전원 버튼 누르기, 다이얼로그 테마 Activity를 위에 띄우기 등) onPause()를 통해 unbindService()가 실행되고 Service가 종료될 수도 있다. 
+Activity에서 Bound Service를 사용할 때는 onStart()와 onStop()에서 bindService()와 unbindService()를 각각 호출하는 것을 권장하고 있다. unbindService()를 실행 시에 연결되어 있는 클라이언트 수가 0가 되면 Service는 종료될 수 있음을 생각해보자. onResume/onPause에서 bind/unbind하는 경우 onResume/onPause는 빈번하게 트랜지션이 일어나는데(전원 버튼 누르기, 다이얼로그 테마 Activity를 위에 띄우기 등) onPause()를 통해 unbindService()가 실행되고 Service가 종료될 수도 있다. 
 그리고서 onResume()에서 다시 시작해야만 한다. 종료된 Service라면 다시 생성하는 비용이 들게 되는데 빈번한 트랜지션에서 계속 생성/종료하는 것은 적합하지 않다.\\
 
-bindService()를 통해 Bound되었으면 이제는 호출하는 쪽과 호출되는 쪽은 클라이언트-서버 관계로 파악하면 된다. 클라이언트에서 메서드를 호출하면 Service에서 결과를 리턴하는 방식이다. 
-조회해서 결과를 리턴한다면 떠올려지는 게 바로 ContentProvider이다. 로컬 바인딩은 타입을 자유롭게 쓸 수 있으므로 크게 고민하지 않아도 되겠지만, 리모트 바인딩의 경우는 ContentProvider를 대신 쓸 수도 있다. 물론 DB에서 가져오는 값이 아닐 때는 Cursor 타입으로 리턴하도록 조작해야 한다.\\
+bindService()를 통해 Binding되었으면 이제는 호출하는 쪽과 호출되는 쪽은 클라이언트-서버 관계로 파악하면 된다. 클라이언트에서 메서드를 호출하면 Service에서 결과를 리턴하는 방식이다. 
+조회해서 결과를 리턴한다면 떠올려지는 게 바로 ContentProvider이다. 로컬 바인딩은 타입을 자유롭게 쓸 수 있으므로 크게 고민하지 않아도 되겠지만, 리모트 바인딩의 경우는 단순 데이터 조회라면 ContentProvider를 대신 쓸 수도 있다. 물론 DB에서 가져오는 값이 아닐 때는 Cursor 타입으로 리턴하도록 조작해야 한다.\\
 
 얘기가 나온 김에 ContentProvider를 써서 동일한 기능을 만들어보자.
 \begin{lstlisting}[frame=single]
@@ -781,9 +784,9 @@ bindService()를 통해 Bound되었으면 이제는 호출하는 쪽과 호출�
 
 Service에서도 작업이 오래 걸린다면 백그라운드 스레드에서 작업을 실행하는 것을 고려할 수 있다. 이때는 4가지 방법을 고려할 수 있다.
 \begin{itemize}
-\item 스레드 작업이 끝났을 때 sendBroadcast() 메서드를 통해서 데이터를 전달하거나, 데이터가 많은 경우 다시 클라이언트가 폴링해서 데이터를 가져올 수도 있다.
-\item Binder Callback을 메서드에 파라미터로 전달해서 결과를 받는 방법도 있다.\footnote{ApiDemos에서 RemoteService를 참고하자.} 이 방법은 안드로이드 프레임워크에서 많이 쓰이는 방법이다. 앞에 얘기했듯이 Toast.show() 메서드에서도 쓰이고, Activity, Service 등의 컴포넌트 생명주기가 불려지는 것도 system\_server 프로세스의 ActivityManagerService에서 Binder Callback을 통해서 호출된다(ActivityThread의 내부 클래스인 ApplicationThread가 바로 Binder Callback이다).
-\item bindService() 메서드의 파라미터인 Intent에 ResultReceiver를 전달하여 Service의 onBind()에서 ResultReciever를 가져오고 작업을 실행하며 결과를 클라이언트에 전달한다.
+\item 스레드 작업이 끝났을 때 sendBroadcast()를 통해서 데이터를 전달하거나, 데이터가 많은 경우 다시 클라이언트가 폴링해서 데이터를 가져올 수도 있다.
+\item Binder Callback을 메서드에 파라미터로 전달해서 결과를 받는 방법도 있다.\footnote{ApiDemos에서 RemoteService를 참고하자.} 이 방법은 안드로이드 프레임워크에서도 많이 쓰이는 방법이다. 앞에 얘기했듯이 Toast.show() 메서드에서도 쓰이고, Activity, Service 등의 컴포넌트 생명주기가 불려지는 것도 system\_server 프로세스의 ActivityManagerService에서 Binder Callback을 통해서 호출된다(ActivityThread의 내부 클래스인 ApplicationThread가 바로 Binder Callback이다).
+\item bindService() 메서드의 Intent 파라미터에 ResultReceiver를 전달하여, Service의 onBind()에서 ResultReciever를 가져오고 작업을 실행하며 결과를 클라이언트에 다시 전달한다.
 \item Messenger를 통해서 양방향 통신을 할 수 있다. Messenger도 내부적으로 Binder Callback을 사용하고 있다. Messenger에 대해서는 별도의 절에서 살펴보자.
 \end{itemize}
 
@@ -808,9 +811,9 @@ Messenger는 Binder Callback을 내부적으로 래핑해서 Bound Service와 �
 이제 날씨 정보를 업데이트하는 기능을 Messenger로 만들어보자. 요구 사항은 이렇다.
 \begin{itemize}
 \item 처음 Activity에서 bindService()를 실행하면, Bound Service에서 날씨 정보를 가져오고 내부에서 주기적으로(예제에서는 1분) 날씨 정보를 가져온다.
-\item 날씨 정보를 가져올 때마다 Bound된 Activity에 정보를 전달해서 화면에 보여준다.
-\item 추가로 클라이언트가 Bound되면 최신 날씨 정보를 클라이언트에 전달한다.
-\item 화면에는 [Refresh] 버튼이 있어서 이 버튼을 클릭하면, 날씨 정보를 새로 가져오고 Bound된 클라이언트 모두에 날씨 정보를 새로 전달한다.
+\item 날씨 정보를 가져올 때마다 Binding된 Activity에 정보를 전달해서 화면에 보여준다.
+\item 추가로 클라이언트가 Binding되면 최신 날씨 정보를 클라이언트에 전달한다.
+\item 화면에는 [Refresh] 버튼이 있어서 이 버튼을 클릭하면, 날씨 정보를 새로 가져오고 Binding된 모든 클라이언트 날씨 정보를 새로 전달한다.
 \end{itemize}
 
 Service 코드를 먼저 살펴보자.
@@ -1019,7 +1022,7 @@ public class MessengerActivity extends Activity {
 \begin{itemize}
 \item \ref{subsec:binding_special}절에서 얘기한 가이드대로 onStart()와 onStop() 메서드에서 bindService()와 unbindService() 메서드를 호출한다.
 \item 3라인(1)의 Handler는 클라이언트에 전달되는 Message를 처리하는 용도이다. 이것을 감싼 Messenger를 47라인(4)에서 outMessenger로 생성한다.
-\item 25라인(2)의 onServiceConnnected() 콜백 안에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입해서 31라인(3)에서 Service에 등록하라는 Message를  보낸다.
+\item 25라인(2)의 onServiceConnnected() 메서드에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입해서 31라인(3)에서 Service에 등록하라는 Message를  보낸다.
 \item 80라인(5)은 [Refresh] 버튼을 클릭할 때 동작이다. Service에 날씨 정보를 갱신하라는 Message를 보낸다.
 \end{itemize}
 
