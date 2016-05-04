@@ -181,11 +181,11 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 4.X 이후에도 여러 서비스가 추가되어서 생소한 것들이 있는데 굳이 살펴보지는 않겠다.
 하나하나 보는 것보다는 전체적으로 특기할 만한 내용 위주로 보도록 하자.
 \begin{itemize}
-\item getSystemService()의 결과로서 -Manager 네이밍을 따르지 않는 것은 JobScheduler, LauncherApps, LayoutInflater, MediaRouter, Vibrator 네 가지이다. 
+\item getSystemService()의 결과로서 -Manager 네이밍을 따르지 않는 것은 JobScheduler, LauncherApps, LayoutInflater, MediaRouter, Vibrator 4가지이다. 
 \item 인터페이스 이름은 getSystemService() 결과 클래스에 일반적으로는 앞에 I를 붙이지만, 예외 케이스가 너무 많다. Manager 자리에 Service가 붙기도 하고, Manager가 빠지기도 하고 ManagerService로 끝나기도 한다. 
 \item 시스템 서비스 가운데 가장 많이 참고해야 하는 ActivityManagerService는 추상 클래스인 ActivityActivityManagerNative를 상속한다. ActivityActivityManagerNative는 IActivityManager의 Stub 구현이 아니라, Binder를 상속한 IActivityManager 인터페이스 구현이다. 그래서 asInterface()나 onTransact() 메서드 등이 직접 구현되어 있다.
 \item LayoutInflator는 Binder 통신을 하는 것이 아니고, PolicyManager.makeNewLayoutInflater()를 통해  com.android.internal.policy.impl.PhoneLayoutInflator를 가져온다.
-LayoutInflator를 가져오는 메서드는 세 가지가 있다.
+LayoutInflator를 가져오는 메서드는 3가지가 있다.
 \begin{itemize}
 \item (LayoutInflator) Context.getSystemService(Context.LAYOUT\_INFLATER\_SERVICE)
 \item LayoutInflator.from(Context context)
@@ -452,7 +452,7 @@ clone(:) 앞에 있는 문자열이 바로 dumpsys 다음에 올 수 있는 값�
 
 service list 결과에서 clone(:) 뒤에 [] 공백으로 나오는 것은 Binder Stub을 등록한 것이 아닌 Binder를 만들어서 일부러 등록한 것이다. dump 용도의 서비스가 등록된 것이다.
 dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시스템 서비스는 없다. 위에서 ActivityManagerService.setSystemProcess() 메서드의 7라인을 보면 ServiceManager.addService(``meminfo'', new MemBinder(m))가 있다.
-이제 ActivityManagerService의 정적 내부 클래스인 MemBinder를 찾아보면 별 게 없고, Binder를 상속하고 dump() 메서드가 유일한 메서드일 뿐이다.
+이제 ActivityManagerService의 정적 내부 클래스인 MemBinder를 찾아보면 별게 없고, Binder를 상속하고 dump() 메서드가 유일한 메서드일 뿐이다.
 \begin{lstlisting}[frame=single]
     static class MemBinder extends Binder {
         ActivityManagerService mActivityManagerService;
@@ -719,7 +719,7 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일 뿐 Message가 사라진 것은 아니다).
 그리고 CPU가 깨어난 순간 동작을 한 것인데, 만일 Delay Time이 큰 경우에는 어떨까?\\
 
-두 가지 실제 예를 들어보자.
+2가지 실제 예를 들어보자.
 \begin{enumerate}
 \item 캘린더 앱에서 하루 일정에 대해서 24시간의 칸이 있고, 현재 시간에 대해서 빨간 선으로 표시하고 있었다. 
 일정 시간마다(예를 들어 5분) 현재 시간을 읽어와서 빨간 선을 이동시키는데, 위의 UI 반복 갱신 패턴을 사용했다.

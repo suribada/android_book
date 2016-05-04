@@ -1,5 +1,7 @@
 \section{Started Service}
-Started Service는 Context의 startService() 메서드로 시작된다. 이것 역시 startService()를 호출하는 시점에 Service가 바로 시작되는 것이 아니고, 메인 Looper MessageQueue에 들어가서 메인 스레드를 쓸 수 있는 시점에 Service가 시작된다. startService() 메서드는 곧바로 ComponentName을 리턴하고 다음 라인을 진행한다. startService()는 Intent Bundle에 파라미터를 전달하고 Service에 작업을 하도록 요청하는  것 뿐이다.\\
+Started Service는 Context의 startService() 메서드로 시작된다. 
+이것 역시 startService()를 호출하는 시점에 Service가 바로 시작되지 않고, 메인 Looper MessageQueue에 들어가서 메인 스레드를 쓸 수 있는 시점에 Service가 시작된다. 
+startService() 메서드는 곧바로 ComponentName을 리턴하고 다음 라인을 진행한다. startService()는 Intent Bundle에 파라미터를 전달하고 Service에 작업을 하도록 요청하는 것 뿐이다.\\
 
 startService() 메서드를 통해 Service가 처음 생성되는 경우에는 onCreate()를 거쳐서 onStartCommand() 메서드를 실행하며, 그 이후에 startService()를 실행하면 onCreate() 메서드는 거치지 않고 onStartCommand() 메서드가 실행된다.
 onCreate() 메서드 역할은 Service에 필요한 리소스 등을 준비해 놓은 작업을 하고, onStartCommand() 메서드는 이름 그대로 명령을 매번 처리하는 역할을 한다. 그래서 Activity와는 다르게 onCreate() 메서드에는 Intent가 전달되지 않는다.\\
@@ -175,7 +177,7 @@ Service에서 멀티 스레딩이 필요한 경우가 많지는 않다. 동시�
 IntentService는 내부적으로 1개의 백그라운드 스레드를 두고 전달된 Intent를 순차적으로 처리한다(내부적으로 HandlerThread를 사용한다).\\
 
 IntentService에서는 백그라운드 스레드에서 실행되는 onHandleIntent(Intent) 메서드만 구현하면 된다.
-물론 생성자 문제 때문에 1가지를 더 해야 한다. 아래와 같이 생성자가 추가되지 않으면 `no empty constructor exception'이 발생한다. 
+물론 생성자 문제 때문에 아래와 같이 생성자도 추가해야 한다. 그렇지 않으면 `no empty constructor exception'이 발생한다. 
 \begin{lstlisting}[frame=single]
 public class NewsReaderService extends IntentService {
 
@@ -333,6 +335,7 @@ Binding된 클라이언트가 남아 있다면 Service 프로세스가 메모리
 \end{itemize}
 
 Bound Service의 용도를 이제 생각해보자.
+Bound Service는 클라이언트가 일단 Binding되면, Service에서 제공하는 기능을 클라이언트에서 접근 가능한 것으로 이해하면 된다.
 최신 뉴스나 인기 검색어, 날씨처럼 업데이트가 필수적인 데이터가 있다. 이런 데이터를 앱에서 쓰는 방법은 어떤 게 있을까?
 \begin{enumerate}
 \item XML이나 JSON으로 데이터를 리턴하는 API 서버를 만들고, 앱에서 HTTP 호출을 통해 데이터에 접근한다.
@@ -342,9 +345,9 @@ Google Play In-app Billing도 이 방식을 사용하고 있다.
 \item bindService()를 실행하고 결과를 받는 것을 래핑한 jar를 만들어서, 다른 앱에서 이 jar를 이용한다. Google Play Services(\url{https://developers.google.com/android/guides/overview})가 이런 형태이다.\footnote{connect()와 disconnect() 메서드가 있는데, bindService()와 unbindService()를 내부적으로 호출해서 사용한다.}
 \end{enumerate}
 3번과 4번에서 Bound Service를 언급하였다. 
-아래로 갈수록 추상화 레벨이 높다. 추상화 레벨이 높은 게 좋은 게 아니라, 현시점에 맞는 적절한 방법을 선택하는 게 좋겠다. 오버엔지니어링을 피하자는 얘기다.\\
+아래로 갈수록 추상화 레벨이 높다. 추상화 레벨이 높은 게 좋은 게 아니라, 현시점에 맞는 적절한 방법을 선택하는 게 좋다. 오버엔지니어링을 피하자는 얘기다.\\
 
-Bound Service는 구분해서 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding) 2가지를 얘기한다.
+Bound Service는 구분해서 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding)으로 2가지를 얘기한다.
 혹자는 뭐 하러 Local과 Remote를 구분하느냐고 말하기도 한다.
 Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 필요가 없다는 것이다. Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
 
@@ -528,7 +531,8 @@ bindService()는 바인딩 결과를 비동기로 받기 때문에, Callback으�
 \end{lstlisting}
 \begin{itemize}
 \item 3라인(1)에서 커넥션 Callback인 ServiceConnection을 생성하였다. 7라인(2)의 Stub.asInterface() 메서드를 통해서 로컬인 경우는 Stub 인스턴스, 리모트인 경우는 Binder Proxy 인스턴스가 mIRemoteService에 대입된다.
-어떤 문서에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다. Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다(물론 Context.BIND_AUTO_CREATE 옵션을 사용할 때이다).
+어떤 문서에서는 ServiceConnection의 onServiceDisconnected()가 Service에서 onUnbind() 된 이후에 호출된다고 잘못 나오기도 하는데, onServiceDisconnected()는 Service에 문제가 생겼을 때(주로 크래시되거나 kill 되었을때) 호출되는 것이다.
+Service Binding은 아직 유효한 상태이고, 다음에 running 상태가 되면 onServiceConnected()가 알아서 다시 호출된다(물론 Context.BIND\_AUTO\_CREATE 옵션을 사용할 때이다).
 \item 12라인(3)에서 연결이 끊겼을 때는 mIRemoteService를 null로 만든다.
 \item 21라인(4)에서 bindService에 ServiceConnection을 전달한다.
 \item 25라인(5)에서 Service의 메서드를 호출할 때는 먼저 null을 체크한다. ServiceConnection의 onServiceConnected()가 불리기 전일 수도 있고, Service 문제로 바인딩이 안되었을 수도 있기 때문이다.
@@ -775,7 +779,7 @@ bindService()를 통해 Bound되었으면 이제는 호출하는 쪽과 호출�
 	}
 \end{lstlisting}
 
-Service에서도 작업이 오래 걸린다면 백그라운드 스레드에서 작업을 실행하는 것을 고려할 수 있다. 이때는 네 가지 방법을 고려할 수 있다.
+Service에서도 작업이 오래 걸린다면 백그라운드 스레드에서 작업을 실행하는 것을 고려할 수 있다. 이때는 4가지 방법을 고려할 수 있다.
 \begin{itemize}
 \item 스레드 작업이 끝났을 때 sendBroadcast() 메서드를 통해서 데이터를 전달하거나, 데이터가 많은 경우 다시 클라이언트가 폴링해서 데이터를 가져올 수도 있다.
 \item Binder Callback을 메서드에 파라미터로 전달해서 결과를 받는 방법도 있다.\footnote{ApiDemos에서 RemoteService를 참고하자.} 이 방법은 안드로이드 프레임워크에서 많이 쓰이는 방법이다. 앞에 얘기했듯이 Toast.show() 메서드에서도 쓰이고, Activity, Service 등의 컴포넌트 생명주기가 불려지는 것도 system\_server 프로세스의 ActivityManagerService에서 Binder Callback을 통해서 호출된다(ActivityThread의 내부 클래스인 ApplicationThread가 바로 Binder Callback이다).

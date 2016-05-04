@@ -194,7 +194,7 @@ Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성�
 
 그럼 백그라운드 스레드에서 기본 생성자를 사용한다면 어떨까? 이때는 Looper가 준비되어 있지 않다면 RuntimeException을 발생시킨다. 
 ``Can't create handler inside thread that has not called Looper.prepare''
-이 메시지에 따르면 먼저 Looper.prepare()를 실행해서 해당 스레드에서 사용할 Looper를 준비해야 한다(내부적으로 prepare() 메서드는 MessageQueue를 생성하는 것 말고는 별 게 없다).\\
+이 메시지에 따르면 먼저 Looper.prepare()를 실행해서 해당 스레드에서 사용할 Looper를 준비해야 한다(내부적으로 prepare() 메서드는 MessageQueue를 생성하는 것 말고는 별게 없다).\\
 
 Looper API 문서를 보면 백그라운드 스레드에서 Handler를 사용하는 방법이 나온다.
 
@@ -563,12 +563,12 @@ ICS 이하에서는 코드가 좀 다르다.
 ActivityManagerService에는 포그라운드/백그라운드 용도의 BroadcastQueue가 각각 있는데, Queue에 쌓인 순서에 관계없이 포그라운드 용도의 BroadcastQueue를 먼저 처리한다.
 \end{enumerate}
 
-세부 구분까진 하지 않으면 세 가지 타임아웃 케이스가 있다. BroadcastReceiver와 Service, 그리고 InputDispatching(해당 케이스가 발생하는 것은 Activity이므로 Activity의 타임아웃으로 보기도 함)이다.\\
+세부 구분까진 하지 않으면 3가지 타임아웃 케이스가 있다. BroadcastReceiver와 Service, 그리고 InputDispatching(해당 케이스가 발생하는 것은 Activity이므로 Activity의 타임아웃으로 보기도 함)이다.\\
 
 ANR 발생 시에 ActivityManagerService의 appNotResponding() 메서드에서 다이얼로그를 띄우는 등의 일을 처리한다. 이 메서드를 호출하는 쪽을 찾아보면 타임아웃 케이스를 어떻게 만들어 내는지 알 수 있다.
 BroadcastReceiver와 Service는 시작 전에 Handler의 sendMessageAtTime() 메서드를 사용해서 Message를 보내서, 타임아웃이 지나면 appNotResponding() 메서드를 호출한다. 물론 타임아웃 내에 실행이 끝나면 Message를 얼른 제거한다(2.4.3절에서 얘기한 Handler의 4번째 용도에 해당한다. com.android.server.am.BroadcastQueue와 com.android.server.am.ActiveServices를 보자).\\
 
-여기서 한 가지 의문이 생길 수 있다. BroadcastReceiver의 onReceive() 메서드가 1분 이상 지속된다고 해도 어차피 메인 스레드를 점유하고 있는데, ActivityManagerService에서 Handler의 sendMessageAtTime() 메서드에 전달된 Message가 제 시간에 작동할 수 있을까? 
+여기서 의문이 생길 수 있다. BroadcastReceiver의 onReceive() 메서드가 1분 이상 지속된다고 해도 어차피 메인 스레드를 점유하고 있는데, ActivityManagerService에서 Handler의 sendMessageAtTime() 메서드에 전달된 Message가 제 시간에 작동할 수 있을까? 
 물론이다. ActivityManagerService는 system\_server로 떠있는 별도의 프로세스에서 동작하기 때문에 이 Handler는 앱 프로세스의 메인 스레드와는 관련이 없다.\\
 
 \colorbox{tearose}{\parbox[t]{15cm}{
@@ -641,7 +641,7 @@ HandlerThread에서 Looper.prepare() 실행 후에 Handler의 세 번째 생성�
 코드 \ref{src:LooperThread}를 다시 한번 보자. Looper.loop()는 무한 반복문이기 때문에 계속 리턴되지 않는다.
 Looper.myLoop\-er().quit() 메서드를 실행할 수 있는 위치도 loop() 다음 라인에서는 할 수 없는 까닭에, 인스턴스 변수로 Looper를 가지고 다른 스레드에서 quit()을 실행해야 한다.
 이때 보통 사용하는 방법은 Looper만 돌고 있는 백그라운드 스레드를 만들고(코드 \ref{src:LooperThread} 참고), 이 스레드는 명시적으로 종료하기 전까지는 계속해서 살아있게 하는 것이다. 이때 Message는 Looper용 스레드에서 계속 처리된다.
-미묘한 차이지만 방식은 두 가지가 있다. 코드 \ref{src:LooperThread}처럼 Handler를 스레드 안에 두고 사용하는 방식이 있고, Looper를 가지고 외부에서 Handler를 만드는 방식이 있다. 
+미묘한 차이지만 방식은 2가지가 있다. 코드 \ref{src:LooperThread}처럼 Handler를 스레드 안에 두고 사용하는 방식이 있고, Looper를 가지고 외부에서 Handler를 만드는 방식이 있다. 
 두 번째 방식을 미리 만든 것이 HandlerThread이다.
 HandlerThread는 내부적으로 prepare(), loop()를 실행하는 것 외에 별 내용이 없다. 클래스명 때문에 Handler를 가진 스레드라고 생각할 수도 있지만 그렇지 않다. 바로 Looper를 가진 스레드이면서 Handler에서 사용하기 위한 스레드라고 보는 게 맞다.\\
 
@@ -848,7 +848,7 @@ pool의 스레드 개수가 coreSize보다 커진다면, 초과하는 개수만�
 keepAliveTime과 unit은 태스크가 종료될 때 바로 제거하지 않고 대기하는 시간이다. 보통 unit에는 TimeUnit.MINUTES나 TimeUnit.SECONDS를 사용한다.
 workQueue도 내용상 중요하다. 스레드 풀에서는 corePoolSize 개수만큼 유지하려 하고 추가로 요청이 들어오면 workQueue에 쌓는다. 
 % 이 workQueue 개수 제한이 넘으면 pool의 스레드 개수를 늘리는 것을 고려해야 한다. 별도 라인에서 따로 설명?
-workQueue에 쓸 수 있는 것은 세 가지이다.
+workQueue에 쓸 수 있는 것은 3가지이다.
 \begin{itemize}
 \item ArrayBlockingQueue: Queue 개수 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다
 \item LinkedBlockingQueue: 일반적으로 Queue 개수에 제한이 없다. 들어오는 요청마다 계속해서 쌓는데 이 경우에는 maximumPoolSize가 의미가 없다. LinkedBlockingQueue도 LinkedBlockingQueue(int capacity) 생성자를 사용해서 Queue 개수에 제한을 둘 수는 있다.
@@ -1066,7 +1066,7 @@ AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때는, 즉 
 \end{enumerate}
 여기 샘플에서 빠진 부분이 있다. 바로 loadImageFromNetwork() 메서드에 대한 예외 처리가 없는데 이 내용은 뒤에 다시 살펴보겠다.\\
 
-AsyncTask는 제네릭 클래스이고 타입 파라미터에는 Params, Progress, Result 세 가지가 있다. 진행 상태가 필요하지 않은 경우 Progress에 Void가 들어가는 경우는 있지만 모두 다 Void인 것도 권장되는 형태는 아니다.\\
+AsyncTask는 제네릭 클래스이고 파라미터 타입에는 Params, Progress, Result가 있다. 진행 상태가 필요하지 않은 경우 Progress에 Void가 들어가는 경우는 있지만 모두 다 Void인 것도 권장되는 형태는 아니다.\\
 
 아래는 개발자 가이드에 있는 샘플이다.
 \begin{lstlisting}[frame=single]

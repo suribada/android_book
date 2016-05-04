@@ -36,7 +36,7 @@
 \contentsline {subsubsection}{리소스 생성/제거}{56}{section*.7}
 \contentsline {subsubsection}{super.onXxx() 호출 순서}{56}{section*.8}
 \contentsline {subsubsection}{finish() 메서드 호출하고 바로 리턴}{58}{section*.9}
-\contentsline {subsubsection}{on.Xxx() 메서드는 직접 호출하지 않음}{58}{section*.10}
+\contentsline {subsubsection}{onXxx() 메서드는 직접 호출하지 않음}{58}{section*.10}
 \contentsline {section}{\numberline {5.2}Configuration 변경}{60}{section.5.2}
 \contentsline {subsection}{\numberline {5.2.1}리소스 반영}{60}{subsection.5.2.1}
 \contentsline {subsection}{\numberline {5.2.2}Configuration qualifier}{61}{subsection.5.2.2}

@@ -220,7 +220,7 @@ Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로�
 \end{itemize}
 
 결국 CRUD에서 Read를 뺀 나머지 CUD에서 Exclusive Lock을 잡는 것 때문에 DB Lock 문제가 생긴다. 그러나 CUD에서도 Lock을 잡는 게 짧은 시간이기 때문에 빈번하게 문제를 일으키지 않는다. 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 해야 하는 트랜잭션이다.
-SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}를 참고하자.}\\
+SQLite에서 트랜잭션은 deferred, immediate, exclusive의 3가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}를 참고하자.}\\
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
 \begin{itemize}
@@ -230,7 +230,7 @@ SQLite에서 트랜잭션은 deferred, immediate, exclusive의 세 가지 동작
 \end{itemize}
 
 이 설명대로라면 가능한 한 exclusive보다는 immediate를 , immediate보다는 defered를 쓰고 싶지만, 
-안드로이드에서 지원하는 것은 exclusive와 immediate 두 가지뿐이다. 게다가 immediate 방식은 허니콤부터 지원하기 시작했다.
+안드로이드에서 지원하는 것은 exclusive와 immediate 2가지뿐이다. 게다가 immediate 방식은 허니콤부터 지원하기 시작했다.
 SQLite 사이트에서 보면 defered가 디폴트라서 이 기준으로 쓰여 있는 문서들이 있어서 혼동되는 경우가 있다. 주의해서 보도록 하자.\\
 
 SQLiteDatabase에서 기본적으로 트랜잭션을 쓰는 패턴은 아래와 같다. 

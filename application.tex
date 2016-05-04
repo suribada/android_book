@@ -93,7 +93,7 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 \end{itemize}
 3개의 메서드는 ComponentCallbacks2 인터페이스의 메서드로 Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 이를 구현하고 있다. ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.\\
 
-Application Callback은 세 가지가 있다. 모두 register/unregister 메서드가 있고, Callback은 여러 개를 등록할 수 있다.\\
+Application Callback은 3가지가 있다. 모두 register/unregister 메서드가 있고, Callback은 여러 개를 등록할 수 있다.\\
 
 Application.ActivityLifecycleCallbacks(ICS), \\
 ComponentCallbacks(ICS), \\
