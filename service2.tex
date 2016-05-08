@@ -917,7 +917,7 @@ public class MessengerService extends Service {
 \item 51라인(8)에서 Handler를 감싼 Messenger를 생성하고, 이것을 85라인(14)의 onBind() 메서드에서 messenger.getBinder()로 클라이언트에 전달한다.
 \item 27라인(4)에서 MSG\_REGISTER\_CLIENT 값이 들어오면 replyTo에 전달되는 Messenger를 클라이언트 목록에 추가한다.
 \item 64라인(10)의 Runnable Task에서는 날씨 정보를 가져와서 Bundle에 담고서 클라이언트 목록에 send() 메서드로 전달한다. foreach 문을 사용하지 않고 인덱스가 높은 숫자부터 쓴 이유는 클라이언트가 dead 상태인 경우에 RemoteException이 발생하는데 76라인(12)에서 클라이언트 목록에서 해당 클라이언트를 제거해도 문제가 없게 하려는 것이다.
-\item 71라인(11)에 lastData에 최신 값을 저장하고서, 28라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Bound된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
+\item 71라인(11)에 lastData에 최신 값을 저장하고서, 28라인(5)에서 이 값이 있다면 새로 등록한 클라이언트에 전달한다. 이 방식을 사용하는 이유는 아직 갱신주기가 되지 않은 경우, 최대 1분동안 새로 Binding된 클라이언트에서는 날씨 정보를 전달받을 수 없기 때문이다.
 \item 38라인(6)에서 MSG\_UNREGISTER\_CLIENT 값이 들어오면 클라이언트 목록에서 제거한다.
 \item 41라인(7)에서 MSG\_REFRESH 값이 들어오면 기존 ScheduledFuture를 취소하고 새로 날씨 정보를 가져온다.
 \end{itemize}
@@ -1022,9 +1022,9 @@ public class MessengerActivity extends Activity {
 \begin{itemize}
 \item \ref{subsec:binding_special}절에서 얘기한 가이드대로 onStart()와 onStop() 메서드에서 bindService()와 unbindService() 메서드를 호출한다.
 \item 3라인(1)의 Handler는 클라이언트에 전달되는 Message를 처리하는 용도이다. 이것을 감싼 Messenger를 47라인(4)에서 outMessenger로 생성한다.
-\item 25라인(2)의 onServiceConnnected() 메서드에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입해서 31라인(3)에서 Service에 등록하라는 Message를  보낸다.
+\item 25라인(2)의 onServiceConnnected() 메서드에서는 IBinder를 감싼 Messenger를 생성하고 replyTo에는 inMessenger를 대입한 후에  31라인(3)에서 Service에 등록하라는 Message를  보낸다.
 \item 80라인(5)은 [Refresh] 버튼을 클릭할 때 동작이다. Service에 날씨 정보를 갱신하라는 Message를 보낸다.
 \end{itemize}
 
-이 샘플을 통해 Bound Service를 사용하는 한 가지 장점을 알 수 있다. 각 클라이언트에서 네트워크를 통한 API 호출을 매번 하지 않고 Service 한 곳에서만 네트워크 통신을 하고 모든 클라이언트에 결과를 반영할 수 있는 구조가 가능하다. 샘플처럼  Messenger를 이용하면 더 단순해진다.
+이 샘플을 통해 Bound Service를 사용하는 한 가지 장점을 알 수 있다. 각 클라이언트에서 네트워크를 통한 API 호출을 매번 하지 않고 Service 한 곳에서만 네트워크 통신을 하고 모든 클라이언트에 결과를 반영할 수 있는 구조가 가능하다. 샘플처럼 Messenger를 이용하면 더 단순해진다.
 % http://wikiware-textcube.blogspot.com/2009/12/4-%EC%95%88%EB%93%9C%EB%A1%9C%EC%9D%B4%EB%93%9C-%EC%96%B4%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EA%B8%B0%EC%B4%88.html
