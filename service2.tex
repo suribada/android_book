@@ -786,7 +786,7 @@ Service에서도 작업이 오래 걸린다면 백그라운드 스레드에서 �
 \begin{itemize}
 \item 스레드 작업이 끝났을 때 sendBroadcast()를 통해서 데이터를 전달하거나, 데이터가 많은 경우 다시 클라이언트가 폴링해서 데이터를 가져올 수도 있다.
 \item Binder Callback을 메서드에 파라미터로 전달해서 결과를 받는 방법도 있다.\footnote{ApiDemos에서 RemoteService를 참고하자.} 이 방법은 안드로이드 프레임워크에서도 많이 쓰이는 방법이다. 앞에 얘기했듯이 Toast.show() 메서드에서도 쓰이고, Activity, Service 등의 컴포넌트 생명주기가 불려지는 것도 system\_server 프로세스의 ActivityManagerService에서 Binder Callback을 통해서 호출된다(ActivityThread의 내부 클래스인 ApplicationThread가 바로 Binder Callback이다).
-\item bindService() 메서드의 Intent 파라미터에 ResultReceiver를 전달하여, Service의 onBind()에서 ResultReciever를 가져오고 작업을 실행하며 결과를 클라이언트에 다시 전달한다.
+\item bindService() 메서드의 Intent 파라미터에 ResultReceiver를 전달하여, Service의 onBind()에서 ResultReceiver를 가져오고 작업을 실행하며 결과를 클라이언트에 다시 전달한다.
 \item Messenger를 통해서 양방향 통신을 할 수 있다. Messenger도 내부적으로 Binder Callback을 사용하고 있다. Messenger에 대해서는 별도의 절에서 살펴보자.
 \end{itemize}
 

@@ -83,17 +83,18 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 
 \section{Application Callback}
 일반적으로 Application에서는 onCreate() 메서드만 오버라이드하는 경우가 많지만,  
-다른 메서드도 유용한 경우가 있으니 어떤 것이 있는지 살펴보자. 참고로 onTerminated() 메서드는 emulated process 용도에서나 동작하고 실제 단말에서는 동작을 보장하지 않는다. 이 메서드는 무시하는 게 좋다.
+다른 메서드도 유용한 경우가 있으니 어떤 것이 있는지 살펴보자. 
+참고로 onTerminated() 메서드는 emulated process 용도에서나 동작하고 실제 단말에서는 동작을 보장하지 않는다. 이 메서드는 무시하는 게 좋다.
 % 얘기 하는 이유는 여러 책에서 언급이 돼 있어서
 \begin{itemize}
 \item onConfigurationChanged(): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않는다. 
-예를 들어, Orientation이 변경될 때 App Widget을 갱신하고자 한다면, 여기서 sendBroadcast()를 다시 실행하는 방법도 있다. 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기서 startService()를 실행한다.
+예를 들어, 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기서 startService()를 실행한다.
 %Resources 객체가 새로운 Configuration에 맞는 값으로 업데이트되고 이 메서드가 호출되고 난 후에, 다른 컴포넌트에서 참고하게 된다.
 % TimeZone이 변경되었을 때도?
 \item onLowMemory(): 전체 시스템에 메모리가 부족해서 이 앱도 곧 kill될 가능성이 있을 때 호출된다. 잡고 있는 캐시나 불필요한 리소스를 해제(release)하는 작업을 하면 된다. 리턴 이후에 GC가 실행된다.
 \item onTrimMemory(): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 세분화해서 처리할 수 있다.
 \end{itemize}
-3개의 메서드는 ComponentCallbacks2 인터페이스의 메서드로 Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 이를 구현하고 있다. ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.\\
+3개의 메서드는 ComponentCallbacks2 인터페이스의 메서드로 Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 인터페이스를 구현하고 있다. ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.\\
 
 Application Callback은 3가지가 있다. 모두 register/unregister 메서드가 있고, Callback은 여러 개를 등록할 수 있다.\\
 
@@ -106,12 +107,12 @@ ComponentCallbacks는 ICS 이전에서 Application에 onConfigurationChanged(), 
 onTrimMemory()는 ComponentCallbacks가 아닌 이를 상속한 ComponentCallbacks2 인터페이스에 있으므로 onTrimMeory()를 쓸 때에는 registerComponentCallbacks()에 ComponentCallbacks2 구현체를 넘기도록 한다.\\
 
 ComponentCallbacks가 필요한 경우를 한번 생각해보자.
-ListView에서 스크롤하면서 현재 스크롤된 화면에 맞게 네트워크나 DB를 통해서 데이터를 불러오는 경우가 있다. 이전에 갔던 위치로 스크롤할 때 다시 데이터를 불러오면 속도가 그리 좋지 않으니, 한번 가져온 것은 캐시에 저장하는 경우가 있다.
+ListView에서 스크롤하면서 현재 스크롤된 화면에 맞게 네트워크나 DB를 통해서 데이터를 불러오는 경우가 있다. 이전에 스크롤했던 위치로 돌아갈 때 다시 데이터를 불러오면 속도가 그리 좋지 않으니, 한번 가져온 것은 캐시에 저장하는 경우가 있다.
 만일 메모리 상태가 좋지 않다면 onTrimMemory()에서 level에 따라 캐시에 저장된 데이터량을 조금씩 줄이는 방법으로 ComponentCallbacks/ComponentCallbacks2를 사용할 수 있다
 (Activity와 Service도 ComponentCallbacks2 인터페이스를 구현하고 있으므로 동일한 방식을 사용할 수 있다).\\
 
-Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하는 메서드가 있고, 생명주기가 끝날 때마다 호출한다.
-앱에서 메모리 문제가 있을 때, 어떤 Activity의 어느 생명주기에서 메모리가 크게 증가하는 지 확인하기 위해 ActivityLifecycleCallbacks에 로그를 남기는 방법을 생각할 수 있다.
+Application.ActivityLifecycleCallbacks은 Activity의 생명주기마다 대응하는 메서드가 있고, 생명주기가 끝날 때마다 호출한다.
+앱에서 메모리 문제가 있을 때, 어떤 Activity의 어느 생명주기에서 메모리가 크게 증가하는지 확인하기 위해 ActivityLifecycleCallbacks에 로그를 남기는 방법을 생각할 수 있다.
 \begin{lstlisting}[frame=single] 
 	@Override
 	public void onCreate() {
@@ -174,7 +175,7 @@ Application.ActivityLifecycleCallbacks은 Activity 생명주기마다 대응하�
 \begin{itemize}
 \item 4라인(1)에서 ActivityLifeCycleCallBacks를 등록한다.
 \item 8라인(2)부터 ActivityLifeCycleCallBacks 인터페이스를 구현한 익명 클래스를 만든다. Activity의 각 생명주기마다 대응하는 메소드가 있다.
-\item 47라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기에 따른 메모리 정보를 알 수 있다.
+\item 47라인(3)에서 logMemInfo() 메서드는 메모리 정보를 로그로 남긴다. 각 생명주기마다 logMemInfo()를 호출하고 있으므로 생명주기에 메서드 실행 후의 메모리 정보를 알 수 있다.
 \end{itemize}
 
 \begin{comment}
@@ -194,7 +195,7 @@ ActivityThread.main
 각 프로세스별로 사용 가능한 메모리는 제한되어 있다. 안드로이드 버전별/단말별로 메모리 제한에 차이가 있다.
 허니콤부터 anroid:largeHeap 옵션도 쓸 수 있지만 단말에 따라서 이 옵션이 소용없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
 
-주로 메모리 이슈 때문에 프로세스를 분리하는데, Activity/Service/ContentProvider/BroacastReciever는 모두 프로세스 분리가 가능하다.
+주로 메모리 이슈 때문에 프로세스를 분리하는데, Activity/Service/ContentProvider/BroacastReceiver는 모두 프로세스 분리가 가능하다.
 동일 패키지에서 생성된 별도 프로세스는 pid(process id)는 다르지만, 동일한 uid(user id)를 가지고 동일하게 파일과 리소스에 접근할 수 있다.\\
 
 이제 프로세스 분리가 필요한 경우를 생각해보자.
@@ -210,7 +211,8 @@ Application도 AndroidManifest.xml에 android:process 값을 넣을 수는 있�
 
 프로세스를 분리하면 Application은 각 프로세스마다 새로 뜬다. 여기서 많이 혼동되는데, 프로세스가 달라지면 Zygote에 의해서 fork된 이후에 새로 ActivityThread를 띄우고 Application을 새로 생성한다.\\
 
-설명을 위해서 코드 \ref{application}을 다시 한번 보자. 앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스), ActivityB(android:process=``:camera'')가 있다고 하자. 
+설명을 위해서 코드 \ref{application}을 다시 한번 보자. 
+앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스), ActivityB(android:process=``:camera'')가 있다고 하자. 
 ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 어떤 프로세스로 실행되는지 확인해보자.
 
 \begin{enumerate}
@@ -258,7 +260,9 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 \item 당연한 얘기지만 간과해서는 안되는 게 메모리가 공유되지 않는다는 것이다. 그래서 본래의 프로세스에서 캐시 용도로 만든 것이든 싱글톤 인스턴스에서 공유하는 값이든 별도 프로세스에서는 소용이 없다.
 앱을 만들다가 프로세스 분리한 것을 잊고서 왜 값이 안 나오는지 쓸데없이 고민한 경험을 가진 개발자도 있을 것이다.
 이때는 값을 따로 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용해야 한다.
-\item 분리된 프로세스에서는 SharedPreferences를 쓸 때 mode가 중요하다(허니콤 이상).
+\item 분리된 프로세스에서는 SharedPreferences를 쓰는 것은 권장되지 않는다. 
+SharedPreferences를 어차피 파일이기 때문에 한번 읽어오는 것은 문제가 되지 않는다. 그런데, 다른 프로세스에서 값을 변경한 것을 다시 가져오는 것은 문제가 간단하지 않다.
+허니콤 이후에는 
 Context의 getSharedPreferences(String name, int mode) 메서드를 사용할 때, mode에
 Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 진저브레드까지는 multi process 용도로 사용이 가능했지만, 그 이후에는 Context.MODE\_MULTI\_PROCESS를 사용하지 않으면 다른 프로세스에서 변경된 값을 읽어올 수 없다.\\
@@ -290,6 +294,8 @@ Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 
 프레임워크 소스에서 Context.MODE\_MULTI\_PROCESS 용도는 SharedPreferences reload 외에는 없다. 
 즉 쓰기를 하는 쪽에서는 이 옵션을 쓸 필요가 없다.\\
+
+그런데 마시멜로에서는 다시 Context.MODE\_MULTI\_PROCESS를 depecation시켰다. 결과적으로 권장되는 방식은 SharedPreferences를 다시 ContentProvider로 감싸서 다른 프로세스에서 접근하게 하는 것이다.
 %SharedPreferences에 관련한 자세한 이야기는 뒤에 다시 다루도록 하자.
 \end{itemize}
 

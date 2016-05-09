@@ -33,13 +33,15 @@ init.rc에 보면 surfaceflinger가 먼저 실행되고, mediaserver가 실행�
 systemserver는 zygote에서 실행
 servicemanager
 \end{comment}
+
 \chapter{시스템 서비스}
 % http://www.vogella.com/tutorials/AndroidServices/article.html
 %안드로이드에서는 API와 internal에서 시스템 서비스를 구분하는 것이 약간 차이가 있다. 두 가지를 동일한 것으로 이해하고 있다면 혼동이 생기므로, 차이를 정리하고 넘어가도록 하자.
-시스템 서비스는 우리가 만드는 Service처럼 따로 실행할 필요가 없고, 시스템에서 이미 존재하고 실행 중인 서비스를 앱에서 이용하는 것이다.
-시스템 서비스는 자바 시스템 서비스와 네이티브 시스템 서비스라는 두 그룹으로 분류한다.\\
+시스템 서비스는 시스템에서 앱에서 사용하는 정보와 기능을 Binder를 통해서 제공하는 것이다.
+안드로이드 컴포넌트인 Service처럼 따로 시작할 필요가 없고, 시스템에서 이미 존재하고 실행 중인 서비스를 앱에서 이용한다.
+시스템 서비스는 대부분 자바로 작성되어 있고, 일부만 C/C++로 작성되어 있다.\\
 
-아래는 adb shell에서 ps 실행 결과이다.\\
+아래 adb shell에서 ps 실행 결과이다.\\
 \begin{lstlisting}[frame=single] 
 shell@EF56S:/ $ ps
 USER     PID   PPID  VSIZE  RSS     WCHAN    PC         NAME
@@ -106,18 +108,16 @@ u0_a15    12207 355   906192 25548 ffffffff 00000000 S com.android.vending
 ...
 \end{lstlisting}
 
-여기서 /system/bin/mediaserver, /system/bin/surfaceflinger 2개가 네이티브 시스템 서비스 프로세스이다. 그리고 system\_server가 자바 시스템 서비스 프로세스이다.
+여기서 /system/bin/mediaserver, /system/bin/surfaceflinger 2개가 C/C++로 작성된 시스템 서비스이고, 앱에서 일반적으로 직접 접근해서 사용하지 않는다.
+%롤리팝에 추가된 CameraManager가 하나의 예외이다.
+/system/bin/mediaserver는 MediaPlayer, MediaRecorder, Camera 같은 클래스에서 접근하거나, AudioService 같은 자바로 작성된 시스템 서비스에서 접근하는 형태\footnote{AudioService에서는 AudioSystem 클래스를 통해 네이티브에 접근한다.}를 띠고 있다.
+/system/bin/surfaceflinger는 WindowManagerService에서 접근해서 화면에 반영하고 있다.\\
 
-\section{네이티브 시스템 서비스}
-네이티브 시스템 서비스는 앱에서 일반적으로 직접 접근해서 사용하지 않는다.
-%롤리팝에 추가된 CamearManager가 하나의 예외이다.
-/system/bin/mediaserver는 MediaPlayer, MediaRecorder, Camera 같은 클래스에서 접근하거나, AudioService 같은 자바 시스템 서비스에서 접근하는 형태\footnote{AudioService에서는 AudioSystem 클래스를 통해 네이티브에 접근한다.}를 띠고 있다.
-/system/bin/surfaceflinger는 WindowManagerService에서 접근해서 화면에 반영하고 있다.
-
-\section{자바 시스템 서비스}
-API에서 시스템 서비스라고 부르는 것을 보자. 
+\section{시스템 서비스 기본}
+시스템 서비스는 자바로 작성된 시스템 서비스가 많은데 이것들은 system\_server 프로세스에서 동작한다.
 Context에 getSystemService(String name) 메서드가 있어서, 리턴 결과는 시스템 서비스를 래핑한 것이고 사용 시에 반드시 캐스팅해서 사용한다.
-일반적인 패턴은 클라이언트 Binder Proxy를 래핑하고서 -Manager 식의 네이밍을 가진다. 그리고 -Manager에서는 Stub의 모든 public 메서드를 다 사용할 수 있는 것은 아니다. 예를 들어, ActivityManager에서 startActivity() 메서드를 실행할 수는 없다.\\
+일반적인 패턴은 클라이언트 Binder Proxy를 래핑하고서 -Manager 식의 네이밍을 가진다. 그리고 -Manager에서는 Stub의 모든 public 메서드를 다 사용할 수 있는 것은 아니다.
+예를 들어, ActivityManager에서 startActivity() 메서드를 실행할 수는 없다.\\
 
 아래 표를 보도록 하자. 일반적인 네이밍 패턴에 맞는 것도 많지만 아닌 것도 여럿 있다(롤리팝 기준).
 % com.android.server.SystemServer 참고
@@ -183,7 +183,7 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 \begin{itemize}
 \item getSystemService()의 결과로서 -Manager 네이밍을 따르지 않는 것은 JobScheduler, LauncherApps, LayoutInflater, MediaRouter, Vibrator 4가지이다. 
 \item 인터페이스 이름은 getSystemService() 결과 클래스에 일반적으로는 앞에 I를 붙이지만, 예외 케이스가 너무 많다. Manager 자리에 Service가 붙기도 하고, Manager가 빠지기도 하고 ManagerService로 끝나기도 한다. 
-\item 시스템 서비스 가운데 가장 많이 참고해야 하는 ActivityManagerService는 추상 클래스인 ActivityActivityManagerNative를 상속한다. ActivityActivityManagerNative는 IActivityManager의 Stub 구현이 아니라, Binder를 상속한 IActivityManager 인터페이스 구현이다. 그래서 asInterface()나 onTransact() 메서드 등이 직접 구현되어 있다.
+\item 시스템 서비스 가운데 가장 많이 참고해야 하는 ActivityManagerService는 추상 클래스인 ActivityManagerNative를 상속한다. ActivityManagerNative는 IActivityManager의 Stub 구현이 아니라, Binder를 상속한 IActivityManager 인터페이스 구현이다. 그래서 asInterface()나 onTransact() 메서드 등이 직접 구현되어 있다.
 \item LayoutInflator는 Binder 통신을 하는 것이 아니고, PolicyManager.makeNewLayoutInflater()를 통해  com.android.internal.policy.impl.PhoneLayoutInflator를 가져온다.
 LayoutInflator를 가져오는 메서드는 3가지가 있다.
 \begin{itemize}
@@ -199,7 +199,7 @@ DownloadService 위치는 프레임워크 소스상에서 packages/providers/Dow
 DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, ConnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
 \item SensorManager는 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩해 놓는다.
 \item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
-\item 롤리팝에는 com.android.server.SystemService가 추가되어서 Service 클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
+\item 롤리팝에는 com.android.server.SystemService가 추가되어서 시스템 서비스  클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
 \begin{tabular}[fontsize=\tiny]{|l|l|} \hline
 Service & Stub 구현 내부 클래스 \\ \hline
 JobSchedulerService & JobSchedulerStub \\ \hline
@@ -374,7 +374,8 @@ AccountManager나 AlarmManager를 보면 Binder Proxy를 감싼 객체임을 바
 \section{dumpsys 명령어}\label{sec:dumpsys}
 adb shell에서 가장 많이 실행하는 명령어 가운데 하나가 앞에서도 여러 차례 언급한 dumpsys이다. 
 dumpsys 명령어만 사용하면 너무 많은 정보가 나오고, dumpsys activity나 dumpsys package처럼 원하는 정보에 한정해서 보는 것이 좋다.
-그런데 dumpsys 다음에 들어가는 옵션 항목은 어떤 것이 있을까? 이를 아는 방법은 바로 shell에서 service list\footnote{/frameworks/native/cmds/service/service.cpp에 있다.}를 실행하는 것이다.
+그런데 dumpsys 다음에 들어가는 옵션 항목은 어떤 것이 있을까? 
+이를 아는 방법은 바로 shell에서 service list\footnote{/frameworks/native/cmds/service/service.cpp 소스를 참고하자.}를 실행하는 것이다.
 % Android Graphics Architecture.pdf 참고할 것
 \begin{lstlisting}[frame=single] 
 # service list
@@ -448,10 +449,12 @@ Found 65 services:
 
 clone(:) 앞에 있는 문자열이 바로 dumpsys 다음에 올 수 있는 값들이다.
 이 항목들이 dump할 수 있다는 것인데, 이 항목들은 무엇인가 하면 /system/bin/servicemanager에 등록된 시스템 서비스 목록이다.
-항목의 어떤 내용을 출력하는지는 ActivityManagerService, AlarmManagerService 등 시스템 서비스 클래스의 dump() 메서드를 보면 된다. 앞에서 안드로이드 버전마다 dumpsys 결과가 차이가 있다고 언급하였는데, 버전이 올라가면서 dump() 메서드는 클래스에 새로 추가된 여러 멤버 변수값과 함께 더 상세한 내용을 출력하고 있다.\\
+항목의 어떤 내용을 출력하는지는 ActivityManagerService, AlarmManagerService 등 시스템 서비스 클래스의 dump() 메서드를 보면 된다. 
+앞에서 안드로이드 버전마다 dumpsys 결과가 차이가 있다고 언급하였는데, 버전이 올라가면서 dump() 메서드는 클래스에 새로 추가된 여러 멤버 변수값과 함께 더 상세한 내용을 출력하기 때문이다.\\
 
 service list 결과에서 clone(:) 뒤에 [] 공백으로 나오는 것은 Binder Stub을 등록한 것이 아닌 Binder를 만들어서 일부러 등록한 것이다. dump 용도의 서비스가 등록된 것이다.
-dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시스템 서비스는 없다. 위에서 ActivityManagerService.setSystemProcess() 메서드의 7라인을 보면 ServiceManager.addService(``meminfo'', new MemBinder(m))가 있다.
+예를 들어, dumpsys meminfo 같은 명령을 쓰는 경우가 있는데, meminfo 관련 시스템 서비스는 없다. 
+위에서 ActivityManagerService.setSystemProcess() 메서드의 7라인을 보면 ServiceManager.addService(``meminfo'', new MemBinder(m))가 있다.
 이제 ActivityManagerService의 정적 내부 클래스인 MemBinder를 찾아보면 별게 없고, Binder를 상속하고 dump() 메서드가 유일한 메서드일 뿐이다.
 \begin{lstlisting}[frame=single]
     static class MemBinder extends Binder {
@@ -567,7 +570,8 @@ If [process] is specified it can be the name or
 pid of a specific process to dump.
 \end{lstlisting}
 
-Debug 클래스에 dumpService() 메서드도 있다. 이 메서드로 파일에 dumpsys 결과를 출력할 수 있는데, 메서드를 사용하기 위해서는 android.permission.DUMP 퍼미션이 필요하고 이 퍼미션은 시스템 레벨 앱에서만 사용할 수 있다. 따라서 일반 앱에서는 Debug.dumpService()는 사용할 수 없다.
+Debug 클래스에는 dumpService() 메서드도 있다. 
+이 메서드로 파일에 dumpsys 결과를 출력할 수 있는데, 메서드를 사용하기 위해서는 android.permission.DUMP 퍼미션이 필요하고 이 퍼미션은 시스템 레벨 앱에서만 사용할 수 있다. 따라서 일반 앱에서는 Debug.dumpService()는 사용할 수 없다.
 
 \begin{comment}
 코드 상에서도 dump를 생성하고 싶은 경우가 있다.
@@ -610,7 +614,8 @@ dumpsys activity services
 \subsection{빈번한 리모트 호출}
 시스템 서비스의 메소드를 호출하는 것은 system\_server 프로세스에 Binder RPC 호출을 하므로, 아무래도 로컬 호출보다는 시스템에 부담을 주게 된다.
 그런데 그런 메소드 가운데서 앱에서 빈번하게 호출하는 케이스가 있다.
-예를 들어보자. 서버 API를 호출할 때마다 앱의 versionCode를 request parameter나 Header에 전달해야 하는 경우가 있다.  앱의 versionCode는  클라이언트 버전의 사용률을 체크하거나, 특정 버전에서 문제가 발생했는지 트래킹하는 데도 쓰일 수 있다.
+예를 들어보자. 서버 API를 호출할 때마다 앱의 versionCode를 request parameter나 Header에 전달하는 경우가 있다. 
+앱의 versionCode는 클라이언트 버전의 사용률을 체크하거나, 특정 버전에서 문제가 발생했는지 트래킹하는 데도 쓰일 수 있다.
 현재 앱의 버전 정보를 알기 위해서 PackageManager를 통해서 RPC 호출을 해야만 하는데 뭔가 비효율적이긴 하다. 
 마치 내 나이를 알기 위해서 꼭 주민센터에 물어봐야 하는 것처럼 말이다. 
 Context에는 getPackageName() 메소드는 있지만, getPackageVersionCode() 같은 메소드는 없다.\\
@@ -631,10 +636,11 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 2가지 정도 문제점을 생각할 수 있다.
 \begin{itemize}
 \item 당연한 얘기지만 빈번한 호출로 부하를 발생시킨다.
-\item system\_server도  가끔은 죽을 수 있다. 발생빈도가 낮지만, 시스템 상태가 좋지 않거나 메모리가 부족하다면 가능한 얘기이다. 이때 스택 트레이스에는 ``Caused by: java.lang.RuntimeException: system server dead?'' 메시지를 보여준다. system\_server는 물론 죽자마자 다시 살아나긴 한다.
+\item system\_server도  가끔은 죽을 수 있다. 
+발생빈도가 낮지만, 시스템 상태가 좋지 않거나 메모리가 부족하다면 가능한 얘기이다. 이때 스택 트레이스에는 ``Caused by: java.lang.RuntimeException: system server dead?'' 메시지를 보여준다. system\_server는 물론 죽자마자 다시 살아나긴 한다.
 \end{itemize}
 
-매 호출마다 동일한 값을 리턴하므로, 이 경우에는 불필요한 호출을 줄이기 위해서 메모리(Application 인스턴스의 변수나, 싱글톤 인스턴스에 저장된 값)나 SharedPreferences 사용을 고려할 수 있다(앱 버전을 사용하는 이 경우에 한해서는 최신 IDE에서는 BuildConfig에 생성해주는 VERSION\_CODE, VERSION\_NAME 상수를 사용하는 것도 가능하다).\\
+매 호출마다 동일한 값을 리턴하므로, 이 경우에는 불필요한 호출을 줄이기 위해서 메모리(Application 인스턴스의 변수나, 싱글톤 인스턴스에 저장된 값)나 SharedPreferences 사용을 고려할 수 있다. 이 경우에 한해서 최신 IDE에서는 BuildConfig에 VERSION\_CODE, VERSION\_NAME 상수를 생성해주기 때문에 이를 사용하는 것도 가능하다.\\
 
 동일한 결과를 리턴하는 이런 특수한 케이스가 아니더라도 가능하면 리모트 호출을 줄이는 방안을 생각하자. 
 시스템 Broadcast를 LocalBroadcastManager로 변경하는 것도 리모트 호출을 줄이는 하나의 예이다. 
@@ -643,9 +649,9 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 이 절에서는 안드로이드의 전원 관리의 기본 내용과 Deep Sleep 이슈에 대해 살펴보자. 마시멜로에서 도입된 Doze Mode에 대해서는 여기서는 다루지 않겠다.\\
 
 모바일 단말은 상시 전원이 차단된 상태로 오랜 시간 사용해야 하므로, 전원 관리는 안드로이드 플랫폼에서 주요 이슈이면서 우리가 만드는 앱에서도 간과해서는 안되는 문제이다.
-안드로이드 Power Management 관련해서 자세한 내용은 `안드로이드 하드웨어 서비스(개발자가 행복한 세상)'을 참고하자.\\
+안드로이드 Power Management 관련해서 자세한 내용은 $\ulcorner$안드로이드 하드웨어 서비스$\lrcorner$\footnote{김대우,박재영,문병원 공저, 개발자가 행복한 세상, 2013, 5장}을 참고하자.\\
 
-안드로이드 전원 관리 메커니즘은 젤리빈 API 레벨 17 까지는 Wakelock, Early Suspsend, Late Resume 방식을 사용했는데, 리눅스 메인 커널과 통합되는 과정에서(3.4) Autosleep, Wakeup sources로 변경되었다. 내부적으로 방식이 바뀌었지만 앱 개발에서는 동일하게 WakeLock을 잡고 해제하는 코드를 그대로 사용하면 된다.\\
+안드로이드 전원 관리 메커니즘은 젤리빈 API 레벨 17까지는 Wakelock, Early Suspsend, Late Resume 방식을 사용했는데, 리눅스 메인 커널과 통합되는 과정에서(3.4) Autosleep, Wakeup sources로 변경되었다. 내부적으로 방식이 바뀌었지만 앱 개발에서는 동일하게 WakeLock을 잡고 해제하는 코드를 그대로 사용하면 된다.\\
 
 \begin{comment}
 먼저 안드로이드 플랫폼의 전원 관리 방법에 대해서 알아보고, 앱에서는 어떤 원칙을 가지고 해야 하는지 살펴보도록 하자.\\
@@ -659,8 +665,8 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 Android의 Power Management는 이렇다.
 \begin{itemize}
 \item BIOS가 없다.
-\item 상시 전원이 들어있는 데스크탑과는 달리, 모바일 기기에서는 꺼져있는 상태를 기본으로 하고(Sleep), WakeLock을 통해 필요할 때만 on 시켜서 사용하는 것이 특징이다.
-\item  Suspend/Resume 동작을 통해서 Sleep 상태로 이동하고 빠져나오는데, early_suspend, late_resume이 들어간다.
+\item 상시 전원이 들어있는 데스크탑과는 달리, 모바일 기기에서는 꺼져있는 상태를 기본으로 하고(Sleep), WakeLock을 통해 필요할 때만 ON시켜서 사용하는 것이 특징이다.
+\item Suspend/Resume 동작을 통해서 Sleep 상태로 이동하고 빠져나오는데, early_suspend, late_resume이 들어간다.
 \end{itemize}
 \end{comment}
 
@@ -672,7 +678,7 @@ Sleep에서 깨우는데 소요되는 시간에 따라 Deep Sleep, Deeper Sleep�
 Sleep보다 Deep Sleep이라고 언급하는 것이 개념 이해에 도움이 되어서 자주 쓰이는 것 뿐이다. 
 깊이(Deep) 잠들어서 아무것도 안 한다는 의미로 이해하자.
 필자의 경우에는 Deep Sleep은 특별한 경우에만 발생하는 케이스로 오해했다. 
-즉 Sleep과 Deep Sleep을 다른 것으로 생각하고, Deep Sleep은 일반적으로 고려하지 않아도 되는 특수한 상황이 아닐까 했는데, 모바일 단말에서 Deep Sleep은 우리 아주 가까이에 있는 흔한 경우다.\\
+Deep Sleep은 일반적으로 고려하지 않아도 되는 특수한 상황이 아닐까 했는데, 모바일 단말에서 Deep Sleep은 우리 아주 가까이에 있는 흔한 경우다.\\
 
 앱을 개발하면서 Deep Sleep 상태에서 무엇보다 신경써야 하는 것이 CPU Sleep이다.
 Deep Sleep 상태에서는 당연하게도 코드 실행이 중지된다. 메서드 안에 for 문이 실행 중이라면, 끝까지 다 실행하고 Sleep할 것 같은데 잠들 때는 사정없이 잠들어서 코드 실행이 도중에 멈추기도 한다.\\
@@ -680,8 +686,9 @@ Deep Sleep 상태에서는 당연하게도 코드 실행이 중지된다. 메서
 Deep Sleep 관련해서 안드로이드 개발자 사이트에서 검색하면 나오는 내용이 쓸모 있는 게 거의 없다. 그나마 나오는 결과 가운데서 안드로이드 클래스에서 Deep Sleep 관련해서 살펴볼 게 있다.
 
 \begin{itemize}
-\item SystemClock.uptimeMillis() 메소드는 부팅 이후에 Deep Sleep을 제외한 시간을 보여준다. 반면에 SystemClock.elapsedRealtime()은 부팅 이후 (Deep Sleep을 포함한) 시간을 보여준다. 
-따라서 elapsedRealtime()에서 uptimeMillis()를 뺀 시간이 바로 Deep Sleep 상태에 있던 시간이다. 처음 부팅을 하고서 화면이 켜진 상태에서는 두 시간이 동일하다. 그 상태에서 화면을 OFF 시키고 몇 분 후에 다시 이 시간 차이를 비교해보자. 그 차이를 따져보면 화면을 OFF 시켰을 때 몇 십초 내에 Deep Sleep 상태로 가는 것을 알 수 있다.
+\item SystemClock.uptimeMillis() 메소드는 부팅 이후에 Deep Sleep 상태에 있는 시간이 제외된 시간을 보여준다. 반면에 SystemClock.elapsedRealtime()은 부팅 이후 Deep Sleep 상태를 포함한 전체 시간을 보여준다. 
+따라서 elapsedRealtime()에서 uptimeMillis()를 뺀 시간이 바로 Deep Sleep 상태에 있던 시간이다. 
+처음 부팅을 하고서 화면이 켜진 상태에서는 두 값이 동일하다. 이 상태에서 화면을 OFF시키고 몇 분 후에 다시 시간 차이를 비교해보자. 그 차이를 따져보면 화면을 OFF 시켰을 때 몇 십초 내에 Deep Sleep 상태로 가는 것을 알 수 있다.
 
 \item Thread.sleep(long time)이나 SystemClock.sleep(long ms) 메소드의 파라미터 값은 Deep Sleep 상태에 있는 시간이 제외된 시간이다. SystemClock.sleep(long ms) 메소드는 InterruptedException을 무시하는 것이 Thread.sleep(long time)과 다르다. 예를 들어, 1분 간 sleep()을 실행하고 다른 작업을 하려고 했는데 sleep() 도중에 Deep Sleep에 빠지면 결과적으로 현상으로 보여지는 sleep 시간은 `1분 + Deep Sleep 상태에 빠진 시간'이다. 
 
@@ -715,7 +722,8 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 1초마다 TextView에 현재 날짜와 시간을 갱신하고 있다.
 이런 패턴은 DigitalClock이나 TextClock에서도 쓰이는데 내부적으로 DELAY\_TIME을 1초 이내로 줘서 매 간격마다 시간을 갱신한다. 
 우리가 사용하는 단말에서 화면에 나타나는 시계도 이런 형태로 구현되어 있다.
-단말을 옆에 한참 방치해놓다가, 화면을 ON하면 순식간에 시간이 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 즉 그 사이에 매 초마다 시간을 변경하지 않고 있다가, 화면을 ON하는 순간 현재 시간을 보여준 것이다.
+단말을 옆에 한참 방치해놓다가, 화면을 ON하면 순식간에 시간이 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 
+즉 그 사이에 매 초마다 시간을 변경하지 않고 있다가, 화면을 ON하는 순간 현재 시간을 보여준 것이다.
 이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일 뿐 Message가 사라진 것은 아니다).
 그리고 CPU가 깨어난 순간 동작을 한 것인데, 만일 Delay Time이 큰 경우에는 어떨까?\\
 
@@ -728,12 +736,13 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 갱신을 아예 안 하는 것이 아니라, 화면을 켜고 5분이 지나면 또 어느 새 현재 시간 위치로 빨간 선이 가게 되지만 그 사이 5분은 필요한 기능이 실행이 안되는 시간이 된다.
 오랫동안 가만히 놔두었던 폰에서 몇 시간 전을 현재 시간으로 표시하고 있다면 기능상의 문제로 보일 수 밖에 없다.
 
-\item 어떤 앱에서는 일정 시간마다 서버에서 데이터를 폴링해서 동작하는 Service를 Handler를 이용해서 반복해서 가져오도록 만들었다. 그런데 여기서도 당연히 위와 같은 문제가 발생했다. 왜 동작 안 하는지 서버 쪽 문제인가 싶어서 네트워크 수신율이 좋지 않을 것으로 예상되는 곳에까지 단말을 가지고 가서 테스트했다고 한다.
+\item 어떤 앱에서는 일정 시간마다 서버에서 데이터를 폴링해서 동작하는 Service를 Handler를 이용해서 반복해서 가져오도록 만들었다. 그런데 여기서도 당연히 위와 같은 문제가 발생했다. 왜 동작하지 않는지 서버 쪽 문제인가 싶어서 네트워크 수신율이 좋지 않을 것으로 예상되는 곳에까지 단말을 가지고 가서 테스트했다고 한다.
 \end{enumerate}
 
 여기서 포인트는 바로 개발 중에는 문제가 나오지 않았다는 것이다.
 개발 중에는 USB 디버깅 옵션을 켜고 PC와 연결해서 사용하는데, USB 충전 중에는 Deep Sleep에 들어가지 않는다. 
-전원이 잘 공급되고 있기 때문에 잠에 빠질 필요가 없는 것이다.
+전원이 잘 공급되고 있기 때문에 잠에 빠질 필요가 없는 것이다.\\
+
 이런 경우 일반적인 해결 방법은 AlarmManager를 쓰는 것이다. delay time도 잘 맞추어서 깨워주고 Deep Sleep에도 문제가 없다.
 \begin{lstlisting}[frame=single]
 	private void repeatUpdater() {
@@ -748,7 +757,8 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에서는 RTC\_WAKEUP 옵션을 사용해서 Deep Sleep에서도 깨어나도록 하였다. 
 롤리팝 이후에는 JobScheduler를 쓰는 게 권장된다. AlarmManager는 재부팅하면 다시 Alarm을 등록해야 하고 쓸만한 옵션이 없는데 비해서, JobScheduler에 등록하는 JobInfo를 보면 재부팅해도 Job이 유지되는 옵션도 사용할 수 있고 네트워크가 연결되거나 충전 중일 때만 동작하게 할 수도 있다(JobInfo.Builder API 문서를 보자).\\
 
-앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
+앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 
+그런데 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
 AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다시 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
 이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
 요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안되었으면 남은 지연 시간을 재계산하는 것이다. 

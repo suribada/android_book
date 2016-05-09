@@ -32,11 +32,11 @@ onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도
 본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 그나마 문제가  없지만, 한 앱에서는 한 이벤트에 여러 BroadcastReceiver가 등록되어있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.\\
 
 \begin{comment}
-어떤 앱에서는 Application에만 registerReceiver를 해놓는 경우도 있다. BroadcastReceiver를 최소한의 개수로 하고, 최소한의 시간만 존재하도록 하는 것이 BroadcastReciever로 인해 UI가 버벅거리지 않게 하는 방법이다.
+어떤 앱에서는 Application에만 registerReceiver를 해놓는 경우도 있다. BroadcastReceiver를 최소한의 개수로 하고, 최소한의 시간만 존재하도록 하는 것이 BroadcastReceiver로 인해 UI가 버벅거리지 않게 하는 방법이다.
 \end{comment}
 
 \section{BroadcastReceiver 등록}
-BroadcastReceiver를 등록하는 방식은 정적인 등록(statically publish)과 동적인 등록(dynamically register) 2가지가 있다.\footnote{등록이라고 번역하면서 영어로는 publish와 register로 구분해서 쓰고 있다. 정적인 등록은 공개의 의미가 있다고 이해하자. 앱을 설치하자마자 곧바로 BroadcastReciever가 사용 가능하다.}\\
+BroadcastReceiver를 등록하는 방식은 정적인 등록(statically publish)과 동적인 등록(dynamically register) 2가지가 있다.\footnote{등록이라고 번역하면서 영어로는 publish와 register로 구분해서 쓰고 있다. 정적인 등록은 공개의 의미가 있다고 이해하자. 앱을 설치하자마자 곧바로 BroadcastReceiver가 사용 가능하다.}\\
 
 정적인 등록은 AndroidManifest.xml에 추가해서 해당 이벤트에 항상 반응하는 것이다. 주로 시스템 이벤트를 받을 때 많이 사용하는 것으로 앱 실행 중이 아닐 때도 이벤트를 처리한다.
 아래는 ApiDemos에 등록된 BroadcastReceiver의 예이다.

@@ -104,7 +104,7 @@ public class SleepService extends Service {
 \end{lstlisting}
 이렇게 하면 일시적으로 가장 우선순위가 높은 Foreground 프로세스까지 갔다가(Service의 생명주기를 실행 중일 때), 세 번째 우선순위인 Service 프로세스에 남아서 작업을 무사히 종료할 수 있는 가능성이 높아진다.
 이것은 사용자가 최근 앱 목록에서 제거해도 마찬가지다. 
-프로세스가 kill되면 서비스는 onStartCommand() 리턴값에 따라 재시작 여부를 결정하는데, 디폴트 리턴값은 START\_STICKY로 Service를 재시작한다.\\
+프로세스가 kill되면 Service는 onStartCommand() 리턴값에 따라 재시작 여부를 결정하는데, 디폴트 리턴값은 START\_STICKY로 Service를 재시작한다.\\
 
 앱이 크래시되는 상황이라면 어떨까? LifeCycleApplication에서 startService()를 실행했는데, 시작 Activity의 onCreate() 메서드에서 크래시로 프로세스가 종료되었다고 하자. 이 경우에도 Service를 시작하기 위해서, LifeCycleApplication을 새로 실행하면서 Service를 시작하는 것을 볼 수 있다.
 좀 더 상세하게 살펴보자. 앱 아이콘을 통해서 프로세스가 시작될 때 Application의 onCreate() 메서드에서 startService()를 실행해도, 시작 Activity가 뜨는 것이 먼저 할 작업이기 때문에 Activity가 먼저 시작되고 Service 시작은 그 다음이다.
