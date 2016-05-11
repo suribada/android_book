@@ -264,8 +264,7 @@ UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성
 앞에서도 언급했듯이 Handler는 Message를 MessageQueue에 보내는 것과 Message를 처리하는 것을 함께 제공한다. post(), postAtTime(), postDelayed() 메서드를 통해서 Runnable 객체도 전달되는데, 실제로 Runnable도 내부적으로 Message에 포함되는 값이다.\\
 
 Handler에서 Message를 보내는 메서드 목록을 살펴보자.\\
-
-\scalebox{0.8}{
+\scalebox{0.75}{
 \begin{tabular}[fontsize=\tiny]{|l|l|l|} \hline
  & send & post \\ \hline
 기본 & sendEmptyMessage(int what) & post(Runnable r)
@@ -409,7 +408,7 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 안드로이드 프레임워크에서도 내부적으로 Handler를 많이 사용한다. 
 메인 스레드에서 실행해야 하는 작업들이 Handler를 사용해서 내부적으로 메인 Looper의 MessageQueue를 통해서 순차적으로 진행된다.
 \begin{itemize}
-\item ActivityThread에 내부 클래스인 H는 Handler를 상속한다. 
+\item ActivityThread의 내부 클래스인 H는 Handler를 상속한다. 
 컴포넌트 생명주기 관련해서 모두 H를 거친다. Message의 what에 해당하는 int 상수에는 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STO\-P\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.
 
 \item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_R\-E\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).

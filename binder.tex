@@ -759,10 +759,10 @@ PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에�
 
 앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 
 그런데 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
-AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다시 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
+AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
 이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
 요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안되었으면 남은 지연 시간을 재계산하는 것이다. 
-좀 더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep에 들어간 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안되었지만 스크린이 ON되는 순간 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.
+좀 더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안되었지만 스크린이 ON되는 순간, 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.
 \begin{lstlisting}[frame=single]
 	private TextView title;
 
@@ -813,7 +813,7 @@ AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 다
 \end{lstlisting}
 \begin{itemize}
 \item 8라인(1)과 13라인(2)에서 ACTION\_SCREEN\_ON Action에 대한 BroadcastReceiver를 등록하고 해제한다. onCreate()와 onDestroy()에서 처리하는 이유는, 화면을 OFF하는 순간 onStop()까지 실행되기 때문에 onStop()에서 unregisterReceiver()를 실행하면 ACTION\_SCREEN\_ON Action을 받을 수 없게 되기 때문이다.
-\item 32라인에서 45라인까지는 일반적인 UI 반복 패턴인데, 36라인(6)에서 현재 run()을 실행한 부팅 이후 시간(Deep Sleep과 상관없는 시간)을 저장해두는 것이 다르다.
+\item 32라인에서 45라인까지는 일반적인 UI 반복 패턴인데, 36라인(6)에서 현재 run()을 실행한 elapsedRealtime(부팅 이후 시간: Deep Sleep과 상관없는 시간)을 저장해두는 것이 다르다.
 \item 화면이 ON되는 순간 24라인(3)에서 시간차를 계산하고, 25라인(4)에서 기존 Delayed Message를 제거한다.
 \item 26라인(5)에서 시간차가 2분보다 크다면 지연 시간을 0으로 해서 즉시 실행하게 하고, 그렇지 않다면 남은 시간을 가지고서 다시 지연 시간을 전달한다.
 \end{itemize}
@@ -828,13 +828,12 @@ USB 충전 외에도 Deep Sleep에 대해서 모호한 내용들이 있는데 �
 %sendBroadcast를 해서, Reciever에서 자정에 어떤 기능이 동작하도록 Alarm을 동록하였다. 그런데 자정에 해당 기능이 동작할 때도 있고, 안 할 때도 있다는 보고가 들어왔다. Alarm은
 
 Deep Sleep 상태에서 깨어나는 방법은 기본적으로 Interrupt에 의해서이다. 
-이런 Interrupt와 관련된 장치들은 항상 wakeup 상태이다.
-일반적으로 4가지 정도를 얘기한다. 
+이런 Interrupt와 관련된 장치들은 항상 wakeup 상태이고 일반적으로 4가지 정도를 얘기한다. 
 \begin{enumerate}
 \item Power 키를 눌러 화면을 ON 시키면 잠에서도 깨어난다.
 \item 단말이 아무리 깊은 잠에 빠져 있어도 전화나 문자가 오면 받아야 하기 때문에 전화 관련 모듈은 wakeup 상태이다. 안드로이드 소스에서 /hardware/ril/libril/rip.cpp을 보면, RIL 데몬에서 호출해서 WakeLock을 얻는 것을 볼 수 있다.
 \item AlarmManager를 통해 Alarm을 등록한다. RTC(real-time clock)에 의해서 Alarm이 Trigger된다.\footnote{\url{http://lwn.net/Articles/429925/}를 참고하자.}
-\item GCM(Google Cloud Messaging) 메시지를 소켓을 통해 받고서, 잠에서 깨어나 메시지를 처리한다.
+\item GCM(Google Cloud Messaging) 메시지는 소켓을 통해 받고, 잠에서 깨어나 메시지를 처리한다.
 \end{enumerate}
  
 % http://2013.efyexpo.com/wp-content/uploads/2013/03/_2_Android_Power_Management_EFY.pdf
@@ -1111,17 +1110,18 @@ Service나 Activity의 경우는 실행은 되겠지만, MessageQueue를 통해 
 \end{comment}
 
 \subsection{알람 등록과 제거}
-AlarmManager에는 알람을 등록하는 setXxx() 메서드와 알람을 취소하는 cancel() 메서드가 있다. 알람 관련해서는 몇 개의 이슈가 있다.
+AlarmManager에는 알람을 등록하는 setXxx() 메서드와 알람을 취소하는 cancel() 메서드가 있다. 알람 관련해서 몇 가지 이슈를 살펴보자.
 
 \begin{itemize}
-\item 전원이 꺼지면 알람도 제거된다. 알람 데이터는 AlarmManagerService에 메모리 상에 유지되는 것일 뿐이다. 따라서 앱에서 알람 기능이 있다면 알람 관련 데이터를 DB에 저장하고 부팅 시에는 ACTION\_BOOT\_COMPLETED Intent를 받는 BroadcastReceiver를 만들어서 알람을 다시 등록하는 과정이 필요하다.
+\item 전원이 꺼지면 알람도 제거된다. 알람 데이터는 AlarmManagerService에서 메모리에 유지되는 것일 뿐이다. 따라서 앱에서 알람 기능이 있다면 알람 관련 데이터를 DB에 저장하고 부팅 시에는 ACTION\_BOOT\_COMPLETED Intent를 받는 BroadcastReceiver를 만들어서 알람을 다시 등록하는 과정이 필요하다.
 
 \item 앱을 삭제하면 앱과 관련된 알람도 제거된다.
 
 \item 앱을 업데이트하면 재부팅하지 않는 한, 업데이트 전에 등록한 알람이 유지된다. 일정시간 주기의 반복 알람이라면 앱 업데이트와 관련 없이 계속 반복된다. 앱 업데이트에서 알람에서 실행하는 컴포넌트(BroadcastReceiver, Activity, Service)를 더 이상 쓰지 않는다면 어떨까? 이를테면 기능을 제거한 것인데, 이때 해당 컴포넌트 클래스가 없으면 문제가 발생한다. 이때 크래시가 발생하지는 않지만 해당 컴포넌트가 없다고 ActivityManager 태그로 계속 로그에 남는다.
 \end{itemize}
 
-알람을 등록하고서 해당 시간까지 기다리면서 동작 여부를 확인할 수도 있지만, 먼저 dumpsys alarm을 통해서 제대로 등록되는지 확인하자. 알람 취소도 마찬가지로 dumpsys alarm으로 제거 여부를 확인하자.
+알람을 등록하고서 해당 시간까지 기다리면서 동작 여부를 확인할 수도 있지만, 먼저 dumpsys alarm을 통해서 제대로 등록되는지 확인하자. 
+알람 취소도 마찬가지로 dumpsys alarm으로 제거 여부를 확인하자.
 % 알람시계 앱 
 
 

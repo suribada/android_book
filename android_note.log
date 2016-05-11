@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  9 MAY 2016 21:54
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  11 MAY 2016 21:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1105,27 +1105,28 @@ File: se-ascii-print.def 2011/12/02 v1.10 stringenc: Printable ASCII characters
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 72--74
+(./header.tex
+Underfull \hbox (badness 10000) in paragraph at lines 3--5
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 75--78
+Underfull \hbox (badness 10000) in paragraph at lines 6--9
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--87
+Underfull \hbox (badness 10000) in paragraph at lines 15--18
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 88--92
+Underfull \hbox (badness 10000) in paragraph at lines 19--23
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 102--104
+Underfull \hbox (badness 10000) in paragraph at lines 33--35
 
  []
 
@@ -1135,11 +1136,11 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [2
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 105--107
+Underfull \hbox (badness 10000) in paragraph at lines 36--38
 
  []
 
-[3] (./android_note.toc [4
+) [3] (./android_note.toc [4
 
 ] [5])
 \tf@toc=\write4
@@ -1149,42 +1150,42 @@ Underfull \hbox (badness 10000) in paragraph at lines 105--107
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
 ) [6]
-Underfull \hbox (badness 10000) in paragraph at lines 157--159
+Underfull \hbox (badness 10000) in paragraph at lines 102--104
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 160--161
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--165
+Underfull \hbox (badness 10000) in paragraph at lines 107--110
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 166--167
+Underfull \hbox (badness 10000) in paragraph at lines 111--112
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 168--169
+Underfull \hbox (badness 10000) in paragraph at lines 113--114
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 170--171
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 172--173
+Underfull \hbox (badness 10000) in paragraph at lines 117--118
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 174--175
+Underfull \hbox (badness 10000) in paragraph at lines 119--120
 
  []
 
@@ -1409,11 +1410,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 264--265
 
 Underfull \hbox (badness 10000) in paragraph at lines 266--267
 
- []
-
-
-Overfull \hbox (30.09865pt too wide) in paragraph at lines 283--285
-[][] 
  []
 
 
@@ -3225,17 +3221,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 683--685
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 699--701
+Underfull \hbox (badness 10000) in paragraph at lines 700--702
 
  []
 
 [162]
-Underfull \hbox (badness 10000) in paragraph at lines 721--727
+Underfull \hbox (badness 10000) in paragraph at lines 722--729
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 754--756
+Underfull \hbox (badness 10000) in paragraph at lines 742--745
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 757--759
 
  []
 
@@ -3278,53 +3279,61 @@ Underfull \hbox (badness 10000) in paragraph at lines 204--207
  []
 
 [171]
-Underfull \hbox (badness 10000) in paragraph at lines 252--254
+Underfull \hbox (badness 10000) in paragraph at lines 257--259
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 255--258
+Underfull \hbox (badness 10000) in paragraph at lines 260--263
 
  []
 
 [172]
-Underfull \hbox (badness 10000) in paragraph at lines 304--307
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 317--323
+Underfull \hbox (badness 10000) in paragraph at lines 309--312
 
  []
 
 [173]
-Underfull \hbox (badness 10000) in paragraph at lines 345--346
+Underfull \hbox (badness 10000) in paragraph at lines 322--328
 
  []
 
-[174] [175]
-Underfull \hbox (badness 10000) in paragraph at lines 453--455
+
+Underfull \hbox (badness 10000) in paragraph at lines 329--334
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 353--354
+
+ []
+
+[174]
+Underfull \vbox (badness 4156) has occurred while \output is active []
+
+ [175]
+Underfull \hbox (badness 10000) in paragraph at lines 461--463
 
  []
 
 [176])
 No file android_note.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 213.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 158.
 [177]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 213.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 158.
  (./android_note.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 213.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 213.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 158.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 158.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 213.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 158.
  ) 
 Here is how much of TeX's memory you used:
- 27811 strings out of 493638
- 466350 string characters out of 6147976
- 789743 words of memory out of 5000000
+ 27814 strings out of 493638
+ 466378 string characters out of 6147976
+ 789731 words of memory out of 5000000
  30887 multiletter control sequences out of 15000+600000
  59958 words of font info for 100 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191

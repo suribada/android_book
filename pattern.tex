@@ -35,15 +35,15 @@ Context를 그대로 전달하는 경우, 만일 그게 Activity라면 그 인�
         ...
     }
 \end{lstlisting} 
-9라인에서 context.getApplicationContext()를 사용함으로써 원래 계속 떠있고 하나뿐인 Application을 Context로 쓰겠다는 의미이다.
-많은 안드로이드 책에서도 싱글톤을 만들 때 신경쓰지 않고서 Context를 그대로 전달한 것을 볼 수 있는데 따라하면 안된다.
+9라인에서 context.getApplicationContext()를 사용함으로써 계속 떠있고 하나뿐인 Application 인스턴스를 Context로 쓰겠다는 의미이다.
+많은 안드로이드 책에서도 싱글톤을 만들 때 신경 쓰지 않고서 Context를 그대로 전달한 것을 볼 수 있는데 따라하면 안된다.
 특히 SQLiteOpenHelper를 상속한 DB Helper를 싱글톤으로 사용하면서 Context를 그대로 전달한 경우가 많다.\\
 
 % http://stackoverflow.com/questions/3346080/android-references-to-a-context-and-memory-leaks 에도 나옴
 
 이제 조금 더 들어가서 이 내용을 검증하는 방법도 알아보자.
 이론적으로 맞는데 정말 그런지 확인할 수 있는 방법이 있을까? 
-방법은 2가지가 있는데, 여기서 검증할 내용은 다음과 같다. 
+방법은 2가지가 있는데 여기서 검증할 내용은 다음과 같다. 
 \begin{itemize}
 \item 싱글톤에 그대로 넘긴 Activity가 GC가 되지 않는가?
 \item getApplicationContext()로 싱글톤에 넘기면 Activity는 적절한 시기에 GC가 이뤄지는가?
@@ -145,7 +145,7 @@ public class SingletonTestActivity extends Activity {
 \end{lstlisting}
 \begin{itemize}
 \item 9라인(1)에서 CalendarRelatedActivity를 시작한다.
-\item 15라인(2)에서 직접 gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 gc()를 직접 호출하는 것은 일반적으로 권장되지 않는다. 여기서는 단지 테스트를 위한 것이다. Activity가 onDestroy()까지 불리고서 바로 메모리에서 제거되는 것은 아니기 때문에 사용한다.
+\item 15라인(2)에서 직접 gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 gc()를 직접 호출하는 것은 권장되지 않는다. 여기서는 단지 테스트를 위한 것이다. Activity가 onDestroy()까지 불리고서 바로 메모리에서 제거되는 것은 아니기 때문에   gc()를 사용한다.
 \item 22라인(3)의 메서드에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키워가면서 GC를 유도한다. 15라인과 역할은 동일하다.
 \end{itemize}
 
@@ -156,7 +156,7 @@ public class SingletonTestActivity extends Activity {
 \item SingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인하면, CalendarRelatedActivity의 finalize() 메서드가 불리지 않는다. Heap Dump 결과로 확인해보면 CalendarManager에서 참조가 남아있는 것을 볼 수 있다. 
 \item 최근 앱에서 제거하거나 환경설정에서 앱을 강제 종료하고서 다시 CalendarRelatedActivity를 실행시킨다.
 \item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump 결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
-\item ingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
+\item SingletonTestActivity에서 onClickButton2()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
 \end{enumerate}
 
 
@@ -182,7 +182,7 @@ public class SingletonTestActivity extends Activity {
 
 계속 메모리 사용량이 늘어가면서 마지막 라인에서 OOM이 발생했는데, 여기서 포인트는 OOM이 발생했다는 것이 아니다.
 OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지 않았다.
-즉 CalenderRelatedActivity는 GC 대상이 끝까지 아니었다는 것이다.\\
+즉 CalenderRelatedActivity는 끝까지 GC 대상이 아니었다는 것이다.\\
 
 이제 CalendarManager에서 주석으로 있던 부분으로 대체해서 테스트해보자.
 즉 context를 직접 쓰지 않고 context.getApplicationContext()를 전달한 것이다.
@@ -206,7 +206,7 @@ OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지
 Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페이스를 사용한다.\\
 
 복잡한 부분은 클래스 구성을 잘 하면 쉽게 해결되는 부분이 많다.
-쇼핑 앱을 예로 들어보자. 상품에는 여러 카테고리가 있어서, 구매가 이뤄지면 카테고리별로 백그라운드에서 하는 일이 다르다.
+쇼핑 앱을 예로 들어보자. 상품에는 여러 카테고리가 있어서, 구매가 이뤄지면 카테고리별로 진행하는 일이 다르다.
 \begin{itemize}
 \item A/B 카테고리는 구매패턴 분석을 위해 통계 DB에 데이터를 넣는다(someOperationW).
 \item A/C/E 카테고리는 문자로 상품제공자에게 알리고(someOperationX), C/D/E 카테고리는 메일로 알린다(SomeOperationY).
@@ -245,16 +245,21 @@ Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페
 \begin{itemize}
 \item 작업은 순서가 중요한 경우가 많다. 해당 카테고리의 특정 API를 네트워크 호출하고, 그 결과를 DB에 저장하는 경우를 예로 들 수 있다.
 하위 클래스에서 상위 클래스의 메서드를 여러 개 호출하는 식이면, 순서를 잘못 호출할 가능성이 생긴다.
+
+\item 어떤 카테고리에서 someOperationW(), someOperationY(), someOperationZ()를 순차적으로 실행하고 있었는데, 정책이 바뀌면서 someOperationY()는 하지 않기로 했다. 이때 개발자는 어떤 행동을 할까? 
+언제 또 바뀔지 모른다며 주석 처리를 하려는 유혹에 빠지기 쉽다. 여기저기 주석 처리가 되면서 코드가 누더기가 되는 것은 물론이고, 주석을 해제해야 할 때가 되면 실수할 가능성이 많아진다.
+
 \item 카테고리가 추가될 때 기존 카테고리와 유사한 부분이 많다면, 이를 또 상속하고 싶은 유혹이 생긴다.
 카테고리끼리의 상속은 정책이 바뀐다면 뜯어고칠 부분이 많아진다.
+ 
 \end{itemize}
 
-2가지 중에서 첫 번째 내용이 더 중요하다. 
+3가지 중에서 첫 번째 내용이 제일 중요하다. 
 클래스 상속을 피할 수는 없지만, 상위 클래스에서는 작업 순서까지 지정하고 상속 단계를 최소한으로 할 수 있는 방법을 찾는 게 좋다.\\
 
-여기에서 필자가 선택한 방법이 마커 인터페이스이다. 
-현재 처한 상황에서 마커 인터페이스를 적용하는 방법을 보자.
-이제 각 작업을 마커 인터페이스로 만든다.\\
+여기에서 필자가 선택한 방법이 마커 인터페이스이다. 마커 인터페이스를 통해 두 번째와 세 번째도 문제가 해결되는 것을 확인해보자.
+지금 상황에서 마커 인터페이스를 적용하는 방법을 보자.
+먼저 각 작업을 마커 인터페이스에 대응시켜 만든다.\\
 
 \begin{lstlisting}[frame=single]
 public interface Markable1 { }
@@ -303,7 +308,7 @@ Eclass extends Category implements Markable2, Markable3, Markable4 { }
 \end{lstlisting}
 이렇게 하면 상위 클래스에서 각 Operation 순서가 정해지고, 
 각 카테고리의 정책이 바뀌면 카테고리 클래스에서 implements하는 것만 조정하면 된다.
-작업이 추가되면 MarkableN 인터페이스를 하나 더 만들고서 규칙에 맞추기만 하면 된다.\\
+작업이 추가되면 MarkableN 인터페이스를 1개 더 만들고서 규칙에 맞추기만 하면 된다.\\
 
 마커 인터페이스는 파라미터가 많은 메서드를 호출할 때도 도움이 된다.
 아래와 같은 메서드 시그너처가 있다고 하자.
@@ -321,9 +326,13 @@ showPhoneDialog() 메서드에서 phoneNumber와 keyword, 그리고 isNaverUser�
 타입은 맞기 때문에 컴파일러에서는 검증할 게 없고, 결국 사람이 제대로 값을 써주어야 한다.
 Builder 패턴을 통해 파라미터 개수를 줄이려는 노력을 할 수도 있다. 그래도 아직은 파라미터가 아주 많지는 않으니까(5개 이내) 파라미터를 더 늘리지 않는 쪽에 주의해보자.\\
 
-앱에 새로운 기능을 추가하면서 여러 화면이 생겼고, 여기서도 showPhoneDialog() 메서드를 호출하였다.
-그런데 이 기능에서는 showPhoneDialog()에서 하는 여러 작업 가운데 한 가지는 필요 없다는 얘기가 들려왔다.  내부에서 savePhoneState() 메서드를 호출하는데, 이 기능에서만은 savePhoneState() 메서드 호출이 불필요하다는 것이다.
-이때 고민이 된다. boolean 파라미터를 하나 추가하고서 이것으로 체크할까? 그러면 파라미터에 boolean이 3개 연속이 되어서 호출하는 쪽에서 더 혼동이 생길 것이다.
+앱에 기능을 추가하면서 여기서도 showPhoneDialog() 메서드를 호출하기로 했다.
+그런데 이 기능에서는 showPhoneDialog()에서 하는 여러 작업 가운데 한 가지는 필요 없다는 얘기가 들려왔다. 
+내부에서 savePhoneState() 메서드를 호출하는데, 이 기능에서만은 savePhoneState() 메서드 호출이 불필요하다는 것이다.
+이때 고민이 된다. boolean 파라미터를 하나 추가하고서 이것으로 체크할까? 
+그러면 boolean 파라미터가 3개 연속이 되어서 호출하는 쪽에서 더 혼동이 생길 것이다.\\
+
+가장 먼저 떠오르는 해결방법은 아래와 같다.
 \begin{lstlisting}[frame=single]
 	public static void showPhoneDialog(Context context, String phoneNumber, 
 			String keyword, boolean isNaverUser, boolean isKorean) {
@@ -341,10 +350,9 @@ Builder 패턴을 통해 파라미터 개수를 줄이려는 노력을 할 수�
 		...
 	}
 \end{lstlisting}
-
 다른 쪽 호출 로직에 덜 영향을 주기 위해 5라인에서 메서드를 오버로드했지만, 두 번째 메서드도 결국 public 메서드이기 때문에 역시 파라미터가 많은 문제점을 안고 있다.\\ 
 
-이때 쓸 수 있는 방법도 바로 마커 인터페이스다. Context 파라미터에 컴포넌트 this가 주로 전달되는데, 컴포넌트에 마커 인터페이스를 하나 연결해주면 된다.
+이런 때에 쓸 수 있는 방법도 바로 마커 인터페이스다. Context 파라미터에 컴포넌트 this가 주로 전달되는데, 컴포넌트에 마커 인터페이스를 하나 연결해주면 된다.
 
 \begin{lstlisting}[frame=single]
 public TaxiActivity extends Activity implements IgnorePhoneState {
@@ -484,7 +492,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
     }
 ```
 \end{lstlisting}
-이렇게 하는 것보다는 Fragment 정적 생성이 더 단순하다. 프레임워크에서 이미 제공하는 기능을 피할 이유는 없다.
+이렇게 하는 것보다는 Fragment 정적 생성이 더 단순하다. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.
 
 \begin{comment}
 \subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}
