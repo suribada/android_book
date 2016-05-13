@@ -224,7 +224,7 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 \item CategoryUpdaterService - 디폴트 프로세스
 \end{enumerate}
 
-컴포넌트가 프로세스 분리되어 있다고 해도 Application만은 어느 프로세스에서도 한번은 실행되어야 한다(4).
+컴포넌트가 프로세스 분리되어 있어도 Application만은 어느 프로세스에서도 한번은 실행되어야 한다(4).
 그리고 또 하나 주목할 부분은 분리된 프로세스에서 Application에서 띄우는 CategoryUpdaterService는 다시 디폴트 프로세스에서 실행된다는 점이다(6).\\
 
 프로세스가 분리됨으로써 Application의 onCreate() 메서드는 자주 호출될 가능성이 있고(이를테면 BroadcastReceiver를 프로세스 분리했다면), Application의 onCreate() 메서드에서 Service를 시작한다면 이 Service가 자주 실행될 가능성이 있다.
@@ -261,9 +261,9 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 앱을 만들다가 프로세스 분리한 것을 잊고서 왜 값이 안 나오는지 쓸데없이 고민한 경험을 가진 개발자도 있을 것이다.
 이때는 값을 따로 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용해야 한다.\\
 
-분리된 프로세스에서는 SharedPreferences를 쓰는 것은 권장되지 않는다. 
-SharedPreferences를 어차피 파일이기 때문에 한번 읽어오는 것은 문제가 되지 않는다.
-그런데 다른 프로세스에서 값을 변경한 것을 다시 가져오는 것은 문제가 간단하지 않다.
+한편, 분리된 프로세스에서 SharedPreferences를 쓰는 것은  
+SharedPreferences는 어차피 xml 파일에서 읽어들이는 것이기 때문에 한번 읽어오는 것은 문제가 되지 않는다.
+그런데 다른 프로세스에서 값을 변경한 것을 다시 가져오는 것은 문제가 단순하지 않다.
 허니콤 이후에는 Context의 getSharedPreferences(String name, int mode) 메서드를 사용할 때, mode에
 Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 진저브레드까지는 multi process 용도로 사용이 가능했지만, 그 이후에는 Context.MODE\_MULTI\_PROCESS를 사용하지 않으면 다른 프로세스에서 변경된 값을 읽어올 수 없다.\\

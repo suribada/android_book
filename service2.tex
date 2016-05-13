@@ -326,10 +326,11 @@ public abstract boolean  bindService (Intent service, ServiceConnection conn, in
 \item 두 번째 파라미터인 conn은 Service에 연결되거나 연결이 끊길 때의 Callback이다.
 \item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 넣을 수도 있다. 상수는 비트 OR($|러$) 연산으로 여러 개를 넣어도 된다. ICS부터 추가된 상수들은 주로 Service 프로세스의 우선순위와 관련된 것이고, 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CREATE이다.\\
 
-BIND\_AUTO\_CREATE을 쓸 때만 bindService()를 실행할 때 Service가 없다면 새로 Service를 생성한다. 이 옵션이 없다면 어디선가 startService()를 실행하지 않았다면 bindService()에서 연결 Callback이 불리지 않게 된다.
+bindService()를 실행하면서 BIND\_AUTO\_CREATE 옵션을 쓸 때에만, Service가 생성되지 않은 경우에 Service를 새로 생성한다. 이 옵션이 없다면 bindService()를 해도 Service는 자동으로 생성되지 않고, 어디선가 startService()를 실행하지 않았다면 bindService()에서 연결 Callback이 불리지 않게 된다.
 즉 Started \& Bound Service가 아니라면 BIND\_AUTO\_CREATE 옵션은 필수적이다. 
 이 옵션의 역할은 그 밖에도 더 있다. 
 Service에 Binding된 클라이언트가 여러 개 남아있을 때 stopService()를 실행하면 어떤 일이 발생할까? 이 옵션이 있다면 stopService()를 실행해도 Service가 종료되지 않는데, 옵션이 없는 경우에는 연결이 끊기고서 바로 Service의 onDestroy()가 불린다.
+%반드시 unbindService()를 해야만 한다. 그렇지 않으면 leak 발생
 옵션이 있는 경우 unbindService()를 클라이언트마다 모두 실행해야 Service의 onDestroy()가 불린다.
 Binding된 클라이언트가 남아 있다면 Service 프로세스가 메모리 문제 등으로 종료되었다가도 다시 Service 프로세스가 살아나서 재연결되는 것도 이 옵션이 있을 때만 가능하다. 
 \end{itemize}

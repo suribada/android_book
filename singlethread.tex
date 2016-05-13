@@ -121,7 +121,8 @@ Looper.loop() 메서드의 주요 코드를 보자.
 \begin{itemize}
 \item 13라인(3)이 바로 메시지를 처리하는 부분이다. 
 for 반복문을 돌면서 MessageQueue에서 다음 Message를 꺼내서 13라인(3)에서 dispatchMessage()를 호출한다. 
-\item quit(), quitSafely() 메서드는 Looper를 종료한다. 구체적으로 MessageQueue의 quit() 메서드에 boolean 값을 전달하고, 9라인(1)의 queue.next()에서 null을 리턴하고 11라인(2)에서 for 반복문이 종료된다.
+\item quit(), quitSafely() 메서드는 Looper를 종료한다. 
+구체적으로 MessageQueue의 quit() 메서드에 boolean 값을 전달하고, 9라인(1)의 queue.next()에서 null을 리턴하고 11라인(2)에서 for 반복문이 종료된다.
 Looper API 문서에서 quit()과 quitSafely() 메서드 차이를 보도록 하자.
 quit() 메서드는 아직 처리되지 않은 Message는 모두 제거한다.
 quitSafely() 메서드는 sendMessageDelayed() 등을 써서 실행 시간을 뒤로 미룬 경우에 해당하는 것으로, quitSafely() 메서드를 실행하는 시점에 현재 시간보다 뒤쪽에 있는 Message를 제거하고 그 앞쪽에 있는 Message는 계속해서 처리를 진행한다. 다만 quitSafely() 메서드는 젤리빈 API 레벨 18 이상에서 쓸 수 있다.\\
@@ -285,7 +286,7 @@ FrontOfQueue & sendMessageAtFrontOfQueue(Message msg)
 \begin{itemize}
 \item Message의 what 값만을 전달하는 sendEmptyMessage(), sendEmptyMessageDelayed(), sendEmptyMessageAtTime() 메서드가 있다.
 \item -Delayed로 끝나는 메서드는 내부적으로 -AtTime 메서드를 호출한다. 현재 uptimeMillis에 delayMillis를 더한 값이 uptimeMillis 파라미터에 들어간다.
-\item postAtFrontOfQueue() 메서드는 특별한 상황이 아니면 쓰지 말라는 가이드가 있다. 
+\item sendMessageAtFrontOfQueue()나 postAtFrontOfQueue() 메서드는 특별한 상황이 아니면 쓰지 말라는 가이드가 있다. 
 권한 문제나 심각한 서버 문제처럼, 앱을 더 이상 사용할 수 없는 특별한 때가 아니면 사용할 일이 없다. 남용하면 안되는 메서드이다.
 \end{itemize}
 
@@ -319,7 +320,7 @@ Handler는 일반적으로 UI 갱신을 위해 사용된다. 관련해서 해당
 AsyncTask에서도 내부적으로 Handler를 이용해서 onPostExecute() 메서드를 실행한다.
 
 \item UI 작업 중에 다음 UI 갱신 작업을 MessageQueue에 넣어 예약한다. 작업 예약이 필요한 경우가 있다.
-예를 들어, Activity의 onCreate() 메서드에서 하지 못하는 여러 가지 일들이 있다. 소프트 키보드를 띄운다든가, ListView의 setSelection() 메서드를 호출한다든가 하는 것이 onCreate() 메서드에서는 잘 동작하지 않는다. 이때 Handler를 이용해서 현재 작업이 끝난 이후에 다음 타이밍을 기다려서 진행한다.
+예를 들어, Activity의 onCreate() 메서드에서 하지 못하는 여러 가지 일들이 있다. 소프트 키보드를 띄운거나, ListView의 setSelection() 메서드를 호출하는 것이 onCreate() 메서드에서는 잘 동작하지 않는다. 이때 Handler를 이용해서 현재 작업이 끝난 이후에 다음 타이밍을 기다려서 진행한다.
 
 \item 반복해서 UI를 갱신한다. DigitalClock이나 TextClock 같은 위젯도 Handler를 이용해서 현재 시간을 갱신하고 있다.
 반복적인 UI 갱신 패턴은 아래와 같다.
@@ -411,9 +412,9 @@ UI 갱신이 끝나고 8라인(1)에서 postDelayed()에 Runnable 자체를 전�
 \item ActivityThread의 내부 클래스인 H는 Handler를 상속한다. 
 컴포넌트 생명주기 관련해서 모두 H를 거친다. Message의 what에 해당하는 int 상수에는 LAUNCH\_ACTIVITY, RESUME\_ACTIVITY, PAUSE\_ACTIVITY, DESTROY\_ACTIVITY, CREATE\_SERVICE, STO\-P\_SERVICE, RECEIVER, BIND\_APPLICATION, EXIT\_APPLICATION 등이 있다.
 
-\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_R\-E\-SIZED, MSG\_DISPATCH\_KEY, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).
+\item Touch나 Redraw 등 이벤트 처리를 위한 ViewRootImpl 클래스가 있다(MSG\_INVALIDATE, MSG\_R\-E\-SIZED, MSG\_DISPATCH\_INPUT\_EVENT, MSG\_CHECK\_FOCUS, MESSAGE\_DISPACH\_DRAG\_EV\-ENT 등).
 ICS까지는 ViewRootImpl이 Handler를 상속했지만, 젤리빈부터는 내부 클래스로 ViewRootHandler를 사용한다.
-ViewRootImpl에서 처음 그릴 때나 다시 그리기 필요한 경우(invalidate, 레이아웃 변경, Visibility 변경 등)는 Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
+ViewRootImpl에서 처음 그릴 때나 다시 그릴 필요가 있을 때(invalidate, 레이아웃 변경, Visibility 변경 등) Choreographer에 위임하는데, Choreographer에서 내부적으로 Handler를 상속한 FrameHandler를 다시 사용한다.
 % Activity의 Window마다 있다.
 
 \item Activity는 멤버 변수에 Handler가 있고 runOnUiThread() 메서드에서만 사용된다. 
@@ -564,7 +565,8 @@ ActivityManagerService에는 포그라운드/백그라운드 용도의 Broadcast
 
 세부 구분까진 하지 않으면 3가지 타임아웃 케이스가 있다. BroadcastReceiver와 Service, 그리고 InputDispatching(해당 케이스가 발생하는 것은 Activity이므로 Activity의 타임아웃으로 보기도 함)이다.\\
 
-ANR 발생 시에 ActivityManagerService의 appNotResponding() 메서드에서 다이얼로그를 띄우는 등의 일을 처리한다. 이 메서드를 호출하는 쪽을 찾아보면 타임아웃 케이스를 어떻게 만들어 내는지 알 수 있다.
+ANR 발생 시에 ActivityManagerService의 appNotResponding() 메서드에서 다이얼로그를 띄우는 등의 일을 처리한다. 
+이 메서드를 호출하는 쪽을 찾아보면 타임아웃 케이스를 어떻게 만들어 내는지 알 수 있다.
 BroadcastReceiver와 Service는 시작 전에 Handler의 sendMessageAtTime() 메서드를 사용해서 Message를 보내서, 타임아웃이 지나면 appNotResponding() 메서드를 호출한다. 물론 타임아웃 내에 실행이 끝나면 Message를 얼른 제거한다(2.4.3절에서 얘기한 Handler의 4번째 용도에 해당한다. com.android.server.am.BroadcastQueue와 com.android.server.am.ActiveServices를 보자).\\
 
 여기서 의문이 생길 수 있다. BroadcastReceiver의 onReceive() 메서드가 1분 이상 지속된다고 해도 어차피 메인 스레드를 점유하고 있는데, ActivityManagerService에서 Handler의 sendMessageAtTime() 메서드에 전달된 Message가 제 시간에 작동할 수 있을까? 
@@ -579,14 +581,19 @@ InputDispatching 타임아웃은 네이티브 소스에서 /frameworks/base/serv
 \begin{lstlisting}[frame=single] 
 	const nsecs_t DEFAULT_INPUT_DISPATCHING_TIMEOUT = 5000 * 1000000LL; // 5 sec
 \end{lstlisting}
-화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 `안드로이드의 모든 것 분석과 포팅' 책을 참고하자.\footnote{최신 버전과 차이나는 부분이 있으니 개념 위주로 보도록 하자.} 기본 내용은 커널에서 네이티브 단을 거쳐서 입력 이벤트가 전달된다는 것이다. InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
+화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 $\ulcorner$안드로이드의 모든 것 분석과 포팅$\lrcorner$\footnote{고현철, 유형목 공저, 한빛미디어, 2011, 4장. 최신 버전과 차이나는 부분이 있으니 개념 위주로 살펴보자.}을 참고하자. 기본 내용은 커널에서 네이티브 단을 거쳐서 입력 이벤트가 전달된다는 것이다. InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
 
-앱에서 이벤트를 전달받는 부분도 살펴보자. Activity는 Window(PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. WindowInputEventReceiver에서 전달받는 파라미터는 InputEvent로 MotionEvent와 KeyEvent의 상위 추상 클래스이다.\\
+앱에서 이벤트를 전달받는 부분도 살펴보자. Activity는 Window(PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 
+바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. WindowInputEventReceiver에서 전달받는 파라미터는 InputEvent로 MotionEvent와 KeyEvent의 상위 추상 클래스이다.\\
 
-InputDispatcher.cpp에서 주요 메서드는 dispatchMotionLocked()와 dispatchKeyLockd()인데 각각 터치 이벤트와 키 이벤트를 전달한다. 이때 findFocusedWindowTargetsLocked() 메서드에서 이벤트를 전달할 Window를 먼저 찾는데, isWindowReadyForMoreInputLocked() 메서드를 통해서 기존 이벤트를 처리하느라 대기해야 하는 지를 판단한다.
-이때 이벤트를 전달하지 않고 기다리다가 타임아웃이 지나면 onANRLocked() 메서드를 호출하고, com.android.server.input.InputManagerService의 notifyANR() 메서드를 거쳐서 ActivityManagerService의 appNotResponding() 메서드에 이른다.\\
+InputDispatcher.cpp에서 주요 메서드는 dispatchMotionLocked()와 dispatchKeyLockd()인데 각각 터치 이벤트와 키 이벤트를 전달한다. 
+이때 findFocusedWindowTargetsLocked() 메서드에서 이벤트를 전달할 Window를 먼저 찾는데, isWindowReadyForMoreInputLocked() 메서드를 통해서 기존 이벤트를 처리하느라 대기해야 하는 지를 판단한다.
+그리고서 이벤트를 전달하지 않고 기다리다가 타임아웃이 지나면 onANRLocked() 메서드를 호출하고, com.android.server.input.InputManagerService의 notifyANR() 메서드를 거쳐서 ActivityManagerService의 appNotResponding() 메서드에 이른다.\\
 
-InputDispatcher.cpp에서 isWindowReadyForMoreInputLocked() 메서드를 보면 키 이벤트와 터치 이벤트는 다르게 처리하는 것을 볼 수 있다. 키 이벤트는 먼저 다른 이벤트를 처리하느라 이벤트를 전달할 수가 없는 시간이 타임아웃을 넘는다면 곧바로 ANR이 발생한다. 반면 터치 이벤트는 연속해서 터치 이벤트가 왔을 때 뒤에 전달된 터치 이벤트가 전달되지 않는 시간이 타임아웃을 넘는다면 ANR이 발생한다.\\
+InputDispatcher.cpp에서 isWindowReadyForMoreInputLocked() 메서드를 보면 키 이벤트와 터치 이벤트는 다르게 처리하는 것을 볼 수 있다. 
+키 이벤트는 메인 스레드를  어디선가 이미 점유하고 있다면 키 이벤트를 전달하지 못하는데, 이벤트를 전달할 수가 없는 시간이 타임아웃을 넘는다면 곧바로 ANR이 발생한다. 
+터치 이벤트는 경우가 다르다. 터치 이벤트도 메인 스레드가 사용중이라면 대기하는 것은 동일하지만 그 시간이 타임아웃이 된다고 해서 바로 ANR이 발생하지는 않는다. 
+그 다음으로  또다시 터치 이벤트가 왔을 때 뒤에 전달된 터치 이벤트가 전달되지 않는 시간이 타임아웃을 넘는다면 ANR이 발생한다.\\
 
 예를 들어보자. 
 어디선가 메인 스레드를 Blocking하고 있다고 하자.
@@ -762,8 +769,8 @@ finish()를 통해서 onDestroy()가 호출되는데, onDestory() 실행 이전�
 
 \underline{\bfseries 1) Looper.quit()을 쓰는 게 적절한가?}\\
 DB 반영 내용이 많아서 시간이 걸린다고 가정해보자. 
-사용자가 액션을 빈번하게 보냈을 때 곧바로 처리가 되지 않은 상태에서 Back 키로 종료하면, Looper.quit()에서 아직 처리하지 않은 메시지는 어떻게 하는가?
-코드 \ref{src:HandlerThreadSample}에서는 Delayed Message가 없으니까, 굳이 quitSafely()가 아닌 quit()으로 종료해도 문제가 없긴 하다.\\
+사용자가 액션을 빈번하게 보냈을 때 곧바로 처리가 되지 않은 상태에서 Back 키로 종료하면, Looper.quit()에서 아직 처리하지 않은 Message는 어떻게 하는가?
+코드 \ref{src:HandlerThreadSample}에서는 Delayed Message가 없으니까, 굳이 quitSafely()가 아닌 quit()으로 종료해도 문제가 없다. quit() 메서드는 아직 밀려있는 Message라도 시간이 현재 시점보다 앞선 것은 모두 다 처리하고 끝낸다.\\
 
 \underline{\bfseries 2) Looper를 null 체크하는 시점 이후에 스레드가 시작되면 어떻게 되는가?}\\
 바로 타이밍 문제가 생긴다. 
@@ -821,6 +828,10 @@ MessageQueue.IdleHandler API 문서를 보면, MessageQueue의 Message를 모두
 \item 8라인(1)에서 IdleHandler를 등록한다. onLooperPrepared() 메서드는 HandlerThread에서 일종의 hook 메서드로 Looper.prepare()가 실행된 다음에 호출된다.
 \item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. isFinishing() == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
 \end{itemize}
+
+여기서 하나 질문을 해보자. HandlerThread를 사용하는 IntentService는 이런 구조를 가지고 있지 않은데 무슨 차이일까?
+Activity에서는 onDestroy()가 불리는 케이스가 있다. Back 키를 누르거나 다른 로직으로 인해 finish()를 호출한다면 onDestroy()가 불리고 HandlerThread에서 시작하는 스레드와 타이밍 문제가 생길 수 있다.
+]\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
 
 \begin{comment}    
 % 이 경우는 Thread 안에서 Handler를 쓰는 것이 낫다.

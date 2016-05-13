@@ -38,7 +38,7 @@ public class LifeCycleApplication extends Application {
 또는 사용자가 직접 최근 앱 목록에서 제거해버릴 수도 있다. 이때도 프로세스가 종료되면서 스레드도 종료되고 만다. 내부적으로 무엇을 열심히 하고 있는지 사용자가 알 리가 없다.\\
 
 프로세스가 kill될 가능성을 알아보기 위해서, 
-\url{http://developer.android.com/guide/components/processes-and-threads.html}를 보고 프로세스의 우선순위를 살펴보자.
+\url{http://developer.android.com/guide/components/processes-and-threads.html} 가이드 문서를 보고 프로세스의 우선순위를 살펴보자.
 \begin{enumerate}
 \item Foreground 프로세스: 사용자와 상호작용하는 Activity를 가지고 있거나, 그런 Activity에 bound된 Service를 가지고 있거나, startForeground()를 호출한 foreground Service를 가지고 있거나, Service의 생명주기 메서드(onCreate, onStart, onStartCommand, onDestroy)를 실행 중인 Service를 가지고 있거나, onReceive()를 실행하는 BroadcastReceiver를 가지고 있는 경우이다.
 메모리가 부족할 때에도 가장 마지막까지 남아있을 수 있는 프로세스이다.
@@ -48,7 +48,7 @@ visible Activity에 bound된 Service를 가진 경우도 해당한다.
 
 \item Service 프로세스: startService()로 실행했지만 위의 카테고리에는 들어가지 않는 Service를 가진 경우이다. 이런 것들은 사용자가 지금 보고 있는 것과 직접적인 연관은 없다.
 
-\item Background 프로세스: 보통 백그라운드 프로세스가 여러 개 존재한다.
+\item Background 프로세스: Activity가 종료한 것은 아니지만 사용자에게 더이상 보여지지 않고(onStop까지 불리고 스택이 백그라운드로 이동) 활성화된 컴포넌트가 없는 경우이다. 보통 백그라운드 프로세스가 여러 개 존재한다. 
 
 \item Empty 프로세스: 사용자가 Back 키로 종료하고 활성화된 컴포넌트가 없다면 Empty 프로세스가 된다. 이런 프로세스를 메모리에 갖고 있는 이유는 다음에 컴포넌트를 띄울 때 빠르게 띄우려는 캐시 용도일 뿐이다. 우선순위가 낮아서 리소스가 부족하면 가장 먼저 kill 대상이 된다.
 \end{enumerate}

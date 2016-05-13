@@ -190,7 +190,6 @@ targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테
 \item targetSdkVersion 21 이상에서는 startService()나 bindService()를 실행할 때 명시적 인텐트를 사용해야 한다.
 \end{itemize}
 
-
 결론적으로 단말 버전에 따라 최신 기능을 쓸 수 있기 때문에 targetSdkVersion은 높여서 쓰는 것이 권장된다. 다만 targetSdkVersion을 높일 때는 테스트할 내용이 많다.
 
 \begin{comment}
@@ -264,13 +263,14 @@ Version 2 (Android 3.2 and greater)
 
 \subsection{버전 체크}
 앱에 들어가는 기능을 정할 때는 버전별 히스토리는 의미가 있지만, 앱 개발 시에 버전 관련한 주요 관심은 ``특정 클래스와 메서드가 이 버전에서 쓸 수 있는가''이다.
-런타임에 해당 단말 버전에서 사용하지 않는 클래스와 메서드가 호출된다면 크래시가 발생하므로, 앞의 AsyncTaskCompat과 같이 if 문을 사용해서 버전 체크를 하는 코드를 사용한다.\\
+런타임에 해당 단말 버전에서 존재하지 않는 클래스와 메서드가 사용된다면 크래시가 발생하므로, 앞의 AsyncTaskCompat과 같이 if 문을 사용해서 버전 체크를 하는 코드를 사용한다.\\
 
-별게 아닌 것 같지만 앱을 배포하고서 많은 크래시를 유발하는 게 이 부분이다.
-\footnote{필자의 경우도 버전 문제로 다량의 크래시를 유발했던 것을 고백하지 않을 수 없다.}
+별게 아닌 것 같지만 앱을 배포하고서 많은 크래시를 유발하는 게 이 부분이다.\footnote{필자도 버전 문제로 다량의 크래시를 유발한 적이 있다.}
 모든 안드로이드 버전의 단말을 가지고 앱의 모든 기능을 테스트하는 게 아니기 때문에, if 문으로 분기하지 않거나 비교 레벨을 잘못 기재한 경우에 실제 사용자 단말에서 많은 크래시가 발생한다. 이때 즉시 문제를 수정해서 앱을 패치해보지만 이미 발생한 수많은 크래시는 어쩔 수 없다.\\
 
-예를 들어보자. SharedPreferences.Editor에는 데이터를 반영하는 용도의 apply() 메서드와 commit() 메서드가 있다. 그런데 commit() 메서드는 XML 파일에 동기 반영이고 apply() 메서드는 비동기 반영이라서 apply() 메서드를 쓰는 것이 권장된다. 그런데 apply() 메서드는 API 레벨 9부터 사용 가능하다. 속도 향상을 위해서 개선된 버전의 메서드를 사용하는 것은 당연하므로 아래와 같이 코드를 작성하도록 하자.
+예를 들어보자. SharedPreferences.Editor에는 데이터를 반영하는 용도의 apply() 메서드와 commit() 메서드가 있다. 
+그런데 commit() 메서드는 XML 파일에 동기 반영이고 apply() 메서드는 비동기 반영이라서 apply() 메서드를 쓰는 것이 권장된다. 
+그런데 apply() 메서드는 API 레벨 9부터 사용 가능하다. 속도 향상을 위해서 개선된 버전의 메서드를 사용하는 것은 당연하므로 아래와 같이 코드를 작성하도록 하자.
 \begin{lstlisting}[frame=single]
 	public static apply(SharedPreferences.Editor editor) {
 		if (Build.VERSION.SDK_INT >= 9) {
@@ -441,7 +441,6 @@ class ViewCompatGingerbread {
 
 \begin{comment}
 이를테면 ArrayAdapter의 addAll 메서드 같은 게 API 레벨 11부터 있다.
- 
 
 ClipBoardManager는 2개가 있다.
 
