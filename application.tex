@@ -8,8 +8,8 @@ Context만 전달된다면 Context의 getApplicationContext() 메서드로 언�
 
 \section{앱 초기화}
 Application은 다른 컴포넌트보다 먼저 실행되기 때문에 앱을 위한 초기화 작업을 Application의 onCreate()에서 주로 실행한다.
-onCreate() 메서드는 가능한 한 빨리 끝나야만 한다. 
-앱 아이콘을 클릭해서 visible 컴포넌트인 Activity를 실행할 때, Application의 onCreate()에서 시간이 오래 걸린다면 검은 화면이 오래 보이는 문제가 생긴다.\\
+그리고 onCreate() 메서드는 가능한 한 빨리 끝나야만 한다. 
+앱 아이콘을 클릭해서 Activity를 새로 시작할 때, Application의 onCreate()에서 시간이 오래 걸린다면 검은 화면이 오래 보이는 문제가 생긴다.\\
 
 % SplashPage에서 초기화 하는 것과 비교
 Application은 앱 프로세스의 메인 클래스인 ActivityThread에 mInitialApplication이라는 인스턴스 변수로 있기 때문에, 앱 프로세스가 살아있는 동안 계속 남아 있는 인스턴스이다.\footnote{Back 키를 통해서 화면을 다 벗어났어도 프로세스가 바로 종료되지는 않는다. 이 상태에서는 다시 앱 아이콘을 클릭해도 Application의 onCreate()는 실행되지 않는다.}
@@ -65,7 +65,9 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 
 \item 7라인(2)에서 productRepository는 앱에서 싱글 인스턴스로 사용하기로 한다. Application을 통해서만 인스턴스를 가져온다는 규칙을 정한다면, 싱글톤 패턴 대신 사용 가능한 방식이다.  
 
-\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 Application의 onCreate()에서 라이브러리에 필요한 초기화를 하는 경우가 많다.
+\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 Application의 onCreate()에서 라이브러리에 필요한 초기화를 하는 경우가 많다. 
+다른 컴포넌트에 앞서서 Application의 onCreate()가 실행되기 때문에 `이른 초기화'가 필요한지 `늦은 초기화'로 해도 되는지 구분이 필요하다.
+예를 들어, 프로세스가 뜨면서 App Widget 하나만 달랑 실행하는 데도 Activity에서만 필요한 초기화 작업도 하고 있다면 불필요하게 메모리와 시간을 허비하게 된다.
 
 \item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리해야 할 작업을 안정적으로 처리하기 위해서 Service를 이용한다.
 
@@ -75,7 +77,7 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 예를 들어, InputValidator 클래스에서 부적절한 입력을 받으면 특정 문자열을 리턴하는 메서드가 있다면,  ShoppingApplication.getApplication().getText(R.string.invalid\_input) 식으로 사용할 수 있다.
 \end{itemize}
 
-많은 문서에서 쇼핑카트의 예처럼 데이터 공유에 Application을 사용하면 된다고 하지만, 이 방식도 완벽한 것은 아니다.
+많은 문서에서 쇼핑카트의 예처럼 데이터 공유에 Application을 사용하면 된다고 하지만, 이 방식도 문제가 있다.
 메모리가 적거나 다른 프로세스가 사용자에게 즉각적으로 반응해야 할 때, 프로세스가 종료됐다가 재시작되기도 한다.
 이때 Application의 onCreate()는 다시 호출되지만, addCartProduct() 메서드로 추가해놓았던 쇼핑카트 목록은 사라져 버린다. 
 이런 케이스도 있다는 것을 알고 데이터 공유에 신중해야 한다.

@@ -2,7 +2,7 @@
 메인 스레드에서 UI 이벤트를 처리하는 메커니즘을 살펴보자. Handler는 메인 Looper와 연결되어 메인 스레드에서 Message를 처리하는 중심 역할을 한다. Handler는 백그라운드 스레드에서도 특별한 용도로 사용 가능하다는 점에서 다음 장의 백그라운드 스레드와도 내용이 연결된다.
 
 \section{메인 스레드}
-애플리케이션 동작은 당연히 멀티 스레드이지만, UI를 업데이트하는 데는 단일 스레드 모델(Single Thread Model: 해당 변수나 메서드를 사용하는 시점에는 하나의 스레드만 실행)이 적용된다.\footnote{롤리팝에서는 Render Thread가 추가되어 offload atomic animation을 실행한다}
+애플리케이션은 성능을 위해 멀티 스레드를 많이 활용하지만, UI를 업데이트하는 데는 단일 스레드 모델(Single Thread Model: 해당 변수나 메서드를 사용하는 시점에는 하나의 스레드만 실행)이 적용된다.\footnote{롤리팝에서는 Render Thread가 추가되어 offload atomic animation을 실행한다}
 멀티 스레드로 UI를 업데이트하면 동일한 UI 자원을 사용 시 교착 상태(deadlock), 경합 상태(race condition) 등 여러 문제가 발생하기 때문에 메인 스레드에서만 UI 업데이트를 허용하고 있다.\\
 % 싱글 스레드 이벤트 큐 모델
 
@@ -265,17 +265,17 @@ UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성
 앞에서도 언급했듯이 Handler는 Message를 MessageQueue에 보내는 것과 Message를 처리하는 것을 함께 제공한다. post(), postAtTime(), postDelayed() 메서드를 통해서 Runnable 객체도 전달되는데, 실제로 Runnable도 내부적으로 Message에 포함되는 값이다.\\
 
 Handler에서 Message를 보내는 메서드 목록을 살펴보자.\\
-\scalebox{0.75}{
+\scalebox{0.92}{
 \begin{tabular}[fontsize=\tiny]{|l|l|l|} \hline
  & send & post \\ \hline
 기본 & sendEmptyMessage(int what) & post(Runnable r)
 \\
  & sendMessage(Message msg) & \\ \hline
-Delayed & sendEmptyMessageDelayed(int what, long delayMillis) & postDelayed(Runnable r, long delayMillis)\\
- & sendMessageDelayed(Message msg, long delayMillis) & \\ \hline
-AtTime & sendEmptyMessageAtTime(int what, long uptimeMillis)
- & postAtTime(Runnable r, Object token, long uptimeMillis) \\
-  & sendMessageAtTime(Message msg, long uptimeMillis) & postAtTime(Runnable r, long uptimeMillis)\\ \hline
+Delayed & \makecell[l]{sendEmptyMessageDelayed(int what, \\long delayMillis)} & postDelayed(Runnable r, long delayMillis)\\
+ & \makecell[l]{sendMessageDelayed(Message msg, \\long delayMillis)} & \\ \hline
+AtTime & \makecell[l]{sendEmptyMessageAtTime(int what, \\long uptimeMillis)}
+ & \makecell[l]{postAtTime(Runnable r, Object token, \\long uptimeMillis)} \\
+  & \makecell[l]{sendMessageAtTime(Message msg, \\long uptimeMillis)} & postAtTime(Runnable r, long uptimeMillis)\\ \hline
 FrontOfQueue & sendMessageAtFrontOfQueue(Message msg)
  & postAtFrontOfQueue(Runnable r)
 \\ \hline
@@ -646,7 +646,8 @@ HandlerThread에서 Looper.prepare() 실행 후에 Handler의 세 번째 생성�
 
 코드 \ref{src:LooperThread}를 다시 한번 보자. Looper.loop()는 무한 반복문이기 때문에 계속 리턴되지 않는다.
 Looper.myLoop\-er().quit() 메서드를 실행할 수 있는 위치도 loop() 다음 라인에서는 할 수 없는 까닭에, 인스턴스 변수로 Looper를 가지고 다른 스레드에서 quit()을 실행해야 한다.
-이때 보통 사용하는 방법은 Looper만 돌고 있는 백그라운드 스레드를 만들고(코드 \ref{src:LooperThread} 참고), 이 스레드는 명시적으로 종료하기 전까지는 계속해서 살아있게 하는 것이다. 이때 Message는 Looper용 스레드에서 계속 처리된다.
+이때 보통 사용하는 방법은 Looper만 돌고 있는 백그라운드 스레드를 만들고(코드 \ref{src:LooperThread} 참고), 이 스레드는 명시적으로 종료하기 전까지는 계속해서 살아있게 하는 것이다. 
+이때 Message는 Looper용 스레드에서 계속 처리된다.
 미묘한 차이지만 방식은 2가지가 있다. 코드 \ref{src:LooperThread}처럼 Handler를 스레드 안에 두고 사용하는 방식이 있고, Looper를 가지고 외부에서 Handler를 만드는 방식이 있다. 
 두 번째 방식을 미리 만든 것이 HandlerThread이다.
 HandlerThread는 내부적으로 prepare(), loop()를 실행하는 것 외에 별 내용이 없다. 클래스명 때문에 Handler를 가진 스레드라고 생각할 수도 있지만 그렇지 않다. 바로 Looper를 가진 스레드이면서 Handler에서 사용하기 위한 스레드라고 보는 게 맞다.\\
@@ -681,7 +682,7 @@ HandlerThread가 필요한 곳은 어디일까?
 \includegraphics[scale=0.65]{favorite_sample}
 
 사용자는 하나씩 천천히 선택/해제를 하지 않기 때문에, UI를 Blocking하지 않도록 별도 스레드에서 DB에 반영하기로 했다.
-그런데 사용자는 선택/해제를 마구 바꾸기도 하는데, 이 때문에 좀 더 세심한 처리가 필요하다.
+그런데 사용자는 선택/해제를 마구 바꾸기도 하는데, 이 때문에 세심한 처리가 필요하다.
 만일 체크 상태가 바뀔 때마다 스레드를 생성하거나 스레드 풀에서 스레드를 가져다가 DB에 반영하면 어떤 일이 벌어질까? 스레드 실행은 start()를 실행한 순서대로 되지 않기 때문에 선택$\rightarrow$해제$\rightarrow$선택을 했지만, DB에 반영할 때는 선택$\rightarrow$선택$\rightarrow$해제 순으로 반영하여 최종 결과를 잘못 반영할 가능성이 있다. 
 즉 실행 순서를 순차적으로 맞추어야 하는데, 바로 HandlerThread가 필요한 지점이다.\footnote{허니콤 이후의 AsyncTask도 순차 실행이 기본 동작이지만, AsyncTask는 백그라운드 스레드와 UI 스레드를 구분하고 데이터를 전달하는 목적에 더 적합하다.}
 HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드 스레드에서 무한 반복문 만들고 BlockingQueue를 매개로 하여 반복문 내에서 take를 실행하고 외부에서 put을 실행하는 형태를 만들어야 한다.
@@ -689,18 +690,17 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 
 아래 코드를 한번 보자. 아직 버그가 있는 버전이고 이 버그를 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
 \newpage
-\begin{lstlisting}[frame=single, caption=HandlerThread 사용 예제(버그 존재), label=src:HandlerThreadSample] 
+\begin{lstlisting}[frame=single, label=src:HandlerThreadSample] 
  	private Handler favoriteHandler;
-    private Looper favoriteLooper;
+    private HandlerThread handlerThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
        	... 
-       	HandlerThread handlerThread 
+       	handlerThread 
        		= new HandlerThread("Favorite Processing Thread");
         handlerThread.start(); // (1)
-        favoriteLooper = handlerThread.getLooper(); // (2)
-        favoriteHandler = new Handler(favoriteLooper) {
+        favoriteHandler = new Handler(handlerThread.getLooper()) { // (2)
 
             @Override
             public void handleMessage(Message msg) { // (3)
@@ -731,25 +731,23 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
             });
 	}
 	
-	
 	@Override
-    protected void onDestroy() {
-        if (favoriteLooper != null) {
-            favoriteLooper.quit(); // (5)
-        }
+    protected void onDestroy() { 
+        handlerThread.quit(); // (5)
         super.onDestroy();
     }
 \end{lstlisting}
 
 여기서 라인별로 주요한 내용들을 얘기해보자.
 \begin{itemize}
-\item 9라인(1)에서 HandlerThread를 시작하였다. HandlerThread는 Thread를 상속한 것이라는 걸 기억하자.
-\item 10라인(2)에서 Handler를 생성하면서 HandlerThread에서 만든 Looper를 전달하였다.
-\item 36라인(4)에서 체크박스를 선택/해제할 때마다 Handler에 Message를 보낸다.
+\item 9라인(1)에서 HandlerThread를 시작하였다. HandlerThread는 Thread를 상속한 것을 기억하자.
+\item 10라인(2)에서 Handler를 생성하면서 HandlerThread에서 만든 Looper를 전달하였다. HandlerThread의 getLooper() 메서드는 Looper가 초기화될 때까지 대기한다.
+\item 35라인(4)에서 체크박스를 선택/해제할 때마다 Handler에 Message를 보낸다.
 \item 14라인(3)에서 Message를 받아서 DB에 반영한다.
-\item 46라인(5)에서 Looper를 종료한다. 
+\item 43라인(5)에서 HandlerThread의 quit() 메서드는 내부에서 Looper.quit()을 실행해서 Looper를 종료한다.
 \end{itemize}
 
+\begin{comment}
 작동방식이 그리 어려워 보이진 않는다.
 그런데 Looper를 종료할 때 null 체크를 하는 부분은 어째서일까? 
 테스트를 여러 번 하다보니 NullPointerException이 발생했는데, 재현도 쉽지 않았던 부분이다. 
@@ -769,17 +767,18 @@ finish()를 통해서 onDestroy()가 호출되는데, onDestory() 실행 이전�
 
 \underline{\bfseries 1) Looper.quit()을 쓰는 게 적절한가?}\\
 DB 반영 내용이 많아서 시간이 걸린다고 가정해보자. 
-사용자가 액션을 빈번하게 보냈을 때 곧바로 처리가 되지 않은 상태에서 Back 키로 종료하면, Looper.quit()에서 아직 처리하지 않은 Message는 어떻게 하는가?
+사용자가 액션을 빈번하게 보냈을 때 즉시 처리되지 않은 상태에서 Back 키로 종료하면, Looper.quit()에서 아직 처리하지 않은 Message는 어떻게 하는가?
 코드 \ref{src:HandlerThreadSample}에서는 Delayed Message가 없으니까, 굳이 quitSafely()가 아닌 quit()으로 종료해도 문제가 없다. quit() 메서드는 아직 밀려있는 Message라도 시간이 현재 시점보다 앞선 것은 모두 다 처리하고 끝낸다.\\
 
 \underline{\bfseries 2) Looper를 null 체크하는 시점 이후에 스레드가 시작되면 어떻게 되는가?}\\
 바로 타이밍 문제가 생긴다. 
-Looper.loop() 메소드는 무한 반복이고 스레드는 그 스레드를 시작한 Activity를 참조하고 있으므로, onDestroy() 이후에도 Activity는 내내 GC가 안되는 문제가 발생한다.
+Looper.loop() 메소드는 무한 반복이고 스레드는 그 스레드를 시작한 Activity를 참조하고 있으므로, onDestroy() 이후에도 Activity는 내내 GC가 되지 않는 문제가 발생한다.
 quit()이나 quitSafely()를 호출해야만 GC 문제가 생기지 않는다.
 null 체크를 해도 안되고 안 해도 문제인 상황에 다른 해법이 있을까?\\
 
 MessageQueue.IdleHandler API 문서를 보면, MessageQueue의 Message를 모두 처리하고서 휴식 상태일 때 할 일을 지정할 수 있다.
-인터페이스의 유일한 메서드인 queueIdle()은, IdleHandler를 계속 사용하려면 true를 리턴하고 아니면 false를 리턴한다. 다시 말해서 false를 리턴하면 idle 상태가 될 때마다 queueIdle() 메서드가 실행된다.
+인터페이스의 유일한 메서드인 queueIdle()은, IdleHandler를 계속 사용하려면 true를 리턴하고 아니면 false를 리턴한다. 
+다시 말해서 false를 리턴하면 idle 상태가 될 때마다 queueIdle() 메서드가 실행된다.
 결론적으로 IdleHandler를 등록해서 Activity가 종료되고 모든 MessageQueue가 idle 상태가 되었을 때 Looper.quit()을 실행하면 된다.\\
 
 코드 \ref{src:HandlerThreadSample}과 달라지는 부분은 두 군데이다.
@@ -830,10 +829,8 @@ MessageQueue.IdleHandler API 문서를 보면, MessageQueue의 Message를 모두
 \end{itemize}
 
 여기서 하나 질문을 해보자. HandlerThread를 사용하는 IntentService는 이런 구조를 가지고 있지 않은데 무슨 차이일까?
-Activity에서는 onDestroy()가 불리는 케이스가 있다. Back 키를 누르거나 다른 로직으로 인해 finish()를 호출한다면 onDestroy()가 불리고 HandlerThread에서 시작하는 스레드와 타이밍 문제가 생길 수 있다.
-]\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
+Activity에서는 onDestroy()가 불리는 케이스가 있다. Back 키를 누르거나 다른 로직으로 인해 finish()를 호출한다면 onDestroy()가 불리고 HandlerThread에서 시작하는 스레드와 타이밍 문제가 생길 수 있다. 
 
-\begin{comment}    
 % 이 경우는 Thread 안에서 Handler를 쓰는 것이 낫다.
 서버에서 데이터를 가져와서  로컬 데이터베이스에 넣는데 카테고리와 상세를 각각 가져온다고 하자.
 카테고리가 먼저 입력되어야만 Foreign Key Contraint 문제가 발생하지 않는데, 각각 스레드로 병렬 실행한다면 상세 데이터를 먼저 가져와서 문제가 발생할 수 있다. 이런 경우에 순차 입력을 위해서 HandlerThread를 고려해보자.\\
