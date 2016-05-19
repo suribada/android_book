@@ -468,7 +468,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \item FragmentState에 속한 것이 아닌, 두 번째 방식처럼 우리가 만든 Fragment의 변수들은 당연히 저장이 안된다.
 \end{itemize}
 
-두 번째 방법에서도 값을 유지할 수는 있는데, 바로 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
+두 번째 방법에서도 값을 유지할 수는 있는데, 가장 단순한 방법은 첫 번째 방법과 유사하게 set() 메서드에서 단순 대입이 아닌 setArguments()에 Bundle로 담아서 전달하는 것이다. 값을 유지하기 위해서 좀 더 복잡한 방법은 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
 \begin{lstlisting}[frame=single]
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 
@@ -492,7 +492,9 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
     }
 ```
 \end{lstlisting}
-이렇게 하는 것보다는 Fragment 정적 생성이 더 단순하다. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.
+onSaveInstanceState()를 꼭 써야하는 상황은 있겠지만, 전달된 값을 유지하기 위해서 이런 식으로 하진 말자. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.\\
+
+첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 상수가 외부에 노출되지 않아도 되는 장점이 있어서이다. Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
 
 \begin{comment}
 \subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}

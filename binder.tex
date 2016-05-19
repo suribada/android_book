@@ -121,7 +121,7 @@ Context에 getSystemService(String name) 메서드가 있어서, 리턴 결과�
 
 아래 표를 보도록 하자. 일반적인 네이밍 패턴에 맞는 것도 많지만 아닌 것도 여럿 있다(롤리팝 기준).
 % com.android.server.SystemServer 참고
-\newgeometry{left=2cm,bottom=2cm}
+%\newgeometry{left=2cm,bottom=2cm}
 \scalebox{0.8}{
 \begin{tabular}[fontsize=\tiny]{|l|l|l|l|l|} \hline
 Context 상수 & getSystemService 결과 & 인터페이스 & Stub 구현 \\ \hline
@@ -148,9 +148,9 @@ INPUT\_SERVICE & InputManager & IInputManager & InputManagerService \\ \hline
 JOB\_SCHEDULER\_SERVICE & JobScheduler & IJobScheduler & JobSchedulerService \\ \hline
 KEYGUARD\_SERVICE	 & KeyguardManager & 없음 & 없음 \\ \hline
 LAUNCHER\_APPS\_SERVICE & LauncherApps &  ILauncherApps & LauncherAppsService \\ \hline
-LAYOUT\_INFLATER\_SERVICE & LayoutInflater & 없음 & 없음 \\ \hline
+\makecell[l]{LAYOUT\_INFLATER\\ \_SERVICE} & LayoutInflater & 없음 & 없음 \\ \hline
 LOCATION\_SERVICE	 & LocationManager & ILocationManager & LocationManagerService \\ \hline
-MEDIA\_PROJECTION\_SERVICE	 & MediaProjectionManager  & IMediaProjectionManager & MediaProjectionManagerService \\ \hline
+\makecell[l]{MEDIA\_PROJECTION\\ \_SERVICE}	 & MediaProjectionManager  & IMediaProjectionManager & MediaProjectionManagerService \\ \hline
 MEDIA\_ROUTER\_SERVICE	 & MediaRouter & IMediaRouterService & MediaRouterService \\ \hline
 MEDIA\_SESSION\_SERVICE & MediaSessionManager & ISessionManager & MediaSessionService\\ \hline
 NFC\_SERVICE	& NfcManager & 없음 & 없음 \\ \hline
@@ -164,7 +164,7 @@ SENSOR\_SERVICE & SensorManager & 없음 & 없음 \\ \hline
 STORAGE\_SERVICE	& StorageManager & IMountService & MountService\\ \hline
 TELECOM\_SERVICE	& TelecomManager &  ITelecomService &  TelecomServiceImpl\\ \hline
 TELEPHONY\_SERVICE & TelephonyManager & ITelephonyRegistry & TelephonyRegistry \\ \hline
-TEXT\_SERVICES\_MANAGER\_SERVICE & TextServicesManager & ITextServicesManager & TextServicesManagerService \\ \hline
+\makecell[l]{TEXT\_SERVICES\_MANAGER\\ \_SERVICE} & TextServicesManager & ITextServicesManager & TextServicesManagerService \\ \hline
 TV\_INPUT\_SERVICE	 & TvInputManager &  ITvInputManager & TvInputManagerService \\ \hline
 UI\_MODE\_SERVICE	& UiModeManager & IUiModeManager & UiModeManagerService \\ \hline
 USB\_SERVICE	 & UsbManager & IUsbManager & UsbService \\ \hline
@@ -176,7 +176,7 @@ WIFI\_SERVICE & WifiManager & IWifiManager & WifiService \\ \hline
 WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hline
 \end{tabular}
 }
-\restoregeometry
+%\restoregeometry
 
 4.X 이후에도 여러 서비스가 추가되어서 생소한 것들이 있는데 굳이 살펴보지는 않겠다.
 하나하나 보는 것보다는 전체적으로 특기할 만한 내용 위주로 보도록 하자.
@@ -739,7 +739,7 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 \item 어떤 앱에서는 일정 시간마다 서버에서 데이터를 폴링해서 동작하는 Service를 Handler를 이용해서 반복해서 가져오도록 만들었다. 그런데 여기서도 당연히 위와 같은 문제가 발생했다. 왜 동작하지 않는지 서버 쪽 문제인가 싶어서 네트워크 수신율이 좋지 않을 것으로 예상되는 곳에까지 단말을 가지고 가서 테스트했다고 한다.
 \end{enumerate}
 
-여기서 포인트는 바로 개발 중에는 문제가 나오지 않았다는 것이다.
+2가지 예에서 포인트는 바로 개발 중에는 문제가 나오지 않았다는 것이다.
 개발 중에는 USB 디버깅 옵션을 켜고 PC와 연결해서 사용하는데, USB 충전 중에는 Deep Sleep에 들어가지 않는다. 
 전원이 잘 공급되고 있기 때문에 잠에 빠질 필요가 없는 것이다.\\
 
@@ -759,7 +759,8 @@ PendingIntent를 만들어서 AlarmManager에 전달하였다. AlarmManager에�
 
 앞서 얘기한 실제 예에서 백그라운드로 작업을 처리하는 두 번째 케이스는 AlarmManager로 잘 해결된다. 
 그런데 반복해서 UI를 갱신하는 첫 번째 케이스는 AlarmManager로 해결하기엔 오히려 복잡하다. 
-AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까?
+AlarmManager에 PendingIntent로 BroadcastReceiver를 등록하고 여기서 sendBroadcast()를 실행해서 Activity에서는 등록된 BroadcastReceiver로 받으면 될까? 생각만 해도 복잡하다.
+생각할 수 있는 가장 단순한 해결책으로는 onResume()에서 기존 Delayed Message를 제거하고 새로 실행하는 것이다. 어쨌든 화면이 켜지면 UI를 갱신해주는 것은 맞지만, 예를 들어 2분 주기의 업데이트에서 다른 화면도 왔다갔다하고 스크린 OFF/ON할 때에 불필요하게 많은 갱신을 할 가능성이 있다.
 이에 대해서는 대략적인 것이지만 아래 패턴을 활용해보자. 
 요점은 화면이 ON될 때, 지연 시간이 이미 지났으면 바로 화면을 즉시 업데이트하고 지연 시간이 아직 안되었으면 남은 지연 시간을 재계산하는 것이다. 
 좀 더 구체적으로 얘기해보자. 지연 시간이 2분으로 되어 있는데 2분은 Deep Sleep에 들어간 시간을 뺀 uptimeMillis 기준이다. Deep Sleep 시간까지 포함해서 2분이 넘는다면 즉시 업데이트하고, 2분이 아직 안되었지만 스크린이 ON되는 순간, 그 도중에 Deep Sleep에 들어갔는지 안 들어갔는지는 모르지만 어쨌든 시간차가 있으므로 기존 Message를 제거하고 2분에서 그 시간차를 뺀 것을 다시 Delayed Message에 넣는 것이다.

@@ -1,7 +1,7 @@
 \chapter{Application}
 Application도 Activity나 Service와 마찬가지로 ContextWrapper를 상속한다.
 % Application은 다른 컴포넌트들과 상호 작용하는 것이 없으므로, 컴포넌트로 보기는 어렵다고 생각했는데, ComponentCallbacks 인터페이스 API에서는 Application도 Component라고 말하고 있다.
-Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 프로세스가 생성되면서 Application이 먼저 실행되고 해당 컴포넌트가 그 다음에 실행된다. 즉 Activity, Service, BroadcastReceiver, ContentProvider 가운데서 어느 것이든지 외부에서(앱 아이콘, Notification, Alarm, 다른 앱) 실행하려고 할 때, Application이 이미 생성되어 있다면 생성하지 않고 아니면 Application을 먼저 생성한다. 그리고서 해당 컴포넌트를 시작한다.\\
+Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 프로세스가 생성되면서 Application이 먼저 생성되고 해당 컴포넌트가 그 다음에 실행된다. 즉 Activity, Service, BroadcastReceiver, ContentProvider 가운데서 어느 것이든지 외부에서(앱 아이콘, Notification, Alarm, 다른 앱) 실행하려고 할 때, Application이 이미 생성되어 있다면 생성하지 않고 아니면 Application을 먼저 생성한다. 그리고서 해당 컴포넌트를 시작한다. 앞에서도 설명했지만 Application의 onCreate()보다 ContentProvider의 onCreate()가 먼저 실행되는 것은 주의하도록 하자.\\
 
 프레임워크 소스에서는 ActivityThread의 handleBindApplication() 메서드에서 Application의 onCreate()를 실행한다.
 Context만 전달된다면 Context의 getApplicationContext() 메서드로 언제든지 Application 인스턴스를 구할 수 있다. Activity에서는 특히 getApplication() 메서드를 사용해서 가져오기도 한다.

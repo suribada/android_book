@@ -60,7 +60,7 @@
 \contentsline {subsection}{\numberline {6.1.5}Service 중복 실행 방지}{86}{subsection.6.1.5}
 \contentsline {section}{\numberline {6.2}Bound Service}{89}{section.6.2}
 \contentsline {subsection}{\numberline {6.2.1}리모트 바인딩}{90}{subsection.6.2.1}
-\contentsline {subsection}{\numberline {6.2.2}로컬 바인딩}{94}{subsection.6.2.2}
+\contentsline {subsection}{\numberline {6.2.2}로컬 바인딩}{95}{subsection.6.2.2}
 \contentsline {subsection}{\numberline {6.2.3}바인딩의 특성}{97}{subsection.6.2.3}
 \contentsline {subsection}{\numberline {6.2.4}Messenger}{100}{subsection.6.2.4}
 \contentsline {chapter}{\numberline {7}ContentProvider}{106}{chapter.7}
@@ -85,7 +85,7 @@
 \contentsline {subsection}{\numberline {8.6.3}App Widget 업데이트}{135}{subsection.8.6.3}
 \contentsline {subsection}{\numberline {8.6.4}유의할 점}{136}{subsection.8.6.4}
 \contentsline {subsubsection}{메인 스레드 점유}{136}{section*.13}
-\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{136}{section*.14}
+\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{137}{section*.14}
 \contentsline {subsubsection}{ICS부터 기본 패딩}{137}{section*.15}
 \contentsline {subsubsection}{고해상도 단말에서 Bitmap 생성 시 메모리 문제}{137}{section*.16}
 \contentsline {chapter}{\numberline {9}Application}{139}{chapter.9}

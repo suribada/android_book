@@ -355,7 +355,8 @@ Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거�
 Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
 
 \subsection{리모트 바인딩}
-Remote Binding Service를 만드는 것이 어렵지는 않다. aidl 인터페이스를 작성한 다음에 Service에서 Stub 인터페이스를 구현해주면 된다.
+Remote Binding Service를 만드는 것이 어렵지는 않다. 
+aidl 인터페이스를 작성한 다음에 Service에서 Stub 인터페이스를 구현해주면 된다.
 간단한 샘플을 가지고 먼저 알아보자. 
 IRemoteService.aidl을 아래와 같이 작성하였다. 
 \begin{lstlisting}[frame=single]
@@ -463,7 +464,7 @@ public interface IRemoteService extends android.os.IInterface {
 		}
 
 		static final int TRANSACTION_validCalendar 
-			= (android.os.IBinder.FIRST_CALL_TRANSACTION + 0);
+			= (android.os.IBinder.FIRST_CALL_TRANSACTION + 0); // (10)
 	}
 
 	public boolean validCalendar(long calendarId, java.lang.String calendarType)
@@ -472,9 +473,14 @@ public interface IRemoteService extends android.os.IInterface {
 \end{lstlisting}
 \begin{itemize}
 \item 55라인(7)의 Proxy와 3라인(1)의 Stub으로 구분되는 클라이언트와 서버는 Parcel을 가지고 데이터를 주고받는다. 
+
 \item 83라인(9)에서 Proxy에서 transact() 메서드를 호출하면 33라인(5)에서 Stub의 onTransact() 메서드가 호출된다.
+
 \item 79라인(8)에서 Parcel에 쓰기 시작하고 42라인(6)에서 읽기 시작한다.
+
 \item 12라인(3)의 asInterface() 메서드의 내용을 보자. 8라인(2)에서 attachInterface()에 등록한 것을 16라인(4)의 queryLocalInterface() 메서드로 조회하게 된다. 동일한 프로세스에 있다면 Stub 인스턴스를 직접 사용하겠다는 것이다. 내부적으로 로컬일 수도 있고 리모트일 수도 있는 바인딩이 이때 결정된다.
+
+\item 95라인(10)에 보면 transact()와 onTransact() 메서드 사이에 전달되는 구분자에 사용하기 위해서, aidl에 선언한 메서드명을 이용해서 TRANSACTION\_validCalendar와 같이 상수로 만든 것을 볼 수 있다. 이 규칙에 의해 메서드명이 같은 게 있으면 구분이 안 되기 때문에 aidl 인터페이스에는 메서드 오버로딩이 허용되지 않고, 오버로딩을 하면 빌드가 되지 않고 `previous defined here' 메시지가 나온다.
 \end{itemize}
 
 Service에서는 추상 클래스인 Stub 구현체를 만든다.
@@ -733,7 +739,7 @@ public class BindingActivity extends Activity implements OnClickListener {
 bindService()를 호출하면 Service와 엮이는 클라이언트가 하나씩 늘어난다고 보면 된다. 
 이렇게 엮인 클라이언트가 남아있다면 어느 클라이언트에서 stopService()를 실행해도 종료되지 않는다. 모든 클라이언트가 unbindService() 메서드를 호출해서 Service와의 관계가 모두 정리되어야만 한다.\\
 \includegraphics[scale=0.5]{service-binding-tree-lifecycle}\\
-이 그림에서 마름모꼴 분기점은 Started \& Bound Service의 경우인데, 앞에서 얘기했듯이 가능하면 생각하지 않는 것이 좋다.\\
+이 그림에서 마름모꼴 분기점은 Started \& Bound Service의 경우를 고려한 것이다.
 
 기본적으로 Bound Service에서 bindService()를 실행한 클라이언트가 모두 unbindService()를 호출한다면, Service에서는 onUnbind()가 호출되고 onDestroy()까지 호출된다.
 Activity에서 Bound Service를 사용할 때는 onStart()와 onStop()에서 bindService()와 unbindService()를 각각 호출하는 것을 권장하고 있다. unbindService()를 실행 시에 연결되어 있는 클라이언트 수가 0가 되면 Service는 종료될 수 있음을 생각해보자. onResume/onPause에서 bind/unbind하는 경우 onResume/onPause는 빈번하게 트랜지션이 일어나는데(전원 버튼 누르기, 다이얼로그 테마 Activity를 위에 띄우기 등) onPause()를 통해 unbindService()가 실행되고 Service가 종료될 수도 있다. 
