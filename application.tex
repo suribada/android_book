@@ -69,7 +69,7 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 다른 컴포넌트에 앞서서 Application의 onCreate()가 실행되기 때문에 `이른 초기화'가 필요한지 `늦은 초기화'로 해도 되는지 구분이 필요하다.
 예를 들어, 프로세스가 뜨면서 App Widget 하나만 달랑 실행하는 데도 Activity에서만 필요한 초기화 작업도 하고 있다면 불필요하게 메모리와 시간을 허비하게 된다.
 
-\item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리해야 할 작업을 안정적으로 처리하기 위해서 Service를 이용한다.
+\item 16라인(5)에서 startService()를 통해서 역시 앱을 위한 초기화 작업을 진행한다. 일반적으로 백그라운드 스레드로 처리하는 작업을 안정적으로 처리하기 위해서 Service를 이용한다.
 
 \item 12라인(3), 37라인(6)은 좋은 방법은 아닌 듯 하지만 많이 쓰는 방법이다. 
 메서드 호출 단계가 깊어지면서, 여러 클래스를 거칠 때 계속해서 생성자나 메서드에 Context를 파라미터에 전달하는 것은 번거롭다. 
@@ -79,24 +79,25 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 
 많은 문서에서 쇼핑카트의 예처럼 데이터 공유에 Application을 사용하면 된다고 하지만, 이 방식도 문제가 있다.
 메모리가 적거나 다른 프로세스가 사용자에게 즉각적으로 반응해야 할 때, 프로세스가 종료됐다가 재시작되기도 한다.
-이때 Application의 onCreate()는 다시 호출되지만, addCartProduct() 메서드로 추가해놓았던 쇼핑카트 목록은 사라져 버린다. 
+이때 Application의 onCreate()는 다시 호출되지만, addCartProduct() 메서드로 추가해놓은 쇼핑카트 목록은 사라져 버린다. 
 이런 케이스도 있다는 것을 알고 데이터 공유에 신중해야 한다.
 결론적으로 사라져버려도 문제가 없고 남아있으면 유용한 캐시같은 것이 Appplication의 데이터 공유에 적용되는 것이 맞다.
 
 \section{Application Callback}
-일반적으로 Application에서는 onCreate() 메서드만 오버라이드하는 경우가 많지만,  
+Application에서는 onCreate() 메서드만 오버라이드하는 경우가 많지만,  
 다른 메서드도 유용한 경우가 있으니 어떤 것이 있는지 살펴보자. 
-참고로 onTerminated() 메서드는 emulated process 용도에서나 동작하고 실제 단말에서는 동작을 보장하지 않는다. 이 메서드는 무시하는 게 좋다.
+참고로 onTerminated() 메서드는 emulated process 용도에서나 동작하고 실제 단말에서는 동작하지 않는다. 이 메서드는 무시하는 게 좋다.
 % 얘기 하는 이유는 여러 책에서 언급이 돼 있어서
+메서드 가운데서 register/unregister 메서드를 제외하고는 3개의 메서드가 있다. ComponentCallbacks2 인터페이스의 메서드로 Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 인터페이스를 구현하고 있다. ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.\\
 \begin{itemize}
-\item onConfigurationChanged(): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않는다. 
+\item onConfigurationChanged(Configuration newConfig): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않는다. 다른 컴포넌트보다 Application의  onConfigurationChanged()가 먼저 불린다. 
 예를 들어, 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기서 startService()를 실행한다.
 %Resources 객체가 새로운 Configuration에 맞는 값으로 업데이트되고 이 메서드가 호출되고 난 후에, 다른 컴포넌트에서 참고하게 된다.
 % TimeZone이 변경되었을 때도?
 \item onLowMemory(): 전체 시스템에 메모리가 부족해서 이 앱도 곧 kill될 가능성이 있을 때 호출된다. 잡고 있는 캐시나 불필요한 리소스를 해제(release)하는 작업을 하면 된다. 리턴 이후에 GC가 실행된다.
-\item onTrimMemory(): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 세분화해서 처리할 수 있다.
+\item onTrimMemory(int level): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 세분화해서 처리할 수 있다. level에는 ComponentCallbacks2의 상수값이 전달된다.
+
 \end{itemize}
-3개의 메서드는 ComponentCallbacks2 인터페이스의 메서드로 Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 인터페이스를 구현하고 있다. ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.\\
 
 Application Callback은 3가지가 있다. 모두 register/unregister 메서드가 있고, Callback은 여러 개를 등록할 수 있다.\\
 
