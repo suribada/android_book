@@ -3,9 +3,9 @@
 1개의 앱이 1개의 태스크가 아니라는 것을 염두에 두자. 물론 1개의 앱만 사용하는 중에도 필요에 의해 여러 태스크를 가질 수도 있다.\\
 \includegraphics[scale=0.6]{diagram_backstack}
 
-Activity는 스택에 차례대로 쌓인다(Back Stack이라 불린다). 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 있지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
+Activity는 스택에 차례대로 쌓인다(Back Stack이라 불린다). 스택은 말 그대로 First In, Last Out 방식으로 쌓이고 사라진다. 스택 구조라서 넣거나 빼기만 할 수 있고 순서를 바꿀 수 없다고 개발자 가이드에 나오지만 꼭 그렇진 않다. Intent.FLAG\_ACTIVITY\_REORDER\_TO\_FRONT 플래그를 사용하면 순서를 조정할 수 있다.\\
 
-단순하게 startActivity()를 실행해서 스택에 추가하고 Back 키로 제거해가면 아무 일도 없지만, 실제 앱에서는 다양한 경로의 Activity 접근이 이루어지기 때문에 내비게이션이 꼬이는 경우가 많다. 이 때문에 태스크 관리가 필요하다.
+단순하게 startActivity()를 실행해서 스택에 추가하고 Back 키로 제거해가면 아무 일도 없지만, 실제 앱에서는 다양한 경로의 Activity 접근이 이루어지기 때문에 내비게이션이 꼬이는 경우가 많다. 이 때문에 태스크 관리가 필요하다.\\
 
 예를 들어보자. 
 \begin{enumerate}
@@ -231,9 +231,8 @@ launchMode에는 standard, singleTop, singleTask, singleInstance 4가지가 있�
 Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성한다. 스택에는 새로운 Activitity를 추가할 수 있다.\\
 
 ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 
-새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면, ActivityA 위에 그대로 뜨게 된다. 
-이 내용에 대해서 명시적으로 언급된 부분은 찾지 못했지만 여러 테스트에서도 동일한 결과를 보여 주었다. 
-이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC는 스택에서 제거된다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다. singleTask launchMode의 효과가 전혀 없는 게 아니다.\\
+새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면, ActivityA 위에 그대로 뜨게 된다.
+이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC가 스택에서 제거되면서 ActivityB의 onNewIntent()가 불린다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다.\\
 
 이번에는 ActivityB의 taskAffinity를 변경하고 테스트해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
 여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\

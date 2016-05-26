@@ -25,6 +25,7 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
     public Context getBaseContext() {
         return mBase;
     }
+    
     ...
     
     @Override
@@ -62,14 +63,14 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
 이제 또 다른 질문을 해보자. 그럼 ContextImpl은 앱에서 싱글톤으로 단 하나의 인스턴스를 가지고서 ContextWrapper에 전달하는가?
 이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개의 메서드가 따로 있는 것을 보면 싱글톤이 아닌 것을 유추해볼 수 있다.\footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
 
-Activity, Service, Application 각 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있고 getBaseContext()는 각각 다른 ContextImpl 인스턴스를 리턴한다. getApplicationContext()는 Application 인스턴스를 리턴하는 것으로 Application은 앱에서 1개 밖에 없고 어디서나 동일한 인스턴스를 반환한다.\\
+Activity, Service, Application 각 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있고 getBaseContext()는 각각 ContextImpl 인스턴스를 리턴한다. getApplicationContext()는 Application 인스턴스를 리턴하는 것으로 Application은 앱에서 1개 밖에 없고 어디서나 동일한 인스턴스를 반환한다.\\
 
 ContextImpl을 보면 3가지 정도로 메서드 범주를 나눌 수 있다.
 \begin{itemize}
 \item 앱 패키지 정보, 내/외부 파일, SharedPreferences, 데이터베이스 등과 관련한 Helper 메서드가 있다. 
-\item Activity, BroadcastReceiver, Service와 같은 컴포넌트 관련 메서드와 퍼미션 체크 메서드가 있고, system\_server 프로세스의 ActivityManagerService의 메서드를 다시 호출한다. 
-\item ActivityManagerService 외에 다른 시스템 서비스에 접근하기 위해서 getSystemService() 메서드가 있다. ContextImpl의 정적 초기화 블록(static initializer block)\footnote{http://warmz.tistory.com/50에서 초기화 블록 내용을 알아보자}에서 클래스가 최초 로딩될 때 시스템 서비스 매핑을 하고, 이후에는 매핑을 바로 사용하고 있다.
-시스템 서비스는 Context 클래스에서 XXX\_SERVICE와 같이 상수명으로 모두 매핑되어 있고, getSystemService(Context.ALARM\_SERVICE)와 같이 Context가 전달되는 어디서든 시스템 서비스를 가져다 쓸 수 있다.
+\item Activity, BroadcastReceiver, Service와 같은 컴포넌트 관련 메서드와 퍼미션 체크 메서드가 있고, 이들 메서드는 system\_server 프로세스의 ActivityManagerService의 메서드를 다시 호출한다. 
+\item ActivityManagerService 를 포함한 시스템 서비스에 접근하기 위해서 getSystemService() 메서드가 있다. ContextImpl의 정적 초기화 블록(static initializer block)\footnote{http://warmz.tistory.com/50에서 초기화 블록 내용을 알아보자}에서 클래스가 최초 로딩될 때 시스템 서비스 매핑을 하고, 이후에는 getSystemService() 메서드에서 매핑을 바로 사용하고 있다.
+시스템 서비스는 Context 클래스에서 XXX\_SERVICE와 같이 상수명으로 모두 매핑되어 있고, Context가 전달되는 어디서든 getSystemService(Context.ALARM\_SERVICE)와 같이 시스템 서비스를 가져다 쓸 수 있다.
 \end{itemize}
 
 \includegraphics[scale=0.5]{context}\\
@@ -100,3 +101,4 @@ View 클래스를 보면 생성자에 Context가 들어간다. 이 Context가 �
     }
 \end{lstlisting}
 첫 번째 로그에서만 true가 나오는 것을 볼 수 있다. View 클래스는 생성자에 Context가 전달되어야 한다. 테스트해보면 Activity에서 쓸 수 있는 3가지 Context 모두 다 전달 가능하다. 그러나 View와 연관이 깊은 것은 Activity이므로 Activity를 전달하는 것을 이해할 수 있을 것이다.
+내부적으로 setContentView() 메서드에서 사용하는 LayoutInflator에 Activity 인스턴스가 전달되고, View 생성자의 Context 파라미터에 Activity 인스턴스가 전달되기 때문이다. 

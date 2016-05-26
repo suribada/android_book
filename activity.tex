@@ -1,7 +1,7 @@
 \chapter{Activity}
 Activity는 앱에서 화면의 기본 단위이고 setContentView() 메서드로 메인 뷰를 화면에 표시한다.
 때에 따라 setContentView()를 실행하지 않고, 로직 분기를 해서 다른 Activity를 띄우는 용도로 사용하기도 한다.
-한 예로 Intent의 스킴(scheme)에 따라 여러 화면을 호출하는 경우가 있다. 
+한 예로 Intent의 스킴(scheme)에 따라 다른 화면으로 다시 분기하는 경우가 있다. 
 이때 AndroidManifest.xml에서 여러 Activity에 intent-filter 엘리먼트를 추가하지 않고, Controller 역할의 Activity 1개에만 여러 스킴의 intent-filter를 명시해서 Controller Activity를 거쳐 다른 화면으로 이동시킨다.\\
 
 Activity는 AndroidManifest.xml에 선언해야 호출 가능하다. 
@@ -9,7 +9,7 @@ Activity를 설정 파일에 추가할 뿐이지만, 개수가 많으면 유지�
 내부에 UI 액션이 많고 로직이 많다면 우선 Activity를 고려하고, 
 다른 Activity 위에 팝업 형식으로 뜬다면 커스텀 레이아웃 다이얼로그나 DialogFragment, PopupWindow로 대체를 고려하자.
 `로딩중'이라고 전체를 덮는 반투명 화면은 어떨까? 이것도 Activity보다는 DialogFragment가 적절하다.
-기준은 단순하게 하자. 독립적인 화면이라고 하면 Activity가 더 적합하고, 종속적인 화면으로 보인 다면 다른 것을 쓸 수 있는지 생각해보자.\\
+기준은 단순하게 하자. 독립적인 화면이라고 하면 Activity가 더 적합하고, 종속적인 화면으로 보인다면 다른 것을 쓸 수 있는지 생각해보자.\\
 
 \section{생명주기}
 %http://developer.android.com/training/basics/activity-lifecycle/pausing.html
@@ -38,12 +38,13 @@ onPause $\rightarrow$ onStop $\rightarrow$ onDestroy\\
 \fbox{\bfseries Back 키로 기존 Activity에 돌아올 때/Home 키로 나갔다가 돌아올 때}
 onRestart $\rightarrow$ onStart $\rightarrow$ onResume\\
 
-\fbox{\bfseries 다이얼로그 테마 Activity가 위에 뜰 때/투명 Activity가 위에 뜰 때}
+\fbox{\bfseries 다이얼로그 테마 Activity나 투명 Activity가 위에 뜰 때}
 onPause
 \\
 
-메서드가 어디까지 호출되는 지는 visible 상태와 포그라운드 상태를 체크해보면 좀 더 알기 쉽다.
-onPause()까지 실행하면 백그라운드이면서 visible 상태이고 onStop()까지 실행되면 not visible 상태이다. 
+메서드가 어디까지 호출되는 지는 visible 상태와 foreground 상태를 체크해보면 좀 더 알기 쉽다.
+onPause()까지 실행하면 background이면서 visible 상태이고 onStop()까지 실행되면 not visible 상태이다.\\
+
 Activity API 문서에 보면 3가지 lifetime으로 구분한 내용이 있다.
 \begin{itemize}
 \item entire lifetime: onCreate() $\sim$
@@ -66,13 +67,13 @@ onResume()도 마찬가지이다. background visible 상태(투명 Activity나 �
 \item onCreate()에서 finish()를 호출하면 다른 생명주기 메서드를 거치지 않고 곧바로 onDestroy()를 실행한다.
 \item onActivityResult()는 onResume()보다 먼저 실행된다.
 이 순서가 필요할 때가 있다. onActivityResult()에서 가져온 결과를 업데이트하고
-onResume()에서도 최신 데이터를 업데이트해야 할 때, 순서를 유념해야 한다.
+onResume()에서도 최신 데이터를 업데이트해야 할 때, 실행 순서를 주의해야 한다.
 \end{enumerate}
 
 Activity에는 onPostCreate()나 onPostResume() 같은 메서드도 있어서 앞에서 얘기한 생명주기 메서드 사이에 뭔가를 할 수도 있지만, 시스템에서 초기화를 위해서 사용하는 것으로 앱에서는 쓰지 않도록 가이드하고 있다.
 
 \subsection{startActivity()와 startActivityForResult()}
-Activity를 시작하는 방법은 startActivity()와 startActivityForResult() 메소드를 호출하는 것이다. 대부분 Activity에서 다른 Activity를 시작하고 특별한 경우에 Activity가 아닌 다른 컴포넌트에서 Activity를 시작한다.\\
+Activity를 시작하는 방법은 startActivity()와 startActivityForResult() 메소드를 호출하는 것이다. 대부분 Activity에서 다른 Activity를 시작하고, 특별한 경우에 Activity가 아닌 다른 컴포넌트에서 Activity를 시작하기도 한다.\\
 
 먼저 Activity 전환에 대해서 용어부터 정리하고 넘어가자.
 어떤 문서에서는 호출하는 쪽을 부모 Activity라고 하고, 호출되는 쪽을 자식 Activity라고 하는데 혼동스런 표현이다. TabActivity와 같은 ActivityGroup이 부모 Activity이고, 탭 위치에 들어가는 하위 Activity가 자식 Activity이다. Activity에도 getParent() 메서드가 있는데 이것은 자신을 포함(embed)한 Activity를 가리키는 것이지 자기를 호출한 Activity를 가리키는 것이 아니다. 
@@ -80,7 +81,7 @@ Activity에 getCallingActivity()와 getCallingPackage() 메서드가 있어서 �
 
 startActivity()는 Callee에 데이터를 전달하기만 하고 Caller에게 다시 데이터를 전달하는 어떤 액션도 하지 않는다.
 startActivity() 메서드는 Context의 메서드이므로 Activity뿐만 아니라 Service, BroadcastReceiver, Application 어디서든 startActivity()를 실행할 수 있다.
-startActivity()로 시작된 Callee에서는 getCallingActivity()와 getCallingPackage() 메서드는 null을 리턴한다.\\
+startActivity()로 시작된 Callee에서는, getCallingActivity()와 getCallingPackage() 메서드는 null을 리턴한다.\\
 
 startActivityForResult()는 Activity의 메서드다. Activity끼리만 데이터를 주고받을 수 있다고 이해하자. 
 startActivityForResult() 메서드 관련해서 몇 가지 내용을 살펴보자.
@@ -92,10 +93,10 @@ startActivityForResult() 메서드 관련해서 몇 가지 내용을 살펴보�
 \item 두 Activity가 다른 태스크에 속해 있다면 onActivityResult()에서 결과를 다시 받을 수 없다.
 
 \item 결과를 돌려주는 Callee에서는 finish() 메서드 전에 setResult() 메서드를 호출해야 setResult(int resultCode, Intent data) 메서드의 파라미터인 resultCode와 data가 Caller에 전달된다. 보통 이런 실수를 하지 않지만 기능을 변경하다 보면 위치를 잘못 잡을 때가 있다.
-\item setResult() 메서드를 호출하지 않으면 기본으로 RESULT\_CANCELED(0) 값이 전달된다. 일반적으로 RESULT\_OK(-1) 값을 넣지만, 임의로 원하는 정수값을 전달해도 된다.
+\item setResult() 메서드를 호출하지 않으면 기본으로 RESULT\_CANCELED(상수 0) 값이 전달된다. 일반적으로 RESULT\_OK(상수 -1) 값을 넣지만, 임의로 원하는 정수값을 전달해도 된다.
 \item ActivityA에서 startActivityForResult() 메서드로 ActivityB를 호출하고 ActivityB에서는 자신을 닫고 또 다른 ActivityC를 호출하는 경우가 있다. 
-이때 ActivityC에서 setResult()를 실행한 데이터는 ActivityA에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
-ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드가 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 ActivityA에 전달되지 않고 resultCode는 RESULT\_CANCELED면서 data == null이 될 뿐이다.  
+이때 ActivityC에서 setResult()로 전달한 데이터는 ActivityA에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
+ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드는 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 ActivityA에 전달되지 않고 resultCode는 RESULT\_CANCELED면서 data == null이 될 뿐이다.  
 이 경우에 값을 전달받기 위해서는, ActivityB에서 ActivityC를 시작할 때 startActivity()를 실행하면서 Intent에 Intent.FLAG\_ACTIVITY\_FORWARD\_RESULT 플래그를 추가하는 것이다.
 이 플래그는 startActivityForResult()에서 쓰려고 하면 ``android.util.AndroidRuntimeExce\-ption: FORWARD\_RESULT\_F\-LAG used while also requesting a result''  예외를 발생시킨다. 
 다시 말하면, ActivityA에서 ActivityB를 시작할 때는 startActivityForResult() 메서드를 사용하고, ActivityB에서 ActivityC를 시작할 때는 startActivity() 메서드를 사용하면서 플래그를 사용해야 한다. 
@@ -113,7 +114,7 @@ ActivityB는 onCreate()와 onResume()을 실행한다.
 \begin{enumerate}
 \item ActivityA는 onPause() 메서드를 실행한다(백그라운드로 이동).
 \item ActivityB는 onCreate(), onStart(), onResume() 메서드를 실행하고 포커스를 갖는다(포그라운드로 이동).
-\item ActivityA는 onStop() 메서드를 실행한다(ActivityA는 not visible 상태로 ActivityB가 전체 화면을 덮는 경우). ActivityB가 반투명이거나 다이얼로그 테마 Activity인 경우에는 onStop()을 실행하지 않는다(아직 visible이기 때문).
+\item ActivityA는 onStop() 메서드를 실행한다(ActivityA는 not visible 상태로 ActivityB가 전체 화면을 덮는 경우). ActivityB가 투명하거나 화면을 일부만 덮는 경우에는 onStop()을 실행하지 않는다(ActivityA는 아직 visible이기 때문).
 \end{enumerate}
 
 설명해보면 Caller는 일단 백그라운드로 가고, Callee가 포그라운드까지 온 다음에 Caller가 not visible 상태가 된다.
@@ -124,7 +125,7 @@ Callee가 뜨고 난 이후에야 onStop()이 필요한지 알 수 있기 때문
 이 순서는 별게 아니지만 인지해야 하는 경우가 있다. 
 ActivityA에서 변경된 값을 ActivityB에서 사용하고자 한다.
 이때 ActivityA에서 매 이벤트마다 
-SharedPreferences나 DB에 저장하지는 않고 ActivityA가 끝날 때만 저장하기로 했다.
+SharedPreferences나 DB에 저장하지는 않고 ActivityA가 끝날 때만(화면을 Back 키로 나거거나, 다른 Activity로 전환될 때) 저장하기로 했다.
 이때 onStop() 메서드에서 저장하면 안되고 onPause() 메서드에서 저장해야만, ActivityB에서 이 값을 정상적으로 사용할 수 있다.\\
 
 \underline{\bfseries 포그라운드 Activity가 닫힐 때}\\
@@ -143,7 +144,7 @@ ActivityA에서 ActivityB를 시작하고, 이번에는 ActivityB를 닫으면 A
 onCreate()에서 리소스를 생성했다면 onDestroy()에서 제거하고, onResume()에서 생성했다면 onPause()에서 제거한다.
 가장 많이 사용하는 예로는 onResume()에서 registerReceiver()를 실행하고, onPause()에서 unregisterReceiver()를 실행하는 것이다. 즉 포그라운드에 있을 때만 Broadcast 이벤트에 대해 처리하겠다는 것이다. 다른 예로 DB를 열고 닫는 것도 생각할 수 있다.
 onCreate()에서 DB를 열었는데 onPause()에서 DB를 닫는다면 어떻게 될까?
-다른 Acivity로 전환되었다가 다시 화면에 돌아올 때 onCreate()가 호출되지 않고 onResume()만 불리므로, 닫혀진 DB를 갖게 되고 쿼리를 실행할 수 없게 된다.
+다른 Acivity로 전환되었다가 다시 화면에 돌아올 때 onCreate()가 호출되지 않고 onResume()만 불리므로, 닫혀진 DB를 갖게 되어 쿼리를 실행할 수 없게 된다.
 
 \subsubsection{super.onXxx() 호출 순서}
 onCreate(), onResume()에서는 super.onCreate(), super.onResume()을 먼저 실행하고, 
@@ -171,21 +172,21 @@ onPause(), onDestroy()에서는 super.onPause(), super.onDestroy()를 나중에 
 	}
 \end{lstlisting}
 생명주기를 시작할 때는 뭔가를 만들어내는 일이 많고, 끝날 때는 정리하는 일이 많다는 것을 생각하자.
-구글에서 만든 소스나 샘플, 많은 책에서도 이런 규칙은 없고 이런 규칙에 맞게 작성하지도 않지만, 경험상 이 습관은 필요하다. \url{http://orhanobut.github.io/effective-android/}에서도 항목 37에 ``Constructive first, destructive last'' 내용이 있는 것을 볼 수 있다.\\
+많은 문서나 구글에서 만든 소스나 샘플에서도 이런 규칙은 없고 이런 규칙에 맞게 작성하지도 않지만, 경험상 이 습관은 필요하다. \url{http://orhanobut.github.io/effective-android/}에서도 항목 37에 ``Constructive first, destructive last'' 내용이 있는 것을 볼 수 있다.\\
 
 Activity의 onCreate()나 onResume(), onPause() 메서드에서는 실제로 하는 작업은 거의 없다.
 onDestroy()에서는 하는 작업이 있긴 하다. 
-startManagingCursor() 메서드에(허니콤에서 Deprecation되었지만) 등록되었던 Cursor를 닫고,
+startManagingCursor() 메서드에(허니콤에서 deprecation되었지만) 등록되었던 Cursor를 닫고,
 showDialog()를 사용해서 캐시된 Dialog를 제거한다.\\
 
 일반적인 앱에서는 로그인/로그아웃 상태를 갖고 있거나 화면 로딩 속도를 체크하는 등의 공통 로직이 있어서, 상위 클래스로서 BaseActivity를 사용하는 경우가 많다.
 상위 클래스의 onResume() 메서드에서 객체 인스턴스를 1개 생성한다고 해보자. 
 하위 클래스에서 onResume()에서 생성한 인스턴스를 가지고 로그를 남길 수도 있고, 뭔가 추가적인 작업을 할 여지가 있다. 
-그런데 super.onResume()을 먼저 호출하지 않고 나중에 호출하면 무슨 일이 생길까? 바로 개발 시에 자주 보는 NullPointerException을 만나게 된다.
+그런데 super.onResume()을 먼저 호출하지 않고 나중에 호출하면 무슨 일이 생길까? 바로 개발 시에 자주 보는 NullPointerException이 발생한다.
 onPause() 메서드에서는 super.onPause() 메서드를 먼저 호출하고서 다른 로직을 실행하면
 이미 반납된 자원을 사용하는 경우가 생길 수 있다.\\
 
-해당 샘플을 보자.
+해당 샘플을 보자. 먼저 공통 로직 용도로 사용하는 상위 클래스이다.
 \begin{lstlisting}[frame=single]
 public class BaseActivity extends Activity {
 
@@ -242,10 +243,10 @@ onCreate() 메서드에서 유효성 여부를 체크하고 문제가 있을 때
 \subsubsection{onXxx() 메서드는 직접 호출하지 않음}
 onCreate(), onResume(), onPause(), onDestroy() 메서드를 직접 호출하는 경우는 거의 볼 수 없지만, onBackPressed() 같은 메서드를 호출하는 경우는 가끔 보게 된다.
 onBackPressed()는 기본 동작이 finish()를 호출하는 것이므로 일단 당장은 되지만, onBackPressed()는 요구 사항에 따라 변경될 여지가 있는 메서드이다.
-사용 패턴을 알기 위해서 Back 키를 체크하는 코드가 들어갈 수도 있고, moveToTaskBack() 메서드처럼 태스크를 아예 백그라운드로 보내는 경우도 있다. 또는 Back 키를 막기 위해서 onBackPressed() 메서드에서 super.onBackPressed()를 쓰지 않고 비어있는 메서드로 오버라이드하기도 한다. 이때 onBackPressed()를 호출한 쪽은 동작에 문제가 생긴다. 
+사용 패턴을 알기 위해서 Back 키를 체크하는 코드가 들어갈 수도 있고, moveToTaskBack() 메서드처럼 태스크를 아예 백그라운드로 보내는 경우도 있다. 또는 Back 키를 막기 위해서 onBackPressed() 메서드에서 super.onBackPressed()를 쓰지 않고 비어있는 메서드로 오버라이드하기도 한다. 이때 onBackPressed()를 직접 호출한 쪽은 동작에 문제가 생긴다. 
 다른 코드에 영향을 쉽게 받는 코드는 가능하면 작성하지 않는 것이 좋다.\\
 
-Activity와는 별개지만 SQLiteOpenHelper를 상속한 Database Helper를 만들 때 onUpgrade() 메서드에서 onCreate() 메서드를 호출하는 것은 여러 책에서도 흔히 보인다.
+Activity와는 별개지만 SQLiteOpenHelper를 상속한 Database Helper를 만들 때 onUpgrade() 메서드에서 onCreate() 메서드를 호출하는 것은 여러 문서에서도 흔히 보인다.
 \begin{lstlisting}[frame=single]
 @Override
 public void onCreate(SQLiteDatabase db) {
@@ -301,25 +302,13 @@ Configuration은 컴포넌트에서 어떤 리소스를 사용할 지를 결정�
 %http://developer.android.com/intl/ko/guide/topics/resources/runtime-changes.html
 %http://developer.android.com/intl/ko/reference/android/content/res/Configuration.html
 \pageref{flow}페이지에서 화면 회전 시 Activity의 생명주기 메서드는 onDestroy()까지 실행되고 다시 onCreate()부터 실행하는 것을 얘기했다. 
-화면 방향(orientation)이 Configuration의 가장 대표적인 항목이고, 
-android.content.res.Configuration에서 멤버 변수를 나열해보자. 
-densityDpi,
-fontScale,
-hardKeyboardHidden,
-keyboard,
-keyboardHidden,
-locale,
-mcc,
-mnc, 
-navigation, 
-navigationHidden,
-orientation,
-screeenHeightDp,
-screenLayout, 
-screenWidthDp,
-smalllestScreenWidthDp,
-touchScreen,
-uiMode로 모두 17개가 있고, 
+화면 방향(orientation)이 Configuration의 가장 대표적인 항목인데, 다른 것들은 무엇이 있는지 알아보기 위해 android.content.res.Configuration의 멤버 변수를 나열해보자. 
+\begin{lstlisting}[frame=single]
+densityDpi, fontScale, hardKeyboardHidden, keyboard, keyboardHidden, locale, 
+mcc, mnc, navigation, navigationHidden, orientation, screeenHeightDp, screenLayout, 
+screenWidthDp, smalllestScreenWidthDp, touchScreen, uiMode 
+\end{lstlisting}
+이렇게 모두 17개가 있고, 
 여기서 fontScale과 locale은 환경 설정에서 정할 수 있는 사용자 옵션이고 나머지는 단말의 현재 상태이다.\\
 
 \subsection{리소스 반영}
@@ -404,12 +393,13 @@ Configuration qualifier에 대한 상세 내용은 `Providing Resources' 문서�
 
 \item Configuration 가운데서 fontScale은 Configuration qualifier와 관련된 것이 없다. 즉, fontScale은 리소스 선택 로직에는 영향을 주지 않고 Activity를 재시작하면서 화면에서 sp 단위로 된 문자열의 크기를 변경할 뿐이다.
 
-\item 언어 설정을 아랍어, 히브리어 또는 페르시아어로 변경하면 RTL(right-to-left)로 레이아웃 방향이 변경된다(AndroidManifest.xml에서 supportsRtl=``true''이고 targetSdkVersion이 17이상). 예를 들어, horizontal LinearLayout에 ImageView와 TextView를 배치한다면 일반적인 LTR(left-to-right) 배치가 아닌 미러링 배치를 보게 된다. 즉 오른쪽에 ImageView가 있고 그 왼쪽에 TextView가 보인다. 환경 설정의 개발자 옵션에서 `RTL 레이아웃 강제 변경'을 체크하면 한국어에서도 레이아웃 변화를 테스트할 수 있다. 
+\item 언어 설정을 아랍어, 히브리어 또는 페르시아어로 변경하면 RTL(right-to-left)로 레이아웃 방향이 변경된다(AndroidManifest.xml에서 supportsRtl=``true''이고 targetSdkVersion이 17이상일 때). 예를 들어, horizontal LinearLayout에 ImageView와 TextView를 배치한다면 일반적인 LTR(left-to-right) 배치가 아닌 미러링 배치를 보게 된다. 즉 오른쪽에 ImageView가 있고 그 왼쪽에 TextView가 보인다. 환경 설정의 개발자 옵션에서 `RTL 레이아웃 강제 변경'을 체크하면 한국어에서도 레이아웃 변화를 테스트할 수 있다. 
 \end{itemize}
 % mcclist.com에 mcc/mnc 리스트가 보인다. 통신사마다 다르게 리소스를 구성하고 싶을 때 사용한다.
 
 \subsection{데이터 복구}
-Configuration 변경으로 Activity가 재시작되어도 사용자 경험상 기존에 보던 화면을 가능하면 유지하는 게 좋다. 예를 들어, ViewPager에서 플링(fling)을 통해 특정 페이지로 이동했을 때 Configuration 변경에도 동일한 페이지를 보여주려고 한다. 이때 상태를 임시 저장하고 복구하는 메서드인 onSaveInstanceState()와 onRestoreInstanceState()를 사용하면 된다. onRestoreInstanceState() 메서드에 전달되는 Bundle savedInstanceState 파라미터는 onCreate() 메서드에도 전달되지만, 대칭을 위해서 onRestoreInstanceState() 메서드에서 복구하는 로직을 많이 사용한다.
+Configuration 변경으로 Activity가 재시작되어도 사용자 경험상 기존에 보던 화면을 유지하는 게 좋다. 
+예를 들어, ViewPager에서 플링(fling)을 통해 특정 페이지로 이동했을 때 Configuration 변경에도 동일한 페이지를 보여주려고 한다. 이때 상태를 임시 저장하고 복구하는 메서드인 onSaveInstanceState()와 onRestoreInstanceState()를 사용하면 된다. onRestoreInstanceState() 메서드에 전달되는 Bundle savedInstanceState 파라미터는 onCreate() 메서드에도 전달되지만, 대칭을 위해서 onRestoreInstanceState() 메서드에서 복구하는 로직을 많이 사용한다.
 % onSaveInstance 메소드는 onPause 이전에 호출된다. 
 % onRestoreInstanceState는 onCreate 메소드이후, onResume 메소드 이전에 실행된다.
 % 하니콤 이전과 이후에 대해서 확인 필요하다.
@@ -420,15 +410,15 @@ onSaveInstanceState()는 생명주기 메서드처럼 항상 호출되는 것이
 Configuration 변경되는 조건에서(가장 손쉽게 화면을 회전해보면) onSaveInstanceState()가 호출되고 Activity는 onCreate()부터 재시작한다.\\
 
 이제 한 가지 의문을 가져보자.
-앱에 여러 Activity가 있어서, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 태스크에 쌓였다. 이때 화면을 회전하면 세 개의 Activity에서 모두 onSaveInstanceState()가 호출될 것인가? 그렇지 않다.
+앱에 여러 Activity가 있어서, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 태스크에 쌓였다. 이때 화면을 회전하면 세 개의 Activity에서 모두 onSaveInstanceState()가 호출될 것인가? 그렇지 않다. 그 순간에는 ActivityC에서만 호출된다.
 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 하면 ActivityA와 ActivityB는 onStop()이 호출되는데, onStop 이전에 onSaveInstanceState()가 호출된다.
-즉 ActivityA와 ActivityB는 onSaveInstanceState()가 호출된 상태이다.\\
+즉 ActivityA와 ActivityB는 onSaveInstanceState()가 이미 호출된 상태이다.\\
 
 이 상태에서 ActivityC를 회전하면 ActivityC에서는 기대하는 대로 onSaveInstanceState() 실행 이후에 재시작한다.
 이제 Back 키로 ActivityC를 종료하면 onSaveInstanceState()가 이미 호출된 ActivityB는 이제서야 재시작한다.\\
 
 ActityC를 회전했다가 다시 원래대로 돌린 다음에 Back 키로 돌아가면 어떨까? 즉 ActityB로 보면 방향이 바뀌지 않은 것이다.
-이때는 ActivityB를 재시작하지 않는다. 즉 화면이 덮이는 상황에서는 onSaveInstanceState()를 해놓지만, 다시 돌아왔을 때 Configuration이 바뀌지 않는다면 화면을 그대로 보여줄 뿐 복구할 내용이 없는 것이다.\\
+이때는 Back 키로 돌아와도 ActivityB는 재시작하지 않는다. 즉 화면이 덮이는 상황에서는 onSaveInstanceState()를 해놓지만, 다시 돌아왔을 때 Configuration이 바뀌지 않는다면 화면을 그대로 보여줄 뿐 복구할 내용이 없는 것이다.\\
 
 ActivityC에서 Home 키를 누르면 어떻게 될까? 이때도 ActivityC는 onSaveInstanceState()를 호출한다.
 이후에 다시 포그라운드로 돌아올 때, 만일 화면 방향 등의 Configuration이 변경되었다면 ActivityC를 재시작한다. Power 키로 화면을 OFF하는 경우도 동일하다. onStop() 메서드까지 실행되는데, 직전에 onSaveInstanceState()를 호출한다. 그래서 화면 방향이 바뀌고서 화면이 ON되는 순간에도 데이터를 복구할 수 있다.\\
@@ -447,11 +437,11 @@ DialogActivity가 뜨면 아직 배경으로 보이는 ActivityB의 onSaveInstan
 첫 번째 내용은 굳이 더 얘기할 게 없고 두 번째 내용에 주목하자.
 %http://developer.android.com/intl/ko/guide/topics/manifest/activity-element.html
 %http://developer.android.com/intl/ko/reference/android/R.attr.html#configChanges
-android:configChanges 속성에 들어가는 내용은 아래 항목과 그 비트 OR 값($|$)이다.\\
-mcc, mnc, locale,
-touchscreen, keyboard, keyboardHidden, 
-navigation, orientation, screenLayout, uiMode, screenSize,
-smallestScreenSize, layoutDirection, fontScale\\
+android:configChanges 속성에 들어가는 내용은 아래 항목과 그 비트 OR 값($|$)이다.
+\begin{lstlisting}[frame=single]
+mcc, mnc, locale, touchscreen, keyboard, keyboardHidden, navigation, orientation, 
+screenLayout, uiMode, screenSize, smallestScreenSize, layoutDirection, fontScale
+\end{lstlisting}
 
 이 항목은 안드로이드 개발자 사이트에서도 개수가 잘 맞지 않는다. \url{http://developer.android.com/intl/ko/reference/android/R.attr.html\#configChanges}에는 14개가 모두 나오지만 http://developer.android.com/intl/ko/guide/topics/manifest/activity-element.html에는 현 시점에서(2016년 1월) layoutDirection이 나오지 않는다.\\
 
@@ -470,7 +460,7 @@ smallestScreenWidthDp & smallestScreenSize \\ \hline
 여기서 특이한 것은 navigationHidden이 keyboardHidden에 매핑된다는 것이다. 
 navigation에 매핑되지 않을까 생각했는데, navigation은 내비게이션 타입(trackball/dpad)이 바뀐 것을 의미한다.\\
 
-android:configChanges에 넣는 항목에 대해서는 Configuration 변경에 대해서 처리할 내용이 없거나, onConfigurationChanged()를 오버라이드해서 직접 처리하겠다는 의미이다. onConfigurationChanged()가 불린 이후에는 화면을 다시 그린다. onConfigurationChanged()를 따로 오버라이드하지 않아도, 화면이 회전할 때 세로 모드에서 View의 layout\_width가 MATCH\_PARENT였다면 가로 모드로 바뀌었을 때 가로 모드 너비에 맞게 꽉 채워서 다시 그려주는 것을 보면 알 수 있다.\\
+android:configChanges에 넣는 항목에 대해서는 Configuration 변경에 대해서 처리할 내용이 없거나, onConfigurationChanged()를 오버라이드해서 직접 처리하겠다는 의미이다. onConfigurationChanged()가 불린 이후에는 화면을 다시 그린다. onConfigurationChanged()를 따로 오버라이드하지 않아도, 화면이 회전할 때 세로 모드에서 View의 layout\_width가 MATCH\_PARENT였다면 가로 모드로 바뀌었을 때 가로 모드 너비에 맞게 꽉 채워서 다시 그려주는 것을 볼 수 있다.\\
 
 %그럼 직접 처리한다는 건 또 무슨 의미일까?
 android:configChanges에 항목을 넣어서 활용하는 경우를 예를 들어보자. 
@@ -510,7 +500,7 @@ onConfigurationChanged()에는 변경된 Configuration에 대한 리소스가 �
 	</LinearLayout>		
 \end{lstlisting}
 android:configChanges 속성을 쓰지 않는다면 화면을 회전할 때마다 그에 맞는 dimens.xml 파일을 참조해서 화면을 보여줄 것이다. 
-android:configChanges 속성을 쑨다면 이때는 onConfigurationChanged() 메서드를 오버라이드해야 한다.
+android:configChanges 속성을 쓴다면 이때는 onConfigurationChanged() 메서드를 오버라이드해야 한다.
 
 \begin{lstlisting}[frame=single]
 	private View left;
@@ -535,7 +525,7 @@ onConfigurationChanged()에서 getResources().getXxx() 메서드는 변경된 Co
 조금 혼동이 올 수도 있겠다. 어차피 다시 그릴텐데 리소스도 새로운 Configuration에 맞는 리소스를 선택해서 그리는 건 아닐까? 
 즉 onConfigurationChanged()를 오버라이드하지 않아도 될 것 같다.
 이것은 View의 생성자에서 해당 Configuration의 리소스를 대입하는 구조 때문이다. 정확하게 얘기하면 android:layout\_width나 android:layout\_height는 View의 속성이라기보다 상위 ViewGroup의 속성으로, LayoutInflator의 inflate()를 실행할 때 View 생성자에서 다른 속성은 모두 처리하고 나서, ViewGroup의 generateLayoutParams()를 실행해서 android:layout\_width나 android:layout\_height를 처리한다.
-즉, /res/layout/view\_list.xml에서 android 네임스페이스에 있는 값들은 LayoutInflator의 inflate() 실행 순간에 이미 대입되고, Configuration이 변경된다고 해서 다시 대입되지 않는다. 
+즉, /res/layout/view\_list.xml에서 android 네임스페이스에 있는 값들은 LayoutInflator의 inflate()가 실행되는 순간에 이미 대입되고, Configuration이 변경된다고 해서 다시 대입되지 않는다. 
 	
 \item textSize로 sp를 쓰지 않는다면 fontScale도 가능하다. UI가 단순한 경우에는 권장사항대로 sp를 써도 되지만, UI가 복잡한 경우 디자인적인 문제로 textSize를 dp로 제한하는 경우가 많다.
 
@@ -547,18 +537,18 @@ onConfigurationChanged()에서 getResources().getXxx() 메서드는 변경된 Co
 예를 들어, 환경 설정에서 언어를 바꾸고 화면을 회전하고서 Activity가 포그라운드로 돌아오면 locale과 orientation이 한꺼번에 바뀐다. 이때 android:configChanges에 orientation만 있고 locale이 포함되지 않는다면 Activity는 재시작한다. locale도 바뀌었는데 이에 대해 처리하는 방법이 없는 것으로 간주하는 것이다.\\
 
 이 때문에 번거로운 게 있는데 꼭 같이 붙어다니는 항목들이 있다.
-android:configChanges에 가장 보편적으로 들어가는 게 orientation인데, 허니콤 API 레벨 13 이상에서는 화면을 회전할 때 화면 크기도 같이 변경된다(targetSdkVersion이 그 이하이면 호환 모드로 동작).
-앱을 업데이트하면서 targetSdkVersion을 올렸는데 화면 회전에 대해 기존처럼 동작하지 않는다면 이 때문이다. 
+android:configChanges에 가장 보편적으로 들어가는 게 orientation인데, 허니콤 API 레벨 13 이상에서는 화면을 회전할 때 화면 크기도 같이 변경된다(targetSdkVersion이 그 이하이면 호환 모드로 동작해서 화면 크기가 변경되는 것으로 간주하지 않는다).
+앱을 업데이트하면서 targetSdkVersion을 13 이상으로 올렸는데 화면 회전에 대해 기존처럼 동작하지 않는다면 이 때문이다. 
 따라서 화면 회전을 정상적으로 처리하고자 할 때 screenSize도 함께 해서 ``orientation|screenSize''를 쓰면 된다.\\
 
 그리고 화면 회전과 관련해서 keyboardHidden도 포함해서 ``keyboardHidden|orientation|screenSize''로 쓰는 경우가 많다.
 왜 화면 회전에 관련 속성이 아닌 듯한 keyboardHidden(하드웨어 키보드가 숨겨졌는지 여부)이 따라붙는 것일까?
-근래에는 큰 화면이 많아서 별로 없지만, 초기에는 하드웨어 키보드가 있는 모델(2009년에 모토쿼티, 2010년에는 옵티머스 Q)이 있었다.
-키보드가 겹쳐있다가 슬라이딩되면서 하드웨어 키보드가 나오는데, 세로 모드로 있다가 키보드를 나오는 순간에 단말을 돌린 것은 아니지만 가로 모드로 전환되었다. 이때 keyboardHidden 속성이 변경되면서 방향도 바뀌기 때문에 keyboardHidden과 orientation을 함께 쓰게 되었다.\\
+근래에는 큰 화면이 많아서 거의 없지만, 초기에는 하드웨어 키보드가 있는 모델(2009년에 모토쿼티, 2010년에는 옵티머스 Q)이 있었다.
+키보드가 겹쳐있다가 슬라이딩되면서 하드웨어 키보드가 나오는데, 세로 모드로 있다가 키보드를 꺼내는 순간에 단말을 돌린 것은 아니지만 가로 모드로 전환되었다. 이때 keyboardHidden 속성이 변경되면서 방향도 바뀌기 때문에 keyboardHidden과 orientation을 함께 쓰게 되었다.\\
 
-Activity에는 setRequestedOrientation(int requestedOrientation) 메서드가 있다. 방향 센서를 통해서 화면을 회전하는 것이 아니라, 필요에 따라 특정 방향으로 화면을 보여주는 메서드이다. 이 메서드를 호출하면 기본적으로 Activity는 재시작하는데, 이때도 android:configChanges에 orientation 항목이 있다면 재시작하지 않고 onConfigurationChanged() 메서드가 불린다.\\
+Activity에는 setRequestedOrientation(int requestedOrientation) 메서드가 있다. 방향 센서를 통해서 화면을 회전하는 것이 아니라, 필요에 따라 화면을 특정 방향으로 보여주는 메서드이다. 이 메서드를 호출하면 기본적으로 Activity는 재시작하는데, 이때도 android:configChanges에 orientation 항목이 있다면 재시작하지 않고 onConfigurationChanged() 메서드가 불린다.\\
 
-android:configChanges에 값을 넣을 때는 `최대'보다는 `최소'를 원칙으로 하는 게 좋다. 14개를 다 넣는다고 Activity가 절대 재시작하지 않는 것도 아니다. 백그라운드로 이동했다가 kill되는 경우도 있어서 완벽한 대응이 되지 않는다. mcc와 mnc와 같이 유심이 새로 발견된 경우처럼 굳이 대응이 불필요한 경우도 있다. 유심이 바뀐 경우 단말 재부팅하기도 바쁜데, 앱에서 Activity가 재시작하고 값을 복구하는지 신경쓸 사용자는 없을 것이다.\\
+android:configChanges에 값을 넣을 때는 `최대'보다는 `최소'를 원칙으로 하는 게 좋다. 14개를 다 넣는다고 Activity가 절대 재시작하지 않는 것도 아니다. 백그라운드로 이동했다가 kill되는 경우도 있어서 완벽한 대응이 되지 않는다. mcc와 mnc와 같이 유심이 새로 발견된 경우처럼 굳이 대응이 불필요한 경우도 있다. 유심이 바뀐다면 단말 재부팅하기도 바쁜데, 앱에서 Activity가 재시작하고 값을 복구하는지 신경 쓸 사용자는 없을 것이다.\\
 
 \begin{comment}
  \url{http://www.androiddesignpatterns.com/2013/04/retaining-objects-across-config-changes.html}에 따르면, android:configChanges 는 믿고쓰는 속성이 아니다. 
@@ -571,7 +561,7 @@ android:configChanges에 값을 넣을 때는 `최대'보다는 `최소'를 원�
 \end{comment}
 
 android:configChanges에 값을 넣어도 onSaveInstanceState()는 여전히 불린다. ``orientation|screenSize''로 설정한 경우를 보자.
-ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC로 Activity를 전환하고, 화면을 회전하면 그때 재성성하지 않고 onConfigurationChanged()메서드가 불리는 것이 다르다.
+ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC로 Activity를 전환하고, 화면을 회전하면 그때 Activity를 재성성하지 않고 onConfigurationChanged()메서드가 불리는 것이 다르다.
 ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity(다이얼로그 테마)에서는 화면을 회전하면 DialogActivity 먼저 onConfigurationChanged()가 불리고 ActivityB의 onConfigurationChanged()는 그 다음에 불린다.\\
 
 결론적으로 빈번한 화면 회전에 대응하는 목적으로 android:configChanges를 사용하는 것은 나쁜 선택은 아니다.
@@ -593,31 +583,32 @@ Configuration 내용을 보기 위해서 Context 인스턴스에서 getResources
 \item 첫 번째는 fontScale 값이다. `보통'인 경우 1.0이고(1, 2라인) `크게'인 경우 1.15가 나왔다(4, 5라인). 표준 비율은 있지만 단말마다 비율이 차이가 있어 실제 의미가 없다. `보통'에서는 값이 1.0인 것은 변함없을 것 같은데 갤럭시 노트4에서는 값이 1.09로 나오기도 했다.
 \item 두 번째는 mcc, mnc 값이다. \url{http://mcclist.com}에 따르면 450은 한국의 국가 코드이고 5는 SK Telecom의 통신사 코드이다.
 \item 세 번째는 locale 값이다.
-\item 네 번째 ldltr은 screenLayout 값이다.
-\item 다섯 번째 sw360dp는 smallestScreeWidthDp 값이다. 화면을 회전해도 이 값은 변하지 않는다.
+\item 네 번째 ldltr은 screenLayout 값이다(left-to-right).
+\item 다섯 번째 sw360dp는 smallestScreenWidthDp 값이다. 화면을 회전해도 이 값은 변하지 않는다.
 \item 여섯 번째와 일곱 번째는 screenWidthDp와 screenHeightDp 값이다. 화면 회전 시에 width와 height가 서로 바뀌기만 할 것 같은데, 상단의 status bar 영역과 함께 Nexus 시리즈에 주로 보이는 Home 키를 포함한 소프트 키 영역 때문에 차이가 생긴다.
 \item 여덟 번째는 densityDpi 값이다.
 \item 아홉 번째 nrml은 screenLayout 값이다.
 \item 열 번째는 orientation 값이다.
 \item 열한 번째 finger는 touchScreen 값이다.
-\item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden의 의미다. -keyb는 키보드가 없다는 의미다(마이너스로 생각하면 된다).
+\item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden을 의미한다. -keyb는 키보드가 없다는 의미다(마이너스로 생각하면 된다).
 \item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가 있으므로 navigation 타입이 없다는 것이다. 
 \item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 전역적인 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
 \end{itemize}
 
-이제 Configuration이 변경될 때 동작을 얘기해보자. Configuration이 바뀔 때는 Application의 onConfigurationChanged() 메서드가 먼저 불리고, 포그라운드에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.
+이제 Configuration이 변경될 때 동작을 얘기해보자. Configuration이 바뀔 때는 Application의 onConfigurationChanged() 메서드가 먼저 불리고, 포그라운드에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.\\
+
 화면 방향 관련해서 Configuration이 바뀌는 것은 포그라운드에 있는 Activity가 기준이다. 만일 화면 방향 고정인 Activity가 포그라운드에 있다면 아무리 화면을 회전해도 Application의 onConfigurationChanged()는 불리지 않는다. 
 ActivityA가 화면 방향 가로 고정이고 ActivityB가 따로 방향을 고정하지 않았다면 어떤 현상이 발생할까? ActivityA의 Configuration orientaton은 land로 고정된다. 이때 Configuration seq가 N이라고 하면, ActivityA에서는 아무리 화면을 회전해도 seq가 바뀌지 않는다. ActivityB로 전환하면 어떤 현상이 발생할까? 만일 세로 방향이었다면 ActivityB가 세로 방향으로 보여야 하기 때문에 orientation이 port로 바뀌면서 seq는 N+1이 된다. 만일 가로 방향이었다면 seq는 그대로이다. 이제 ActivityB를 회전하면 계속해서 seq가 늘어나면서 land$\leftrightarrow$port가 서로 바뀐다. 
 이제 ActivityB를 종료하고 ActivityA로 돌아오면 어떻게 될까? 이 시점에 orientaton이 land라면 seq가 더해지지 않는다. 
 그런데 orientaton이 port라면 ActivityA에 맞는 Configuration으로 변경되면서 orientaton이 land가 되고 seq는 더해진다. seq는 변경될 때마다 Application의 onConfigurationChanged() 메서드가 불린다.\\
 
-Configuration은 한순간에 1개의 값만 존재한다. 예를 들어, ActivityA 위에 다이얼로그 테마 ActivityB가 있다고 하자. 다이얼로그 테마 Activity에 android:screenOrientation을 지정하지 않으면(즉 unspecified라면) 배경에 있는 Activity의 방향을 따르므로 문제가 없는데, 이제 ActivityA의 android:screenOrientation=``land'이고 ActivityB의 android:screenOrientation=``port''로 다른 방향으로 해보자. 
+Configuration은 한순간에 1개의 값만 존재한다. 예를 들어, ActivityA 위에 다이얼로그 테마 ActivityB가 있다고 하자. 다이얼로그 테마 Activity에 android:screenOrientation을 지정하지 않으면(즉 unspecified라면) 배경에 있는 Activity의 방향을 따르므로 문제가 없는데, 이제 ActivityA에서 android:screenOrientation=``land'로 하고 ActivityB에서 android:screenOrientation=``port''로 다른 방향으로 해보자. 
 ActivityA만 있을 때는 세로 고정이었는데, 가로 화면인 ActivityB를 시작하면 배경에 있는 ActivityA까지 가로로 바뀌어 버린다. 여기서 재미있는 현상이 발생한다. android:configChanges에 방향 회전에 대응되어 있다면 ActivityA의 onConfigurationChanged() 메서드가 불리고 그렇지 않다면 ActivityA는 재시작한다. 필자의 경우도 android:screenOrientation이 land나 port로 지정되면 방향 전환에 대해서 android:configChanges는 필요없다고 생각했는데 이런 특이한 케이스도 있다는 것을 생각하자.\\
 
 % bg가 no option이고 fg가 landscape을 때 한번 landscape로 또 고정
 % bg가 landscape이고 fg가 sensor을 때 매번 회전
 
-앱의 Activity가 모두 종료되었을 때는 어떨까? 프로세스가 바로 종료되지 않고 Empty Process로 한동안 남아있는데, 이때도 포그라운드에 있는 다른 앱의 Activity가 방향 회전할 때마다 Application의 onConfigurationChanged() 메서드는 불린다. 
+앱의 Activity가 모두 종료될 때는 어떨까? 프로세스가 바로 종료되지 않고 Empty Process로 한동안 남아있는데, 이때도 포그라운드에 있는 다른 앱의 Activity가 방향 회전할 때마다 Application의 onConfigurationChanged() 메서드는 불린다. 
 다른 앱의 Activity가 역시 방향 고정이라면 Application의 onConfigurationChanged() 메서드는 불리지 않는다. 보통 런처 앱은 방향 고정인 경우가 많아서 홈 화면에서 아무리 화면을 회전해도 다른 앱의 Configuration에 영향을 주지 않는다. 
 Activity가 스택에 남아있는 채로 Home 키를 통해 백그라운드로 이동해도 마찬가지다. 포그라운드에 있는 Activity가 아니라면 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
 
