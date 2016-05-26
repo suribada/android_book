@@ -10,11 +10,12 @@ Activity는 스택에 차례대로 쌓인다(Back Stack이라 불린다). 스택
 예를 들어보자. 
 \begin{enumerate}
 \item 캘린더 앱은 달력 화면(A)에서 일정 상세 화면(B)으로 가고 다시 일정 수정 화면(C)으로 이동한다. 그러다가 Home 키를 눌러서 태스크를 백그라운드로 보낸다. 
-그런데 홈 스크린 화면에 일정 목록 App Widget이 있어서 특정한 일정으로 이동할 수 있다. 그렇다면 이 특정한 일정 보기 화면은 앞에 있던 A, B, C 위에 B를 추가하면 될까? 아니면 C를 스택에서 없애고, B를 다시 로딩하게 할까?
-\item 사진 공유 앱에서 사진 목록 화면(A)에서 등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면(B')으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
+그런데 홈 스크린에 일정 목록 App Widget이 있어서 특정한 일정으로 이동할 수 있다. 그렇다면 이 특정한 일정 상세 화면은 앞에 있던 A, B, C 위에 B를 추가하면 될까? 아니면 C를 스택에서 없애고, B를 다시 로딩하게 할까?
+
+\item 사진 공유 앱에서 사진 목록 화면(A)에서 등록자의 프로필 이미지를 클릭하면 등록자의 프로필을 포함한 동록자의 사진 목록 화면(B)로 이동한다. B 화면의 사진들에는 ``좋아요''를 한 사용자 프로필 이미지들이 있는데 이 이미지를 클릭하면 그 사용자의 사진 목록 화면(B')으로 이동한다. 계속 반복해서 사용자의 사진 목록 화면이 쌓일 수도 있고, 아니면 같은 화면에서 화면만 갱신할 수도 있다. 어느 쪽이 원하는 방식일까?
 \end{enumerate}
 
-각 앱에서 원하는 내비게이션 방식이 있는데, 태스크의 동작 방식을 이해하지 못한다면 사용자가 보려는 화면이 아닌 엉뚱한 화면을 접하는 경우가 생긴다. 물론 이해가 간단하지 않고 많은 시행착오가 우리 앞에 기다리고 있다.
+각 앱에서 원하는 내비게이션 방식이 있는데, 태스크의 동작 방식을 이해하지 못한다면 사용자가 보려는 화면이 아닌 엉뚱한 화면을 접하는 경우가 생긴다. 물론 태스크의 동작 방식은 이해가 간단하지 않고 많은 시행착오가 우리 앞에 기다리고 있다.
 
 \subsection{태스크 상태}
 태스크는 화면에 포커스되어 있는 포그라운드 상태와, 화면에 보이지 않는 백그라운드 상태가 있다. 포그라운드에 있는 것은 Home 키를 통해서 언제든 백그라운드로 이동할 수 있다.
@@ -31,10 +32,10 @@ List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서�
 
 \subsection{태스크 확인}
 눈으로 화면이 바뀌는 것을 기준으로 테스트하면 태스크가 정상적으로 동작하는지 확인하기 어렵다. Back 키로 이전 화면으로 돌아가면 잘 남아있다고 동일한 태스크라고 확신할 수 없다.
-예를 들어, 앱에서 startActivity()를 실행해서 브라우저를 열었다면 앱과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask launchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
+예를 들어, 어느 화면에서 startActivity()를 실행해서 브라우저를 열었다면 그 화면과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask launchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
 
-shell에서 dumpsys를 활용해서 태스크를 확인하면서 각 상황을 이해하도록 하자.
-adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 써도 된다.\\
+shell에서 dumpsys를 활용해서 태스크를 확인하면서 상황을 이해하도록 하자.
+adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 쓸 수도 있다.\\
 
 dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉션을 통해 파일로 저장하는 것을 권장한다. adb shell dumpsys activity a  $>$ tasks.txt 와 같이 사용한다. adb shell 내에서도 dumpsys를 할 수 있지만 shell 내에서는 리다이렉션이 되지 않는다.\\
 
@@ -168,11 +169,11 @@ TaskRecord에는 app=null로 나오고, state=DESTROYED로 있는 것도 볼 수
 \item 79 라인(1)에 Running activities 섹션은 스택의 간략한 내용으로 나온다.
 \item 94 라인(3)에 RecentTasks 섹션도 내용이 반복되지만, 태스크의 간략한 개요가 나온다(numActivities 등).
 \item 89 라인(2)에 화면에 포커스되어 있는 Activity가 나온다.
-\item 마지막 라인에 현재 포그라운드에 있는 태스크를 보여준다. 홈 화면도 하나의 태스크이기 때문에 홈 화면으로 나와있다면 Launcher가 현재 태스크로 보인다.\footnote{시점에 따라 백그라운드의 태스크 번호를 보여주기도 한다. 이 번호는 참고 데이터 정도로만 생각하자.}
+\item 마지막 라인에 현재 포그라운드에 있는 태스크를 보여준다. 홈 화면도 하나의 태스크이기 때문에 홈 화면으로 나와있다면 Launcher가 현재 태스크로 보인다.\footnote{시점에 따라 백그라운드의 태스크 번호를 보여주기도 한다. 이 번호는 참고 데이터 정도로만 이해하자.}
 \end{itemize}
 % 케이스를 좀 더 확인할 수 있을까?
 dumpsys 명령어는 개발 중에 현재 포커스된 Activity가 어떤 것인지 확인하는 데도 유용하다.
-테스트하면서 여러 Activity를 이동하는데, Activity가 많으면 현재 어느 Activity에 있는지 찾아가는 게 간단치 않다.
+테스트하면서 여러 Activity를 이동하다 보면 현재 어느 Activity에 있는지 찾아가는 게 간단치 않다.
 이 명령어를 몰랐을 때는 시작 Activity부터 로직을 따라가서 현재 Activity를 찾기도 했다. ApiDemos에서 기능을 테스트해보다 관련 Activity를 찾아서 디렉터리를 뒤져본 기억들은 안드로이드 앱 개발자라면 가지고 있을 것이다.
 
 \subsection{taskAffinity}
@@ -192,49 +193,49 @@ intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 context.startActivity(intent);
 \end{lstlisting}
 
-해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
+해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? FLAG\_ACTIVITY\_NEW\_TASK 플래그에 의해 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
 taskAffinity는 AndroidManifest.xml의 Activity 선언에 android:taskAffinity로 지정할 수 있고 속성이 없다면 디폴트 값은 패키지명이다.
-결국 taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_NEW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
-taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_NEW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
+결국 android:taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_NEW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
+android:taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_NEW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
 별도로 속성을 줄 때는 android:taskAffinity=``:alarm'' 식으로 프로세스 분리할 때처럼 :(clone) 뒤에 구분자를 적는 것을 권장한다.\footnote{com.example.android.lifecycle.another 또는 :another와 같은 형식이 모두 가능하지만  another처럼 단순한 이름을 쓰는 것은 허용되지 않는다.}\\
 
-Activity 선언에 taskAffinity 속성을 별도로 하는 경우를 알아보자. 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
+Activity 선언에 android:taskAffinity 속성을 별도로 하는 경우를 더 알아보자. 예를 들어, 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
 알람 앱에 알람 리스트 화면(AlarmClock), 알람 설정 화면(AlarmSettings), 알람 화면(AlarmAlert)과 같이 3개의 화면이 있다고 하자. 
-만일 AlarmAlert 화면에 android:taskAffinity 속성이 따로 없다면 어떻게 될까?
-일정 시간이 되어 알람이 떴는데 그 순간에 알람 앱의 태스크가 포그라운드나 백그라운드에 이미 있을 수 있다. 
-그러면 AlarmAlert 화면이 뜰 때 백그라운드에 있다면 함께 포그라운드로 올라와서 맨 위에 AlarmAlert 화면이 있을 것이고, 포그라운드에 이미 있었다면 AlarmAlert 화면이 그 위에 추가되어서 포커스될 것이다.
-백그라운드에 있던 화면이 딸려 올라오는 것도 동작이 이상하다. 결국 이미 포그라운드에 있던 것처럼 동작하게 된다. Back 키를 누르니 방금 전까지 보이지 않았던 알람 설정 화면이 뜨는 것이다.\\
+만일 AlarmAlert에 android:taskAffinity 속성이 따로 없다면 어떻게 될까?
+일정 시간이 되어 알람이 들 때 그 순간에 알람 앱의 태스크가 포그라운드나 백그라운드에 이미 있을 수 있다. 
+포그라운드에 이미 있었다면 AlarmAlert 화면이 그 위에 추가되어서 포커스될 것이고, 백그라운드에 있다면 태스크가 포그라운드가 되면서 그 위에 AlarmAlert 화면이 뜰 것이다.  
+백그라운드에 있던 화면이 딸려 올라오는 게 동작이 이상하다. 결국 이미 포그라운드에 있던 것처럼 동작하게 된다. Back 키를 누르니 방금 전까지 보이지 않았던 AlarmSettings 화면이 뜨는 것이다.\\
 
-이런 케이스를 막기 위해서 AlarmAlert의 taskAffinity를 다르게 세팅하면, FLAG\_ACTIVITY\_NEW\_TASK Flags를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 한 앱에서 2개의 태스크를 사용하게 된다.
-Home 키를 길러 눌러서 최근 앱 목록을 보면 2개가 떠있는 것을 볼 수 있다. AlermAlert 화면이 최근 앱 목록으로 나오는 것을 방지하기 위해서 AndroidManifest.xml의 AlarmAlert 선언에 android:excludeFromRecents=``true''를 추가하면 알람 기능의 기본 형태를 갖추게 된다.
+이런 케이스를 막기 위해서 AlarmAlert의 android:taskAffinity 속성을 다르게 세팅하면, FLAG\_ACTIVITY\_NEW\_TASK 플래그를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 한 앱에서 2개의 태스크를 사용하게 된다.
+Home 키를 길러 눌러서 최근 앱 목록을 보면 2개가 있는 것을 볼 수 있다. AlermAlert 화면이 최근 앱 목록으로 나오는 것을 방지하기 위해서 AndroidManifest.xml의 AlarmAlert 선언에 android:excludeFromRecents=``true''까지 추가하면 알람 기능의 기본 형태를 갖추게 된다.
 
 
 %https://groups.google.com/forum/#!topic/android-developers/wKwnV1k_96A
 
 \subsection{태스크 속성 부여}
-Activity에 태스크 속성을 부여하는 방법에는 2가지가 있다. 속성을 아예 부여하지 않고서 개발할 수 있다면 행복하겠지만, 사용하다 보면 효율적이지 않은 부분이 생긴다.
-디폴트는 Activity 인스턴스가 매번 새로 생성돼서 쌓이는 형태이다.\\
+Activity에 태스크 속성을 부여하는 방법에는 2가지가 있다. 속성을 아예 부여하지 않고서 개발할 수 있다면 좋겠지만, 원하는 내비게이션을 만들기가 어렵다. 
+속성을 따로 부여하지 않는다면 디폴트는 Activity 인스턴스가 매번 새로 생성돼서 쌓이는 형태이다.\\
 \includegraphics[scale=0.7]{diagram_multiple_instances}\\
-속성을 부여하는 2가지 방법은 하나는 불려지는 쪽(Callee )에서 `나를 이런 식으로 취급해줘(존재할거야)'가 있고, 또 하나는 부르는 쪽(Caller)에서 `널 이렇게 다뤄주겠어'하는 것이다. 그리고 2가지 방법의 조합도 있다.
+속성을 부여하는 2가지 방법은 하나는 불려지는 쪽(Callee)에서 `나를 이런 식으로 취급해줘(존재할거야)'가 있고, 또 하나는 부르는 쪽(Caller)에서 `널 이렇게 다뤄주겠어'하는 것이다. 그리고 2가지 방법의 조합도 있다.
 복잡하게 생각할 건 없다. 테스트하면서 원하는 내비게이션 형태를 만드는 과정이 조금 어려울 뿐이다.
 아래 설명을 위해서 \url{http://developer.android.com/intl/ko/training/basics/activity-lifecycle/pausing.html}에 있는 ActivityLifecycle.zip을 다운로드하고 변경하면서 테스트해보자. 
 이 샘플에는 ActivityA, ActivityB, ActivityC, DialogActivity(다이얼로그 테마)까지 4개의 Activity가 있다.
 
 \paragraph{Callee 속성 부여는 AndroidManifest.xml의 Activity 선언에 android:launchMode로 한다.}
-launchMode에는 standard, singleTop, singleTask, singleInstance 4가지가 있다. standard와 singleTop은 여러 인스턴스가 존재할 수 있고, singleTask와 singleInstance는 하나의 인스턴스만 존재하다. launchMode 각각을 살펴보자. 설명에서 topActivity(스택의 맨 위)나 baseActivity(스택의 맨 하단)는  ActivityManager.RunningTaskInfo 클래스의 필드명을 그대로 사용했다.
+launchMode에는 standard, singleTop, singleTask, singleInstance 4가지가 있다. standard와 singleTop은 여러 인스턴스가 존재할 수 있고, singleTask와 singleInstance는 1개의 인스턴스만 존재하다. 이제 launchMode 각각을 살펴보자. 설명에서 topActivity(스택의 맨 위)나 baseActivity(스택의 맨 하단)는  ActivityManager.RunningTaskInfo 클래스의 필드명을 그대로 사용했다.
 \begin{itemize}
-\item standard: 태스크의 topActivity에 매번 새로운 Activity 인스턴스를 생성해서 Intent를 전달한다. Activity의 onCreate() 메서드부터 getIntent() 메서드를 사용할 수 있다.
+\item standard: 태스크의 topActivity에 매번 새로운 Activity 인스턴스를 생성해서 Intent를 전달한다. Activity의 onCreate() 메서드부터 getIntent() 메서드를 사용해서 전달된 값을 읽어들인다.
 
 \item singleTop: 호출하고자 하는 Activity가 이미 topActivity에 있다면 새로 생성하지 않고, onNewIntent() 메서드로 Intent를 전달한다. topActivity에 없을 때는 standard와 동일하게 새로 생성한다.
 
 \item singleTask: 인스턴스는 1개뿐이다. 별도의 태스크로 Activity 인스턴스가 이미 있다면 새로 생성하지 않고, onNewInent() 메서드로 Intent를 전달한다. 
-Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성한다. 스택에는 새로운 Activitity를 추가할 수 있다.\\
+Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성한다. 스택에는 새로운 Activity를 추가할 수 있다.\\
 
-ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 
+ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 결과적으로 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 
 새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면, ActivityA 위에 그대로 뜨게 된다.
 이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC가 스택에서 제거되면서 ActivityB의 onNewIntent()가 불린다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다.\\
 
-이번에는 ActivityB의 taskAffinity를 변경하고 테스트해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
+이번에는 ActivityB는 singleTask인 채로 taskAffinity를 변경하고 테스트해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
 여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
 
 앞서 얘기했듯이 모바일 브라우저의 경우가 singleTask launchMode를 사용한다. 
@@ -245,9 +246,12 @@ Facebook에서 기사 링크를 클릭해보면 브라우저가 뜨는데, 이�
 이때 홈 키를 길게 눌러서 최근 앱 목록을 확인해보면 Facebook과 브라우저가 각각 따로 보여진다. 당연히 Task가 별개이기 때문에 Facebook을 다시 로딩하면(Recent Apps든, 아이콘을 통해서든), Facebook 화면이 그대로 뜨게 된다.
 \end{comment}
 
-\item singleInstance: singleTask와 마찬가지로 인스턴스가 하나뿐이며 태스크의 유일한 Activity이기도 하다. 여기서 새로운 Activity를 시작하면 다른 태스크에 들어가게 되어, 새 태스크를 만드는 효과가 있다. 새 태스크가 되면 새로운 Activity가 뜨는 사이에 검은 화면이 뜨는 시간이 좀 더 오래 걸리는 것을 볼 수 있다. 체감 성능에 차이가 생기므로, 새 태스크가 되어야 하는 케이스와 그렇지 않아도 되는 케이스를 잘 구분하는 게 좋다.\\
+\item singleInstance: singleTask와 마찬가지로 인스턴스가 하나뿐이며 태스크의 유일한 Activity이기도 하다. 
+여기서 다른 Activity를 시작하면 다른 태스크에 들어가게 되어, 새로운 태스크를 만드는 효과가 있다. 
+새 태스크가 되면 다른 Activity가 뜨는 사이에 검은 화면이 뜨는 시간이 좀 더 오래 걸리는 것을 볼 수 있다. 
+체감 성능에 차이가 생기므로, 새 태스크가 되어야 하는 케이스와 그렇지 않아도 되는 케이스를 잘 구분하는 게 좋다.\\
 
-ActivityB의 launchMode가 singleInstance라고 해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순서로 호출한다고 해보면 재미있는 현상이 발생한다. B는 당연히 하나의 태스크가 된다. 그런데 ActivityA와 ActivityC는 taskAffinity가 동일하기 때문에(ActivityB도 동일하긴 하지만) 하나의 태스크로 다시 묶인다. ActivityC에서 Back 키를 누르면 ActivityB가 아니라 ActivityA로 이동한다. 다시 Back 키를 눌러야만 ActivityB 화면을 볼 수 있다. 즉 결과로 ActivityB, ActivityA$\Rightarrow$ActivityC 와 같이 2개의 태스크가 된다.\\
+ActivityB의 launchMode가 singleInstance라고 해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순서로 호출한다고 해보면 재미있는 현상이 발생한다. B는 당연히 별도의 태스크가 된다. 그런데 ActivityA와 ActivityC는 taskAffinity가 동일하기 때문에(ActivityB도 동일하긴 하지만) 하나의 태스크로 다시 묶인다. ActivityC에서 Back 키를 누르면 ActivityB가 아니라 ActivityA로 이동한다. 다시 Back 키를 눌러야만 ActivityB 화면을 볼 수 있다. 즉 결과로 ActivityB, ActivityA$\Rightarrow$ActivityC 와 같이 2개의 태스크가 된다.\\
 
 ActivityB의 launchMode가 singleInstance인 채로 ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity 순서로 호출해보자. 
 DialogActivity는 다이얼로그 테마 Activity이므로 배경에 다른 Activity가 보이는데, ActivityB에서 DialogActivity를 띄웠으므로 배경에 ActivityB가 있을 것 같지만, 결과는 ActivityA 화면을 배경으로 깔게 된다.
