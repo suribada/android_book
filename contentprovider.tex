@@ -6,7 +6,7 @@ SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를
 안드로이드에 들어가는 SQLite 소스는 /external/sqlite/dist/ 디렉터리에 있다. 여기서 주로 sqlite3.c를 보면 된다.}\\
 
 SQLite db 파일은 /data/data/패키지/databases에 저장된다. 
-단말에서는 일반적으로 db 파일에 직접 접근하거나 쿼리를 실행할 수 없다(루팅한 것이 아니라면).\footnote{http://stackoverflow.com/questions/9997976/android-pulling-sqlite-database-android-device를 참고해서 단말에서 db 파일을 가져오는 방법도 알아보자.}
+단말에서는 일반적으로 db 파일에 직접 접근하거나 쿼리를 실행할 수 없다(루팅한 것이 아니라면).\footnote{http://stackoverflow.com/questions/9997976/android-pulling-sqlite-database-android-device를 참고해서 단말에서 db 파일을 가져오는 방법도 알아보자.}\\
 
 개발 시에 에뮬레이터에서 db를 확인하는 방법으로는 2가지를 사용한다.
 \begin{itemize}
@@ -116,22 +116,24 @@ sqlite shell에서는 SQLite dot command라고 불리는 명령어 모음이 있
 sqlite shell을 끝내는 명령어는 .quit와 .exit 둘 다 사용한다.
 \begin{itemize}
 \item 테이블 목록 보기
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 sqlite> .tables       
 android_metadata   bookmarks          system           
 bluetooth_devices  secure       
-\end{verbatim}
+\end{lstlisting}
+
 \item 스키마 확인
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 sqlite> .schema system
 CREATE TABLE system (_id INTEGER PRIMARY KEY AUTOINCREMENT,
 name TEXT UNIQUE ON CONFLICT REPLACE,value TEXT);
 CREATE INDEX systemIndex1 ON system (name);
-\end{verbatim}
+\end{lstlisting}
+
 \item 조회할 때 칼럼명 헤더를 볼 것인지 옵션. on/off 지정하고 디폴트는 off
-\begin{verbatim}
+\begin{lstlisting}[frame=single] 
 sqlite> .headers on 
-\end{verbatim}
+\end{lstlisting}
 \end{itemize}
 
 sqlite shell에서 다양한 데이터베이스 명령어를 실행할 수 있다. 계속해서 system 테이블을 조회해보자.
@@ -164,18 +166,20 @@ _id|name|value
 Settings.System의 문자열 상수를 보면 이 테이블의 name 칼럼에 있는 값과 동일하다.\\
 
 여기서 value 값을 바꿔줄 수 있을까? Settings.System를 통하면 가능하다.
-먼저 아래와 같이 AndroidManifest.xml에 퍼미션을 추가한다(마시멜로에서는 특별한 퍼미션이 되어서 퍼미션을 추가하는 것만으로는 안된다).\\
+먼저 아래와 같이 AndroidManifest.xml에 퍼미션을 추가한다(마시멜로에서는 특별한 퍼미션이 되어서 퍼미션을 추가하는 것만으로는 안된다).
+\begin{lstlisting}[frame=single]
+<uses-permission android:name="android.permission.WRITE_SETTINGS" />
+\end{lstlisting}
 
-<uses-permission android:name=``android.permission.WRITE\_SETTINGS'' />\\
-
-코드에서는 아래와 같이 값을 변경할 수 있다.\\
-
-Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE\_MODE\_ON, 1);\\
+코드에서는 아래와 같이 값을 변경할 수 있다.
+\begin{lstlisting}[frame=single]
+Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 1);
+\end{lstlisting}
 
 그런데 이 코드는 단말에서는 보안상 막아 놓는다. 엉뚱한 앱에서 자꾸 비행기 모드로 변경한다면 단말을 도저히 사용할 수 없을 것이다.
 이 내용이 에뮬레이터에서는 잘 동작한다.
 Settings.System 클래스를 보고 내부적으로 db를 사용하고 있는 것을 알면, 여러 앱에서 사용 가능한 nonsecure \& public 값들을 추가로 넣을 수 있지 않을까? 예를 들어, 가장 최근 검색어를 여러 앱에서 공유할 수도 있다.
-아래 코드는 단말에서도 잘 동작한다. \\
+아래 코드는 마시멜로 이전 버전의 단말에서 잘 동작한다. \\
 \begin{lstlisting}[frame=single]
 Settings.System.putString(context.getContentResolver(), "most_recent_keyword",
 	"Hawaii");
@@ -185,17 +189,20 @@ Settings.System.getString(context.getContentResolver(), "most_recent_keyword");
 단말에서는 AIRPLANE\_MODE\_ON 같은 특정 키에 대해서 업데이트를 막아놓은 것으로 해석하면 된다.\\
 
 
-sqlite shell에서 쓸 수 있는 명령어 모음은 아래 사이트를 참고하자. 두 번째 사이트가 정리가 잘 되어 있다.\\
-http://www.sqlite.org/lang.html\\
-http://www.tutorialspoint.com/sqlite/\\
+sqlite shell에서 쓸 수 있는 명령어 모음은 아래 사이트를 참고하자. 두 번째 사이트가 정리가 잘 되어 있다.
+\begin{itemize}
+\item http://www.sqlite.org/lang.html
+\item http://www.tutorialspoint.com/sqlite/
+\end{itemize}
+
 
 %INSERT OR REPLACE 구문이 있다. PK가 같이 쓰여야 한다.
 
 일반적인 용도에서는 필요없지만, 알면 유용한 게 바로 PRAGMA 명령어이다. PRAGMA는 DB의 환경 변수나 상태 플래그를 가져오거나 변경할 때 사용한다.
 SQLiteDatabase 클래스에서 getVersion() 메서드가 있는데 아래 명령어의 결과를 가져온 것이다. 
-\begin{verbatim}
+\begin{lstlisting}[frame=single]
 PRAGMA user_version; 
-\end{verbatim}
+\end{lstlisting}
 
 SQLite 언어 지원에서 C API 등을 보면 다양한 함수가 있는데, 안드로이드의 SQLiteDatabase 클래스에서는 쓸 수 있는 게 많지 않다.
 그나마 여기에 도움을 주는 것이 PRAGMA 명령어라고 보면 된다. PRAGMA 명령어를 써서 앱의 환경에 맞는 튜닝도 약간은 가능하다.\\
@@ -205,7 +212,7 @@ SQLite 언어 지원에서 C API 등을 보면 다양한 함수가 있는데, �
 \subsection{DB Lock 문제}
 앱에서 SQLite를 사용하면서 가장 문제가 되는 것은 DB Lock이다.
 간단한 key-value라면 메인 스레드에서 쿼리를 해도 별 문제가 없지만, 일반적으로 DB 명령은 백그라운드 스레드에서 실행하는 것이 권장된다. 
-바로 스레드 간(또는 프로세스 간) 명령을 실행하면서 Lock을 잡는 시점이 겹치면서 DB Lock 문제가  생긴다.\\
+DB Lock 문제는 바로 스레드 간(또는 프로세스 간) 명령을 실행하면서 Lock을 잡는 시점이 겹치면서 발생한다.\\
 
 Lock의 기본 내용은 DB에 쓸 때는 Exclusive Lock을 잡고, 읽을 때는 Shared Lock을 잡는다는 것이다.
 %\footnote{많은 예에서 나오듯이 성과 이름을 모두 변경한 것을 함께 읽어야지, 성만 변경한 것을 읽게 되면 안된다. 쓰기를 하는 동안에 읽기는 기다려야만 한다.} 
@@ -217,7 +224,7 @@ Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로�
 \item SHARED: 읽기만 되고 쓰기는 안된다. 여러 프로세스가 동시에 Shared Lock을 가질 수 있다. 하나 이상의 Shared Lock이 활성화되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
 \item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
 \item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 Clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
-\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 너무 크게 잡지 않도록 권장하는 것과 비슷하다. \\
+\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 크게 잡지 않도록 권장하는 것과 비슷하다. \\
 % 예를 들어 수차례의 HTTP call을 통해서 데이터를 가져와서 입력한다고 하면, Transaction을 먼저 시작하고, HTTP call을 하면 전체적인 Transaction 실행시간이 길어질 수 밖에 없다.
 \end{itemize}
 
@@ -251,7 +258,7 @@ SQLiteDatabase에서 트랜잭션을 쓰는 패턴은 아래와 같다.
    	}
 \end{lstlisting}
 
-허니콤부터 beginTransaction() 외에 beginTransactionNonExclusive() 메서드가 사용 가능하며, immediate behavior로 트랜잭션을 시작한다.
+허니콤부터 beginTransaction() 외에 beginTransactionNonExclusive() 메서드가 사용 가능하며, immediate 방식으로 트랜잭션을 시작한다.
 결과적으로 트랜잭션에서 Lock 문제를 조금이라도 회피하기 위해서 쓸 수 있는 방법은 단말 버전에 따라 다른 메서드를 호출하는 것이다.
 \begin{lstlisting}[frame=single] 
 	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -269,19 +276,18 @@ SQLiteDatabase에서 트랜잭션을 쓰는 패턴은 아래와 같다.
    	}
 \end{lstlisting}
 
+% \includegraphics[scale=0.35]{device-sqlite}\\
+File IO 성능이 좋지 않던 초기 안드로이드 단말에서는 Lock 문제가 쉽게 드러났지만, 최신 단말에서는 바로 눈에 띄지 않을 수도 있다.\footnote{버전이 높은 것이 항상 나은 것은 아니다. 4.0.4 버전의 특정 단말에서 Lock 에러가 많이 발생한 적도 있다.} 당장 보이지 않는다고 해서 사용자 단말에서도 문제가 없다고 생각하지 말자. QA 테스트에서는 거의 안 나타나던 Lock 에러가 배포 후에 사용자 단말에서는 다량으로 나타난 경우도 있었다.\\
+
 Lock/트랜잭션 관련해서 테스트 가능한 샘플은 github에서 찾아볼 수 있다.\\
 \url{https://github.com/touchlab/Android-Database-Locking-Collisions-Example}\\
-
-% \includegraphics[scale=0.35]{device-sqlite}\\
-File IO 성능이 좋지 않던 초기 안드로이드 단말에서는 Lock 문제가 쉽게 드러났지만, 최신 단말에서는 바로 눈에 띄지 않을 수도 있다.\footnote{최근 버전이 항상 나은 것은 아니다. 4.0.4 버전의 특정 단말에서 Lock 에러가 많이 발생한 적도 있다.} 당장 보이지 않는다고 해서 사용자 단말에서도 문제가 없다고 생각하지 말자. QA 테스트에서는 거의 안 나타나던 Lock 에러가 배포 후에 사용자 단말에서는 다량으로 나타난 경우도 있었다.\\
-
 이 샘플을 테스트한 결과를 얘기해보자.
 \begin{enumerate}
 \item 여러 스레드에서 1개의 SQLiteDatabase 인스턴스만 가지고 쓰기를 한다. 이때는 Lock 문제가 발생하지 않는다. 
 
 \item 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고 쓰기를 한다. 이때는 Lock 문제가 발생한다. 여러 번 해봐도 문제가 잘 발생하지 않는다면 소스 상에서 스레드 개수를 늘려보자. 계속 늘려가보면 반드시 Lock 문제가 발생한다.
 
-\item 1개의 스레드에서 1개의 SQLiteDatabase 인스턴스를 가지고 쓰기를 계속 하고, 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고서 읽기만 한다면 Lock 문제가 발생한다.
+\item 1개의 스레드에서 1개의 SQLiteDatabase 인스턴스를 가지고 계속 쓰기를 하고, 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고서 읽기만 한다면 Lock 문제가 발생한다.
 
 \item 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고서 읽기만 하면 Lock 문제가 발생하지 않는다.
 
@@ -402,12 +408,17 @@ SQLiteDatabase.CursorFactory를 새로 만들어서 파라미터에 전달할 �
 \item DB 테이블 변경 시에는 Database Helper 생성자에 새로운 버전을 전달하고, 
 SQLiteOpenHelper의 onUpgrade(SQLiteDtabase db, int oldVersion, int newVersion) 메서드에 변경 내용을 적용하면 된다. 이때 일반 패턴은 20라인(2)과 같이 for 문을 사용해서 oldVersion과 newVersion 범위 사이에 DB 버전에 했던 작업들을 처리하는 것이다.
 
-\item onCreate() 메서드에는 최신 DB 스키마와 데이터를 반영해야 한다. onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버전이 1, 2, 3, 4 이렇게 바뀌면서 스키마와 데이터가 변경되었다고 하자. 버전이 1일 때 앱이 DB를 생성한다면 onCreate() 메서드가 호출되고, 중간에 앱을 업데이트하지 않다가 최신 버전으로 업데이트했다면 onUpgrade() 메서드가 호출된다.
+\item onCreate() 메서드에는 최신 DB 스키마와 데이터를 반영해야 한다. 
+onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버전이 1, 2, 3, 4 이렇게 바뀌면서 스키마와 데이터가 변경되었다고 하자. 버전이 1일 때 앱이 DB를 생성한다면 onCreate() 메서드가 호출되고, 중간에 앱을 업데이트하지 않다가 최신 버전으로 업데이트했다면 onUpgrade() 메서드가 호출된다.
 그럼 버전이 4일때 처음 앱을 설치한다면 어떨까? 바로 onCreate() 메서드만 호출되고 onUpgrade() 메서드는 호출되지 않는다. 
-개발하다 보면 onCreate()와 onUpdate()가 순차적으로 호출되는 것으로 가끔 착각하게 되어서 언급하였다. onCreate()와 onUpgrade()는 둘 중에 하나만 호출된다.
+개발하다 보면 onCreate()와 onUpgrade()가 순차적으로 호출되는 것으로 가끔 착각하게 되어서 언급하였다. onCreate()와 onUpgrade()는 둘 중에 하나만 호출된다.
+
+\item DB 버전 업그레이드가 필요할 때 빠뜨려서는 안 된다. 예를 들어, 테이블 설계에 문제 있는 버전이 배포되었다고 하자.
+마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 이 버전을 사용중인 단말은 DB 버전이 동일하므로 onUgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없기 때문에 그래서는 안된다.
+버전을 올리고서 onUprade()에서 테이블 구조를 변경하는 코드가 들어가는 게 정상적인 방법이다.
 
 \item onCreate()와 onUpgrade() 메서드에서 하는 작업은 테이블 생성/수정 뿐 아니라 많은 기본 데이터 INSERT 등도 필요하다. 예를 들어, INSERT는 건당 시간이 얼마 안 걸리지만 1,000건, 10,000건이 된다면 속도가 대폭 떨어질 것을 예상할 수 있다.
-그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또 다시 트랜잭션을 고려할 필요가 없다.\footnote{이런 것이 바로 SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
+그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또 다시 트랜잭션을 고려할 필요가 없다.\footnote{SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
 
 \item DATABASE\_NAME 위치에 null을 넣으면 파일 DB가 아닌 메모리 DB가 된다. 파일 DB라도 속도가 느리진 않지만 메모리 DB는 그보다 훨씬 속도가 빠르다. DB가 닫히면 함께 사라져버리는 휘발성 DB이므로 일종의 캐시 용도로 사용하는 것이 좋다.
 코드 상에서 캐시 자료구조를 만들어도 되는데, 굳이 메모리 DB를 쓰면 좋은 케이스는 무엇일까? 바로 그 안에서 쿼리를 실행할 수 있다는 점이다.
@@ -416,7 +427,7 @@ SQLiteOpenHelper의 onUpgrade(SQLiteDtabase db, int oldVersion, int newVersion) 
 
 당연한 얘기지만 메모리 DB에서는 DB 버전 업그레이드가 의미가 없으므로 version은 신경쓸 필요가 없다. 1로 놓고 다시는 변경하지 말자.
 
-\item Database Helper는 앱 전체에 걸쳐 하나의 인스턴스를 가지고 있어야 DB Lock 문제에서 자유롭다. 
+\item Database Helper는 앱 전체에 걸쳐 단일 인스턴스를 가지고 있어야 DB Lock 문제에서 자유롭다. 
 그래서 일반적으로 아래와 같이 싱글톤 패턴을 만들어서 사용한다. 싱글톤 패턴에 대해서 11장에서 다시 설명하기로 한다.
 \begin{lstlisting}[frame=single] 
 public static DatabaseHelper extends SQLiteOpenHelper  {
@@ -441,10 +452,10 @@ DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 \end{lstlisting}
 
 \item close() 메서드는 실제 호출할 일이 거의 없다.
-close()는 SQLiteDatabase 인스턴스의 close()를 호출하고, SQLiteDatabase 인스턴스를 null로 만든다. 
-매번 close()를 호출하지 않고서 SQLiteDatabase 인스턴스를 계속 재사용해도 문제가 없고, 또 다른 이유는 close() 시점 때문에 문제가 발생할 수 있다는 것이다.\\
+SQLiteOpenHelper의 close()는 SQLiteDatabase 인스턴스의 close()를 호출하고, SQLiteDatabase 인스턴스를 null로 만든다. 
+매번 close()를 호출하지 않고서 SQLiteDatabase 인스턴스를 계속 재사용해도 문제가 없고, 또 다른 이유는 close() 실행 시점 때문에 문제가 발생할 수 있다는 것이다.\\
 
-어느 스레드에서 getWritableDatabase()를 실행하고서 쿼리를 실행하려 한다고 하자. 다른 스레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 getWritableDatabase() 이후에 close()가 실행되고, 이것을 가지고 쿼리한다면  NullPointerException이 발생하게 된다. 
+A 스레드에서 getWritableDatabase()를 실행하고서 쿼리를 실행하려 한다고 하자. B 스레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 A 스레드에서 getWritableDatabase() 이후에 B 스레드에서 close()가 실행되고, 이것을 가지고 A 스레드에서 쿼리한다면  NullPointerException이 발생하게 된다. 
 %  에러 메시지 보여주자
 \item onConfigure(SQLiteDatabase db) 메서드와 onOpen(SQLiteDatabase db) 메서드가 있다. onConfigure() 메서드는 SQLiteDatabase 생성/열기 이후, onCreate()와 onUpgrade() 메서드 전에 실행되는 것으로 write-ahead logging이나 foreign key support 같은 기능을 활성화하는 작업 등을 할 수 있다. onOpen() 메서드는 onCreate()와 onUpgrade() 이후에 database connection 설정을 변경할 때 사용한다.
 
@@ -464,7 +475,7 @@ ContentResolver는 추상 클래스이고 실제 사용하는 클래스는 Conte
 개발자 가이드에 의하면 로컬 프로세스에서만 사용하려면 ContentProvider를 사용하지 않는 것이 권장된다. 
 ContentResolver를 거치는 것보다 직접 DB를 접근하는 것이 속도가 훨씬 빠르다.\\
 
-한 앱에서도 ContentProvider를 쓰면 유용한 경우를 들어보자(이 때문에 어떤 가이드나 책에서는 가능하면 DB 관련 코드는 ContentProvider를 쓰라고 하기도 한다).
+한 앱에서도 ContentProvider를 쓰면 유용한 경우를 들어보자(이 때문에 어떤 문서에서는 가능하면 DB 관련 코드는 ContentProvider를 쓰라고 하기도 한다).
 \begin{itemize}
 \item 메서드 시그너처를 따라야 하므로 API 일관성을 유지할 수 있다.
 \item CursorLoader, AsyncQueryHandler와 같은 유용한 클래스들이 ContentProvider의 Uri가 전달되어야만 동작한다.
@@ -573,20 +584,6 @@ public class NotePadProvider extends ContentProvider {
 
 	@Override
 	public Uri insert(Uri uri, ContentValues initialValues) {
-		if (sUriMatcher.match(uri) != NOTES) {
-			throw new IllegalArgumentException("Unknown URI " + uri);
-		}
-		ContentValues values;
-		if (initialValues != null) {
-			values = new ContentValues(initialValues);
-		} else {
-			values = new ContentValues();
-		}
-
-		Long now = Long.valueOf(System.currentTimeMillis());
-		if (values.containsKey(NotePad.Notes.COLUMN_NAME_CREATE_DATE) == false) {
-			values.put(NotePad.Notes.COLUMN_NAME_CREATE_DATE, now);
-		}
 		...
 		SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 		long rowId = db.insert(NotePad.Notes.TABLE_NAME,
@@ -638,14 +635,14 @@ public class NotePadProvider extends ContentProvider {
 \item ContentProvider를 사용하면 멀티 스레드 환경에서 Lock 문제가 없이 잘 동작하기 때문에 ContentProvider에서 Lock을 제어한다고 오해하는 경우가 있다. 
 Lock 문제가 발생하지 않는 것은 ContentProvider를 써서 그런 것이 아니라 ContentProvider를 만드는 일반적인 패턴으로 인한 것이다.
 45라인(1)을 보면 onCreate() 메서드에서 Database Helper를 하나 생성해놓고 이것을 사용하고 있다.
-onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고, 하나의 ContentProvider는 단말에서 오직 하나만 존재하기 때문에 Database Helper도 오직 하나뿐이다. 따라서 내부적으로 명령어가 serialization되면서 Lock 문제가 없는 것이다.
+onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고, ContentProvider는 단말에서 오직 하나만 존재하기 때문에 Database Helper도 오직 하나뿐이다. 따라서 내부적으로 명령어가 serialization되면서 Lock 문제가 없는 것이다.
 
 \item ContentProvider의 onCreate() 메서드는 Application의 onCreate() 메서드 이전에 실행된다.\footnote{ActivityThread의 handleBindApplication() 메서드를 분석해보자.}
 따라서 Application의 onCreate() 메서드가 먼저 실행된다고 가정하면 안된다.
 복잡한 앱에서는 Application의 onCreate() 메서드에서 앱 전체적으로 사용하는 인스턴스를 미리 생성하는 역할을 하기도 한다. ContentProvider에서도 Application에서 생성한 것을 쓰고 싶지만 순서를 주의하도록 하자.
 ContentProvider의 onCreate()는 메인 스레드에서 실행하고 다른 메서드는 일반적으로 별도 스레드에서 실행하므로(로컬에서도 ContentProvider는 스레드에서 호출하도록 권장되고, Binder를 통한 외부 앱의 접근은 Binder 스레드를 거쳐 실행), ContentProvider의 메서드 간에는 스레드 안정성에 주의하도록 하자. 멤버 변수를 함부로 쓰면 안된다는 얘기이다.
 
-\item insert/update/delete 메서드에서 쿼리 실행 후에 getContext().getContentResolver().notifyChange(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
+\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().notifyChange(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
 ContentObserver에는 어떤 데이터가 변경되었는지 알리지는 않고 변경되었는지 여부만 전달한다. 
 그러면 무슨 쓸모가 있는가 의문이 생기는데,
 query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드가 있어서 새로 조회할 수 있다. 특히 CursorAdaper는 내부에 ContentObserver가 등록되어 있어서 notifyChange()를 받으면 requery()를 실행한다.
@@ -686,8 +683,8 @@ newInsert/newUpdate/newDelete 같은 메서드는 Builder 패턴을 사용해서
 \end{itemize}
 
 다른 프로세스에서 실행한다면 Binder를 거쳐야 하는데, 하나씩 명령어를 주고받는 것보다 한꺼번에 보내는 것으로 속도 향상은 있지만 트랜잭션을 쓰는 것처럼 속도 향상이 큰 것은 아니다.
-ContentProvider에서 트랜잭션을 써서 속도를 향상시키고 싶다면,
-applyBatch(ArrayList$<$ContentProviderOperation$>$ operations) 메서드를 오버라이드하는 방법이 있다.
+트랜잭션을 써서 속도를 향상시키고 싶다면,
+ContentProvider에서 applyBatch(ArrayList$<$ContentProviderOperation$>$ operations) 메서드를 오버라이드하는 방법이 있다.
 \begin{lstlisting}[frame=single] 
 @Override
 public ContentProviderResult[] applyBatch(
@@ -883,7 +880,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 \item 11라인(2)과 25라인(4)에서 2개의 스레드를 시작한다.
 11라인의 스레드는 단순 조회이다.
 25라인의 스레드는 데이터를 10개 입력하는데 45라인(6)에서 1초간 sleep하기 때문에(시간이 걸리는 것을 시뮬레이션) 최소 실행 시간은 10초이다. 32라인(5)에서 트랜잭션을 시작하고 49라인(7)에서 트랜잭션을 종료한다.
-\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction) 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialization되기 때문에 두 번째 스레드의 49라인(endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
+\item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction() 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialization되기 때문에 두 번째 스레드의 49라인(startTransaction $\sim$ endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
 \end{itemize}
 
 이 상황은 앞서 얘기한 동기화를 하느라고 조회 쿼리가 늦어지는 것과 동일한 케이스이다. 
@@ -891,7 +888,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 \begin{enumerate}
 \item startService()를 실행하여 Service의 백그라운드 스레드에서 서버 데이터를 가져와 DB에 반영한다. 이때 속도 향상을 위해서 트랜잭션을 사용한다(시간이 얼마나 걸릴지 알 수 없다. 사용자 데이터는 천차만별이다).
 \item 첫 화면은 AsyncTask를 이용해서 기존 DB의 데이터를 조회해서 UI에 반영한다. 
-\item 동기화가 완료되면 DB에 다 반영되었으므로 Service에서 sendBroadcast()를 실행하고 화면에서는 다시 AsyncTask로 변경된 결과를 다시 조회한다.
+\item 동기화가 완료되면 DB에 다 반영되었으므로 Service에서 sendBroadcast()를 실행하고 화면에서는 AsyncTask로 변경된 결과를 다시 조회한다.
 \end{enumerate}
 
 1번 때문에 2번이 늦어지는 상황이 이해될 것이다. 원리를 모른다면 ``도대체 왜 그럴까?''하면서 해결할 수 없는 문제가 된다. 
