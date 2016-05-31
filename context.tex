@@ -101,4 +101,4 @@ View 클래스를 보면 생성자에 Context가 들어간다. 이 Context가 �
     }
 \end{lstlisting}
 첫 번째 로그에서만 true가 나오는 것을 볼 수 있다. View 클래스는 생성자에 Context가 전달되어야 한다. 테스트해보면 Activity에서 쓸 수 있는 3가지 Context 모두 다 전달 가능하다. 그러나 View와 연관이 깊은 것은 Activity이므로 Activity를 전달하는 것을 이해할 수 있을 것이다.
-내부적으로 setContentView() 메서드에서 사용하는 LayoutInflator에 Activity 인스턴스가 전달되고, View 생성자의 Context 파라미터에 Activity 인스턴스가 전달되기 때문이다. 
+내부적으로 setContentView() 메서드에서 사용하는 LayoutInflator에 Activity 인스턴스가 전달되고, View 생성자의 Context 파라미터에 Activity 인스턴스가 전달된다. 

@@ -1,7 +1,7 @@
 \chapter{Activity}
 Activity는 앱에서 화면의 기본 단위이고 setContentView() 메서드로 메인 뷰를 화면에 표시한다.
 때에 따라 setContentView()를 실행하지 않고, 로직 분기를 해서 다른 Activity를 띄우는 용도로 사용하기도 한다.
-한 예로 Intent의 스킴(scheme)에 따라 다른 화면으로 다시 분기하는 경우가 있다. 
+한 예로 Intent의 스킴(scheme)에 따라 다른 화면으로 전환하는 경우가 있다. 
 이때 AndroidManifest.xml에서 여러 Activity에 intent-filter 엘리먼트를 추가하지 않고, Controller 역할의 Activity 1개에만 여러 스킴의 intent-filter를 명시해서 Controller Activity를 거쳐 다른 화면으로 이동시킨다.\\
 
 Activity는 AndroidManifest.xml에 선언해야 호출 가능하다. 
@@ -120,7 +120,7 @@ ActivityB는 onCreate()와 onResume()을 실행한다.
 
 설명해보면 Caller는 일단 백그라운드로 가고, Callee가 포그라운드까지 온 다음에 Caller가 not visible 상태가 된다.
 onStop()이 나중에 불리는 이유는 무엇일까? 
-바로 Callee가 투명하거나 전체를 덮는 Activity가 아니라면 Caller의 onStop()을 호출하기 않기 때문에, 
+바로 Callee가 투명하거나 화면을 일부만 덮는 Activity라면 Caller의 onStop()을 호출하기 않기 때문에, 
 Callee가 뜨고 난 이후에야 onStop()이 필요한지 알 수 있기 때문이다.\\
 
 이 순서는 별게 아니지만 인지해야 하는 경우가 있다. 
@@ -173,7 +173,7 @@ onPause(), onDestroy()에서는 super.onPause(), super.onDestroy()를 나중에 
 	}
 \end{lstlisting}
 생명주기를 시작할 때는 뭔가를 만들어내는 일이 많고, 끝날 때는 정리하는 일이 많다는 것을 생각하자.
-많은 문서나 구글에서 만든 소스나 샘플에서도 이런 규칙은 없고 이런 규칙에 맞게 작성하지도 않지만, 경험상 이 습관은 필요하다. \url{http://orhanobut.github.io/effective-android/}에서도 항목 37에 ``Constructive first, destructive last'' 내용이 있는 것을 볼 수 있다.\\
+많은 문서나 구글에서 만든 소스나 샘플에서도 이런 규칙은 없고 여기에 맞게 작성하지도 않지만, 경험상 이 습관은 필요하다. \url{http://orhanobut.github.io/effective-android/}에서도 항목 37에 ``Constructive first, destructive last'' 내용이 있는 것을 볼 수 있다.\\
 
 Activity의 onCreate()나 onResume(), onPause() 메서드에서는 실제로 하는 작업은 거의 없다.
 onDestroy()에서는 하는 작업이 있긴 하다. 
@@ -411,8 +411,8 @@ onSaveInstanceState()는 생명주기 메서드처럼 항상 호출되는 것이
 Configuration 변경되는 조건에서(가장 손쉽게 화면을 회전해보면) onSaveInstanceState()가 호출되고 Activity는 onCreate()부터 재시작한다.\\
 
 이제 한 가지 의문을 가져보자.
-앱에 여러 Activity가 있어서, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 태스크에 쌓였다. 이때 화면을 회전하면 세 개의 Activity에서 모두 onSaveInstanceState()가 호출될 것인가? 그렇지 않다. 그 순간에는 ActivityC에서만 호출된다.
-ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 하면 ActivityA와 ActivityB는 onStop()이 호출되는데, onStop 이전에 onSaveInstanceState()가 호출된다.
+앱에 여러 Activity가 있어서, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 화면을 전환하였다. 이때 화면을 회전하면 세 개의 Activity에서 모두 onSaveInstanceState()가 호출될 것인가? 그렇지 않다. 화면을 회전하는 그 순간에는 ActivityC에서만 호출된다.
+ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 화면을 전환하면 ActivityA와 ActivityB는 onStop()이 호출되는데, onStop() 이전에 onSaveInstanceState()가 호출된다.
 즉 ActivityA와 ActivityB는 onSaveInstanceState()가 이미 호출된 상태이다.\\
 
 이 상태에서 ActivityC를 회전하면 ActivityC에서는 기대하는 대로 onSaveInstanceState() 실행 이후에 재시작한다.
@@ -465,7 +465,7 @@ android:configChanges에 넣는 항목에 대해서는 Configuration 변경에 �
 
 %그럼 직접 처리한다는 건 또 무슨 의미일까?
 android:configChanges에 항목을 넣어서 활용하는 경우를 예를 들어보자. 
-onConfigurationChanged()에는 변경된 Configuration에 대한 리소스가 사용 가능한 것을 기억하자. 
+onConfigurationChanged()에서는 변경된 Configuration에 대한 리소스가 사용 가능한 것을 기억하자. 
 \begin{itemize}
 \item 가장 흔한 경우로 화면 회전에 대응하는 orientation이 있다. -port, -land로 별도 레이아웃을 사용하지 않을 때 많이 쓰인다. 앞에서 얘기했듯이 onConfigurationChanged()가 실행된 이후에 다시 그려지면서 View의 layout\_width나 layout\_height가 바뀌지 않아도, 그려진 너비와 높이는 measure된 결과에 따라서 달라진다.
 경우에 따라 가로/세로 모드에서 layout\_width나 layout\_height만 변경해서 적용하려고 할 때도 있다. 
@@ -547,7 +547,7 @@ android:configChanges에 가장 보편적으로 들어가는 게 orientation인�
 근래에는 큰 화면이 많아서 거의 없지만, 초기에는 하드웨어 키보드가 있는 모델(2009년에 모토쿼티, 2010년에는 옵티머스 Q)이 있었다.
 키보드가 겹쳐있다가 슬라이딩되면서 하드웨어 키보드가 나오는데, 세로 모드로 있다가 키보드를 꺼내는 순간에 단말을 돌린 것은 아니지만 가로 모드로 전환되었다. 이때 keyboardHidden 속성이 변경되면서 방향도 바뀌기 때문에 keyboardHidden과 orientation을 함께 쓰게 되었다.\\
 
-Activity에는 setRequestedOrientation(int requestedOrientation) 메서드가 있다. 방향 센서를 통해서 화면을 회전하는 것이 아니라, 필요에 따라 화면을 특정 방향으로 보여주는 메서드이다. 이 메서드를 호출하면 기본적으로 Activity는 재시작하는데, 이때도 android:configChanges에 orientation 항목이 있다면 재시작하지 않고 onConfigurationChanged() 메서드가 불린다.\\
+Activity에는 setRequestedOrientation(int requestedOrientation) 메서드가 있다. 방향 센서를 통해서 화면을 회전하는 것이 아니라, 화면을 특정 방향으로 변경해서 보여주는 메서드이다. 이 메서드를 호출하면 기본적으로 Activity는 재시작하는데, 이때도 android:configChanges에 orientation 항목이 있다면 재시작하지 않고 onConfigurationChanged() 메서드가 불린다.\\
 
 android:configChanges에 값을 넣을 때는 `최대'보다는 `최소'를 원칙으로 하는 게 좋다. 14개를 다 넣는다고 Activity가 절대 재시작하지 않는 것도 아니다. 백그라운드로 이동했다가 kill되는 경우도 있어서 완벽한 대응이 되지 않는다. mcc와 mnc와 같이 유심이 새로 발견된 경우처럼 굳이 대응이 불필요한 경우도 있다. 유심이 바뀐다면 단말 재부팅하기도 바쁜데, 앱에서 Activity가 재시작하고 값을 복구하는지 신경 쓸 사용자는 없을 것이다.\\
 
@@ -592,7 +592,7 @@ Configuration 내용을 보기 위해서 Context 인스턴스에서 getResources
 \item 열 번째는 orientation 값이다.
 \item 열한 번째 finger는 touchScreen 값이다.
 \item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden을 의미한다. -keyb는 키보드가 없다는 의미다(마이너스로 생각하면 된다).
-\item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가 있으므로 navigation 타입이 없다는 것이다. 
+\item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가 있으므로 navigation 타입이 없다는 의미이다.
 \item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 전역적인 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
 \end{itemize}
 

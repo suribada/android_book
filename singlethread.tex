@@ -222,7 +222,7 @@ LooperThread에서 스레드를 시작하면 Looper.loop()에 무한 반복문�
 예를 들어, 어떤 메서드가 단순하게 TextView의 setText()를 실행하지만, 메서드 호출을 하는 곳이 여러 군데이거나 메서드 호출 스택이 깊어서 어디서 호출하는지 금방 파악이 안되는 경우도 있다.
 여러 곳에서 사용하는 메서드라면 메인 스레드뿐 아니라 백그라운드 스레드에서도 호출할 가능성이 있다. 
 new Handler()로 생성하고 post() 메서드를 통해서 TextView를 변경하려 하는데, Handler 생성을 메인 스레드에서 하는지 백그라운드 스레드에서 하는지 모호한 경우가 있다.
-메인 스레드라면 이미 메인 Looper가 있어서 문제가 되지 않지만, 백그라운드 스레드라면 대응하는 Looper가 당장 없을 때 RuntimeException을 만나게 된다.\\
+메인 스레드라면 이미 메인 Looper가 있어서 문제가 되지 않지만, 백그라운드 스레드라면 대응하는 Looper가 없을 때 RuntimeException을 만나게 된다.\\
 
 예를 들어, 아래 코드에서는 BadgeListener의 updateBadgeCount()에서 UI를 변경한다.
 \begin{lstlisting}[frame=single] 
@@ -320,7 +320,7 @@ Handler는 일반적으로 UI 갱신을 위해 사용된다. 관련해서 해당
 AsyncTask에서도 내부적으로 Handler를 이용해서 onPostExecute() 메서드를 실행한다.
 
 \item UI 작업 중에 다음 UI 갱신 작업을 MessageQueue에 넣어 예약한다. 작업 예약이 필요한 경우가 있다.
-예를 들어, Activity의 onCreate() 메서드에서 하지 못하는 여러 가지 일들이 있다. 소프트 키보드를 띄운거나, ListView의 setSelection() 메서드를 호출하는 것이 onCreate() 메서드에서는 잘 동작하지 않는다. 이때 Handler를 이용해서 현재 작업이 끝난 이후에 다음 타이밍을 기다려서 진행한다.
+예를 들어, Activity의 onCreate() 메서드에서 하지 못하는 여러 가지 일들이 있다. 소프트 키보드를 띄운다거나, ListView의 setSelection() 메서드를 호출하는 것이 onCreate() 메서드에서는 잘 동작하지 않는다. 이때 Handler를 이용해서 현재 작업이 끝난 이후에 다음 타이밍을 기다려서 진행한다.
 
 \item 반복해서 UI를 갱신한다. DigitalClock이나 TextClock 같은 위젯도 Handler를 이용해서 현재 시간을 갱신하고 있다.
 반복적인 UI 갱신 패턴은 아래와 같다.
@@ -427,7 +427,7 @@ ViewRootImpl에서 처음 그릴 때나 다시 그릴 필요가 있을 때(inval
 개발하다 보면 수많은 타이밍 이슈를 접하게 된다. 원하는 시점과 실제 동작에서 차이가 생기는데, 이런 타이밍 이슈는 메인 스레드와 Handler를 이해하고 나면 생각보다 단순해진다.\\
 
 Activity의 onCreate() 메서드에서 Handler의 post() 메서드를 실행하면, 실제 post() 메서드에 전달되는 Runnable이 호출되는 시점은 언제일까? onCreate() 다음일까 아니면 다른 어느 시점일까?
-메인 스레드에서는 한 번에 한 작업 밖에 하지 못하고, 여러 작업이 서로 엉키지 않기 위해서 메인 Looper\footnote{Context의 getMainLooper()를 통해 가져올 수 있다.}의 MessageQueue에서 Message를 하나씩 꺼내서 처리한다는 것을 먼저 염두에 두자.
+메인 스레드에서는 한 번에 한 작업 밖에 하지 못하고, 여러 작업이 서로 엉키지 않기 위해서 메인 Looper\footnote{Context의 getMainLooper()나 Looper.getMainLooper()를 통해 가져올 수 있다.}의 MessageQueue에서 Message를 하나씩 꺼내서 처리한다는 것을 먼저 염두에 두자.
 각각의 생명주기 메서드는 MessageQueue에서 각각 꺼내지면서 실행되는 것인지 의문을 가져볼 수 있다. 결과적으로 전혀 그렇지 않다.
 MessageQueue에서 Message를 하나 꺼내오면 onCreate()에서 onResume()까지 쭉 실행된다.\footnote{ActivityThread의 handleLaunchActivity() 메서드를 참고하자.} 그럼 바로 답이 나온다. 
 onCreate()에서 Handler의 post()에 넣은 Runnable은 onResume() 이후에 실행된다.
@@ -689,7 +689,6 @@ HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드
 BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
 
 아래 코드를 한번 보자. 샘플을 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
-\newpage
 \begin{lstlisting}[frame=single, label=src:HandlerThreadSample] 
  	private Handler favoriteHandler;
     private HandlerThread handlerThread;
@@ -961,6 +960,7 @@ AsyncTask는 백그라운드 스레드에서 작업하는 진행 상태나 결�
 AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때, 즉 UI 작업이 필요하지 않는 경우 쓰지 않는 게 좋다. 이때는 AsyncTask의 스레드 풀을 사용하는 것 이상의 의미가 없다.\\
 
 AsyncTask를 설명하기 위해 백그라운드 스레드와 UI 스레드를 구분해서 사용하는 여러 방법을 살펴보자. 
+먼저 스레드 구분이 필요한 샘플부터 시작하자.
 \begin{lstlisting}[frame=single] 
 	public void onClick(View v) {
     	new Thread(new Runnable() {
@@ -1087,7 +1087,7 @@ private class MyTask extends AsyncTask<Void, Void, Void> { ... }
 AsyncTask는 안드로이드 개발자에게는 익숙한 것이기 때문에 이 절에서는 이슈 중심으로 살펴보자.
 
 \subsection{병렬 실행 시 실행 순서}
-안드로이드 버전이 올라가면서 많은 논란 가운데 하나가 AsyncTask를 실행할 때 기본 동작이 `병렬 실행'에서 `순차 실행'으로 바뀐 것이다. 
+안드로이드 버전이 올라가면서 여러 논란 가운데 하나가 AsyncTask를 실행할 때 기본 동작이 `병렬 실행'에서 `순차 실행'으로 바뀐 것이다. 
 병렬 실행이 여러 문제를 일으켰기 때문에, 제어 가능하다고 자신하는 경우에만 `병렬 실행'을 쓰라는 의미이다.
 그럼에도 여전히 AsyncTask는 병렬 실행을 기본으로 해서 개발할 때가 많다.\\
 
@@ -1204,7 +1204,7 @@ loadImageFromNetwork()에서 예외는 발생하지 않지만 null을 리턴하�
     	
 	}	
 \end{lstlisting}
-원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하는 것이 아니고, 성공 여부를 Boolean 값을 리턴해서 전달하고 있다. 
+원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하는 것이 아니고, Boolean 값으로 성공 여부를 전달하고 있다. 
 전달하고자 하는 결과값은 뜬금없이 DownloadImageTask의 멤버 변수에 대입돼서 onPostExecute()에서 사용한다.
 가능한 방식이긴 하지만 원래 AsyncTask의 사용 방식과 차이가 생긴다.\\
 %3가지 패턴(Handler, tuple, 멤버 변수, true, false)
