@@ -218,7 +218,16 @@ Toast가 사라지지 않고 내내 남아있는 현상이 발생하는데 심�
 
 Toast는 가급적 메인 스레드에서만 띄우는 게 맞다. 
 백그라운드 스레드에서는 그냥 쓰면 크래시가 나기 때문에 결국 안 쓰게 되지만, IntentService에서 아무 고려 없이 `써보니 잘 되네' 하고 넘어가면 안된다. Looper.getMainLooper()를 통해 메인 스레드에 연결된 Handler를 가지고서 Toast를 띄우는 것이 더 적절하다.
-%간단 샘플 필요
+\begin{lstlisting}[frame=single]
+	new Handler(Looper.getMainLooper()).post(new Runnable() {
+	
+		@Override
+		public void run() {
+			Toast.makeText(ThreadActivity.this, "Some Notice", Toast.LENGTH_LONG).show();
+		}
+		
+	});
+\end{lstlisting}
 
 \subsection{Service 중복 실행 방지}
 코드 \ref{SleepService}에서는 onStartCommand()가 아닌 onCreate() 에서 백그라운드 스레드를 생성해서 작업을 처리하였다. 
@@ -329,7 +338,7 @@ public abstract boolean bindService (Intent service, ServiceConnection conn, int
 \begin{itemize}
 \item 첫 번째 파라미터인 service는 대상 Service를 가리킨다.
 \item 두 번째 파라미터인 conn은 Service에 연결되거나 연결이 끊길 때의 Callback이다.
-\item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 넣을 수도 있다. 상수는 비트 OR($|$) 연산으로 여러 개를 넣어도 된다. 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CREATE이고, ICS부터 추가된 상수들은 주로 Service 프로세스의 우선순위와 관련되어 있다.\\ 
+\item 세 번째 파라미터인 flags에는 0을 넣을 수도 있고, Context의 BIND\_XXX 상수를 넣을 수도 있다. 상수는 비트 OR($|$) 연산으로 여러 개를 넣어도 된다. 가장 많이 쓰이는 상수는 Context.BIND\_AUTO\_CRE\-ATE이고, ICS부터 추가된 상수들은 주로 Service 프로세스의 우선순위와 관련되어 있다.\\ 
 
 BIND\_AUTO\_CREATE 옵션의 역할에 대해서 더 살펴보자.
 \begin{itemize}

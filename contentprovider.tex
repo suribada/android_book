@@ -642,7 +642,7 @@ onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고
 복잡한 앱에서는 Application의 onCreate() 메서드에서 앱 전체적으로 사용하는 인스턴스를 미리 생성하는 역할을 하기도 한다. ContentProvider에서도 Application에서 생성한 것을 쓰고 싶지만 순서를 주의하도록 하자.
 ContentProvider의 onCreate()는 메인 스레드에서 실행하고 다른 메서드는 일반적으로 별도 스레드에서 실행하므로(로컬에서도 ContentProvider는 스레드에서 호출하도록 권장되고, Binder를 통한 외부 앱의 접근은 Binder 스레드를 거쳐 실행), ContentProvider의 메서드 간에는 스레드 안정성에 주의하도록 하자. 멤버 변수를 함부로 쓰면 안된다는 얘기이다.
 
-\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().notifyChange(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
+\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().notifyChange\-(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
 ContentObserver에는 어떤 데이터가 변경되었는지 알리지는 않고 변경되었는지 여부만 전달한다. 
 그러면 무슨 쓸모가 있는가 의문이 생기는데,
 query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드가 있어서 새로 조회할 수 있다. 특히 CursorAdaper는 내부에 ContentObserver가 등록되어 있어서 notifyChange()를 받으면 requery()를 실행한다.

@@ -432,7 +432,7 @@ RemoteViews는 뷰 계층 상에 있는 레이아웃 리소스 id를 대상으�
 
 RemoteViews를 통해서 지원 가능한 뷰 클래스에서, 쓸 수 있는 메서드도 제한적일 거 같은데 그렇지는 않다. 
 RemoteViews API 문서를 보면 메서드 가운데서 두 번째 파라미터에 methodName 문자열이 전달되는 것이 있는데, 리플렉션을 통해 세 번째 파라미터를 methodName 이름의 메서드에 전달하게 된다. 
-setImageViewBitmap(), setImageViewUrl(), setTextColor(), setTextViewText() 같은 메서드는 모두 내부적으로 이 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value),  setUri(int viewId, String methodName, Uri value), setInt(int viewId, String methodName, int value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setImageURI'', ``setTextColor'', ``setText'' 문자열이 methodName에 들어간다).\\
+예를 들어, setImageViewBitmap(), setTextViewText() 같은 메서드는 내부적으로 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setText'' 문자열이 methodName에 들어간다).\\
 
 \subsection{App Widget 업데이트}
 App Widget을 업데이트하는 주요 코드는 간단하다.

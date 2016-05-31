@@ -117,8 +117,7 @@ u0_a15    12207 355   906192 25548 ffffffff 00000000 S com.android.vending
 시스템 서비스는 자바로 작성된 시스템 서비스가 많은데 이것들은 system\_server 프로세스에서 동작한다.
 Context에 getSystemService(String name) 메서드가 있어서, 리턴 결과는 시스템 서비스를 래핑한 것이고 사용 시에 반드시 캐스팅해서 사용한다.
 일반적인 패턴은 Binder Proxy를 래핑하고서 -Manager 식의 네이밍을 가진다. 그리고 -Manager에서는 Stub의 모든 public 메서드를 다 사용할 수 있는 것은 아니다.
-예를 들어, ActivityManager에서 startActivity() 메서드를 실행할 수는 없다.\\
-
+예를 들어, ActivityManager에서 startActivity() 메서드를 실행할 수는 없다.
 아래 표를 보도록 하자. 일반적인 네이밍 패턴에 맞는 것도 많지만 아닌 것도 여럿 있다(롤리팝 기준).
 % com.android.server.SystemServer 참고
 %\newgeometry{left=2cm,bottom=2cm}
@@ -197,7 +196,7 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 \item BatteryManager는 기존에는 ACTION\_BATTERY\_CHANGED Intent에서 쓰이는 문자열과 상수만을 정의하고 있었는데, 롤리팝에서 배터리와 충전 속성을 조회하는 메서드가 추가되었다.
 \item DownloadService는 별도 프로세스인 android.process.media에서 실행된다. DownloadManager는 ContentResolver를 통해 DB에 쌓는 역할만 한다.
 DownloadService는 프레임워크 소스상에서 packages/providers/DownloadProvider 디렉터리에 있고, Service를 상속한 일반 Service이다. 
-DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, ConnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
+DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, C\-onnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\-\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
 \item SensorManager는 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩해 놓는다.
 \item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
 \item 롤리팝에는 com.android.server.SystemService가 추가되어서 시스템 서비스  클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\

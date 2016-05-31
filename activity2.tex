@@ -195,8 +195,8 @@ context.startActivity(intent);
 
 해당 앱이 태스크 목록에 이미 있는 경우는 어떨까? FLAG\_ACTIVITY\_NEW\_TASK 플래그에 의해 태스크가 새로 하나 생성되면서 ScheduleViewerActivity가 뜨는가 하면 그렇지 않다. 바로 taskAffinity가 동일한 게 있다면 이 태스크 위에 뜨게 된다. 
 taskAffinity는 AndroidManifest.xml의 Activity 선언에 android:taskAffinity로 지정할 수 있고 속성이 없다면 디폴트 값은 패키지명이다.
-결국 android:taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_NEW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
-android:taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_NEW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
+결국 android:taskAffinity 속성을 선언하지 않은 것끼리는 FLAG\_ACTIVITY\_N\-EW\_TASK 속성을 쓰더라도 같은 태스크에 있게 된다.
+android:taskAffinity는 보통은 안 쓰는 속성이지만, 내부적으로 이런 게 일어나고 있어서, FLAG\_ACTIVITY\_N\-EW\_TASK를 써도 새로운 태스크가 생기지 않는 것이다.
 별도로 속성을 줄 때는 android:taskAffinity=``:alarm'' 식으로 프로세스 분리할 때처럼 :(clone) 뒤에 구분자를 적는 것을 권장한다.\footnote{com.example.android.lifecycle.another 또는 :another와 같은 형식이 모두 가능하지만  another처럼 단순한 이름을 쓰는 것은 허용되지 않는다.}\\
 
 Activity 선언에 android:taskAffinity 속성을 별도로 하는 경우를 더 알아보자. 예를 들어, 다른 화면들과 독립적인 알람 화면 같은 경우가 그렇다. 
@@ -206,7 +206,7 @@ Activity 선언에 android:taskAffinity 속성을 별도로 하는 경우를 더
 포그라운드에 이미 있었다면 AlarmAlert 화면이 그 위에 추가되어서 포커스될 것이고, 백그라운드에 있다면 태스크가 포그라운드가 되면서 그 위에 AlarmAlert 화면이 뜰 것이다.  
 백그라운드에 있던 화면이 딸려 올라오는 게 동작이 이상하다. 결국 이미 포그라운드에 있던 것처럼 동작하게 된다. Back 키를 누르니 방금 전까지 보이지 않았던 AlarmSettings 화면이 뜨는 것이다.\\
 
-이런 케이스를 막기 위해서 AlarmAlert의 android:taskAffinity 속성을 다르게 세팅하면, FLAG\_ACTIVITY\_NEW\_TASK 플래그를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 한 앱에서 2개의 태스크를 사용하게 된다.
+이런 케이스를 막기 위해서 AlarmAlert의 android:taskAffinity 속성을 다르게 세팅하면, FLAG\_ACTIVITY\-\_NEW\_TASK 플래그를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 한 앱에서 2개의 태스크를 사용하게 된다.
 Home 키를 길러 눌러서 최근 앱 목록을 보면 2개가 있는 것을 볼 수 있다. AlermAlert 화면이 최근 앱 목록으로 나오는 것을 방지하기 위해서 AndroidManifest.xml의 AlarmAlert 선언에 android:excludeFromRecents=``true''까지 추가하면 알람 기능의 기본 형태를 갖추게 된다.
 
 
@@ -232,14 +232,14 @@ launchMode에는 standard, singleTop, singleTask, singleInstance 4가지가 있�
 Activity 인스턴스가 없다면 새로운 태스크의 baseActivity로 생성한다. 스택에는 새로운 Activity를 추가할 수 있다. 
 앞서 얘기했듯이 모바일 브라우저의 경우가 singleTask launchMode를 사용한다.\\
 
-ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출해보자. 결과적으로 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 
+ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA $\rightarrow$ ActivityB $\rightarrow$ ActivityC 순으로 호출해보자. 결과적으로 하나의 태스크에 모두 쌓이는 것을 볼 수 있다. 
 새로운 태스크로 ActivityB를 띄우려고 하지만 동일한 taskAffinity가 이미 있다면, ActivityA 위에 그대로 뜨게 된다.
-이제 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC가 스택에서 제거되면서 ActivityB의 onNewIntent()가 불린다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다.\\
+이제 ActivityA $\rightarrow$ ActivityB $\rightarrow$ ActivityC $\rightarrow$ ActivityB 순서로 실행해보자. ActivityC 위에 ActivityB가 올라가진 않고 ActivityC가 스택에서 제거되면서 ActivityB의 onNewIntent()가 불린다. 결과적으로 ActivityA$\Rightarrow$ActivityB 태스크가 남는다.\\
 
-이번에는 ActivityB는 singleTask인 채로 taskAffinity를 변경하고 테스트해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
-여기서도 ActivityA$\rightarrow$Activi\-tyB$\rightarrow$ActivityC$\rightarrow$ActivityB 순서로 실행해보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
+이번에는 ActivityB는 singleTask인 채로 taskAffinity를 변경하고 테스트해보자. ActivityA $\rightarrow$ ActivityB $\rightarrow$ ActivityC 순으로 호출하면 ActivityA, ActivityB$\Rightarrow$ActivityC 2개의 태스크가 남게 되다. 
+여기서도 ActivityA $\rightarrow$ Activi\-tyB $\rightarrow$ ActivityC $\rightarrow$ ActivityB 순서로 실행해보자. 역시 ActivityC가 스택에서 제거되고 결국 ActivityA, ActivityB의 2개의 태스크만 남게 된다.\\
 
-여기서 처음 ActivityA$\rightarrow$ActivityB로 Activity 전환하는 것에도 주목해보자.
+여기서 처음 ActivityA $\rightarrow$ ActivityB로 Activity 전환하는 것에도 주목해보자.
 ActivityB가 다른 태스크로 뜨면서 보통의 Activity 전환처럼 금방 뜨지 않는다. 
 ActivityB가 뜨기 전에 검은 화면이 뜨거나, 또는 ActivityA가 조금 줄어들면서 ActiviyB는 줄어든 그 위치쯤에서 떠오르는 것을 볼 수 있다.
 체감 성능과 사용자 경험에서 차이가 생기므로, 새 태스크가 되어야 하는 케이스와 그렇지 않아도 되는 케이스를 잘 구분하는 게 좋다.
@@ -255,11 +255,11 @@ Facebook에서 기사 링크를 클릭해보면 브라우저가 뜨는데, 이�
 \item singleInstance: singleTask와 마찬가지로 인스턴스가 하나뿐이며 태스크의 유일한 Activity이기도 하다. 
 여기서 다른 Activity를 시작하면 다른 태스크에 들어가게 되어, 새로운 태스크를 만드는 효과가 있다.\\
 
-ActivityB의 launchMode가 singleInstance라고 해보자. ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순서로 호출한다고 해보면 재미있는 현상이 발생한다. B는 당연히 별도의 태스크가 된다. 
+ActivityB의 launchMode가 singleInstance라고 해보자. ActivityA $\rightarrow$ ActivityB $\rightarrow$ ActivityC 순서로 호출한다고 해보면 재미있는 현상이 발생한다. B는 당연히 별도의 태스크가 된다. 
 그런데 ActivityA와 ActivityC는 taskAffinity가 동일하기 때문에(ActivityB도 동일하긴 하지만) 동일한 태스크로 다시 묶인다. 
 ActivityC에서 Back 키를 누르면 ActivityB가 아니라 ActivityA로 이동한다. 다시 Back 키를 눌러야만 ActivityB을 볼 수 있다. 즉 결과로 ActivityB, ActivityA$\Rightarrow$ActivityC와 같이 2개의 태스크가 된다.\\
 
-ActivityB의 launchMode가 singleInstance인 채로 ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity 순서로 호출해보자. 
+ActivityB의 launchMode가 singleInstance인 채로 ActivityA $\rightarrow$ ActivityB $\rightarrow$ DialogActivity 순서로 호출해보자. 
 DialogActivity는 다이얼로그 테마 Activity이므로 배경에 다른 Activity가 보이는데, ActivityB에서 DialogActivity를 띄웠으므로 배경에 ActivityB가 있을 것 같지만, 결과는 ActivityA 화면을 배경으로 깔게 된다.\\
 % Level11 이하에서 동작 테스트해봐야 한다.(동일하네?) http://developer.android.com/reference/android/support/v4/app/TaskStackBuilder.html 참고하자. Level 10에서도 emulator에서 동일했다.
 % 여기서 알 수 있는 것은 Activity를 띄우고서 내부적으로 태스크 조정을 하는 것이 아니라 태스크 조정을 하고나서 Activity를 띄운다는 것이다(system\_server 프로세스의 ActivityManagerService에서 태스크를 조정한다). 당연한 얘기지만 확실하게 알고 있지 않으면 다이얼로그 테마 Activity의 경우처럼 예상치 못한 결과를 볼 수도 있다.\\
@@ -319,7 +319,7 @@ AndroidManifest.xml에는 activity-alias 엘리먼트가 있어서 Activity의 �
 해당 케이스는 이렇다.
 \begin{itemize}
 \item 상세 화면이고 이 화면으로 진입하는 다양한 패스가 있다.
-\item 화면을 앱+앱 하이브리드로 변경하려고 한다. 이때 기존 코드는 거의 쓸모가 없기 때문에 아예 다른 Activity로 만들려고 한다. DetailActivty$\rightarrow$DetailWebActivity
+\item 화면을 앱+앱 하이브리드로 변경하려고 한다. 이때 기존 코드는 거의 쓸모가 없기 때문에 아예 다른 Activity로 만들려고 한다. DetailActivty $\rightarrow$ DetailWebActivity
 \item 테스트 후에 문제가 많다면 원래 상태로 다시 복구하려고 한다.
 \end{itemize}
 

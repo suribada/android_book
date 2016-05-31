@@ -96,7 +96,8 @@ startActivityForResult() 메서드 관련해서 몇 가지 내용을 살펴보�
 \item setResult() 메서드를 호출하지 않으면 기본으로 RESULT\_CANCELED(상수 0) 값이 전달된다. 일반적으로 RESULT\_OK(상수 -1) 값을 넣지만, 임의로 원하는 정수값을 전달해도 된다.
 \item ActivityA에서 startActivityForResult() 메서드로 ActivityB를 호출하고 ActivityB에서는 자신을 닫고 또 다른 ActivityC를 호출하는 경우가 있다. 
 이때 ActivityC에서 setResult()로 전달한 데이터는 ActivityA에 전달될까? 가끔 이것을 가정하고 만들어진 것도 있는데 전혀 그렇지 않다. 
-ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드는 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 ActivityA에 전달되지 않고 resultCode는 RESULT\_CANCELED면서 data == null이 될 뿐이다.  
+ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드는 불리지만, setResult() 메서드의 파라미터인 resultCode와 data는 ActivityA에 전달되지 않고 resultCode는 RESULT\_CANCELED면서 data == null이 될 뿐이다.\\
+
 이 경우에 값을 전달받기 위해서는, ActivityB에서 ActivityC를 시작할 때 startActivity()를 실행하면서 Intent에 Intent.FLAG\_ACTIVITY\_FORWARD\_RESULT 플래그를 추가하는 것이다.
 이 플래그는 startActivityForResult()에서 쓰려고 하면 ``android.util.AndroidRuntimeExce\-ption: FORWARD\_RESULT\_F\-LAG used while also requesting a result''  예외를 발생시킨다. 
 다시 말하면, ActivityA에서 ActivityB를 시작할 때는 startActivityForResult() 메서드를 사용하고, ActivityB에서 ActivityC를 시작할 때는 startActivity() 메서드를 사용하면서 플래그를 사용해야 한다. 
@@ -562,7 +563,7 @@ android:configChanges에 값을 넣을 때는 `최대'보다는 `최소'를 원�
 
 android:configChanges에 값을 넣어도 onSaveInstanceState()는 여전히 불린다. ``orientation|screenSize''로 설정한 경우를 보자.
 ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC로 Activity를 전환하고, 화면을 회전하면 그때 Activity를 재성성하지 않고 onConfigurationChanged()메서드가 불리는 것이 다르다.
-ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity(다이얼로그 테마)에서는 화면을 회전하면 DialogActivity 먼저 onConfigurationChanged()가 불리고 ActivityB의 onConfigurationChanged()는 그 다음에 불린다.\\
+ActivityA$\rightarrow$ActivityB$\rightarrow$Dia\-logActivity(다이얼로그 테마)에서는 화면을 회전하면 DialogActivity 먼저 onConfigurationChanged()가 불리고 ActivityB의 onConfigurationChanged()는 그 다음에 불린다.\\
 
 결론적으로 빈번한 화면 회전에 대응하는 목적으로 android:configChanges를 사용하는 것은 나쁜 선택은 아니다.
 다만, 이때 중요한 정보에 대해서는 onSaveInstanceState()와  onRestoreInstanceState()도 함께 사용하는 게 좋다.\\
