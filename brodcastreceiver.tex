@@ -29,7 +29,7 @@ onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도
 메인 쓰레드에서 실행되므로 실제로는 1분/10초/5초도 아닌 훨씬 짧은 시간 내에 처리가 완료되어야 한다. 그렇지 않으면 UI에서 버벅거림의 원인이 될 수 있다.\\
 
 한 이벤트에 대해서 한 앱에 여러 BroadcastReceiver가 등록된 경우도 주의해야 한다.
-본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 그나마 문제가  없지만, 한 앱에서는 한 이벤트에 여러 BroadcastReceiver가 등록되어있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.\\
+본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 그나마 문제가  없지만, 한 앱에서는 한 이벤트에 여러 BroadcastReceiver가 등록되어 있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.\\
 
 \begin{comment}
 어떤 앱에서는 Application에만 registerReceiver를 해놓는 경우도 있다. BroadcastReceiver를 최소한의 개수로 하고, 최소한의 시간만 존재하도록 하는 것이 BroadcastReceiver로 인해 UI가 버벅거리지 않게 하는 방법이다.
@@ -432,7 +432,7 @@ RemoteViews는 뷰 계층 상에 있는 레이아웃 리소스 id를 대상으�
 
 RemoteViews를 통해서 지원 가능한 뷰 클래스에서, 쓸 수 있는 메서드도 제한적일 거 같은데 그렇지는 않다. 
 RemoteViews API 문서를 보면 메서드 가운데서 두 번째 파라미터에 methodName 문자열이 전달되는 것이 있는데, 리플렉션을 통해 세 번째 파라미터를 methodName 이름의 메서드에 전달하게 된다. 
-예를 들어, setImageViewBitmap(), setTextViewText() 같은 메서드는 내부적으로 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setText'' 문자열이 methodName에 들어간다).\\
+예를 들어, setImageViewBitmap(int viewId, Bitmap bitmap), setTextViewText(int viewId, CharSequence text) 같은 메서드는 내부적으로 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setText'' 문자열이 methodName에 들어간다).\\
 
 \subsection{App Widget 업데이트}
 App Widget을 업데이트하는 주요 코드는 간단하다.
@@ -527,5 +527,5 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 App Widget 개수가 많다면 그 개수만큼 프로세스 분리하는 것보다 1개만 분리하는 게 관리가 수월하므로, Service에 App Widget 업데이트 로직을 넘기고 Service를 프로세스 분리해도 된다.
 
 \item 8라인(2)을 주석 처리하고 10라인(3)을 쓴 이유는, 8라인과 같이 Binder에 Bitmap을 전달할 때 Bitmap 사이즈가 크면 에러가 발생하기 때문에(Binder Transaction Buffer 크기가  최대 1M) 일부러 파일을 생성해서 RemoteViews에 Uri로 전달한 것이다. 
-이런 방법은 Activity간에 Intent에 데이터를 전달할 때도 많이 쓰인다. 
+이런 방법은 Activity 간에 Intent에 데이터를 전달할 때도 많이 쓰인다. 사진을 찍고 사진 Bitmap을 다음 Activity에 Intent Bundle에 전달하지 않고 사진의 파일 Uri를 전달하는 식이다.
 \end{itemize}

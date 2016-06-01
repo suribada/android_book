@@ -114,7 +114,8 @@ startService()를 실행할 때 Intent에 값을 전달하고 이 값을 startCo
 
 \underline{\bfseries START\_REDELIVER\_INTENT} 재시작하면서 onStartCommand()에 Intent를 다시 전달하여 실행한다. 어떻게든 해당 파라미터를 가지고 실행해야 하는 Service가 이에 해당한다. 쇼핑몰 앱에서 API를 통해서 회사의 상품 목록을 가져온 후 DB에 저장하는 경우를 예로 들 수 있다.\\
 
-재시작 제어 방식도 중요하지만 불필요하게 재시작하지 않게 하는 것도 중요하다. 재시작이 안되려면 정상적인 종료라는 조건이 필요하다. 
+재시작 제어 방식도 중요하지만 불필요하게 재시작하지 않는 것도 중요하다. 
+재시작이 안되려면 정상적인 종료라는 조건이 필요하다. 
 Service를 종료하는 방법으로 Context에 stopService() 메서드가 있지만 실제 사용 빈도가 크지 않다. 
 앱을 사용하는 내내 실행되는 Service라면 모르지만, 그런 케이스가 많지 않고 권장되는 방식도 아니다. 
 Service는 필요할 때만 동작하고 바로 종료하는 것이 좋다.
@@ -127,7 +128,7 @@ stopSelf() 메서드는 stopService() 메서드와 역할이 동일하지만 Ser
 \subsection{멀티 스레드 이슈}
 Started Service에서 주의할 게 더 있다. 바로 멀티 스레드 이슈이다. 여러 곳에서 startService()를 동시에 호출할 수 있다. 
 그래도 어차피 UI 동작은 단일 스레드 모델이므로, onCreate(), onStartCommand() 메서드는 한번에 하나씩만 호출된다.
-그런데 onStartCommand()에서 백그라운드 스레드를 시작한다면, 여러 스레드가 동시에 실행될 수 있고 값을 잘못 공유하면 문제 발생 여지가 생긴다. 앞에서 예를 든 쇼핑몰 앱에서 각 회사마다 API를 통해 상품 정보를 가져오는데, 전달된 Intent의 회사 id를 Service의 멤버 변수로 쓰면 어떤 일이 벌어질까? 바로 엉뚱한 곳에 데이터가 저장되는 상황을 맞게 된다.\\
+그런데 onStartCommand()에서 백그라운드 스레드를 시작한다면, 여러 스레드가 동시에 실행될 수 있고 이때 값을 잘못 공유하면 문제 발생 여지가 생긴다. 앞에서 예를 든 쇼핑몰 앱에서 각 회사마다 API를 통해 상품 정보를 가져오는데, 전달된 Intent의 회사 id를 Service의 멤버 변수로 쓰면 어떤 일이 벌어질까? 바로 엉뚱한 곳에 데이터가 저장되는 상황을 맞게 된다.\\
 
 여러 클라이언트에서 startService()를 실행한다면 각각 작업이 끝났을 때 아직 진행 중인 것이 있는지 알 수 없는 경우도 있다. 이때 stopSelf() 메서드를 호출하면 진행 중인 작업들에서 문제가 발생한다. 
 이 경우에 대비해서 stopSelf() 메서드의 변종인 stopSelfResult(int startId) 메서드가 있다.  startId는 onStartCommand()에서 전달된 값으로 이 startId가 가장 최근에 시작된 것이라면 그때에만 Service를 종료한다. 이 메서드를 사용하면 각각의 작업이 끝날 때마다 stopSelfResult()를 실행해도 더 안전해진다.
@@ -297,7 +298,7 @@ public class SleepThreadService extends Service {
 onStartCommand()는 메인 스레드에서 동작하기 때문에 단순한 boolean 값 가지고 체크가 가능하다.
 skip 시에는 START\_NOT\_STICKY를 리턴하는 것도 기억하도록 하자. skip된 요청이 시스템에 의해서 다시 재시작되는 것을 방지하기 위한 것이다. \\
 
-여기서 사용한 Executors.newSingleThreadExecutor() 메서드 같은 정적 메서드는 많이 사용되는 TheadPoolExecutor를 팩토리 메서드로 만든 것이다. 이번에는 ThreadPoolExecutor를 직접 사용해서 skip을 적용한 샘플을 만들어보자.
+여기서 사용한 Executors.newSingleThreadExecutor() 같은 정적 메서드는 많이 사용되는 TheadPoolExecutor를 팩토리 메서드로 만든 것이다. 이번에는 ThreadPoolExecutor를 직접 사용해서 skip을 적용한 샘플을 만들어보자.
 \begin{lstlisting}[frame=single]
 public class SleepThreadService extends Service {
 	
@@ -366,7 +367,7 @@ Google Play In-app Billing도 이 방식을 사용하고 있다.
 
 네트워크 데이터를 조회하는 예를 들었지만, 이처럼 한 곳에서 특화된 기능을 내/외부 프로세스의 여러 클라이언트에게 제공하는 용도에 Bound Service를 사용할 수 있다. 단순한 데이터 제공에는 ContentProvider도 가능하지만, Bound Service에서는 CallBack을 이용한 상호 작용이 가능하다.\\
 
-Bound Service는 구분해서 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding)으로 주로 구분한다.
+Bound Service는 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding)으로 주로 구분한다.
 혹자는 Local/Remote 구분이 불필요하다고 하기도 한다.
 Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 필요가 없다는 것이다. 
 Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
@@ -763,7 +764,7 @@ bindService()를 호출하면 Service와 엮이는 클라이언트가 하나씩 
 이 그림에서 마름모꼴 분기점은 Started \& Bound Service의 경우를 고려한 것이다.\\
 
 기본적으로 Bound Service에서 bindService()를 실행한 클라이언트가 모두 unbindService()를 호출한다면, Service에서는 onUnbind()가 호출되고 onDestroy()까지 호출된다.
-Activity에서 Bound Service를 사용할 때는 onStart()와 onStop()에서 bindService()와 unbindService()를 각각 호출하는 것을 권장하고 있다. unbindService()를 실행 시에 연결되어 있는 클라이언트 수가 0가 되면 Service는 종료될 수 있음을 생각해보자. onResume/onPause에서 bind/unbind하는 경우 onResume/onPause는 빈번하게 트랜지션이 일어나는데(투명/다이얼로그 테마 Activity를 위에 띄우기 등) onPause()를 통해 unbindService()가 실행되고 Service가 종료될 수도 있다. 
+Activity에서 Bound Service를 사용할 때는 onStart()와 onStop()에서 bindService()와 unbindService()를 각각 호출하는 것을 권장하고 있다. unbindService()를 실행 시에 연결되어 있는 클라이언트 수가 0가 되면 Service는 종료될 수 있음을 생각해보자. onResume/onPause에서 bind/unbind하는 경우 onResume/onPause는 빈번하게 트랜지션이 일어나는데(투명/다이얼로그 테마 Activity가 위에 뜨는 경우 등) onPause()를 통해 unbindService()가 실행되고 Service가 종료될 수도 있다. 
 그리고서 onResume()에서 다시 시작해야만 한다. 종료된 Service라면 다시 생성하는 비용이 들게 되는데 빈번한 트랜지션에서 계속 생성/종료하는 것은 적합하지 않다.\\
 
 bindService()를 통해 Binding되었으면 이제는 호출하는 쪽과 호출되는 쪽은 클라이언트-서버 관계로 파악하면 된다. 클라이언트에서 메서드를 호출하면 Service에서 결과를 리턴하는 방식이다. 
@@ -840,7 +841,7 @@ Messenger는 Binder Callback을 내부적으로 래핑해서 Bound Service와 �
 \begin{itemize}
 \item 처음 Activity에서 bindService()를 실행하면, Bound Service에서 날씨 정보를 가져오고 내부에서 주기적으로(예제에서는 1분) 날씨 정보를 가져온다.
 \item 추가로 클라이언트가 Binding되면 최신 날씨 정보를 클라이언트에 전달한다.
-\item 날씨 정보를 가져올 때마다 Binding된 Activity에 정보를 전달해서 화면에 보여준다.
+\item 날씨 정보를 가져올 때마다 Binding된 모든 Activity에 정보를 전달해서 화면에 보여준다.
 \item 화면에는 [Refresh] 버튼이 있어서 이 버튼을 클릭하면, 날씨 정보를 새로 가져오고 Binding된 모든 클라이언트에 날씨 정보를 새로 전달한다.
 \end{itemize}
 

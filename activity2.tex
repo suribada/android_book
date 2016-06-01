@@ -22,7 +22,7 @@ Activity는 스택에 차례대로 쌓인다(Back Stack이라 불린다). 스택
 백그라운드에 있는 것도 언제든 포그라운드로 이동할 수 있다. 앱 아이콘이나 Shortcut, App Widget, Notification을 통해 새로운 포그라운드 태스크가 될 수도 있다. Home 화면에 나와있는 경우는 Home 화면이 포그라운드 태스크이다.\\
 
 백그라운드에서 포그라운드로 상태를 변경하는 메서드는 Activity에 moveTaskToBack(boolean nonRoot) 메서드가 있다. nonRoot에 true가 들어가면 어느 위치에서건 백그라운드로 이동할 수 있고, false인 경우에는 태스크 루트일 때만 가능하다. 
-메서드 시그너처를 보고서 파라미터의 용도를 볼 때마다 헷갈리는 걸 보면 잘 만든 메서드는 아닌 듯 하다. 메서드 시그너처를 moveTaskToBack(boolean onlyRoot) 이런 식으로 바꾸면 좀 낫지 않을까. \\
+메서드 시그너처를 보고서 파라미터의 용도를 볼 때마다 헷갈리는 걸 보면 잘 만든 메서드는 아닌 듯 하다. 메서드 시그너처를 moveTaskToBack(boolean onlyRoot) 이런 식으로 바꾸면 이해가 쉽지 않을까.\\
 
 이제 반대로 백그라운드에서 포그라운드로 상태를 변경하는 메서드는 있을까? 
 Activity가 보이지 않는 백그라운드 상태이기 때문에 Activity의 메서드로는 안된다.
@@ -35,7 +35,7 @@ List$<$ActivityManager.Running\-TaskInfo$>$ getRunningTasks(int maxNum) 메서�
 예를 들어, 어느 화면에서 startActivity()를 실행해서 브라우저를 열었다면 그 화면과 브라우저는 한 묶음 같아 보인다. 그런데 과연 동일한 태스크일까? 그렇지 않다. 브라우저는 singeTask launchMode로 되어 있어서 별도의 태스크로 되어 있다.\\
 
 shell에서 dumpsys를 활용해서 태스크를 확인하면서 상황을 이해하도록 하자.
-adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 줄여서 a로 쓸 수도 있다.\\
+adb shell dumpsys activity activities를 실행하거나, adb shell 내에서 dumpsys activity activities를 실행하면 된다. 마지막 옵션인 activities는 a로 줄여 쓸 수도 있다.\\
 
 dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉션을 통해 파일로 저장하는 것을 권장한다. adb shell dumpsys activity a  $>$ tasks.txt 와 같이 사용한다. adb shell 내에서도 dumpsys를 할 수 있지만 shell 내에서는 리다이렉션이 되지 않는다.\\
 
@@ -282,7 +282,7 @@ Flags에 전달하는 상수는 많다. Caller에서 쓸 수 있는 다양한 �
 
 \item FLAG\_ACTIVITY\_NEW\_TASK: singleTask launchMode와 동일한 효과를 갖는다.
 
-\item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity를 종료시킨다. 앞에서 얘기한 달력(A), 일정 상세(B), 일정 수정(C) 화면이 스택에 있다면, C에서 B를 띄울 때 이 플래그를 사용하면 C는 사라지고 B에 원하는 일정을 보여주는 식이다. 
+\item FLAG\_ACTIVITY\_CLEAR\_TOP: launchMode에 동일한 효과를 갖는 건 없다. 스택에서 Callee보다 위에 있는 Activity를 종료시킨다. 앞에서 얘기한 달력(A), 일정 상세(B), 일정 수정(C) 화면이 스택에 있다면, C에서 B를 다시 띄울 때 이 플래그를 사용하면 C는 사라지고 A, B만 스택에 남아서 B에 원하는 일정을 보여주는 식이다. 
 보통 FLAG\_ACTIVITY\_SINGLE\_TOP 플래그와 같이 쓰이고, 이때 Callee는 남아있어서 onNewIntent() 메서드에 새로운 Intent가 전달된다. FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰이면 Callee는 종료하고서 새로 onCreate()부터 실행된다.\\
 % 단독으로 쓰임: B종료->A종료->A시작->C종료
 % 같이 쓰임: B종료->A onNewIntent->C종료
@@ -327,9 +327,9 @@ DetailActivity를 호출하는 쪽을 DetailWebActivity로 한꺼번에 바꿔�
 \end{comment}
 
 \begin{enumerate}
-\item 기존에 있던 Activity가 제거될 때 사용할 수 있다.
+\item 기존에 있던 Activity가 소스에서 제거될 때 사용할 수 있다.
 예를 들어, SplashPage가 맨 처음 뜨는 화면이었는데, SplashPage를 제거하고 바로 MainActivity를 보여주기로 했다.
-그런데 Shortcut과 같이 SplashPage에 대한 링크가 기존 버전을 설치한 단말에서 남아있는 경우가 있다.
+그런데 Shortcut과 같이 SplashPage에 대한 링크가 기존 버전을 설치한 단말에 남아있는 경우가 있다.
 기존 Shortcut은 이제 MainActivity를 바라보도록 해야 하는데, 이때 쓰는 것이 바로 activity-alias이다.
 \begin{lstlisting}[frame=single]
 	<activity-alias

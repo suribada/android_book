@@ -281,6 +281,7 @@ File IO 성능이 좋지 않던 초기 안드로이드 단말에서는 Lock 문�
 
 Lock/트랜잭션 관련해서 테스트 가능한 샘플은 github에서 찾아볼 수 있다.\\
 \url{https://github.com/touchlab/Android-Database-Locking-Collisions-Example}\\
+
 이 샘플을 테스트한 결과를 얘기해보자.
 \begin{enumerate}
 \item 여러 스레드에서 1개의 SQLiteDatabase 인스턴스만 가지고 쓰기를 한다. 이때는 Lock 문제가 발생하지 않는다. 
@@ -414,8 +415,8 @@ onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버�
 개발하다 보면 onCreate()와 onUpgrade()가 순차적으로 호출되는 것으로 가끔 착각하게 되어서 언급하였다. onCreate()와 onUpgrade()는 둘 중에 하나만 호출된다.
 
 \item DB 버전 업그레이드가 필요할 때 빠뜨려서는 안 된다. 예를 들어, 테이블 설계에 문제 있는 버전이 배포되었다고 하자.
-마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 이 버전을 사용중인 단말은 DB 버전이 동일하므로 onUgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없기 때문에 그래서는 안된다.
-버전을 올리고서 onUprade()에서 테이블 구조를 변경하는 코드가 들어가는 게 정상적인 방법이다.
+마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 이 버전을 사용중인 단말은 DB 버전이 동일하므로 onUpgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없다.
+버전을 올리고서 onUpgrade()에서 테이블 구조를 변경하는 코드가 들어가는 게 정상적인 방법이다.
 
 \item onCreate()와 onUpgrade() 메서드에서 하는 작업은 테이블 생성/수정 뿐 아니라 많은 기본 데이터 INSERT 등도 필요하다. 예를 들어, INSERT는 건당 시간이 얼마 안 걸리지만 1,000건, 10,000건이 된다면 속도가 대폭 떨어질 것을 예상할 수 있다.
 그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또 다시 트랜잭션을 고려할 필요가 없다.\footnote{SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
