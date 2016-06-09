@@ -94,12 +94,12 @@
 \contentsline {section}{\numberline {9.3}프로세스 분리}{143}{section.9.3}
 \contentsline {chapter}{\numberline {10}시스템 서비스}{147}{chapter.10}
 \contentsline {section}{\numberline {10.1}시스템 서비스 기본}{148}{section.10.1}
-\contentsline {section}{\numberline {10.2}dumpsys 명령어}{154}{section.10.2}
+\contentsline {section}{\numberline {10.2}dumpsys 명령어}{155}{section.10.2}
 \contentsline {section}{\numberline {10.3}시스템 서비스 이슈}{159}{section.10.3}
 \contentsline {subsection}{\numberline {10.3.1}빈번한 리모트 호출}{159}{subsection.10.3.1}
-\contentsline {subsection}{\numberline {10.3.2}전원 관리와 Deep Sleep}{159}{subsection.10.3.2}
-\contentsline {subsection}{\numberline {10.3.3}알람 등록과 제거}{164}{subsection.10.3.3}
-\contentsline {chapter}{\numberline {11}구현 패턴}{165}{chapter.11}
-\contentsline {section}{\numberline {11.1}싱글톤 패턴}{165}{section.11.1}
-\contentsline {section}{\numberline {11.2}마커 인터페이스}{169}{section.11.2}
-\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{174}{section.11.3}
+\contentsline {subsection}{\numberline {10.3.2}전원 관리와 Deep Sleep}{160}{subsection.10.3.2}
+\contentsline {subsection}{\numberline {10.3.3}알람 등록과 제거}{165}{subsection.10.3.3}
+\contentsline {chapter}{\numberline {11}구현 패턴}{166}{chapter.11}
+\contentsline {section}{\numberline {11.1}싱글톤 패턴}{166}{section.11.1}
+\contentsline {section}{\numberline {11.2}마커 인터페이스}{170}{section.11.2}
+\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{175}{section.11.3}

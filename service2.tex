@@ -218,13 +218,13 @@ Toast가 사라지지 않고 내내 남아있는 현상이 발생하는데 심�
 그런데 이게 결국 시점 문제라서 재현이 잘 되지도 않는데, 결국 원리를 모르면 해결할 수 없는 문제가 되고 만다.\\
 
 Toast는 가급적 메인 스레드에서만 띄우는 게 맞다. 
-백그라운드 스레드에서는 그냥 쓰면 크래시가 나기 때문에 결국 안 쓰게 되지만, IntentService에서 아무 고려 없이 `써보니 잘 되네' 하고 넘어가면 안된다. Looper.getMainLooper()를 통해 메인 스레드에 연결된 Handler를 가지고서 Toast를 띄우는 것이 더 적절하다.
+백그라운드 스레드에서는 그냥 쓰면 크래시가 나기 때문에 결국 안 쓰게 되지만, IntentService에서 아무 고려 없이 `써보니 잘 되네'하고 넘어가면 안된다. Looper.getMainLooper()를 통해 메인 스레드에 연결된 Handler를 가지고서 Toast를 띄우는 것이 더 적절하다.
 \begin{lstlisting}[frame=single]
 	new Handler(Looper.getMainLooper()).post(new Runnable() {
 	
 		@Override
 		public void run() {
-			Toast.makeText(ThreadActivity.this, "Some Notice", Toast.LENGTH_LONG).show();
+			Toast.makeText(SomeActivity.this, "Some Notice", Toast.LENGTH_LONG).show();
 		}
 		
 	});

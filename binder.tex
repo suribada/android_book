@@ -193,12 +193,21 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 두 번째와 세 번째가 내부적으로 첫 번째 메서드를 다시 호출하고 있는데, 일반적으로 간편하게 많이 사용하는 것은 두 번째 메서드이다.
 
 \item CameraService는 네이티브로 되어 있다. Binder 통신은 마샬링, 언마샬링만 하면 되기 때문에 네이티브에서 언마샬링해서 요청을 처리하는 식이다.
-\item BatteryManager는 기존에는 ACTION\_BATTERY\_CHANGED Intent에서 쓰이는 문자열과 상수만을 정의하고 있었는데, 롤리팝에서 배터리와 충전 속성을 조회하는 메서드가 추가되었다.
-\item DownloadService는 별도 프로세스인 android.process.media에서 실행된다. DownloadManager는 ContentResolver를 통해 DB에 쌓는 역할만 한다.
-DownloadService는 프레임워크 소스상에서 packages/providers/DownloadProvider 디렉터리에 있고, Service를 상속한 일반 Service이다. 
+
+\item BatteryManager는 기존에는 ACTION\_BATTERY\_CHANGED Intent에서 쓰이는 문자열과 숫자 상수만을 정의하고 있었는데, 롤리팝에서 배터리와 충전 속성을 조회하는 메서드가 추가되었다.
+
+\item DownloadService는 별도 프로세스인 android.process.media에서 실행된다. 
+DownloadManager는 ContentResolver를 통해 DB에 쌓는 역할만 한다.
+DownloadService는 프레임워크 소스에서 packages/providers/DownloadProvider 디렉터리에 있고, Service를 상속한 일반 Service이다. 
 DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, C\-onnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\-\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
-\item SensorManager는 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩해 놓는다.
+
+\item 추상 클래스인 SensorManager의 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩한다.
+
 \item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
+
+\item InputMethodManagerService와 별도로 InputMethodService 클래스도 있다. 
+전자는 system_server에서 쓰이는 클래스이고, Service를 상속하고 소프트 키보드를 만들 때 사용하는 클래스이다.
+
 \item 롤리팝에는 com.android.server.SystemService가 추가되어서 시스템 서비스  클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
 \begin{tabular}[fontsize=\tiny]{|l|l|} \hline
 Service & Stub 구현 내부 클래스 \\ \hline
@@ -223,7 +232,7 @@ system\_server에서 여러 시스템 서비스를 제공하고, 이를 다른 �
 \item 시스템 서비스는 Stub 자체로 구현하지만, Service 컴포넌트는 android.os.Service를 상속하고 내부에 Stub을 구현한다.
 \end{itemize}
 
-이제 프레임워크 소스를 보도록 하자.
+이제 프레임워크 소스를 보자.
 /system/bin/servicemanager 프로세스에 Stub을 등록하는 내용은 /frameworks/base/services/java/com/android/server/SystemServer.java\footnote{system\_server 프로세스의 메인 클래스이다.}에서 내부 클래스인 ServerThread의 initAndLoop() 메서드에서 볼 수 있다.
 
 \begin{lstlisting}[frame=single, caption=SystemServer.java] 
