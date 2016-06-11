@@ -1,6 +1,6 @@
-% 시스템 서비스의 마진도 조정해야 한다.(책에서는)
-%\documentclass[a4paper,hidelinks,10pt]{book}
-\documentclass[a4paper,hidelinks,10pt,openany]{book} % pdf 전용
+\documentclass[a4paper,hidelinks,11pt]{book}
+\usepackage[11pt]{moresize}
+%\documentclass[a4paper,hidelinks,11pt,openany]{book} % pdf 전용
 \usepackage{kotex} %[hangul]을 추가하면 제 1장, 제 1절 식으로 들어감
 \usepackage{graphicx}
 \usepackage{upquote}
@@ -76,7 +76,7 @@
 
 \lstset {
 	language=java, 
-	basicstyle=\ttfamily\small,
+	basicstyle=\ttfamily\footnotesize,
 	%basicstyle=\fontfamily{mono}\selectfont\small,
 	backgroundcolor=\color{backcolour},   
 	commentstyle=\color{codegreen},
@@ -139,11 +139,11 @@ Handler, Looper, Message, MessageQueue의 관계를 이해하고 나면, 안드�
 \input{service}
 \input{service2}
 \input{contentprovider}
-\input{brodcastreceiver}
+\input{broadcastreceiver}
 \input{application}
 \input{binder}
 \input{pattern}
-\ 
+
 %\input{deepsleep}
 
 %\input{activitymanager}

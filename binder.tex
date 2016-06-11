@@ -121,7 +121,7 @@ Context에 getSystemService(String name) 메서드가 있어서, 리턴 결과�
 아래 표를 보도록 하자. 일반적인 네이밍 패턴에 맞는 것도 많지만 아닌 것도 여럿 있다(롤리팝 기준).
 % com.android.server.SystemServer 참고
 %\newgeometry{left=2cm,bottom=2cm}
-\scalebox{0.8}{
+\scalebox{0.73}{
 \begin{tabular}[fontsize=\tiny]{|l|l|l|l|l|} \hline
 Context 상수 & getSystemService 결과 & 인터페이스 & Stub 구현 \\ \hline
 ACCESSIBILITY\_SERVICE & AccessibilityManager & IAccessibilityManager & AccessibilityManagerService  \\ \hline
@@ -206,7 +206,7 @@ DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOU
 \item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
 
 \item InputMethodManagerService와 별도로 InputMethodService 클래스도 있다. 
-전자는 system_server에서 쓰이는 클래스이고, Service를 상속하고 소프트 키보드를 만들 때 사용하는 클래스이다.
+전자는 system\_server에서 쓰이는 클래스이고, Service를 상속하고 소프트 키보드를 만들 때 사용하는 클래스이다.
 
 \item 롤리팝에는 com.android.server.SystemService가 추가되어서 시스템 서비스  클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
 \begin{tabular}[fontsize=\tiny]{|l|l|} \hline
@@ -704,7 +704,7 @@ Deep Sleep 관련해서 안드로이드 개발자 사이트에서 검색하면 �
 
 \item Handler의 postAtTime() 메소드나 postDelayed() 메소드(계산을 통해 내부적으로 다시 postAtTime() 호출)는 uptimeMillis를 기준으로 한다. 따라서 도중에 Deep Sleep 상태에 들어가면 1분의 Delay를 주었을 뿐이지만, Deep Sleep에서 깨어나고 한참 후에(다른 Message 처리할 것이 앞에 가로막지 않는다면, 최대 1분) 실행될 수도 있다.
 % http://stackoverflow.com/questions/17561380/android-thread-sleep-sometimes-waits-far-too-long
-\item PowerManager에는 isSleep()이나 isDeepSleep() 같은 메서드는 없다. 이런 메서드는 의미가 없는 게 Deep Sleep 상태에서는 메서드가 실행되지 않을 것이고, 깨어나 있는 상태에서는 이미 Deep Sleep 상태가 아니기 때문이다.
+\item PowerManager에는 isSleep()이나 isDeepSleep() 같은 메서드는 없다. 이런 메서드는 의미 없는 게 Deep Sleep 상태에서는 메서드가 실행되지 않을 것이고, 깨어 있는 상태에서는 이미 Deep Sleep 상태가 아니기 때문이다.
 \end{itemize}
 
 이 가운데서 앱 개발에서 이슈가 많은 것이 세 번째이다. 

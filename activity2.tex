@@ -43,7 +43,7 @@ dumpsys 내용이 많은 경우 한번에 확인하기 어려워서 리다이렉
 필자의 경우는 grep을 통해서 일부만 보면 필요한 정보를 빠뜨릴 수 있지 않나 생각해서 잘 안 쓰는 편이었는데, dumpsys 내용에 패키지명이 계속해서 들어가기 때문에 grep을 통해서 보는 편이 낫다.\\
 
 아래는 adb shell dumpsys activity a를 실행한 결과이다. 참고로 안드로이드 버전마다 dumpsys 결과는 다를 수 있다. \ref{sec:dumpsys} 절에서 dumpsys 명령어를 상세히 보기로 한다.
-\lstset{basicstyle=\fontfamily{mono}\selectfont\scriptsize}
+\lstset{basicstyle=\fontfamily{mono}\selectfont\ssmall}
 \begin{lstlisting}[frame=single]
 ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
   Main stack:
@@ -161,7 +161,7 @@ ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
 
   mCurTask: 132          
 \end{lstlisting}
-\lstset{basicstyle=\ttfamily\small}
+\lstset{basicstyle=\ttfamily\footnotesize}
 \begin{itemize}
 \item 태스크는 최신 것이 먼저 위쪽에 나타난다.
 \item TaskRecord 섹션에서는 numActivities와 그 안의 Hist 섹션을 통해 스택을 들여다볼 수 있다. 다양한 설정 데이터도 보여준다. ProcessRecord에는 프로세스명(패키지명) 앞뒤로 프로세스의 PID와 USER ID도 보여준다(adb shell에서 ps 명령어로 확인해보자).
@@ -206,7 +206,7 @@ Activity 선언에 android:taskAffinity 속성을 별도로 하는 경우를 더
 포그라운드에 이미 있었다면 AlarmAlert 화면이 그 위에 추가되어서 포커스될 것이고, 백그라운드에 있다면 태스크가 포그라운드가 되면서 그 위에 AlarmAlert 화면이 뜰 것이다.  
 백그라운드에 있던 화면이 딸려 올라오는 게 동작이 이상하다. 결국 이미 포그라운드에 있던 것처럼 동작하게 된다. Back 키를 누르니 방금 전까지 보이지 않았던 AlarmSettings 화면이 뜨는 것이다.\\
 
-이런 케이스를 막기 위해서 AlarmAlert의 android:taskAffinity 속성을 다르게 세팅하면, FLAG\_ACTIVITY\-\_NEW\_TASK 플래그를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 한 앱에서 2개의 태스크를 사용하게 된다.
+이런 케이스를 막기 위해서 AlarmAlert의 android:taskAffinity 속성을 다르게 세팅하면, FLAG\_ACTIVITY\-\_NEW\_TASK 플래그를 추가했을 때 새로운 태스크로 뜨게 되므로 딸려 올라오는 일이 없어진다. 이렇게 되면 태스크가 각각이 되어서 하나의 앱에서 2개의 태스크를 사용하게 된다.
 Home 키를 길러 눌러서 최근 앱 목록을 보면 2개가 있는 것을 볼 수 있다. AlermAlert 화면이 최근 앱 목록으로 나오는 것을 방지하기 위해서 AndroidManifest.xml의 AlarmAlert 선언에 android:excludeFromRecents=``true''까지 추가하면 알람 기능의 기본 형태를 갖추게 된다.
 
 
@@ -242,8 +242,8 @@ ActivityLifecycle 샘플에서 ActivityB를 singleTask로 정하고, ActivityA $
 여기서 처음 ActivityA $\rightarrow$ ActivityB로 Activity 전환하는 것에도 주목해보자.
 ActivityB가 다른 태스크로 뜨면서 보통의 Activity 전환처럼 금방 뜨지 않는다. 
 ActivityB가 뜨기 전에 검은 화면이 뜨거나, 또는 ActivityA가 조금 줄어들면서 ActiviyB는 줄어든 그 위치쯤에서 떠오르는 것을 볼 수 있다.
-체감 성능과 사용자 경험에서 차이가 생기므로, 새 태스크가 되어야 하는 케이스와 그렇지 않아도 되는 케이스를 잘 구분하는 게 좋다.
-이 얘기는 singleTask 뿐 아니라 태스크가 바뀌는 경우에 해당하는 것으로 주의가 필요하다.\\
+체감 성능과 사용자 경험에서 차이가 생기므로, 새로운 태스크가 되어야 하는 케이스와 그렇지 않아도 되는 케이스를 잘 구분하는 게 좋다.
+이 얘기는 singleTask 뿐 아니라 태스크가 바뀌는 경우에 해당하는 것으로 주의가 필요하다.
 
 \begin{comment}
 http://developer.android.com/intl/ko/training/basics/activity-lifecycle/pausing.html
@@ -319,7 +319,7 @@ AndroidManifest.xml에는 activity-alias 엘리먼트가 있어서 Activity의 �
 해당 케이스는 이렇다.
 \begin{itemize}
 \item 상세 화면이고 이 화면으로 진입하는 다양한 패스가 있다.
-\item 화면을 앱+앱 하이브리드로 변경하려고 한다. 이때 기존 코드는 거의 쓸모가 없기 때문에 아예 다른 Activity로 만들려고 한다. DetailActivty $\rightarrow$ DetailWebActivity
+\item 화면을 앱+앱 하이브리드로 변경하려고 한다. 이때 기존 코드는 거의 쓸모가 없기 때문에 아예 다른 Activity로 만들려고 한다. DetailActivity $\rightarrow$ DetailWebActivity
 \item 테스트 후에 문제가 많다면 원래 상태로 다시 복구하려고 한다.
 \end{itemize}
 

@@ -149,8 +149,7 @@ onCreate()에서 DB를 열었는데 onPause()에서 DB를 닫는다면 어떻게
 
 \subsubsection{super.onXxx() 호출 순서}
 onCreate(), onResume()에서는 super.onCreate(), super.onResume()을 먼저 실행하고, 
-onPause(), onDestroy()에서는 super.onPause(), super.onDestroy()를 나중에 실행한다.\\
-
+onPause(), onDestroy()에서는 super.onPause(), super.onDestroy()를 나중에 실행한다.
 \begin{lstlisting}[frame=single]
 	protected void onCreate() {
     	super.onCreate();
@@ -310,7 +309,7 @@ mcc, mnc, navigation, navigationHidden, orientation, screeenHeightDp, screenLayo
 screenWidthDp, smalllestScreenWidthDp, touchScreen, uiMode 
 \end{lstlisting}
 이렇게 모두 17개가 있고, 
-여기서 fontScale과 locale은 환경 설정에서 정할 수 있는 사용자 옵션이고 나머지는 단말의 현재 상태이다.\\
+여기서 fontScale과 locale은 환경 설정에서 정할 수 있는 사용자 옵션이고 나머지는 단말의 현재 상태이다.
 
 \subsection{리소스 반영}
 Configuration은 컴포넌트에서 사용하는 리소스를 결정하기 때문에,  Configuration이 변경되면 컴포넌트에서 사용하는 리소스도 변경된다. 
@@ -336,7 +335,7 @@ Configuration 변경으로 인한 Activity 재시작은 하나의 인스턴스�
 언어별 문자열이 따로 없거나 가로/세로 레이아웃이 별도로 없는 경우에도 일단 재시작한다. Configuration이 변경되면 무조건 재시작하는 것으로 이해하면 된다. 재시작해서 리소스를 가져올 때 결과적으로 동일한 리소스를 사용하는 것 뿐이다. 프레임워크에서 호출 스택은 아래와 같다.
 %System Configuration 때문에 조금 혼동되기도 한다.
 
-\lstset{basicstyle=\fontfamily{mono}\selectfont\footnotesize}
+\lstset{basicstyle=\fontfamily{mono}\selectfont\scriptsize}
 \begin{lstlisting}[frame=single]
 ActivityManagerService.updateConfigurationLocked(Configuration values,
 	ActivityRecord starting, boolean persistent, boolean initLocale)
@@ -349,7 +348,7 @@ ActivityManagerService.updateConfigurationLocked(Configuration values,
             		int smallestScreenWidthDp, int screenWidthDp, int screenHeightDp,
             		int screenLayout, int uiMode, int majorVersion) (native method)
 \end{lstlisting}
-\lstset{basicstyle=\ttfamily\small}
+\lstset{basicstyle=\ttfamily\footnotesize}
 Configuration이 변경되면 system\_server에서 동작하는 ActivityManagerService에서 앱 프로세스의 메인 클래스인 ActivityThread에 새로운 Configuration을 반영하도록 전달하고, 결과적으로 하는 일은 AssetManager의 네이티브 메서드인 setConfiguration()을 실행하는 것이다. 네이티브에서는 리소스 테이블을 유지하고 있는데 현재 Configuration을 전달해놓고, 리소스를 가져올 때마다 현재 Configuration에 맞는 리소스를 선택해서 가져온다.
 이제 리소스를 가져오는 한 예로서 getText() 메서드의 호출 스택을 살펴보자.
 \begin{lstlisting}[frame=single]
@@ -358,14 +357,12 @@ Resources.getText(int id)
 		AssetManager loadResourceValue(int ident, short density,
 			TypedValue outValue, boolean resolve) (native method)
 \end{lstlisting}
-결론적으로 AssetManager에 현재 Configuration을 전달하고, AssetManager를 거쳐서 Configuration에 맞는 리소스를 매번 선택해서 가져오는 것이다. 리소스 선택 로직은 내부적으로 최적화되어 있다. 안드로이드 개발자 사이트에서 `Providing Resources' 문서\footnote{http://developer.android.com/intl/ko/guide/topics/resources/providing-resources.html}에서 `Android가 가장 잘 일치하는 리소스를 찾는 방법'을 참고하자.\\
-% 화면 회전은 WindowManagerService에서... 또는 setRequestOrientation도 가능...      
-
+결론적으로 AssetManager에 현재 Configuration을 전달하고, AssetManager를 거쳐서 Configuration에 맞는 리소스를 매번 선택해서 가져오는 것이다. 리소스 선택 로직은 내부적으로 최적화되어 있다. 안드로이드 개발자 사이트에서 `Providing Resources' 문서\footnote{http://developer.android.com/intl/ko/guide/topics/resources/providing-resources.html}에서 `Android가 가장 잘 일치하는 리소스를 찾는 방법'을 참고하자.
+% 화면 회전은 WindowManagerService에서...  
 %http://developer.android.com/intl/ko/guide/topics/resources/providing-resources.html 구성한정자
 
 \subsection{Configuration qualifier}
-이제 리소스 디렉터리명을 구성하는 Configuration qualifier\footnote{구성 한정자 또는 리소스 식별자로 번역된다. 개발자 가이드에서는 구성 한정자로 쓰고 있다.}를 살펴보자. 개발자 가이드에 있는 우선순위대로 나열하였다.\\
-
+이제 리소스 디렉터리명을 구성하는 Configuration qualifier\footnote{구성 한정자 또는 리소스 식별자로 번역된다. 개발자 가이드에서는 구성 한정자로 쓰고 있다.}를 살펴보자. 개발자 가이드에 있는 우선순위대로 나열하였다.
 \begin{longtable}{|c|c|c|}\hline
 Configuration qualifier & 샘플 & Configuration 필드 \\ \hline
 MCC 및 MNC	& mcc310, mcc310-mnc004  & mcc, mnc \\ \hline
@@ -418,7 +415,7 @@ ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC 순으로 화면을 전환
 이 상태에서 ActivityC를 회전하면 ActivityC에서는 기대하는 대로 onSaveInstanceState() 실행 이후에 재시작한다.
 이제 Back 키로 ActivityC를 종료하면 onSaveInstanceState()가 이미 호출된 ActivityB는 이제서야 재시작한다.\\
 
-ActityC를 회전했다가 다시 원래대로 돌린 다음에 Back 키로 돌아가면 어떨까? 즉 ActityB로 보면 방향이 바뀌지 않은 것이다.
+ActivityC를 회전했다가 다시 원래대로 돌린 다음에 Back 키로 돌아가면 어떨까? 즉 ActivityB로 보면 방향이 바뀌지 않은 것이다.
 이때는 Back 키로 돌아와도 ActivityB는 재시작하지 않는다. 즉 화면이 덮이는 상황에서는 onSaveInstanceState()를 해놓지만, 다시 돌아왔을 때 Configuration이 바뀌지 않는다면 화면을 그대로 보여줄 뿐 복구할 내용이 없는 것이다.\\
 
 ActivityC에서 Home 키를 누르면 어떻게 될까? 이때도 ActivityC는 onSaveInstanceState()를 호출한다.
@@ -426,7 +423,7 @@ ActivityC에서 Home 키를 누르면 어떻게 될까? 이때도 ActivityC는 o
 
 ActivityA$\rightarrow$ActivityB$\rightarrow$DialogActivity(다이얼로그 테마)의 경우는 어떨까?
 DialogActivity가 뜨면 아직 배경으로 보이는 ActivityB의 onSaveInstanceState()는 호출된다.
-이때 화면을 회전하면 DialogActivity에서 onSaveInstanceState() 호출 후 재시작하고 그 이후에 ActivityB를 재시작한다.\\
+이때 화면을 회전하면 DialogActivity에서 onSaveInstanceState() 호출 후 재시작하고 그 이후에 ActivityB를 재시작한다.
 
 \subsection{android:configChanges 속성}
 앞에서도 얘기했듯이 Configuration 변경 가운데서 가장 빈번하게 발생하는 것은 화면 회전이다. 화면 회전 시에 매번 재시작해서 Activity 초기화 때문에 느려지는 것이나 상태 저장/복구에 부담을 느낄 때, 재시작을 방지하기 위해서 AndroidManifest.xml의 Activity 선언에 지정하는 속성은 2가지가 있다.
@@ -523,12 +520,12 @@ android:configChanges 속성을 쓴다면 이때는 onConfigurationChanged() 메
 \end{lstlisting}
 onConfigurationChanged()에서 getResources().getXxx() 메서드는 변경된 Configuration에 대응되는 값을 가져오므로, 이 코드는 화면 회전에 따라 그에 맞는 dimens.xml의 값을 쓰겠다는 의미이다.\\
 
-조금 혼동이 올 수도 있겠다. 어차피 다시 그릴텐데 리소스도 새로운 Configuration에 맞는 리소스를 선택해서 그리는 건 아닐까? 
+조금 혼동될 수도 있겠다. 어차피 다시 그릴텐데 리소스도 새로운 Configuration에 맞는 리소스를 선택해서 그리는 건 아닐까? 
 즉 onConfigurationChanged()를 오버라이드하지 않아도 될 것 같다.
 이것은 View의 생성자에서 해당 Configuration의 리소스를 대입하는 구조 때문이다. 정확하게 얘기하면 android:layout\_width나 android:layout\_height는 View의 속성이라기보다 상위 ViewGroup의 속성으로, LayoutInflator의 inflate()를 실행할 때 View 생성자에서 다른 속성은 모두 처리하고 나서, ViewGroup의 generateLayoutParams()를 실행해서 android:layout\_width나 android:layout\_height를 처리한다.
 즉, /res/layout/view\_list.xml에서 android 네임스페이스에 있는 값들은 LayoutInflator의 inflate()가 실행되는 순간에 이미 대입되고, Configuration이 변경된다고 해서 다시 대입되지 않는다. 
 	
-\item textSize로 sp를 쓰지 않는다면 fontScale도 가능하다. UI가 단순한 경우에는 권장사항대로 sp를 써도 되지만, UI가 복잡한 경우 디자인적인 문제로 textSize를 dp로 제한하는 경우가 많다.
+\item textSize 단위로 sp를 쓰지 않는다면 fontScale도 가능하다. UI가 단순한 경우에는 권장사항대로 sp를 써도 되지만, UI가 복잡한 경우 디자인적인 문제로 textSize를 dp로 제한하는 경우가 많다.
 
 \item 다국어 대응을 하지 않는다면 locale을 넣을 수도 있다. 또는 화면의 일부만 다국어 대응을 할 수도 있다. 타이틀만 변경해도 된다면 onConfigurationChanged() 메서드에서 titleText.setText(R.string.title)와 같이 쓰면 해당 언어로 문자열이 쓰여진다.
 \end{itemize}
@@ -566,7 +563,7 @@ ActivityA$\rightarrow$ActivityB$\rightarrow$ActivityC로 Activity를 전환하�
 ActivityA$\rightarrow$ActivityB$\rightarrow$Dia\-logActivity(다이얼로그 테마)에서는 화면을 회전하면 DialogActivity 먼저 onConfigurationChanged()가 불리고 ActivityB의 onConfigurationChanged()는 그 다음에 불린다.\\
 
 결론적으로 빈번한 화면 회전에 대응하는 목적으로 android:configChanges를 사용하는 것은 나쁜 선택은 아니다.
-다만, 이때 중요한 정보에 대해서는 onSaveInstanceState()와  onRestoreInstanceState()도 함께 사용하는 게 좋다.\\
+다만, 이때 중요한 정보에 대해서는 onSaveInstanceState()와  onRestoreInstanceState()도 함께 사용하는 게 좋다.
 
 \subsection{Configuration 확인}
 마지막으로 Configuration 내용을 확인하고 Configuration이 변경되는 타이밍에 대해서 더 알아보겠다.\\
@@ -593,7 +590,7 @@ Configuration 내용을 보기 위해서 Context 인스턴스에서 getResources
 \item 열한 번째 finger는 touchScreen 값이다.
 \item 열두 번째 -keyb/v/h는 keyboard, keyboardHidden, hardKeyboardHidden 값이다. v나 h는 visible/hidden을 의미한다. -keyb는 키보드가 없다는 의미다(마이너스로 생각하면 된다).
 \item 열세 번째 -nav/h는 navigation과 navigationHidden 값이다. 마이너스가 있으므로 navigation 타입이 없다는 의미이다.
-\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 한 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 전역적인 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
+\item 열네 번째 seq는 변경 횟수이다. Configuration이 바뀔 때마다 seq가 커진다. seq는 하나의 앱에 대한 것이 아니라 단말 전체적으로 쓰이는 전역적인 값이다.\footnote{seq는 ActivityManagerService의 updateConfigurationLocked() 메서드에서 변경한다.}
 \end{itemize}
 
 이제 Configuration이 변경될 때 동작을 얘기해보자. Configuration이 바뀔 때는 Application의 onConfigurationChanged() 메서드가 먼저 불리고, 포그라운드에 있는 Activity는 AndroidManifest.xml 설정에 따라 재시작하거나 onConfigurationChanged() 메서드가 불린다.\\
@@ -613,7 +610,7 @@ ActivityA만 있을 때는 세로 고정이었는데, 가로 화면인 ActivityB
 다른 앱의 Activity가 역시 방향 고정이라면 Application의 onConfigurationChanged() 메서드는 불리지 않는다. 보통 런처 앱은 방향 고정인 경우가 많아서 홈 화면에서 아무리 화면을 회전해도 다른 앱의 Configuration에 영향을 주지 않는다. 
 Activity가 스택에 남아있는 채로 Home 키를 통해 백그라운드로 이동해도 마찬가지다. 포그라운드에 있는 Activity가 아니라면 변경된 Configuration을 받지 않으므로, 다른 앱에서 바뀐 Configuration은 Activity에는 전달되지 않고 Application에만 전달된다.\\
 
-환경 설정에서 언어나 글꼴 크기를 변경할 때도 실행 중인 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 변경된 Configuration이 전달된다.\\
+환경 설정에서 언어나 글꼴 크기를 변경할 때도 실행 중인 모든 앱 프로세스에서 Application의 onConfigurationChanged()에 변경된 Configuration이 전달된다.
 
 
 

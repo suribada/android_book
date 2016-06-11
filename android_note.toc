@@ -1,105 +1,105 @@
-\contentsline {chapter}{이 책의 구성}{7}{chapter*.6}
-\contentsline {chapter}{\numberline {1}안드로이드 프레임워크}{8}{chapter.1}
-\contentsline {section}{\numberline {1.1}프레임워크 개요}{8}{section.1.1}
-\contentsline {section}{\numberline {1.2}프레임워크 소스}{9}{section.1.2}
-\contentsline {section}{\numberline {1.3}안드로이드 버전}{12}{section.1.3}
-\contentsline {subsection}{\numberline {1.3.1}호환성 모드}{13}{subsection.1.3.1}
-\contentsline {subsection}{\numberline {1.3.2}버전 체크}{15}{subsection.1.3.2}
-\contentsline {chapter}{\numberline {2}메인 스레드와 Handler}{19}{chapter.2}
-\contentsline {section}{\numberline {2.1}메인 스레드}{19}{section.2.1}
-\contentsline {section}{\numberline {2.2}Looper}{20}{section.2.2}
-\contentsline {section}{\numberline {2.3}Message와 MessageQueue}{21}{section.2.3}
-\contentsline {section}{\numberline {2.4}Handler}{23}{section.2.4}
-\contentsline {subsection}{\numberline {2.4.1}Handler 생성}{23}{subsection.2.4.1}
-\contentsline {subsection}{\numberline {2.4.2}Handler 동작}{25}{subsection.2.4.2}
-\contentsline {subsection}{\numberline {2.4.3}Handler 용도}{26}{subsection.2.4.3}
-\contentsline {subsection}{\numberline {2.4.4}타이밍 이슈}{28}{subsection.2.4.4}
-\contentsline {section}{\numberline {2.5}UI 업데이트}{29}{section.2.5}
-\contentsline {section}{\numberline {2.6}ANR}{31}{section.2.6}
-\contentsline {chapter}{\numberline {3}백그라운드 스레드}{35}{chapter.3}
-\contentsline {section}{\numberline {3.1}HandlerThread}{35}{section.3.1}
-\contentsline {section}{\numberline {3.2}스레드 풀}{38}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}ThreadPoolExecutor}{38}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}ScheduledThreadPoolExecutor}{39}{subsection.3.2.2}
-\contentsline {subsection}{\numberline {3.2.3}Executors}{40}{subsection.3.2.3}
-\contentsline {section}{\numberline {3.3}AsyncTask}{41}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}병렬 실행 시 실행 순서}{43}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Activity 종료 시점과 불일치}{44}{subsection.3.3.2}
-\contentsline {subsection}{\numberline {3.3.3}AsyncTask 취소}{45}{subsection.3.3.3}
-\contentsline {subsection}{\numberline {3.3.4}예외 처리 메서드 부재}{45}{subsection.3.3.4}
-\contentsline {chapter}{\numberline {4}Context}{47}{chapter.4}
-\contentsline {chapter}{\numberline {5}Activity}{51}{chapter.5}
-\contentsline {section}{\numberline {5.1}생명주기}{51}{section.5.1}
-\contentsline {subsection}{\numberline {5.1.1}startActivity()와 startActivityForResult()}{53}{subsection.5.1.1}
-\contentsline {subsection}{\numberline {5.1.2}Activity 전환}{54}{subsection.5.1.2}
-\contentsline {subsection}{\numberline {5.1.3}생명주기 메서드 사용 시 주의점}{55}{subsection.5.1.3}
-\contentsline {subsubsection}{리소스 생성/제거}{55}{section*.7}
-\contentsline {subsubsection}{super.onXxx() 호출 순서}{55}{section*.8}
-\contentsline {subsubsection}{finish() 메서드 호출하고 바로 리턴}{57}{section*.9}
-\contentsline {subsubsection}{onXxx() 메서드는 직접 호출하지 않음}{57}{section*.10}
-\contentsline {section}{\numberline {5.2}Configuration 변경}{59}{section.5.2}
-\contentsline {subsection}{\numberline {5.2.1}리소스 반영}{59}{subsection.5.2.1}
-\contentsline {subsection}{\numberline {5.2.2}Configuration qualifier}{61}{subsection.5.2.2}
-\contentsline {subsection}{\numberline {5.2.3}데이터 복구}{62}{subsection.5.2.3}
-\contentsline {subsection}{\numberline {5.2.4}android:configChanges 속성}{62}{subsection.5.2.4}
-\contentsline {subsection}{\numberline {5.2.5}Configuration 확인}{66}{subsection.5.2.5}
-\contentsline {section}{\numberline {5.3}태스크}{68}{section.5.3}
-\contentsline {subsection}{\numberline {5.3.1}태스크 상태}{69}{subsection.5.3.1}
-\contentsline {subsection}{\numberline {5.3.2}태스크 확인}{69}{subsection.5.3.2}
-\contentsline {subsection}{\numberline {5.3.3}taskAffinity}{72}{subsection.5.3.3}
-\contentsline {subsection}{\numberline {5.3.4}태스크 속성 부여}{73}{subsection.5.3.4}
-\contentsline {paragraph}{Callee 속성 부여는 AndroidManifest.xml의 Activity 선언에 android:launchMode로 한다.}{73}{section*.11}
-\contentsline {paragraph}{Caller 속성 부여는 Intent Flags에 지정한다.}{75}{section*.12}
-\contentsline {section}{\numberline {5.4}<activity-alias>}{76}{section.5.4}
-\contentsline {chapter}{\numberline {6}Service}{77}{chapter.6}
-\contentsline {section}{\numberline {6.1}Started Service}{81}{section.6.1}
-\contentsline {subsection}{\numberline {6.1.1}Service 재시작 방식}{83}{subsection.6.1.1}
-\contentsline {subsection}{\numberline {6.1.2}멀티 스레드 이슈}{84}{subsection.6.1.2}
-\contentsline {subsection}{\numberline {6.1.3}암시적 인텐트로 서비스 실행}{84}{subsection.6.1.3}
-\contentsline {subsection}{\numberline {6.1.4}IntentService}{85}{subsection.6.1.4}
-\contentsline {subsection}{\numberline {6.1.5}Service 중복 실행 방지}{87}{subsection.6.1.5}
-\contentsline {section}{\numberline {6.2}Bound Service}{89}{section.6.2}
-\contentsline {subsection}{\numberline {6.2.1}리모트 바인딩}{90}{subsection.6.2.1}
-\contentsline {subsection}{\numberline {6.2.2}로컬 바인딩}{95}{subsection.6.2.2}
-\contentsline {subsection}{\numberline {6.2.3}바인딩의 특성}{98}{subsection.6.2.3}
-\contentsline {subsection}{\numberline {6.2.4}Messenger}{100}{subsection.6.2.4}
-\contentsline {chapter}{\numberline {7}ContentProvider}{106}{chapter.7}
-\contentsline {section}{\numberline {7.1}SQLite}{106}{section.7.1}
-\contentsline {subsection}{\numberline {7.1.1}DB Lock 문제}{110}{subsection.7.1.1}
-\contentsline {subsection}{\numberline {7.1.2}SQLiteOpenHelper}{113}{subsection.7.1.2}
-\contentsline {section}{\numberline {7.2}ContentProvider}{116}{section.7.2}
-\contentsline {subsection}{\numberline {7.2.1}ContentProvider 적용}{116}{subsection.7.2.1}
-\contentsline {subsection}{\numberline {7.2.2}배치 execute}{120}{subsection.7.2.2}
-\contentsline {section}{\numberline {7.3}SQLite/ContentProvider 관련 팁}{121}{section.7.3}
-\contentsline {subsection}{\numberline {7.3.1}쿼리 실행 확인}{121}{subsection.7.3.1}
-\contentsline {subsection}{\numberline {7.3.2}ContentProvider 예외 확인}{124}{subsection.7.3.2}
-\contentsline {chapter}{\numberline {8}BroadcastReceiver}{125}{chapter.8}
-\contentsline {section}{\numberline {8.1}BroadcastReceiver 구현}{125}{section.8.1}
-\contentsline {section}{\numberline {8.2}BroadcastReceiver 등록}{126}{section.8.2}
-\contentsline {section}{\numberline {8.3}Ordered Broadcast}{129}{section.8.3}
-\contentsline {section}{\numberline {8.4}Sticky Broadcast}{130}{section.8.4}
-\contentsline {section}{\numberline {8.5}LocalBroadcastManager}{131}{section.8.5}
-\contentsline {section}{\numberline {8.6}App Widget}{132}{section.8.6}
-\contentsline {subsection}{\numberline {8.6.1}App Widget 기본}{132}{subsection.8.6.1}
-\contentsline {subsection}{\numberline {8.6.2}RemoteViews}{134}{subsection.8.6.2}
-\contentsline {subsection}{\numberline {8.6.3}App Widget 업데이트}{135}{subsection.8.6.3}
-\contentsline {subsection}{\numberline {8.6.4}유의할 점}{136}{subsection.8.6.4}
-\contentsline {subsubsection}{메인 스레드 점유}{136}{section*.13}
-\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{137}{section*.14}
-\contentsline {subsubsection}{ICS부터 기본 패딩}{137}{section*.15}
-\contentsline {subsubsection}{고해상도 단말에서 Bitmap 생성 시 메모리 문제}{137}{section*.16}
-\contentsline {chapter}{\numberline {9}Application}{139}{chapter.9}
-\contentsline {section}{\numberline {9.1}앱 초기화}{139}{section.9.1}
-\contentsline {section}{\numberline {9.2}Application Callback}{141}{section.9.2}
-\contentsline {section}{\numberline {9.3}프로세스 분리}{143}{section.9.3}
-\contentsline {chapter}{\numberline {10}시스템 서비스}{147}{chapter.10}
-\contentsline {section}{\numberline {10.1}시스템 서비스 기본}{148}{section.10.1}
-\contentsline {section}{\numberline {10.2}dumpsys 명령어}{155}{section.10.2}
-\contentsline {section}{\numberline {10.3}시스템 서비스 이슈}{159}{section.10.3}
-\contentsline {subsection}{\numberline {10.3.1}빈번한 리모트 호출}{159}{subsection.10.3.1}
-\contentsline {subsection}{\numberline {10.3.2}전원 관리와 Deep Sleep}{160}{subsection.10.3.2}
-\contentsline {subsection}{\numberline {10.3.3}알람 등록과 제거}{165}{subsection.10.3.3}
-\contentsline {chapter}{\numberline {11}구현 패턴}{166}{chapter.11}
-\contentsline {section}{\numberline {11.1}싱글톤 패턴}{166}{section.11.1}
-\contentsline {section}{\numberline {11.2}마커 인터페이스}{170}{section.11.2}
-\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{175}{section.11.3}
+\contentsline {chapter}{이 책의 구성}{9}{chapter*.6}
+\contentsline {chapter}{\numberline {1}안드로이드 프레임워크}{11}{chapter.1}
+\contentsline {section}{\numberline {1.1}프레임워크 개요}{11}{section.1.1}
+\contentsline {section}{\numberline {1.2}프레임워크 소스}{13}{section.1.2}
+\contentsline {section}{\numberline {1.3}안드로이드 버전}{16}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}호환성 모드}{17}{subsection.1.3.1}
+\contentsline {subsection}{\numberline {1.3.2}버전 체크}{18}{subsection.1.3.2}
+\contentsline {chapter}{\numberline {2}메인 스레드와 Handler}{25}{chapter.2}
+\contentsline {section}{\numberline {2.1}메인 스레드}{25}{section.2.1}
+\contentsline {section}{\numberline {2.2}Looper}{26}{section.2.2}
+\contentsline {section}{\numberline {2.3}Message와 MessageQueue}{28}{section.2.3}
+\contentsline {section}{\numberline {2.4}Handler}{29}{section.2.4}
+\contentsline {subsection}{\numberline {2.4.1}Handler 생성}{29}{subsection.2.4.1}
+\contentsline {subsection}{\numberline {2.4.2}Handler 동작}{31}{subsection.2.4.2}
+\contentsline {subsection}{\numberline {2.4.3}Handler 용도}{33}{subsection.2.4.3}
+\contentsline {subsection}{\numberline {2.4.4}타이밍 이슈}{35}{subsection.2.4.4}
+\contentsline {section}{\numberline {2.5}UI 업데이트}{36}{section.2.5}
+\contentsline {section}{\numberline {2.6}ANR}{38}{section.2.6}
+\contentsline {chapter}{\numberline {3}백그라운드 스레드}{43}{chapter.3}
+\contentsline {section}{\numberline {3.1}HandlerThread}{43}{section.3.1}
+\contentsline {section}{\numberline {3.2}스레드 풀}{46}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}ThreadPoolExecutor}{46}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}ScheduledThreadPoolExecutor}{48}{subsection.3.2.2}
+\contentsline {subsection}{\numberline {3.2.3}Executors}{48}{subsection.3.2.3}
+\contentsline {section}{\numberline {3.3}AsyncTask}{49}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}병렬 실행 시 실행 순서}{52}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Activity 종료 시점과 불일치}{53}{subsection.3.3.2}
+\contentsline {subsection}{\numberline {3.3.3}AsyncTask 취소}{54}{subsection.3.3.3}
+\contentsline {subsection}{\numberline {3.3.4}예외 처리 메서드 부재}{54}{subsection.3.3.4}
+\contentsline {chapter}{\numberline {4}Context}{57}{chapter.4}
+\contentsline {chapter}{\numberline {5}Activity}{61}{chapter.5}
+\contentsline {section}{\numberline {5.1}생명주기}{61}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}startActivity()와 startActivityForResult()}{63}{subsection.5.1.1}
+\contentsline {subsection}{\numberline {5.1.2}Activity 전환}{65}{subsection.5.1.2}
+\contentsline {subsection}{\numberline {5.1.3}생명주기 메서드 사용 시 주의점}{66}{subsection.5.1.3}
+\contentsline {subsubsection}{리소스 생성/제거}{66}{section*.7}
+\contentsline {subsubsection}{super.onXxx() 호출 순서}{66}{section*.8}
+\contentsline {subsubsection}{finish() 메서드 호출하고 바로 리턴}{68}{section*.9}
+\contentsline {subsubsection}{onXxx() 메서드는 직접 호출하지 않음}{68}{section*.10}
+\contentsline {section}{\numberline {5.2}Configuration 변경}{69}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}리소스 반영}{70}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Configuration qualifier}{72}{subsection.5.2.2}
+\contentsline {subsection}{\numberline {5.2.3}데이터 복구}{73}{subsection.5.2.3}
+\contentsline {subsection}{\numberline {5.2.4}android:configChanges 속성}{74}{subsection.5.2.4}
+\contentsline {subsection}{\numberline {5.2.5}Configuration 확인}{78}{subsection.5.2.5}
+\contentsline {section}{\numberline {5.3}태스크}{80}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}태스크 상태}{81}{subsection.5.3.1}
+\contentsline {subsection}{\numberline {5.3.2}태스크 확인}{81}{subsection.5.3.2}
+\contentsline {subsection}{\numberline {5.3.3}taskAffinity}{84}{subsection.5.3.3}
+\contentsline {subsection}{\numberline {5.3.4}태스크 속성 부여}{85}{subsection.5.3.4}
+\contentsline {paragraph}{Callee 속성 부여는 AndroidManifest.xml의 Activity 선언에 android:launchMode로 한다.}{86}{section*.11}
+\contentsline {paragraph}{Caller 속성 부여는 Intent Flags에 지정한다.}{87}{section*.12}
+\contentsline {section}{\numberline {5.4}<activity-alias>}{89}{section.5.4}
+\contentsline {chapter}{\numberline {6}Service}{91}{chapter.6}
+\contentsline {section}{\numberline {6.1}Started Service}{95}{section.6.1}
+\contentsline {subsection}{\numberline {6.1.1}Service 재시작 방식}{98}{subsection.6.1.1}
+\contentsline {subsection}{\numberline {6.1.2}멀티 스레드 이슈}{99}{subsection.6.1.2}
+\contentsline {subsection}{\numberline {6.1.3}암시적 인텐트로 서비스 실행}{99}{subsection.6.1.3}
+\contentsline {subsection}{\numberline {6.1.4}IntentService}{101}{subsection.6.1.4}
+\contentsline {subsection}{\numberline {6.1.5}Service 중복 실행 방지}{102}{subsection.6.1.5}
+\contentsline {section}{\numberline {6.2}Bound Service}{104}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}리모트 바인딩}{106}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}로컬 바인딩}{111}{subsection.6.2.2}
+\contentsline {subsection}{\numberline {6.2.3}바인딩의 특성}{114}{subsection.6.2.3}
+\contentsline {subsection}{\numberline {6.2.4}Messenger}{116}{subsection.6.2.4}
+\contentsline {chapter}{\numberline {7}ContentProvider}{123}{chapter.7}
+\contentsline {section}{\numberline {7.1}SQLite}{123}{section.7.1}
+\contentsline {subsection}{\numberline {7.1.1}DB Lock 문제}{127}{subsection.7.1.1}
+\contentsline {subsection}{\numberline {7.1.2}SQLiteOpenHelper}{130}{subsection.7.1.2}
+\contentsline {section}{\numberline {7.2}ContentProvider}{134}{section.7.2}
+\contentsline {subsection}{\numberline {7.2.1}ContentProvider 적용}{134}{subsection.7.2.1}
+\contentsline {subsection}{\numberline {7.2.2}배치 execute}{138}{subsection.7.2.2}
+\contentsline {section}{\numberline {7.3}SQLite/ContentProvider 관련 팁}{139}{section.7.3}
+\contentsline {subsection}{\numberline {7.3.1}쿼리 실행 확인}{139}{subsection.7.3.1}
+\contentsline {subsection}{\numberline {7.3.2}ContentProvider 예외 확인}{143}{subsection.7.3.2}
+\contentsline {chapter}{\numberline {8}BroadcastReceiver}{145}{chapter.8}
+\contentsline {section}{\numberline {8.1}BroadcastReceiver 구현}{145}{section.8.1}
+\contentsline {section}{\numberline {8.2}BroadcastReceiver 등록}{146}{section.8.2}
+\contentsline {section}{\numberline {8.3}Ordered Broadcast}{150}{section.8.3}
+\contentsline {section}{\numberline {8.4}Sticky Broadcast}{151}{section.8.4}
+\contentsline {section}{\numberline {8.5}LocalBroadcastManager}{152}{section.8.5}
+\contentsline {section}{\numberline {8.6}App Widget}{153}{section.8.6}
+\contentsline {subsection}{\numberline {8.6.1}App Widget 기본}{153}{subsection.8.6.1}
+\contentsline {subsection}{\numberline {8.6.2}RemoteViews}{156}{subsection.8.6.2}
+\contentsline {subsection}{\numberline {8.6.3}App Widget 업데이트}{157}{subsection.8.6.3}
+\contentsline {subsection}{\numberline {8.6.4}유의할 점}{158}{subsection.8.6.4}
+\contentsline {subsubsection}{메인 스레드 점유}{158}{section*.13}
+\contentsline {subsubsection}{부팅 중에는 initialLayout만 보임}{158}{section*.14}
+\contentsline {subsubsection}{ICS부터 기본 패딩}{159}{section*.15}
+\contentsline {subsubsection}{고해상도 단말에서 Bitmap 생성 시 메모리 문제}{159}{section*.16}
+\contentsline {chapter}{\numberline {9}Application}{161}{chapter.9}
+\contentsline {section}{\numberline {9.1}앱 초기화}{161}{section.9.1}
+\contentsline {section}{\numberline {9.2}Application Callback}{163}{section.9.2}
+\contentsline {section}{\numberline {9.3}프로세스 분리}{166}{section.9.3}
+\contentsline {chapter}{\numberline {10}시스템 서비스}{171}{chapter.10}
+\contentsline {section}{\numberline {10.1}시스템 서비스 기본}{173}{section.10.1}
+\contentsline {section}{\numberline {10.2}dumpsys 명령어}{179}{section.10.2}
+\contentsline {section}{\numberline {10.3}시스템 서비스 이슈}{184}{section.10.3}
+\contentsline {subsection}{\numberline {10.3.1}빈번한 리모트 호출}{184}{subsection.10.3.1}
+\contentsline {subsection}{\numberline {10.3.2}전원 관리와 Deep Sleep}{185}{subsection.10.3.2}
+\contentsline {subsection}{\numberline {10.3.3}알람 등록과 제거}{190}{subsection.10.3.3}
+\contentsline {chapter}{\numberline {11}구현 패턴}{191}{chapter.11}
+\contentsline {section}{\numberline {11.1}싱글톤 패턴}{191}{section.11.1}
+\contentsline {section}{\numberline {11.2}마커 인터페이스}{196}{section.11.2}
+\contentsline {section}{\numberline {11.3}Fragment 정적 생성}{200}{section.11.3}

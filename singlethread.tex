@@ -37,7 +37,7 @@ public class Hello {
 \end{lstlisting}
 
 안드로이드 애플리케이션의 메인 스레드는 뭔가 다른 특별한 것일까? 그렇지 않다. 
-안드로이드 프레임워크 내부 클래스인 android.app.ActivityThread가 바로 애플리케이션의 메인 클래스\footnote{실제로는 ZygoteInit이 시작점이지만 우리가 이해해야 하는 지점은 ActivityThread부터이다.}이고, ActivityThread의 main() 메서드가 애플리케이션의 시작 지점이다.\newpage
+안드로이드 프레임워크 내부 클래스인 android.app.ActivityThread가 바로 애플리케이션의 메인 클래스\footnote{실제로는 ZygoteInit이 시작점이지만 우리가 이해해야 하는 지점은 ActivityThread부터이다.}이고, ActivityThread의 main() 메서드가 애플리케이션의 시작 지점이다.
 
 \begin{lstlisting}[frame=single, caption=ActivityThread.java] 
 	public static void main(String[] args) {
@@ -265,7 +265,7 @@ UI를 업데이트하기 때문에 백그라운드 스레드의 Looper를 생성
 앞에서도 언급했듯이 Handler는 Message를 MessageQueue에 보내는 것과 Message를 처리하는 것을 함께 제공한다. post(), postAtTime(), postDelayed() 메서드를 통해서 Runnable 객체도 전달되는데, 실제로 Runnable도 내부적으로 Message에 포함되는 값이다.\\
 
 Handler에서 Message를 보내는 메서드 목록을 살펴보자.\\
-\scalebox{0.92}{
+\scalebox{0.86}{
 \begin{tabular}[fontsize=\tiny]{|l|l|l|} \hline
  & send & post \\ \hline
 기본 & sendEmptyMessage(int what) & post(Runnable r)
@@ -1114,7 +1114,7 @@ AsyncTask의 대안으로 RxJava 라이브러리를 사용하기도 한다. RxJa
 
 \subsection{Activity 종료 시점과 불일치}
 Activity에서 AsyncTask의 백그라운드 작업 실행 도중에 Back 키를 통해서 Activity를 종료하면 AsyncTask는 어떻게 되는가? 메모리에는 Activity가 남아있어서 onPostExecute()도 정상적으로 실행되고 그 안에서 setText()와 같은 UI 변경 메서드도 잘 실행된다. 다만 눈앞에서 사라져서 보이지 않을 뿐이다.
-이렇게 Activity 종료 시점과 AsyncTask가 끝나는 시점이 달라서 발생하는 문제가 몇 가지 있다.\\
+이렇게 Activity 종료 시점과 AsyncTask가 끝나는 시점이 달라서 발생하는 문제가 몇 가지 있다.
 
 \begin{itemize}
 \item 메모리 문제가 발생할 수 있다. Activity가 Back 키로 종료할 때는 AsyncTask가 오래 걸리는 게 아니라면 큰 문제까지는 아니다. 

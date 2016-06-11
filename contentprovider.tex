@@ -179,7 +179,7 @@ Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 1
 그런데 이 코드는 단말에서는 보안상 막아 놓는다. 엉뚱한 앱에서 자꾸 비행기 모드로 변경한다면 단말을 도저히 사용할 수 없을 것이다.
 이 내용이 에뮬레이터에서는 잘 동작한다.
 Settings.System 클래스를 보고 내부적으로 db를 사용하고 있는 것을 알면, 여러 앱에서 사용 가능한 nonsecure \& public 값들을 추가로 넣을 수 있지 않을까? 예를 들어, 가장 최근 검색어를 여러 앱에서 공유할 수도 있다.
-아래 코드는 마시멜로 이전 버전의 단말에서 잘 동작한다. \\
+아래 코드는 마시멜로 이전 버전의 단말에서 잘 동작한다.
 \begin{lstlisting}[frame=single]
 Settings.System.putString(context.getContentResolver(), "most_recent_keyword",
 	"Hawaii");
@@ -187,7 +187,6 @@ Settings.System.getString(context.getContentResolver(), "most_recent_keyword");
 \end{lstlisting}
 
 단말에서는 AIRPLANE\_MODE\_ON 같은 특정 키에 대해서 업데이트를 막아놓은 것으로 해석하면 된다.\\
-
 
 sqlite shell에서 쓸 수 있는 명령어 모음은 아래 사이트를 참고하자. 두 번째 사이트가 정리가 잘 되어 있다.
 \begin{itemize}
@@ -456,7 +455,7 @@ DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 SQLiteOpenHelper의 close()는 SQLiteDatabase 인스턴스의 close()를 호출하고, SQLiteDatabase 인스턴스를 null로 만든다. 
 매번 close()를 호출하지 않고서 SQLiteDatabase 인스턴스를 계속 재사용해도 문제가 없고, 또 다른 이유는 close() 실행 시점 때문에 문제가 발생할 수 있다는 것이다.\\
 
-A 스레드에서 getWritableDatabase()를 실행하고서 쿼리를 실행하려 한다고 하자. B 스레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 A 스레드에서 getWritableDatabase() 이후에 B 스레드에서 close()가 실행되고, 이것을 가지고 A 스레드에서 쿼리한다면  NullPointerException이 발생하게 된다. 
+A 스레드에서 getWritableDatabase() 이후에 쿼리를 실행한다고 하자. B 스레드에서는 뭔가 작업을 하고 close()를 실행한다. 시점에 따라서 A 스레드에서 getWritableDatabase() 이후에 B 스레드에서 close()가 실행되고, 이것을 가지고 A 스레드에서 쿼리한다면  NullPointerException이 발생하게 된다. 
 %  에러 메시지 보여주자
 \item onConfigure(SQLiteDatabase db) 메서드와 onOpen(SQLiteDatabase db) 메서드가 있다. onConfigure() 메서드는 SQLiteDatabase 생성/열기 이후, onCreate()와 onUpgrade() 메서드 전에 실행되는 것으로 write-ahead logging이나 foreign key support 같은 기능을 활성화하는 작업 등을 할 수 있다. onOpen() 메서드는 onCreate()와 onUpgrade() 이후에 database connection 설정을 변경할 때 사용한다.
 
@@ -897,8 +896,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 그럼 이 문제는 어떻게 해결해야 할까? 바로 2번 작업이 최초 한번은 실행되고 난 다음에 startService()를 실행하는 것이다. 
 단지 순서를 바꾸기만 하면 되는 것이다.\\
 
-원하는 시점에 쿼리가 실행되지 않는 원인으로, 사용하는 라이브러리의 쿼리 문제 가능성도 생각할 수 있다. 이를테면 전체 공휴일 정보를 제공하는 라이브러리에서 DB로 정보를 제공할 수도 있다.\\
-
+원하는 시점에 쿼리가 실행되지 않는 원인으로, 사용하는 라이브러리의 쿼리 문제 가능성도 생각할 수 있다. 이를테면 전체 공휴일 정보를 제공하는 라이브러리에서 DB로 정보를 제공할 수도 있다.
 문제 상황이 발생했을 때 dumpsys를 통해 확인해보고, 실행 시점을 조정하거나 라이브러리를 재검토해보자.
 
 \subsection{ContentProvider 예외 확인}
@@ -916,7 +914,7 @@ at android.content.ContentResolver.query(ContentResolver.java:407
 \end{lstlisting}
 DB가 데이터 소스인 경우는 별로 그럴 일이 없지만, 네트워크나 파일, 또는 로직을 통해 생성한 결과 등을 데이터 소스로 사용한다면 이런 예외 케이스는 원인을 확인해야 한다.\\
 
-그럼 ContentProvider를 제공하는 쪽에서는 크래시가 발생하는가 하면 그렇지 않다. 바로 Exception을 잡아서 Binder로 전달하는 값에 숫자를 전달하고, DatabaseUtils 태그로 ERROR 레벨을 가지고 로그를 남긴다.\footnote{/frameworks/base/core/java/android/database/DatabaseUtils.java를 확인하자.}
+그럼 ContentProvider를 제공하는 쪽에서는 크래시가 발생하는가 하면 그렇지 않다. 바로 Exception을 잡아서 Binder로 전달하는 값에 숫자를 전달하고, DatabaseUtils 태그로 ERROR 레벨에 로그를 남긴다.\footnote{/frameworks/base/core/java/android/database/DatabaseUtils.java를 확인하자.}
 ContentProvider에서는 DatabaseUtils 태그로 문제를 확인하도록 하자.
 % 샘플 만들자.
 % 그밖의 예외에 대해서는 어떻게 되지?

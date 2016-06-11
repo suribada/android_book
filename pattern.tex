@@ -1,5 +1,5 @@
 \chapter{구현 패턴}
-디자인 패턴을 공부하고 나면 어디든 다 쓰고 싶은데, 꼭 필요한 때에만 쓰는 것이 좋다.
+디자인 패턴을 공부하고 나면 어디에든 다 쓰고 싶은데, 꼭 필요한 때에만 쓰는 것이 좋다.
 이 장에서는 디자인 패턴 외에도 복잡한 앱을 개발하는 데 도움이 될 만한 패턴을 이야기 해보자.
 %항목에 따라서 동의하기 어려운 게 있다면, 이런 생각이 있다는 정도로 넘어가도 좋겠다.
 
@@ -459,7 +459,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \end{lstlisting}
 
 첫 번째 방식은 사용하려는 변수를 어렵게 넣고 빼는 거 같은데, 사용하기에는 두 번째가 편한 것 같다.
-그래서 두 번째 방식을 선택하려는 유혹이 있는데, 첫 번째 방식을 권장하는 이유는 바로 Configuration 변경과 Activty의 예기치 않은 종료에 대응할 수 있기 때문이다. 첫 번째 방식은 값을 유지하고 두 번째는 값을 유지하지 못한다.\\
+그래서 두 번째 방식을 선택하려는 유혹이 있는데, 첫 번째 방식을 권장하는 이유는 바로 Configuration 변경과 Activity의 예기치 않은 종료에 대응할 수 있기 때문이다. 첫 번째 방식은 값을 유지하고 두 번째는 값을 유지하지 못한다.\\
 
 프레임워크 소스를 통해서 원인을 파악해보자.
 \begin{itemize}
@@ -468,7 +468,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \item FragmentState에 속한 것이 아닌, 두 번째 방식에서 우리가 만든 Fragment의 변수들은 당연히 저장이 안된다.
 \end{itemize}
 
-두 번째 방법에서도 값을 유지할 수는 있는데, 가장 단순한 방법은 첫 번째 방법과 유사하게 set() 메서드에서 단순 대입이 아닌 setArguments()에 Bundle로 담아서 전달하는 것이다. 값을 유지하기 위해서 좀 더 복잡한 방법으로는 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
+두 번째 방법에서도 값을 유지할 수는 있는데, 가장 단순한 방법은 첫 번째 방법과 유사하게 set() 메서드에서 단순 대입이 아닌 setArguments()에 Bundle로 담아서 전달하는 것이다. 값을 유지하는 좀 더 복잡한 방법으로는 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
 \begin{lstlisting}[frame=single]
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 
@@ -490,7 +490,6 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
         outState.putInt(RIGHT, right);
         super.onSaveInstanceState(outState);
     }
-```
 \end{lstlisting}
 onSaveInstanceState()를 꼭 써야하는 상황은 있겠지만, 전달된 값을 유지하기 위해서 이런 식으로 하진 말자. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.\\
 

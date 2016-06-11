@@ -319,8 +319,6 @@ public class SleepThreadService extends Service {
 		});
 		return START_STICKY;
 	}
-	
-	...
 
 } 
 \end{lstlisting}
@@ -370,7 +368,7 @@ Google Play In-app Billing도 이 방식을 사용하고 있다.
 Bound Service는 로컬 바인딩(Local Binding)과 리모트 바인딩(Remote Binding)으로 주로 구분한다.
 혹자는 Local/Remote 구분이 불필요하다고 하기도 한다.
 Remote Binding Service를 만들어도, 로컬에서 호출하면 Binder를 거치지 않고 직접 호출하므로 Local Binding Service가 따로 필요가 없다는 것이다. 
-Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.\\
+Remote Binding Service만으로 커버 가능한데, 사람들이 자꾸 ``그럼 Local Binding Service는?''하는 문의가 많아서 사실 별 내용이 없는 Local Binding Service을 별도로 얘기하게 되었다고 한다.
 
 \subsection{리모트 바인딩}
 Remote Binding Service를 만드는 것이 어렵지는 않다. 
@@ -587,7 +585,7 @@ Serializable 인터페이스 구현체나 enum 같은 건 될 거 같은데 역�
 Parcelable로 만들지 않으면 aidl 소스에서 import 구문에 쓸 수도 없다(aidl 파일과 동일한 패키지에 있는 클래스도 import해야 한다).\\
 
 여기에 바로 고민이 생긴다. 전달하는 객체가 복잡하거나 객체의 수가 많다면 이것을 Parcelable로 만드는 것이 만만치 않다.
-로컬 바인딩은 이 문제에서 자유롭다. 나도 쓸 수 있고 남도 쓸 수 있게 만들려면 규칙대로 Parcelable을 구현해야 하지만, 혼자서만 쓰겠다면 규칙대로 할 필요가 없는 것이다.\\
+로컬 바인딩은 이 문제에서 자유롭다. 나도 쓸 수 있고 남도 쓸 수 있게 만들려면 규칙대로 Parcelable을 구현해야 하지만, 혼자서만 쓰겠다면 규칙대로 할 필요가 없는 것이다.
 
 \subsection{로컬 바인딩}
 로컬 바인딩은 리모트 바인딩보다 간단하게 만들 수 있다.
@@ -669,8 +667,6 @@ public class BindingActivity extends Activity implements OnClickListener {
 
 	};
 
-	...
-	
 }
 \end{lstlisting}
 42라인(1)에서 리모트 바인딩과 달리 onServiceConnected() 메서드에서 결국 얻어내는 것은 LocalService 인스턴스이다.
@@ -720,8 +716,6 @@ public class BindingActivity extends Activity implements OnClickListener {
 		}
 
 	};
-
-	...
 	
 }
 \end{lstlisting}
