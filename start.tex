@@ -76,7 +76,7 @@ StackOverflow에서 검색해보면 아이템 레이아웃의 CheckBox 속성에
 여기에서 OnItemClickListener를 사용하는 위치는 performItemClick() 메서드이고, 또 다시 호출 위치를 따라가보면 AbsListView의 onTouchUp() 메서드에서 Child View의 hasFocusable() == true일 때는 클릭이 동작하지 않는 것을 볼 수 있다. Child View의 다른 조건은 보이지 않는다.\\
 
 이제 CheckBox의 focusable 기본값은 어디에 있을까? 이 값은 style에 지정되어 있다.
-CheckBox의 style은 /frameworks/base/core/res/res/values/styles.xml\footnote{<sdk>/platforms/android-XX/data/res 아래에서도 볼 수 있다.}에서 ``Widget.CompoundButton.CheckBox''를 보면 된다.\footnote{CheckBox 소스를 보면 defStyleAttr 파라미터 자리에 com.android.internal.R.attr.checkboxStyle이 있다. attrs.xml을 보면 checkboxStyle에 reference로 지정되어 있는데 다른 곳에서 정의한다는 의미이다. 결국 themes.xml에서 보면 ``@style/Widget.CompoundButton.CheckBox''로 다시 정의된 것을 볼 수 있다.}
+CheckBox의 style은 /frameworks/base/core/res/res/values/styles.xml\footnote{<sdk>/platforms/android-XX/data/res 아래에서도 볼 수 있다.}에서 ``Widget.CompoundButton.Chec\-kBox''를 보면 된다.\footnote{CheckBox 소스를 보면 defStyleAttr 파라미터 자리에 com.android.internal.R.attr.checkboxStyle이 있다. attrs.xml을 보면 checkboxStyle에 reference로 지정되어 있는데 다른 곳에서 정의한다는 의미이다. 결국 themes.xml에서 보면 ``@style/Widget.CompoundButton.CheckBox''로 다시 정의된 것을 볼 수 있다.}
 parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는데, 바로 CheckBox의 style은 ``Widget.CompoundButton'' style을 상속한다. 여기서 android:focusable 속성이 true로 되어 있다.
 따라서 레이아웃에서 CheckBox 속성을 android:focusable=``false''로 하면 style이 다시 오버라이드되어 ListView에서 정상적으로 ItemClick이 동작한다.\\
 

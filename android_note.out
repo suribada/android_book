@@ -63,7 +63,7 @@
 \BOOKMARK [2][-]{subsection.7.1.2}{SQLiteOpenHelper}{section.7.1}% 63
 \BOOKMARK [1][-]{section.7.2}{ContentProvider}{chapter.7}% 64
 \BOOKMARK [2][-]{subsection.7.2.1}{ContentProvider 적용}{section.7.2}% 65
-\BOOKMARK [2][-]{subsection.7.2.2}{배치 execute}{section.7.2}% 66
+\BOOKMARK [2][-]{subsection.7.2.2}{배치 실행}{section.7.2}% 66
 \BOOKMARK [1][-]{section.7.3}{SQLite/ContentProvider 관련 팁}{chapter.7}% 67
 \BOOKMARK [2][-]{subsection.7.3.1}{쿼리 실행 확인}{section.7.3}% 68
 \BOOKMARK [2][-]{subsection.7.3.2}{ContentProvider 예외 확인}{section.7.3}% 69

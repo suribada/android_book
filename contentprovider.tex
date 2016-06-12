@@ -204,7 +204,7 @@ PRAGMA user_version;
 \end{lstlisting}
 
 SQLite 언어 지원에서 C API 등을 보면 다양한 함수가 있는데, 안드로이드의 SQLiteDatabase 클래스에서는 쓸 수 있는 게 많지 않다.
-그나마 여기에 도움을 주는 것이 PRAGMA 명령어라고 보면 된다. PRAGMA 명령어를 써서 앱의 환경에 맞는 튜닝도 약간은 가능하다.\\
+그나마 여기에 도움을 주는 것이 PRAGMA 명령어라고 보면 된다. PRAGMA 명령어를 써서 앱의 환경에 맞는 튜닝도 약간은 가능하다.
 %PRAGRMA 몇 가지 보여주자.
 
 
@@ -278,10 +278,9 @@ SQLiteDatabase에서 트랜잭션을 쓰는 패턴은 아래와 같다.
 % \includegraphics[scale=0.35]{device-sqlite}\\
 File IO 성능이 좋지 않던 초기 안드로이드 단말에서는 Lock 문제가 쉽게 드러났지만, 최신 단말에서는 바로 눈에 띄지 않을 수도 있다.\footnote{버전이 높은 것이 항상 나은 것은 아니다. 4.0.4 버전의 특정 단말에서 Lock 에러가 많이 발생한 적도 있다.} 당장 보이지 않는다고 해서 사용자 단말에서도 문제가 없다고 생각하지 말자. QA 테스트에서는 거의 안 나타나던 Lock 에러가 배포 후에 사용자 단말에서는 다량으로 나타난 경우도 있었다.\\
 
-Lock/트랜잭션 관련해서 테스트 가능한 샘플은 github에서 찾아볼 수 있다.\\
-\url{https://github.com/touchlab/Android-Database-Locking-Collisions-Example}\\
-
-이 샘플을 테스트한 결과를 얘기해보자.
+Lock/트랜잭션 관련해서 테스트 샘플 코드는 github에서 찾을 수 있다.
+\url{https://github.com/touchlab/Android-Database-Locking-Collisions-Example}
+샘플을 테스트한 결과를 얘기해보자.
 \begin{enumerate}
 \item 여러 스레드에서 1개의 SQLiteDatabase 인스턴스만 가지고 쓰기를 한다. 이때는 Lock 문제가 발생하지 않는다. 
 
@@ -303,7 +302,7 @@ threading mode 관련한 내용은 아래 url을 참고하자.\\
 \url{http://www.sqlite.org/threadsafe.html}\\
 
 SQLiteDatabase 인스턴스를 1개만 가지고서 serialized mode로 동작한다면 속도가 느려지진 않을까? 결론적으로 그렇다.
-쓰기와 읽기가 함께 있는 것이라면 serialized mode가 되어야만 Lock 문제가 없기 때문에 1개의 인스턴스를 사용해야 하지만, 읽기만 있다면 굳이 1개의 인스턴스를 고집할 필요가 없다.\\
+쓰기와 읽기가 함께 있는 것이라면 serialized mode가 되어야만 Lock 문제가 없기 때문에 1개의 인스턴스를 사용해야 하지만, 읽기만 있다면 굳이 1개의 인스턴스를 고집할 필요가 없다.
 
 \begin{comment}
 \subsubsection{Yield 하기}
@@ -642,7 +641,7 @@ onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고
 복잡한 앱에서는 Application의 onCreate() 메서드에서 앱 전체적으로 사용하는 인스턴스를 미리 생성하는 역할을 하기도 한다. ContentProvider에서도 Application에서 생성한 것을 쓰고 싶지만 순서를 주의하도록 하자.
 ContentProvider의 onCreate()는 메인 스레드에서 실행하고 다른 메서드는 일반적으로 별도 스레드에서 실행하므로(로컬에서도 ContentProvider는 스레드에서 호출하도록 권장되고, Binder를 통한 외부 앱의 접근은 Binder 스레드를 거쳐 실행), ContentProvider의 메서드 간에는 스레드 안정성에 주의하도록 하자. 멤버 변수를 함부로 쓰면 안된다는 얘기이다.
 
-\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().notifyChange\-(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
+\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().not\-ifyChange\-(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
 ContentObserver에는 어떤 데이터가 변경되었는지 알리지는 않고 변경되었는지 여부만 전달한다. 
 그러면 무슨 쓸모가 있는가 의문이 생기는데,
 query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드가 있어서 새로 조회할 수 있다. 특히 CursorAdaper는 내부에 ContentObserver가 등록되어 있어서 notifyChange()를 받으면 requery()를 실행한다.
@@ -650,10 +649,10 @@ query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드�
 \end{itemize}
 % ContentProvider call 메서드도 있다.(이것이 안드로이드다 참고)
 
-\subsection{배치 execute}
+\subsection{배치 실행}
 % http://surprisen.egloos.com/2504139
 ContentProvider에서는 여러 명령어를 한꺼번에 실행할 수 있는 applyBatch() 메서드를  제공한다. 
-applyBatch() 메서드를 보면 속도 향상을 위해서 트랜잭션을 쓰는 것으로 혼동할 수도 있지만, 실제로 하는 일은 ContentProviderOperation 목록을 한꺼번에 전송해놓고 순차적으로 수행하는 것에 지나지 않는다. 
+applyBatch() 메서드를 보면 속도 향상을 위해서 트랜잭션을 쓰는 것으로 혼동할 수도 있지만, 실제로 하는 일은 ContentProviderOperation 목록을 한꺼번에 전송해놓고 순차 실행하는 것에 지나지 않는다. 
 \begin{lstlisting}[frame=single] 
 ArrayList<ContentProviderOperation> operations 
 	= new ArrayList<ContentProviderOperation>();
@@ -684,7 +683,7 @@ newInsert/newUpdate/newDelete 같은 메서드는 Builder 패턴을 사용해서
 
 다른 프로세스에서 실행한다면 Binder를 거쳐야 하는데, 하나씩 명령어를 주고받는 것보다 한꺼번에 보내는 것으로 속도 향상은 있지만 트랜잭션을 쓰는 것처럼 속도 향상이 큰 것은 아니다.
 트랜잭션을 써서 속도를 향상시키고 싶다면,
-ContentProvider에서 applyBatch(ArrayList$<$ContentProviderOperation$>$ operations) 메서드를 오버라이드하는 방법이 있다.
+ContentProvider에서 applyBatch(ArrayList$<$ContentProviderOper\-ation$>$ operations) 메서드를 오버라이드하는 방법이 있다.
 \begin{lstlisting}[frame=single] 
 @Override
 public ContentProviderResult[] applyBatch(

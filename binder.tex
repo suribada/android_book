@@ -119,6 +119,7 @@ Context에 getSystemService(String name) 메서드가 있어서, 리턴 결과�
 일반적인 패턴은 Binder Proxy를 래핑하고서 -Manager 식의 네이밍을 가진다. 그리고 -Manager에서는 Stub의 모든 public 메서드를 다 사용할 수 있는 것은 아니다.
 예를 들어, ActivityManager에서 startActivity() 메서드를 실행할 수는 없다.
 아래 표를 보도록 하자. 일반적인 네이밍 패턴에 맞는 것도 많지만 아닌 것도 여럿 있다(롤리팝 기준).
+\newpage
 % com.android.server.SystemServer 참고
 %\newgeometry{left=2cm,bottom=2cm}
 \scalebox{0.73}{
@@ -186,7 +187,7 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 \item LayoutInflator는 Binder 통신을 하는 것이 아니고, PolicyManager.makeNewLayoutInflater()를 통해  com.android.internal.policy.impl.PhoneLayoutInflator를 가져온다.
 사용할 때 LayoutInflator를 가져오는 메서드는 3가지가 있다.
 \begin{itemize}
-\item (LayoutInflator) Context.getSystemService(Context.LAYOUT\_INFLATER\_SERVICE)
+\item (LayoutInflator) Context.getSystemService(Context.LAYOUT\_INFLATER\_SERV\-ICE)
 \item LayoutInflator.from(Context context)
 \item Activity의 getLayoutInflator()
 \end{itemize}
@@ -199,7 +200,7 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 \item DownloadService는 별도 프로세스인 android.process.media에서 실행된다. 
 DownloadManager는 ContentResolver를 통해 DB에 쌓는 역할만 한다.
 DownloadService는 프레임워크 소스에서 packages/providers/DownloadProvider 디렉터리에 있고, Service를 상속한 일반 Service이다. 
-DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, C\-onnectivityManager.CONNECTIVITY\_ACTION(연결될 때)와 내부적으로 쓰는 Action인 ACTION\-\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
+DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOUNTED, C\-onnectivityManager.CONNECTIVITY\_ACTIO\-N(연결될 때)와 내부적으로 쓰는 Action인 ACTION\-\_RETRY Broadcast 이벤트 발생 시에 DownloadService를 시작한다.
 
 \item 추상 클래스인 SensorManager의 실제 구현은 android.hardware.SystemSensorManager이다. ContextImpl에서 처음 SensorManager를 Service Map에 넣을 때 네이티브에서 Sensor 목록을 로딩한다.
 
@@ -265,7 +266,7 @@ system\_server에서 여러 시스템 서비스를 제공하고, 이를 다른 �
 ServiceManager.addService() 메서드를 통해서 여러 Stub을 등록하는 것을 볼 수 있다.
 % /frameworks/base/core/java/android/os/ServiceManager.java
 여기서 보면 ActivityManagerService 등록이 눈에 띄지 않는데, 관련 코드는 ActivityManagerService 안에 있다. 
-11라인(1)에서 ActivityManagerService.setSystemProcess() 호출이 있는데, 여기서 자기 자신을 등록하고 있다.\\
+11라인(1)에서 ActivityManagerService.setSystemProcess() 호출이 있는데, 여기서 자기 자신을 등록하고 있다.
 \begin{lstlisting}[frame=single, caption=ActivityManagerService.java] 
    public static void setSystemProcess() {
         try {
@@ -647,7 +648,7 @@ PackageManager를 이용해서 versionCode를 구하는 코드는 아래와 같�
 \begin{itemize}
 \item 당연한 얘기지만 빈번한 호출로 부하를 발생시킨다.
 \item system\_server도  가끔은 죽을 수 있다. 
-발생빈도가 낮지만, 시스템 상태가 좋지 않거나 메모리가 부족하다면 가능한 얘기이다. 이때 스택 트레이스에는 ``Caused by: java.lang.RuntimeException: system server dead?'' 메시지를 보여준다. system\_server는 물론 죽자마자 다시 살아나긴 한다.
+발생빈도가 낮지만, 시스템 상태가 좋지 않거나 메모리가 부족하다면 가능한 얘기이다. 이때 스택 트레이스에는 ``Caused by: java.lang.RuntimeExce\-ption: system server dead?'' 메시지를 보여준다. system\_server는 물론 죽자마자 다시 살아나긴 한다.
 \end{itemize}
 
 매 호출마다 동일한 값을 리턴하므로, 이 경우에는 불필요한 호출을 줄이기 위해서 메모리(Application 인스턴스의 변수나, 싱글톤 인스턴스에 저장)나 SharedPreferences 사용을 고려할 수 있다. 이 경우에 한해서 최신 IDE에서는 BuildConfig에 VERSION\_CODE, VERSION\_NAME 상수를 생성해주기 때문에 이를 사용하는 것도 가능하다.\\

@@ -29,7 +29,7 @@ onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도
 메인 쓰레드에서 실행되므로 실제로는 1분/10초/5초도 아닌 훨씬 짧은 시간 내에 처리가 완료되어야 한다. 그렇지 않으면 UI에서 버벅거림의 원인이 될 수 있다.\\
 
 단일 이벤트에 대해서 하나의 앱에 여러 BroadcastReceiver가 등록된 경우도 주의해야 한다.
-본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 그나마 문제가  없지만, 하나의 앱에서는 단일 이벤트에 여러 BroadcastReceiver가 등록되어 있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.\\
+본래 Broadcast는 여러 프로세스 간에 이벤트를 전달하기 위한 것이다. 각 프로세스라면 동시에 실행되는 데 그나마 문제가  없지만, 하나의 앱에서는 단일 이벤트에 여러 BroadcastReceiver가 등록되어 있을 때 onReceive() 메서드는 순차적으로 하나씩 실행되기 때문에 BroadcastRecever를 실행하느라 UI 동작에 문제가 생길 수 있다.
 
 \begin{comment}
 어떤 앱에서는 Application에만 registerReceiver를 해놓는 경우도 있다. BroadcastReceiver를 최소한의 개수로 하고, 최소한의 시간만 존재하도록 하는 것이 BroadcastReceiver로 인해 UI가 버벅거리지 않게 하는 방법이다.
@@ -101,13 +101,13 @@ sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPL\-ETED))를 실행한 결과 
 \end{lstlisting}
 
 Intent 클래스에 정의된 모든 Broadcast Action이 `protected intent'인 것은 아니다.
-ACTION\_MEDIA\_SC\-A\-NNER\_SC\-AN\_FI\-LE Action 같은 것은 앱에서 발생시키라고 있는 것이다.
+ACTION\_ME\-DIA\_SC\-A\-NNER\_SC\-AN\_FI\-LE Action 같은 것은 앱에서 발생시키라고 있는 것이다.
 이미지를 SD Card에 저장했는데 미디어 스캐닝이 안 돼서 곧바로 화면에 가져올 수 없는 경우가 있다.
 이때 바로 앱에서 사용하는 방식이 ACTION\_MEDIA\_SCANNER\_SCAN\_FILE Action를 Broadcast해서 미디어 스캐너가 동작하게 하는 것이다.\\
 
 캘린더 앱이라면, 처리해야 하는 이벤트로는 ACTION\_TIMEZONE\_CHANGED,
-ACTION\_LOCALE\_C\-HANG\-ED Action이 있다.
-그리고 많은 앱에서 처리하는 이벤트로는 ACTION\_BOOT\_COMPLETED Action도 있다. 
+ACTION\_LO\-CALE\_C\-HANG\-ED Action이 있다.
+그리고 많은 앱에서 처리하는 이벤트로는 ACTION\_BOOT\_\-COMPLETED Action도 있다. 
 앱에서 특정 시간에 하는 작업을 위해서는 AlarmManager에 등록하고 있다.
 PendingIntent를 setXxx() 메서드를 통해서 특정 시간에 동작하도록 AlarmManager에 등록하는데, 이 알람들은 단말이 꺼지면 모두 사라져 버리므로 다시 부팅하면 사라진 알람들을 재등록해야 한다. 이때 ACTION\_BOOT\_COMPLETED Action을 받아서 재등록을 진행한다.\\
 
@@ -155,7 +155,7 @@ Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 
 코드 상으로는 AudioManager 클래스에 상수로 있는데 @hide로 숨겨져 있다. 
 이 샘플과 같이 Action명을 알 수 있다면 처리할 수 있는 케이스가 많다.\\
 
-바탕화면에 Shortcut을 설치하는 것도 Broadcast를 통해서 한다. com.android.launcher.action.INSTALL\_SH\-ORT\-CUT도 undocumented Action이다.
+바탕화면에 Shortcut을 설치하는 것도 Broadcast를 거친다. com.android.launcher.action.INST\-ALL\_SH\-ORT\-CUT도 undocumented Action이다.
 \begin{lstlisting}[frame=single] 
 	Intent shortcutIntent = new Intent("android.intent.action.MAIN", null);
 		
@@ -177,7 +177,7 @@ Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 
 	intent.putExtra("duplicate", false);
 	context.sendBroadcast(intent);
 \end{lstlisting}
-여기에 필요한 퍼미션은 문서에 나와 있다.\\
+여기에 필요한 퍼미션은 문서에 나와 있다.
 \url{http://developer.android.com/reference/android/Manifest.permission.html}
 \begin{lstlisting}[frame=single] 
 <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
@@ -223,13 +223,13 @@ finishAffinity() 메서드는 Activity 어느 하나에서만 호출하면 되�
 		...
 	}
 \end{lstlisting}
-이런 식으로 어디서든 한쪽에서만 실행하고 끝나도 되는 것이라면, Ordered Broadcast를 고려해보자.\\
+이런 식으로 어디서든 한쪽에서만 실행하고 끝나도 되는 것이라면, Ordered Broadcast를 고려해보자.
 
 \section{Sticky Broadcast}
 sendStickyBroadcast()는 Intent를 시스템에 등록해놓고, 새로 해당 Intent를 받을 수 있는 BroadcastReceiver가 등록되면 이 시점에 BroadcastReceiver의 onReceive()가 호출된다. 즉 먼저 이벤트를 발생시켜 놓고서, 그 이벤트 상태를 알고자 하는 BroadcastReceiver가 등록되는 시점에 BroadcastReceiver에서 이벤트를 받는 것이다.
 Sticky Broadcast를 보내기 위해서는 android.permission.BROADCAST\_STICKY 퍼미션이 필요하다.\\
 
-시스템에서 보내는 Sticky Broadcast는 Intent API 문서에서 확인할 수 있다. ACTION\_BATTERY\_CHAN\-GED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
+시스템에서 보내는 Sticky Broadcast는 Intent API 문서에서 확인할 수 있다. ACTION\-\_BATTERY\-\_CHAN\-GED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
 
 앱에서는 sendStickyBroadcast()를 호출하는 것은 권장되지 않는다. 롤리팝에서는 이 메서드가 deprecated되기도 했다.
 Sticky Broadcast는 계속 시스템 메모리에 정보가 남아있어서, 어디선가 정보를 알고 싶을 때 언제든지 빼낼 수가 있기 때문에 보안 문제가 있다.
@@ -397,12 +397,12 @@ public class AppWidgetProvider extends BroadcastReceiver {
 \item 25라인(3)에서 ACTION\_APPWIDGET\_OPTIONS\_CHANGED Action은 App Widget이 새로운 사이즈로 레이아웃될때 호출된다(젤리빈부터).
 \item 40라인(4)에서 ACTION\_APPWIDGET\_ENABLED Action은 최초 설치 시에 호출된다.
 \item 43라인(5)에서 ACTION\_APPWIDGET\_DISABLED Action은 마지막 인스턴스가 삭제될 때 호출된다.
-\item ACTION\_APPWIDGET\_DELETED, ACTION\_OPTIONS\_CHANGED, ACTION\_ENABLED,\\
+\item ACTION\_APPWIDGET\_DELETED, ACTION\_OPTIONS\_CHANGED, ACTION\_\-ENABLED,
 ACTION\_DISABLED Action은 protected intent로 시스템에서만 보낼 수 있다.
 앱에서는 ACTION\_A\-PP\-WIDGET\_UPDATE만 보낼 수 있다.
 \end{itemize}
 
-AppWidgetProvider를 상속하면 onReceive() 메서드는 구현하지 않아도 되지만, 별도 Intent Action을 사용한다면 onReceive() 메서드를 오버라이드해야 한다. App Widget에 버튼 클릭 같은 액션이 있어서 다시 그려야 하는 경우 등이다.\\
+AppWidgetProvider를 상속하면 onReceive() 메서드는 구현하지 않아도 되지만, 별도 Intent Action을 사용한다면 onReceive() 메서드를 오버라이드해야 한다. App Widget에 버튼 클릭 같은 액션이 있어서 다시 그려야 하는 경우 등이다.
 
 \subsection{RemoteViews}
 RemoteViews는 다른 프로세스에 있는 뷰 계층을 나타낸다. 다른 프로세스에서 보여져야 하는 Notification이나 App Widget에서 주로 사용된다.
@@ -413,11 +413,12 @@ Toast도 내부적으로 Notification과 동일하게 system\_server 프로세�
 }}\newline\newline
 
 RemoteViews의 레이아웃에서 쓸 수 있는 뷰 클래스는 한정되어 있는데, LayoutInflator.Filter 인터페이스의  onLoadClass() 메서드가 뷰 클래스를 제한하는 역할을 한다. LayoutInflator.Filter 구현체인 RemoteViews에서 boolean onLoadClass(Class clazz) 메서드를 보면 클래스 선언에 @RemoteView 애노테이션이 있는 것만 true를 리턴한다.
-애노테이션으로 제한되어 사용가능한 뷰 클래스는 아래와 같다.\\
-
-FrameLayout, LinearLayout, RelativeLayout, GridLayout,\\
-AnalogClock, Button, Chronometer, ImageButton, ImageView, ProgressBar, TextView, ViewFlipper,\\
-ListView, GridView, StackView, AdapterViewFlipper(이 4개는 허니콤부터 지원)\\
+애노테이션으로 제한되어 사용가능한 뷰 클래스는 아래와 같다.
+\begin{itemize}
+\item FrameLayout, LinearLayout, RelativeLayout, GridLayout
+\item AnalogClock, Button, Chronometer, ImageButton, ImageView, ProgressBar, TextView, ViewFlipper
+\item ListView, GridView, StackView, AdapterViewFlipper(이 4개는 허니콤부터 지원)
+\end{itemize}
 
 이런 제한을 알아도 거치게 되는 시행착오들이 있다. 그런 내용을 알아 보자.
 \begin{itemize}
@@ -431,7 +432,7 @@ RemoteViews는 뷰 계층 상에 있는 레이아웃 리소스 id를 대상으�
 
 RemoteViews를 통해서 지원 가능한 뷰 클래스에서, 쓸 수 있는 메서드도 제한적일 거 같은데 그렇지는 않다. 
 RemoteViews API 문서를 보면 메서드 가운데서 두 번째 파라미터에 methodName 문자열이 전달되는 것이 있는데, 리플렉션을 통해 세 번째 파라미터를 methodName 이름의 메서드에 전달하게 된다. 
-예를 들어, setImageViewBitmap(int viewId, Bitmap bitmap), setTextViewText(int viewId, CharSequence text) 같은 메서드는 내부적으로 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setText'' 문자열이 methodName에 들어간다).\\
+예를 들어, setImageViewBitmap(int viewId, Bitmap bitmap), setTextViewText(int viewId, CharSequence text) 같은 메서드는 내부적으로 리플렉션 용도의 메서드인 setBitmap(int viewId, String methodName, Bitmap value), setCharSequence(int viewId, String methodName, CharSequence value)를 다시 호출한다(``setImageBitmap'', ``setText'' 문자열이 methodName에 들어간다).
 
 \subsection{App Widget 업데이트}
 App Widget을 업데이트하는 주요 코드는 간단하다.
