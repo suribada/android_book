@@ -219,7 +219,7 @@ Application도 AndroidManifest.xml에 android:process 값을 넣을 수는 있�
 컴포넌트의 프로세스를 분리하면 Application은 각 프로세스마다 새로 뜬다. 프로세스가 달라지면 Zygote에 의해서 fork된 이후에 새로 ActivityThread를 띄우고 Application을 새로 생성하는 것이다.\\
 
 설명을 위해서 \pageref{application} 페이지의 코드 \ref{application}을 다시 한번 보자. 
-앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스), ActivityB(and\-roid:process=``:ca\-mera'')가 있다고 하자. 
+앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스)와 Activity\-B(and\-roid:process=``:ca\-mera'')가 있다고 하자. 
 ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 어떤 프로세스에서 실행되는지 확인해보자.
 
 \begin{enumerate}

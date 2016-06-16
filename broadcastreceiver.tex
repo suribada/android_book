@@ -521,7 +521,7 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 그런데 이 옵션은 픽셀당 4바이트를 차지한다(투명 Alpha 값이 없는 RGB\_565의 2배). 갤럭시 노트4의 경우를 보면 해상도가 2560x1440이므로 곱해보면 화면을 거의 채운다고 할 때, createBitmap()만으로도 14M 가량을 사용하게 되는 셈이다. 
 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
 
-기존에는 문제가 없었는데 특히 최신 단말에서 App Widget을 생성하면서 Bitmap.createBitmap()에서 OutOfMemoryError가 발생한다면 이것을 원인으로 보면 거의 맞다.
+기존에는 문제가 없었는데 특히 최신 단말에서 App Widget을 생성할 때 Bitmap.createBitmap()에서 OutOfMemoryError가 발생한다면 이것을 원인으로 보면 거의 맞다.
 단말 스펙이 높아지면서 해상도가 좋아지는데, 앱 프로세스의 가용 메모리는 비례해서 커지지 않아서 발생하는 문제이다.
 이때는 App Widget을 프로세스 분리하는 방법을 한번 고려해보자.
 App Widget 개수가 많다면 그 개수만큼 프로세스 분리하는 것보다 1개만 분리하는 게 관리가 수월하므로, Service에 App Widget 업데이트 로직을 넘기고 Service를 프로세스 분리해도 된다.

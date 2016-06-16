@@ -1,0 +1,127 @@
+\documentclass[a4paper,hidelinks,11pt, openany]{book}
+\usepackage[11pt]{moresize} % 11pt로 키우면서 fontsize 조정 필요
+\usepackage{kotex} %[hangul]을 추가하면 제 1장, 제 1절 식으로 들어감
+\usepackage{graphicx}
+\usepackage{upquote}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim} 
+\usepackage{hyperref}
+\usepackage[top=1in, bottom=1in, outer=2.5cm, inner=2.5cm, headsep=14pt]{geometry} %pdf 전용
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage{fancyhdr}
+\usepackage{dhucs-cmap} %pdf에서 한글 복사가 되는 옵션
+\usepackage{makecell} %표에서 한 셀에서 linebreak
+\usepackage{longtable} %여러 페이지에 걸쳐있는 테이블
+\usepackage{fontspec}
+\usepackage{amssymb} % 책 인용 위해서
+%\setmainfont{나눔고딕} % 이걸 쓰면 섹션 타이틀이 bold와 아닌 것이 섞인다.
+%\setmainfont{Times New Roman} % Roman (rm)
+%\setsansfont{Arial}           % Sans-serif (sf)
+\setmonofont{Courier New}         % Monospace (tt)
+
+\pagestyle{fancy} %상단에 페이지와 현재 절 표현하기
+
+\makeatletter
+\DeclareRobustCommand{\format@sec@number}[2]{{\normalfont\upshape#1}#2}
+\renewcommand{\chaptermark}[1]{%
+  \markboth{\format@sec@number{\ifnum\c@secnumdepth>\m@ne\@chapapp\ \thechapter. \fi}{#1}}{}}
+\renewcommand{\sectionmark}[1]{%
+  \markright{\format@sec@number{\ifnum\c@secnumdepth>\z@\thesection \fi}{ #1}}}
+\makeatother
+
+\fancyhf{}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[LE,RO]{\thepage}
+
+%\usepackage[scale=0.75,twoside,bindingoffset=5mm,a4paper]{geometry}
+
+\renewcommand{\baselinestretch}{1.3} 
+\renewcommand\theadalign{cb}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+\def\contentsname{차례}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{purple}{rgb}{0.5, 0.0, 0.5}
+\definecolor{burntorange}{rgb}{0.8, 0.33, 0.0}
+\definecolor{tearose}{rgb}{1.0, 0.92, 0.8}
+
+\renewcommand\lstlistingname{코드}
+
+\title{안드로이드의 정석}
+\author{노재춘}
+
+\begin{document}
+% 한글 맞춤법 https://search.naver.com/search.naver?where=nexearch&query=%ED%95%9C%EA%B8%80+%EB%A7%9E%EC%B6%A4%EB%B2%95+%EA%B2%80%EC%82%AC%EA%B8%B0&sm=top_sug.pre&fbm=0&acr=1&acq=%ED%95%9C%EA%B8%80+%EB%A7%9E%EC%B6%A4%EB%B2%95&qdt=0&ie=utf8
+
+%https://en.wikibooks.org/wiki/LaTeX/Labels_and_Cross-referencing
+% http://latexcolor.com
+\maketitle
+\parindent=0em
+
+\input{header}
+
+\tableofcontents
+
+%\newfontfamily\listingsfont[Scale=0.7]{Courier} 
+%\newfontfamily\listingsfontinline[Scale=0.8]{Courier New} 
+
+\lstset {
+	language=java, 
+	basicstyle=\ttfamily\footnotesize,
+	%basicstyle=\fontfamily{mono}\selectfont\small,
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+    keywordstyle=\color{purple},
+	tabsize=4,
+	showspaces=false, 
+	showstringspaces=false, 
+	numberstyle=\color{codegray},
+	numbers=left,                    
+    numbersep=5pt,  
+    stepnumber=5,      
+    firstnumber=1,
+	breaklines=tr}
+\newpage
+
+\input{contents}
+
+\input{start}
+
+\input{singlethread}
+
+\input{context}
+
+\input{activity}
+%\input{activity2-1}\right 
+%\input{activity3}
+%\section{안드로이드 SDK 도구}
+
+%%\input{tools}
+%%\input{intent}
+
+\input{service}
+\input{contentprovider}
+\input{broadcastreceiver}
+\input{application}
+\input{binder}
+\input{pattern}
+
+%\input{deepsleep}
+
+%\input{activitymanager}
+%\input{toast}
+
+% https://www.bookmake.co.kr/print/product.html?goods_cd=10000153#
+
+\bibliography{book}
+\bibliographystyle{plain}
+
+
+\end{document}

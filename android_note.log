@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  13 JUN 2016 03:28
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  16 JUN 2016 09:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1066,14 +1066,14 @@ LaTeX Info: Redefining \nameref on input line 62.
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: twoside 
-* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* h-part:(L,W,R)=(85.35826pt, 455.24411pt, 56.9055pt)
 * v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
 * \textwidth=455.24411pt
 * \textheight=700.50687pt
-* \oddsidemargin=-1.1381pt
-* \evensidemargin=-1.1381pt
+* \oddsidemargin=13.08827pt
+* \evensidemargin=-15.36449pt
 * \topmargin=-26.0pt
 * \headheight=12.0pt
 * \headsep=14.0pt
@@ -1156,49 +1156,50 @@ Underfull \hbox (badness 10000) in paragraph at lines 36--38
 
 (c:/texlive/2015/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2015/06/04 1.6 listings language file
-) [7] [8
+) [7]
+(./contents.tex [8
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 102--104
+Underfull \hbox (badness 10000) in paragraph at lines 8--10
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 105--106
+Underfull \hbox (badness 10000) in paragraph at lines 11--12
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 107--110
+Underfull \hbox (badness 10000) in paragraph at lines 13--16
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 111--112
+Underfull \hbox (badness 10000) in paragraph at lines 17--18
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 113--114
+Underfull \hbox (badness 10000) in paragraph at lines 19--20
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 115--116
+Underfull \hbox (badness 10000) in paragraph at lines 21--22
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 117--118
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--120
+Underfull \hbox (badness 10000) in paragraph at lines 25--26
 
  []
 
-(./start.tex [9] [10
+) (./start.tex [9] [10
 
 ]
 Chapter 1.
@@ -2742,10 +2743,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 520--523
  []
 
 
-Overfull \hbox (13.77936pt too wide) in paragraph at lines 524--528
+Overfull \hbox (6.20491pt too wide) in paragraph at lines 524--528
 [] \EU1/NanumMyeongjo(0)/m/n/10.95 기 존 에 는 문 제 가 없 었 는 데 특 히 최 신 단 말 에 서 \EU1/m
-ono/m/n/10.95 App Widget \EU1/NanumMyeongjo(0)/m/n/10.95 을 생 성 하 면 서 \EU1/mono/
-m/n/10.95 Bitmap.createBitmap()
+ono/m/n/10.95 App Widget \EU1/NanumMyeongjo(0)/m/n/10.95 을 생 성 할 때 \EU1/mono/m/
+n/10.95 Bitmap.createBitmap()
  []
 
 [159]) (./application.tex [160]
@@ -2821,15 +2822,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 219--220
  []
 
 [166]
-Overfull \hbox (22.17598pt too wide) in paragraph at lines 221--224
-\EU1/mono/m/n/10.95 ryUpdaterService(\EU1/NanumMyeongjo(0)/m/n/10.95 디 폴 트 프 로 
-세 스\EU1/mono/m/n/10.95 ) \EU1/NanumMyeongjo(0)/m/n/10.95 가 있 고, \EU1/mono/m/n/1
-0.95 ActivityA(\EU1/NanumMyeongjo(0)/m/n/10.95 메 인 \EU1/mono/m/n/10.95 Activity
-, \EU1/NanumMyeongjo(0)/m/n/10.95 디 폴 트 프 로 세 스\EU1/mono/m/n/10.95 ), ActivityB
-(and-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 234--236
 
  []
@@ -3060,22 +3052,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 494--495
 
 )
 No file android_note.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 129.
 [202]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 129.
  (./android_note.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 156.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 129.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 129.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 129.
  ) 
 Here is how much of TeX's memory you used:
- 27888 strings out of 493638
- 467640 string characters out of 6147976
- 757570 words of memory out of 5000000
+ 27891 strings out of 493638
+ 467674 string characters out of 6147976
+ 757576 words of memory out of 5000000
  30956 multiletter control sequences out of 15000+600000
  62666 words of font info for 112 fonts, out of 8000000 for 9000
  1328 hyphenation exceptions out of 8191
