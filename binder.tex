@@ -182,8 +182,11 @@ WINDOW\_SERVICE & WindowManager & IWindowManager & WindowManagerService \\ \hlin
 하나하나 보는 것보다는 전체적으로 특기할 만한 내용 위주로 보도록 하자.
 \begin{itemize}
 \item getSystemService()의 결과로서 -Manager 네이밍을 따르지 않는 것은 JobScheduler, LauncherApps, LayoutInflater, MediaRouter, Vibrator 4가지이다. 
+
 \item 인터페이스 이름은 getSystemService() 결과 클래스에 일반적으로는 앞에 I를 붙이지만, 예외 케이스가 너무 많다. Manager 자리에 Service가 붙기도 하고, Manager가 빠지기도 하고 ManagerService로 끝나기도 한다. 
+
 \item 안드로이드 컴포넌트와 연관되어 있기 때문에 시스템 서비스 가운데 가장 많이 참고해야 하는 ActivityManagerService는 추상 클래스인 ActivityManagerNative를 상속한다. ActivityManagerNative는 IActivityManager의 Stub 구현이 아니라, Binder를 상속한 IActivityManager 인터페이스 구현이다. 그래서 asInterface()나 onTransact() 메서드 등이 직접 구현되어 있다.
+
 \item LayoutInflator는 Binder 통신을 하는 것이 아니고, PolicyManager.makeNewLayoutInflater()를 통해  com.android.internal.policy.impl.PhoneLayoutInflator를 가져온다.
 사용할 때 LayoutInflator를 가져오는 메서드는 3가지가 있다.
 \begin{itemize}
@@ -206,8 +209,8 @@ DownloadReceiver에서 Intent.ACTION\_BOOT\_COMPLETED, Intent.ACTION\_MEDIA\_MOU
 
 \item NfcManager는 NfcAdapter를 얻기 위한 용도이다.  getDefaultAdapter() 메서드 하나만 있다. NfcService의 내부 클래스인 NfcAdapterService에서 INfcAdapter.Stub을 구현하고, NfcAdapter에서는 여기에 접근한다.
 
-\item InputMethodManagerService와 별도로 InputMethodService 클래스도 있다. 
-전자는 system\_server에서 쓰이는 클래스이고, Service를 상속하고 소프트 키보드를 만들 때 사용하는 클래스이다.
+\item InputMethodManager는 주로 EditText에 소프트 키보드를 연결하는 데 사용된다. Stub 구현은 InputMethodManagerService인데, 이와 별도로 InputMethodService 클래스도 있다. 
+전자는 system\_server에서 실행되는 클래스이고, 후자는 Service를 상속하고 소프트 키보드를 구현할 때 사용하는 클래스이다.
 
 \item 롤리팝에는 com.android.server.SystemService가 추가되어서 시스템 서비스  클래스는 이를 상속하고 Stub 구현은 내부 클래스에서 하고 있다.\\
 \begin{tabular}[fontsize=\tiny]{|l|l|} \hline

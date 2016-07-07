@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  16 JUN 2016 09:55
+This is XeTeX, Version 3.14159265-2.6-0.99992 (TeX Live 2015/W32TeX) (preloaded format=xelatex 2016.3.30)  20 JUN 2016 21:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2876,17 +2876,17 @@ Overfull \hbox (5.45819pt too wide) in paragraph at lines 184--185
  []
 
 [175]
-Underfull \hbox (badness 10000) in paragraph at lines 223--225
-
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 226--228
 
  []
 
+
+Underfull \hbox (badness 10000) in paragraph at lines 229--231
+
+ []
+
 [176] [177] [178] [179] [180]
-Underfull \hbox (badness 10000) in paragraph at lines 461--465
+Underfull \hbox (badness 10000) in paragraph at lines 464--468
 
  []
 
@@ -2894,73 +2894,73 @@ Underfull \hbox (badness 10000) in paragraph at lines 461--465
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [183]
-Underfull \hbox (badness 10000) in paragraph at lines 626--633
+Underfull \hbox (badness 10000) in paragraph at lines 629--636
 
  []
 
 
-Overfull \hbox (0.48747pt too wide) in paragraph at lines 650--652
+Overfull \hbox (0.48747pt too wide) in paragraph at lines 653--655
 \EU1/NanumMyeongjo(0)/m/n/10.95 가 부 족 하 다 면 가 능 한 얘 기 이 다. 이 때 스 택 트 레 이 스 에 는 
 \EU1/mono/m/n/10.95 “Caused by: java.lang.RuntimeExce-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 654--655
+Underfull \hbox (badness 10000) in paragraph at lines 657--658
 
  []
 
 [184]
-Underfull \hbox (badness 10000) in paragraph at lines 660--661
+Underfull \hbox (badness 10000) in paragraph at lines 663--664
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 662--664
+Underfull \hbox (badness 10000) in paragraph at lines 665--667
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 665--666
+Underfull \hbox (badness 10000) in paragraph at lines 668--669
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 684--686
+Underfull \hbox (badness 10000) in paragraph at lines 687--689
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 687--693
+Underfull \hbox (badness 10000) in paragraph at lines 690--696
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 694--696
+Underfull \hbox (badness 10000) in paragraph at lines 697--699
 
  []
 
 [185]
-Underfull \hbox (badness 10000) in paragraph at lines 711--713
+Underfull \hbox (badness 10000) in paragraph at lines 714--716
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 733--740
+Underfull \hbox (badness 10000) in paragraph at lines 736--743
 
  []
 
 [186]
-Underfull \hbox (badness 10000) in paragraph at lines 753--756
+Underfull \hbox (badness 10000) in paragraph at lines 756--759
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 768--771
+Underfull \hbox (badness 10000) in paragraph at lines 771--774
 
  []
 
 [187]
-Underfull \hbox (badness 10000) in paragraph at lines 772--775
+Underfull \hbox (badness 10000) in paragraph at lines 775--778
 
  []
 

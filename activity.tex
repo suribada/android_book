@@ -1,6 +1,6 @@
 \chapter{Activity}
 Activity는 앱에서 화면의 기본 단위이고 setContentView() 메서드로 메인 뷰를 화면에 표시한다.
-때에 따라 setContentView()를 실행하지 않고, 로직 분기를 해서 다른 Activity를 띄우는 용도로 사용하기도 한다.
+때에 따라 setContentView()를 실행하지 않고, 로직에 따라 분기해서 다른 Activity를 띄우는 용도로 사용하기도 한다.
 한 예로 Intent의 스킴(scheme)에 따라 다른 화면으로 전환하는 경우가 있다. 
 이때 AndroidManifest.xml에서 여러 Activity에 intent-filter 엘리먼트를 추가하지 않고, Controller 역할의 Activity 1개에만 여러 스킴의 intent-filter를 명시해서 Controller Activity를 거쳐 다른 화면으로 이동시킨다.\\
 
