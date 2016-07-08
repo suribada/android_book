@@ -127,8 +127,10 @@ Context에는 Service를 시작하는 방법으로 startService()와 bindService
 Bound되었다가 해제된 것으로 오해할 수도 있기 때문에 Unbound Service보다는 Started Service로 부르는 게 더 맞겠다. 
 이 책에서도 이후 Started Service와 Bound Service로 언급하기로 한다.\\
 
-Service는 보통 Started Service 또는 Bound Service로 존재하는데, Started이면서 Bound일 수도 있다. Started \& Bound Service는 코드도 복잡해지고 고려할 것이 두 배 이상이 되기 때문에 가능하면 피하는 게 좋지만 어쩔 수 없는 경우도 있다.
-예를 들어, 화면을 벗어나도 음악을 들으려면 Started Service를 이용해야 한다. 그런데 화면에 진입할 때 재생중인 음악 정보를 화면에 보여줘야 한다면 Bound Service이기도 해야 한다.
+Service는 보통 Started Service 또는 Bound Service로 존재하는데, Started이면서 Bound일 수도 있다. 
+Started \& Bound Service는 코드도 복잡해지고 고려할 것이 두 배 이상이 되기 때문에 가능하면 피하는 게 좋지만 어쩔 수 없는 경우도 있다.
+예를 들어, 음악 재생 화면이 있고 화면을 종료해도 음악을 들으려면 Started Service를 이용해야 한다. 그런데 다시 화면에 진입할 때 재생중인 음악 정보를 화면에 보여줘야 한다면 Bound Service이기도 해야 한다.
+또다른 경우를 생각해보면 화면에서 파일 다운로드 명령을 하고 Service에서 실제 다운로드를 진행한다. 이때 SeekBar를 통해 다운로드 진행률을 표시하고, 화면을 종료해도 다운로드는 계속되고 다시 화면에 진입해도 진행률을 표시해야 한다면 Started \& Bound Service를 이용하면 된다.
 
 \section{Started Service}
 Started Service는 Context의 startService() 메서드로 시작된다. 

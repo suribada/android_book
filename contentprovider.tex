@@ -111,7 +111,8 @@ sqlite3 /data/data/com.android.providers.settings/databases/settings.db
 \end{lstlisting}
 
 sqlite shell에서는 SQLite dot command라고 불리는 명령어 모음이 있다.
-말 그대로 dot(.)으로 시작하고 다른 명령어처럼 semi-clone(;)을 쓰지는 않는다. 이 명령어 모음은 약 30여 개가 되는데 단순 확인 용도이고 실제 사용하는 명령어는 몇 개 되지 않는다.
+말 그대로 dot(.)으로 시작하고 다른 명령어처럼 semi-clone(;)을 쓰지는 않는다. 
+이 명령어 모음은 약 30여 개가 되는데 단순 확인 용도이고 실제 사용하는 명령어는 몇 개 되지 않는다.
 .help로 명령어 목록을 보고 필요할 때 더 많은 기능을 활용해보자.
 sqlite shell을 끝내는 명령어는 .quit와 .exit 둘 다 사용한다.
 \begin{itemize}
@@ -223,7 +224,7 @@ Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로�
 \item SHARED: 읽기만 되고 쓰기는 안된다. 여러 프로세스가 동시에 Shared Lock을 가질 수 있다. 하나 이상의 Shared Lock이 활성화되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
 \item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
 \item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 Clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
-\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 크게 잡지 않도록 권장하는 것과 비슷하다. \\
+\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 크게 잡지 않도록 권장하는 것과 비슷하다. 
 % 예를 들어 수차례의 HTTP call을 통해서 데이터를 가져와서 입력한다고 하면, Transaction을 먼저 시작하고, HTTP call을 하면 전체적인 Transaction 실행시간이 길어질 수 밖에 없다.
 \end{itemize}
 
@@ -236,7 +237,7 @@ SQLite에서 트랜잭션은 deferred, immediate, exclusive의 3가지 동작 �
 \begin{itemize}
 \item defered: 말 그대로 Lock을 가능한 한 뒤로 미룬다. 트랜잭션을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고 첫 write operation이 있을 때 Reserved Lock을 잡는다. 최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 스레드에서 DB 작업을 할 수 있다. 
 \item immediate: 트랜잭션을 시작할 때 Reserved Lock이 잡힌다. Reserved Lock은 2개 이상 잡힐 수 없으므로, 다른 immidate 트랜잭션을 시작할 수는 없다. 그래도 다른 프로세스나 스레드에서 읽기를 할 수는 있다.
-\item exclusive: 트랜잭션을 시작할 때부터 Exclusive Lock이 잡힌다. 따라서 트랜잭션의 시작부터 끝까지 다른 프로세스나 스레드에서 DB 작업을 도저히 할 수가 없다.
+\item exclusive: 트랜잭션을 시작할 때부터 Exclusive Lock이 잡힌다. 따라서 트랜잭션의 시작부터 끝까지 다른 프로세스나 스레드에서 DB 작업을 전혀 할 수 없다.
 \end{itemize}
 
 이 설명대로라면 가능한 한 exclusive보다는 immediate를, immediate보다는 defered를 쓰고 싶지만, 
@@ -348,7 +349,8 @@ SQLiteDatabase 인스턴스를 1개만 가지고서 serialized mode로 동작한
 \end{comment}
 
 \subsection{SQLiteOpenHelper}
-SQLiteDatabase는 SQLite에 접근하는 클래스로, SQL 명령어를 실행하고 DB를 관리하는 메서드를 가지고 있다. SQLite를 사용하기 위해서는 꼭 거쳐야 하는 클래스이지만 실제 앱에서는 SQLiteDatabase를 직접 생성해서 사용하는 경우는 드물다.\footnote{/data/data/[패키지명]/databases가 아닌 다른 위치에 DB를 생성하거나 다른 앱(물론 앱의 공간이 아닌 public한 공간)의 DB를 읽고자 할 때는 SQLiteDatabase를 직접 사용해야 한다.}
+SQLiteDatabase는 SQLite에 접근하는 클래스로, SQL 명령어를 실행하고 DB를 관리하는 메서드를 가지고 있다. 
+SQLite를 사용하기 위해서는 꼭 거쳐야 하는 클래스이지만 실제 앱에서는 SQLiteDatabase를 직접 생성해서 사용하는 경우는 드물다.\footnote{/data/data/[패키지명]/databases가 아닌 다른 위치에 DB를 생성하거나 다른 앱(물론 앱의 공간이 아닌 public한 공간)의 DB를 읽고자 할 때는 SQLiteDatabase를 직접 사용해야 한다.}
 바로 Helper 클래스인 SQLiteOpenHelper를 상속해서 사용하는데, SQLiteOpenHelper에서 Database 생성이나 Database 버전 관리를 알아서 해준다.\\
 
 일반적으로 앱은 업데이트됨에 따라, DB에 테이블이 추가되거나 칼럼이 변경되고 앱에 필요한 기본 데이터가 추가되기도 한다. 
@@ -385,10 +387,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 여기서 살펴볼 게 몇 가지 있다.
 \begin{itemize}
 \item 7라인(1)의 생성자에 DATABASE\_NAME이 들어가는 것이 바로 DB 파일명이다.
-그럼 DB를 여러 개 쓴다면 Database Helper도 여러 개 필요하다는 말일까? 그렇다. 한 앱에서 필요에 의해서 여러 DB를 사용할 수도 있고, 이때 기본적으로 Database Helper가 각각 필요하다.
+그럼 DB를 여러 개 쓴다면 Database Helper도 여러 개 필요하다는 말일까? 그렇다. 
+하나의 앱에서 필요에 의해서 여러 DB를 사용할 수도 있고, 이때 기본적으로 Database Helper가 각각 필요하다.
 가능하면 DB를 하나로 사용하는 것이 좋지만, 상황상 어쩔 수 없는 케이스도 있고 DB Lock 문제를 효과적으로 대응하기 위해서 DB를 분리할 수도 있다(읽기 전용 데이터를 위한 DB, 읽기+쓰기 용도 DB).\\
 
-테이블이 동일하고 데이터 구조가 다른 게 없다면 그때는 어떡할까? 이를테면 로그인 기반의 앱이라면, 공통으로 사용하는 데이터를 위한 공통 DB가 있고 각 사용자별 DB가 있을 수 있다. 각 사용자별 DB는 당연히 동일한 테이블 구조를 갖고 있다. 이때는 DB 파일명을 상수를 만들지 않고 동적으로 전달하면 된다.
+테이블이 동일하고 데이터 구조가 다른 게 없다면 그때는 어떡할까? 
+이를테면 로그인 기반의 앱이라면, 공통으로 사용하는 데이터를 위한 공통 DB가 있고 각 사용자별 DB가 있을 수 있다. 
+각 사용자별 DB는 당연히 동일한 테이블 구조를 갖고 있다. 이때는 DB 파일명을 상수를 만들지 않고 동적으로 전달하면 된다.
 \begin{lstlisting}[frame=single] 
     DatabaseHelper(Context context) {
         super(context, getAuth().getLoginId() + ".db", null, DATABASE_VERSION);
@@ -405,10 +410,12 @@ SQLiteDatabase.CursorFactory를 새로 만들어서 파라미터에 전달할 �
 더 정확하게 얘기하면 SQLiteOpenHelper에는 SQLiteDatabase 인스턴스를 1개 가지고 있는데 이 인스턴스가 앞에 이미 생성되었으면 그것을 사용하고, 그렇지 않은 경우에 생성하고서 onCreate()나 onUpgrade() 메서드가 실행된다.
 
 \item DB 테이블 변경 시에는 Database Helper 생성자에 새로운 버전을 전달하고, 
-SQLiteOpenHelper의 onUpgrade(SQLiteDtabase db, int oldVersion, int newVersion) 메서드에 변경 내용을 적용하면 된다. 이때 일반 패턴은 20라인(2)과 같이 for 문을 사용해서 oldVersion과 newVersion 범위 사이에 DB 버전에 했던 작업들을 처리하는 것이다.
+SQLiteOpenHelper의 onUpgrade(SQLiteDtabase db, int oldVersion, int newVersion) 메서드에 변경 내용을 적용하면 된다. 
+이때 일반 패턴은 20라인(2)과 같이 for 문을 사용해서 oldVersion과 newVersion 범위 사이에 DB 버전에 했던 작업들을 처리하는 것이다.
 
 \item onCreate() 메서드에는 최신 DB 스키마와 데이터를 반영해야 한다. 
-onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버전이 1, 2, 3, 4 이렇게 바뀌면서 스키마와 데이터가 변경되었다고 하자. 버전이 1일 때 앱이 DB를 생성한다면 onCreate() 메서드가 호출되고, 중간에 앱을 업데이트하지 않다가 최신 버전으로 업데이트했다면 onUpgrade() 메서드가 호출된다.
+onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버전이 1, 2, 3, 4 이렇게 바뀌면서 스키마와 데이터가 변경되었다고 하자. 
+버전이 1일 때 앱이 DB를 생성한다면 onCreate() 메서드가 호출되고, 중간에 앱을 업데이트하지 않다가 최신 버전으로 업데이트했다면 onUpgrade() 메서드가 호출된다.
 그럼 버전이 4일때 처음 앱을 설치한다면 어떨까? 바로 onCreate() 메서드만 호출되고 onUpgrade() 메서드는 호출되지 않는다. 
 개발하다 보면 onCreate()와 onUpgrade()가 순차적으로 호출되는 것으로 가끔 착각하게 되어서 언급하였다. onCreate()와 onUpgrade()는 둘 중에 하나만 호출된다.
 
@@ -416,10 +423,12 @@ onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버�
 마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 이 버전을 사용중인 단말은 DB 버전이 동일하므로 onUpgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없다.
 버전을 올리고서 onUpgrade()에서 테이블 구조를 변경하는 코드가 들어가는 게 정상적인 방법이다.
 
-\item onCreate()와 onUpgrade() 메서드에서 하는 작업은 테이블 생성/수정 뿐 아니라 많은 기본 데이터 INSERT 등도 필요하다. 예를 들어, INSERT는 건당 시간이 얼마 안 걸리지만 1,000건, 10,000건이 된다면 속도가 대폭 떨어질 것을 예상할 수 있다.
+\item onCreate()와 onUpgrade() 메서드에서 하는 작업은 테이블 생성/수정 뿐 아니라 많은 기본 데이터 INSERT 등도 필요하다. 
+예를 들어, INSERT는 건당 시간이 얼마 안 걸리지만 1,000건, 10,000건이 된다면 속도가 대폭 떨어질 것을 예상할 수 있다.
 그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또 다시 트랜잭션을 고려할 필요가 없다.\footnote{SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
 
-\item DATABASE\_NAME 위치에 null을 넣으면 파일 DB가 아닌 메모리 DB가 된다. 파일 DB라도 속도가 느리진 않지만 메모리 DB는 그보다 훨씬 속도가 빠르다. DB가 닫히면 함께 사라져버리는 휘발성 DB이므로 일종의 캐시 용도로 사용하는 것이 좋다.
+\item DATABASE\_NAME 위치에 null을 넣으면 파일 DB가 아닌 메모리 DB가 된다. 파일 DB라도 속도가 느리진 않지만 메모리 DB는 그보다 훨씬 속도가 빠르다. 
+DB가 닫히면 함께 사라져버리는 휘발성 DB이므로 일종의 캐시 용도로 사용하는 것이 좋다.
 코드 상에서 캐시 자료구조를 만들어도 되는데, 굳이 메모리 DB를 쓰면 좋은 케이스는 무엇일까? 바로 그 안에서 쿼리를 실행할 수 있다는 점이다.
 예를 들어, 여러 칼럼이 있고 각 칼럼별로 정렬을 바꾸어주는 기능이 있다면, 정렬할 때마다 File IO를 하는 것보다는 메모리 DB에 담아놓고서 쿼리로 정렬하면 결과가 훨씬 빨라진다. 
 파일 DB에서 원시(raw) 데이터를 가져와서 조합해서 생성한 결과 목록을 메모리 DB에 저장해서 사용하는 것도 고려해 볼 수 있다.\\
@@ -773,7 +782,7 @@ insert, update, delete는 getContentResolver() 하고서 메서드를 호출한�
 단순하게 실행 속도를 체크하는 방법을 보자.\\
 
 adb shell에서 dumpsys dbinfo를 하면 DB 별로 최근 쿼리 실행 속도와 바인드된 파라미터들(bindArgs)을 확인할 수 있다(단말에서는 보안상 bindArgs가 잘 나오지 않는다).
-가장 최근 것부터 나오므로 순서상 밑의 것부터 보아야 한다(쿼리를 prepare하고 execute하는 것을 볼 수 있다).
+가장 최근 것부터 나오므로 순서상 밑의 것부터 보면 된다(쿼리를 prepare하고 execute하는 것을 볼 수 있다).
 
 \begin{lstlisting}[frame=single] 
 ** Database info for pid 1008 [system] **
