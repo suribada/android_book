@@ -1,10 +1,13 @@
 \chapter{Application}
 Application도 Activity나 Service와 마찬가지로 ContextWrapper를 상속한다.
 % Application은 다른 컴포넌트들과 상호 작용하는 것이 없으므로, 컴포넌트로 보기는 어렵다고 생각했는데, ComponentCallbacks 인터페이스 API에서는 Application도 Component라고 말하고 있다.
-Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 프로세스가 생성되면서 Application이 먼저 생성되고 해당 컴포넌트가 그 다음에 실행된다. 즉 Activity, Service, BroadcastReceiver, ContentProvider 가운데서 어느 것이든지 외부에서(앱 아이콘, Notification, Alarm, 다른 앱) 실행하려고 할 때, Application이 이미 생성되어 있다면 생성하지 않고 아니면 Application을 먼저 생성한다. 그리고서 해당 컴포넌트를 시작한다. 앞에서도 설명했지만 Application의 onCreate()보다 ContentProvider의 onCreate()가 먼저 실행되는 것은 주의하도록 하자.\\
+Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 프로세스가 생성되면서 Application이 먼저 생성되고 해당 컴포넌트가 그 다음에 실행된다. 
+즉 Activity, Service, BroadcastReceiver, ContentProvider 가운데서 어느 것이든지 외부에서(앱 아이콘, Notification, Alarm, 다른 앱) 실행하려고 할 때, Application이 이미 생성되어 있다면 생성하지 않고 아니면 Application을 먼저 생성한다. 그리고서 해당 컴포넌트를 시작한다. 
+앞에서도 설명했지만 Application의 onCreate()보다 ContentProvider의 onCreate()가 먼저 실행되는 것은 주의하도록 하자.\\
 
 프레임워크 소스에서는 ActivityThread의 handleBindApplication() 메서드에서 Application의 onCreate()를 실행한다.
-Context만 전달된다면 Context의 getApplicationContext() 메서드로 언제든지 Application 인스턴스를 구할 수 있다. Activity에서는 특히 getApplication() 메서드를 사용해서 가져오기도 한다.
+Context만 전달된다면 Context의 getApplicationContext() 메서드로 언제든지 Application 인스턴스를 구할 수 있다. 
+Activity에서는 특히 getApplication() 메서드를 사용해서 가져오기도 한다.
 
 \section{앱 초기화}
 Application은 다른 컴포넌트보다 먼저 실행되기 때문에 앱을 위한 초기화 작업을 Application의 onCreate()에서 주로 실행한다.
@@ -94,10 +97,13 @@ Application에서는 onCreate() 메서드만 오버라이드하는 경우가 많
 Application에서 3개의 메서드는 ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 따라서 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.
 이제 ComponentCallbacks2 인터페이스의 메서드를 각각 살펴보자.
 \begin{itemize}
-\item onConfigurationChanged(Configuration newConfig): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않고 onConfigurationChanged() 메서드가 불린다. 다른 컴포넌트보다 Application의  onConfigurationChanged()가 먼저 실행되는 것을 볼 수 있다.
+\item onConfigurationChanged(Configuration newConfig): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않고 onConfigurationChanged() 메서드가 불린다. 
+다른 컴포넌트보다 Application의  onConfigurationChanged()가 먼저 실행되는 것을 볼 수 있다.
 필요한 경우를 예를 들면, 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기에서 startService()를 실행한다.
 % TimeZone이 변경되었을 때도?
+
 \item onLowMemory(): 전체 시스템에 메모리가 부족해서 이 앱도 곧 kill될 가능성이 있을 때 호출된다. 잡고 있는 캐시나 불필요한 리소스를 해제(release)하는 작업을 하면 된다. 리턴 이후에 GC가 실행된다.
+
 \item onTrimMemory(int level): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 세분화해서 처리할 수 있다. level에는 ComponentCallbacks2의 상수값이 전달된다.
 \end{itemize}
 
@@ -208,9 +214,11 @@ ActivityThread.main
 이제 프로세스 분리가 필요한 경우를 생각해보자.
 \begin{itemize}
 \item Activity 자체가 무거운 경우이다. 사진공유 앱에서 기본 카메라 앱을 실행시키지 않고 자신의 카메라 Activity를 가지고 있는 경우가 있는데, 이런 카메라 Activity는 별도 프로세스로 분리하는 것이 낫다.
+
 \item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행하다가 OutOfMemoryError가 발생할 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 단말에서 가령 10\%라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
 Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 좋겠다. 정답은 없고 케이스별로 다르다.
 % 분리함으로써 변경이 많이 필요한 쪽보다는 간단하게 분리 가능하는 게 나을 것이다.
+
 \item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해보자.
 \end{itemize}
 
@@ -298,7 +306,7 @@ Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 프로세스 A에서 쓰기를 하고 프로세스 B에서 읽기를 하면 한번은 제대로 동작한다.
 그런데 또 반복해서 쓰기와 읽기를 하면 어떤 일이 벌어질까?
 프로세스 B에서는 첫 번째에 읽었던 값을 여전히 출력한다.
-이때에 읽는 쪽에서 Context.MODE\_PRIVATE을 Context.MODE\_MULTI\_PROCESS로 바꾸기만 하면, 매번 reload해서 값을 읽어오게 된다.
+이때 읽는 쪽에서 Context.MODE\_PRIVATE을 Context.MODE\_MULTI\_PROCESS로 바꾸기만 하면, 매번 reload해서 값을 읽어오게 된다.
 프레임워크 소스에서 Context.MODE\_MULTI\_\-PROCESS 용도는 SharedPreferences reload 외에는 없다. 
 즉 쓰기를 하는 쪽에서는 이 옵션을 쓸 필요가 없다.\\
 

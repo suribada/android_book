@@ -1,5 +1,6 @@
 \chapter{Context}
-앱을 개발하다보면 항상 Context 클래스를 만나게 된다. Context가 없으면 Activity를 시작할 수도, Broadcast를 발생시킬 수도, Service를 실행할 수도 없다. 리소스에 접근할 때도 Context를 통해야만 가능하다.
+앱을 개발하다보면 항상 Context 클래스를 만나게 된다. Context가 없으면 Activity를 시작할 수도, Broadcast를 발생시킬 수도, Service를 실행할 수도 없다. 
+리소스에 접근할 때도 Context를 통해야만 가능하다.
 Context를 통해서 여러 컴포넌트가 연결돼있고 Context는 여러 컴포넌트의 상위 클래스이기도 하므로, Context 자체에 대해서 살펴보는 것은 컴포넌트를 이해하는 데도 도움이 된다.\\
 
 Context는 추상 클래스인데 메서드 구현이 거의 없고 상수 정의와 추상 메서드로 이루어진다. 
@@ -55,9 +56,12 @@ ContextWrapper 클래스에는 그 이름처럼 ContextWrapper(Context base) 생
     }
 \end{lstlisting}
 \begin{itemize}
-\item 3라인(1), 7라인(2)에서 base 파라미터에 전달되는 것은 Context의 여러 메서드를 직접 구현한 ContextImpl 인스턴스이다. ContextImpl은 앱에서 생성해서 사용할 수 있는 public 클래스는 아니지만, 소스는 공개되어 있으니 한번씩은 살펴보도록 하자
+\item 3라인(1), 7라인(2)에서 base 파라미터에 전달되는 것은 Context의 여러 메서드를 직접 구현한 ContextImpl 인스턴스이다. 
+ContextImpl은 앱에서 생성해서 사용할 수 있는 public 클래스는 아니지만, 소스는 공개되어 있으니 한번씩은 살펴보도록 하자.
+
 \item ContextWrapper의 여러 메서드는 base의 메서드를 그대로 다시 호출하고 있다(3, 4, 5, 6).
-\item Activity, Service, Application은 3라인(1)의 생성자를 사용하지 않고, 실제로는 7라인(2)의 attachBaseContext()를 사용하고 있다.
+
+\item Activity, Service, Application은 3라인(1)의 생성자를 사용하지 않고, 실제로는 7라인(2)의 attachBaseContext()를 사용한다. 
 \end{itemize}
 
 이제 또 다른 질문을 해보자. 그럼 ContextImpl은 앱에서 싱글톤으로 단 하나의 인스턴스를 가지고서 ContextWrapper에 전달하는가?
@@ -68,8 +72,12 @@ Activity, Service, Application 컴포넌트는 각각 생성한 ContextImpl을 �
 ContextImpl을 보면 3가지 정도로 메서드 범주를 나눌 수 있다.
 \begin{itemize}
 \item 앱 패키지 정보, 내/외부 파일, SharedPreferences, 데이터베이스 등과 관련한 Helper 메서드가 있다. 
+
 \item Activity, BroadcastReceiver, Service와 같은 컴포넌트 관련 메서드와 퍼미션 체크 메서드가 있고, 이들 메서드는 system\_server 프로세스의 ActivityManagerService의 메서드를 다시 호출한다. 
-\item ActivityManagerService 를 포함한 시스템 서비스에 접근하기 위해서 getSystemService() 메서드가 있다. ContextImpl의 정적 초기화 블록(static initializer block)\footnote{http://warmz.tistory.com/50에서 초기화 블록 내용을 알아보자}에서 클래스가 최초 로딩될 때 시스템 서비스 매핑을 하고, 이후에는 getSystemService() 메서드에서 매핑을 바로 사용하고 있다.
+
+\item ActivityManagerService 를 포함한 시스템 서비스에 접근하기 위해서 getSystemService() 메서드가 있다. 
+ContextImpl의 정적 초기화 블록(static initializer block)에서 클래스가 최초 로딩될 때 시스템 서비스를 매핑하고, 이후에는 getSystemService() 메서드에서 매핑을 바로 사용하고 있다.
+% http://warmz.tistory.com/50에서 초기화 블록 내용을 알아보자.
 시스템 서비스는 Context 클래스에서 XXX\_SERVICE와 같이 상수명으로 모두 매핑되어 있고, Context가 전달되는 어디서든 getSystemService(Context.ALARM\_SERVICE)와 같이 시스템 서비스를 가져다 쓸 수 있다.
 \end{itemize}
 
