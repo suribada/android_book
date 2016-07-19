@@ -794,14 +794,14 @@ BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용�
 여기서 라인별로 주요한 내용들을 얘기해보자.
 \begin{itemize}
 \item 9라인(1)에서 HandlerThread를 시작하였다. HandlerThread는 Thread를 상속한 것을 기억하자.
-\item 10라인(2)에서 Handler를 생성하면서 HandlerThread에서 만든 Looper를 전달하였다. HandlerThread의 getLooper() 메서드는 Looper가 초기화될 때까지 대기한다.
+\item 10라인(2)에서 Handler 생성자에 HandlerThread에서 만든 Looper를 전달하였다. HandlerThread의 getLooper() 메서드는 Looper가 초기화될 때까지 대기한다.
 \item 35라인(4)에서 체크박스를 선택/해제할 때마다 Handler에 Message를 보낸다.
 \item 14라인(3)에서 Message를 받아서 DB에 반영한다.
 \item 43라인(5)에서 HandlerThread의 quit() 메서드는 내부에서 Looper.quit()을 실행해서 Looper를 종료한다.
 \end{itemize}
 
 \begin{comment}
-작동방식이 그리 어려워 보이진 않는다.
+작동방식이 어려워 보이진 않는다.
 그런데 Looper를 종료할 때 null 체크를 하는 부분은 어째서일까? 
 테스트를 여러 번 하다보니 NullPointerException이 발생했는데, 재현도 쉽지 않았던 부분이다. 
 Thread에서 start()를 실행하면, 스레드가 바로 시작하는 것이 아니라 스케줄링에 따라 시간차가 있다. 
@@ -894,7 +894,7 @@ Activity에서는 onDestroy()가 불리는 케이스가 있다. Back 키를 누�
 \section{스레드 풀}
 \subsection{ThreadPoolExecutor}
 스레드를 만들려면 Thread를 상속하거나 Thread(Runnable) 생성자에 Runnable 을 넘기는 방법이 있지만, 스레드 풀을 사용하는 방법도 있다.
-스레드 풀은 대기 상태의 스레드를 유지해서 태스크 실행 오버헤드를 줄임으로써 많은 개수의 비동기 작업을 실행할 때 퍼포먼스를 향상시킨다. 
+스레드 풀은 대기 상태의 스레드를 유지해서 스레드 종료/생성 오버헤드를 줄임으로써 많은 개수의 비동기 작업을 실행할 때 퍼포먼스를 향상시킨다. 
 그리고 스레드를 포함한 리소스를 제한하고 관리하는 방법도 제공한다. 
 백그라운드로 해야 할 작업이 많다면 스레드 풀 사용을 고려해보자. AsyncTask도 내부적으로 스레드 풀을 사용하고 있다.\\
 
@@ -907,33 +907,44 @@ ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
 
 파라미터 가운데서 corePoolSize나 maximumPoolSize는 이름만으로 이해될 것이다. 
 pool의 스레드 개수가 coreSize보다 커진다면, 초과하는 개수만큼의 작업은 끝나고 나서는 스레드를 유지할 필요는 없다. 
-조금 혼동되는 부분이 ThreadPoolExecutor 생성자에서 corePoolSize만큼 미리 생성하는가 하면 그렇지는 않다. 해당 용도의 메서드는 prestartCoreThread()로 필요하면 별도로 호출할 수 있다. 기본적으로 execute()나 submit()을 호출하는 순간에 실행 중인 스레드 개수가 corePoolSize보다 적으면 스레드를 새로 추가하는 형태이다.
-keepAliveTime과 unit은 태스크가 종료될 때 바로 제거하지 않고 대기하는 시간이다. 보통 unit에는 TimeUnit.MINUTES나 TimeUnit.SECONDS를 사용한다.
+조금 혼동되는 부분이 ThreadPoolExecutor 생성자에서 corePoolSize만큼 미리 생성하는가 하면 그렇지는 않다. 
+해당 용도의 메서드는 prestartCoreThread()로 필요하면 별도로 호출할 수 있다. 
+기본적으로 execute()나 submit()을 호출하는 순간에 실행 중인 스레드 개수가 corePoolSize보다 적으면 스레드를 새로 추가하는 형태이다.
+keepAliveTime과 unit은 태스크가 종료될 때 바로 제거하지 않고 대기하는 시간이다. 
+보통 unit에는 TimeUnit.MINUTES나 TimeUnit.SECONDS를 사용한다.
 workQueue도 내용상 중요하다. 스레드 풀에서는 corePoolSize 개수만큼 유지하려 하고 추가로 요청이 들어오면 workQueue에 쌓는다. 
 % 이 workQueue 개수 제한이 넘으면 pool의 스레드 개수를 늘리는 것을 고려해야 한다. 별도 라인에서 따로 설명?
 workQueue에 쓸 수 있는 것은 3가지이다.
 \begin{itemize}
-\item ArrayBlockingQueue: Queue 개수 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다
-\item LinkedBlockingQueue: 일반적으로 Queue 개수에 제한이 없다. 들어오는 요청마다 계속해서 쌓는데 이 경우에는 maximumPoolSize가 의미가 없다. LinkedBlockingQueue도 LinkedBlockingQueue(int capacity) 생성자를 사용해서 Queue 개수에 제한을 둘 수는 있다.
+\item ArrayBlockingQueue: Queue 개수에 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다.
+
+\item LinkedBlockingQueue: 일반적으로 Queue 개수에 제한이 없다. 들어오는 요청마다 계속해서 쌓는데 이 경우에는 maximumPoolSize가 의미가 없다.
+LinkedBlockingQueue도 LinkedBlockingQueue(int capacity) 생성자를 사용해서 Queue 개수에 제한을 둘 수는 있다.
+
 \item SynchronousQueue: 요청을 쌓지 않고 바로 준비된 스레드로 처리한다. 결국 Queue를 안 쓴다는 의미이다.
 모든 스레드가 작업 중이라면 maximumPoolSize까지는 스레드를 생성해서 처리한다. 
 \end{itemize}
 
-ThreadPoolExecutor가 shutdown되거나, maximumPoolSize + workQueue 개수을 초과할 때는 때는 태스크가 거부된다. 거부되는 방식을 정하는 것이 ThreadPoolExecutor 생성자의 마지막 파라미터인 RejectedExecutionHandler이고 미리 정의된 4개가 있다.
+ThreadPoolExecutor가 shutdown되거나, maximumPoolSize + workQueue 개수을 초과할 때는 때는 태스크가 거부된다. 이때 거부되는 방식을 정하는 게 ThreadPoolExecutor 생성자의 마지막 파라미터인 RejectedExecutionHandler이고, 미리 정의된 4개가 있다.
 \begin{itemize}
 \item ThreadPoolExecutor.AbortPolicy: 디폴트 handler로 RejectedExecutionException 런타임 예외를 발생시킨다.
+
 \item ThreadPoolExecutor.CallerRunsPolicy: 스레드를 생성하지 않고 태스크를 호출하는 스레드에서 바로 실행된다. 
+
 \item ThreadPoolExecutor.DiscardPolicy: 태스크가 조용히 제거된다.
+
 \item ThreadPoolExecutor.DiscardOldestPolicy: workQueue에서 가장 오래된 태스크를 제거한다.
 \end{itemize}
 
-AsyncTask.THREAD\_POOL\_EXECUTOR도 RejectedExecutionHandler를 따로 넣지 않아서 기본으로 AbortPolicy가 적용된다. AsyncTask는 기존에는 maximumPoolSize = 128과 workQueue 개수 = 10으로 지정되어 있었고, 킷캣부터 maximumPoolSize = (CPU 개수 * 2 + 1)과 workQueue 개수 = 128로 변경되었는데, 어쨌든 maximumPoolSize + workQueue 개수를 넘으면 에러가 발생한다. 파일 사이즈가 큰 이미지들을 AsyncTask를 이용해서 한꺼번에 다운로드한다면 발생 케이스를 재현해볼 수 있다.\\
+AsyncTask.THREAD\_POOL\_EXECUTOR도 RejectedExecutionHandler를 따로 넣지 않아서 기본으로 AbortPolicy가 적용된다. 
+AsyncTask는 킷캣 이전에는 maximumPoolSize = 128과 workQueue 개수 = 10으로 지정되어 있었고, 킷캣부터 maximumPoolSize = (CPU 개수 * 2 + 1)과 workQueue 개수 = 128로 변경되었는데, 어쨌든 maximumPoolSize + workQueue 개수를 넘으면 RejectedExecutionException이 발생한다. 
+파일 사이즈가 큰 이미지들을 AsyncTask를 이용해서 한꺼번에 다운로드한다면 케이스를 재현해볼 수 있다.\\
 
 앱에서 ThreadPoolExecutor를 사용할 때는 가장 쓸모 있는 RejectedExecutionHandler는 DiscardOldestPolicy이다. 
-화면에서 계속 스크롤하거나 다른 화면으로 이동할 때, 지금 보여지는 화면이 중요하고 이미 지나가버린 것은 상대적으로 중요하지 않다. 
+화면에서 스크롤하거나 ViewFlpper나 ViewPager에서 다른 View로 이동할 때, 지금 화면에 보이는 게 중요하고 이미 지나가버린 것은 상대적으로 중요하지 않다. 
 DiscardOldestPolicy를 사용하면 오래된 것을 workQueue에서 제거하고 최신 태스크를 workQueue에 추가한다. 
 아래 샘플은 ImageView에 표시할 이미지 파일을 다운로드해서 보여줄 때, DiscardOldestPolicy를 사용한 예이다.
-ListView의 각 아이템에 ImageView가 있을 때, 현재 스크롤된 위치에서 ImageView의 url이 workQueue의 마지막에 들어가고 workQueue 사이즈를 초과하는 경우 스크롤된 지 오래된 ImageView의 url은 제거된다.
+ListView의 각 아이템에 ImageView가 있을 때, 스크롤된 위치에서 ImageView의 url이 workQueue의 마지막에 들어가고 workQueue 사이즈를 초과하는 경우 스크롤된 지 오래된 ImageView의 url은 제거된다.
 \begin{lstlisting}[frame=single] 
 	private static final int FIXED_THREAD_SIZE = 4;
 	private static final int QUEUE_SIZE = 20;
@@ -952,9 +963,11 @@ ListView의 각 아이템에 ImageView가 있을 때, 현재 스크롤된 위치
 	
 \subsection{ScheduledThreadPoolExecutor}
 지연/반복 작업에 대해서는 ScheduledThreadPoolExecutor를 사용할 수 있다.
-앞에서 Handler를 이용해도 지연/반복 작업을 할 수 있다고 했다. 화면 갱신이라면 Handler를 쓰는 게 적절하지만 네트워크 통신이나 DB 작업 같은 것이 지연/반복 실행되는 경우는 ScheduledThreadPoolExecutor를 고려하자.\\
+앞에서 Handler를 이용해도 지연/반복 작업을 할 수 있다고 했다.
+화면 갱신이라면 Handler를 쓰는 게 적절하지만 네트워크 통신이나 DB 작업 같은 것이 지연/반복 실행되는 경우는 ScheduledThreadPoolExecutor를 고려하자.\\
 
-다른 옵션으로 Timer를 생각할 수도 있지만 Timer API 문서를 보면 ScheduledThreadPoolExecutor를 사용하도록 권장한다. Timer는 실시간 태스크 스케줄링을 보장하지 않고(스레드를 하나만 생성해서 사용하기 때문에 앞서 실행되는 작업 때문에 예정 시간에 맞지 않게 실행될 수 있다), 여러 스레드가 동기화 없이 하나의 타이머를 공유하는 문제가 있다.\footnote{브라이언 게츠 外 저, 강철구 역, $\ulcorner$자바 병렬 프로그래밍$\lrcorner$, 2008, 6.2.5절}\\
+다른 옵션으로 Timer를 생각할 수도 있지만 Timer API 문서를 보면 ScheduledThreadPoolExecutor를 사용하도록 권장한다. 
+Timer는 실시간 태스크 스케줄링을 보장하지 않고(스레드를 하나만 생성해서 사용하기 때문에 앞서 실행되는 작업 때문에 예정 시간에 맞지 않게 실행될 수 있다), 여러 스레드가 동기화 없이 하나의 타이머를 공유하는 문제가 있다.\footnote{브라이언 게츠 外 저, 강철구 역, $\ulcorner$자바 병렬 프로그래밍$\lrcorner$, 2008, 6.2.5절}\\
 
 ScheduledThreadPoolExecutor도 ThreadPoolExecutor와 마찬가지로 4개의 생성자가 있는데, ThreadPoolExecutor에 있는 maximumPoolSize, keepAliveTime, unit, workQueue 4개의 파라미터가 빠져 있다(corePoolSize, threadFactory, handler는 남아있다).
 이 4개는 ScheduledThreadPoolExecutor에서 고정되어 있는데,
@@ -977,7 +990,7 @@ Executors에서 리턴하는 ExecutorService, ScheduledExecutorService는 Thread
 Executors의 주요 팩토리 메서드는 아래와 같다.
 \begin{itemize}
 
-\item newFixedThreadPool(int nThreads): 파라미터로 전달되는 고정 개수까지 스레드를 생성한다. workQueue는 크기 제한이 없다.
+\item newFixedThreadPool(int nThreads):nThreads 개수까지 스레드를  생성한다. workQueue는 크기 제한이 없다.
 \begin{lstlisting}[frame=single] 
 new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, 
     new LinkedBlockingQueue<Runnable>())
@@ -995,7 +1008,9 @@ new FinalizableDelegatedExecutorService(
 	new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, 
 	new LinkedBlockingQueue<Runnable>())
 \end{lstlisting}
-newFixedThreadPool(1)과 동일한 결과를 리턴하는 것으로 보이는데, 다시 FinalizableDelegatedExecutorService로 Wrapping하였다. Wrapping의 효과는 스레드 개수를 1이 아닌 다른 값으로 변경할 수 없게 한다. 단순히 newFixedThreadPool(1)로 리턴된 것은 ThreadPoolExecutor로 캐스팅해서 setCorePoolSize()나 setMaximumPoolSize() 메서드로 스레드 개수를 변경할 수 있다.
+newFixedThreadPool(1)과 동일한 결과를 리턴하는 것으로 보이는데,  FinalizableDelegatedExecutorService로 다시 Wrapping하였다. 
+Wrapping의 효과는 스레드 개수를 1이 아닌 다른 값으로 변경할 수 없게 한다. 
+단순히 newFixedThreadPool(1)로 리턴된 것은 ThreadPoolExecutor로 캐스팅해서 setCorePoolSize()나 setMaximumPoolSize() 메서드로 스레드 개수를 변경할 수 있다.
 
 \item newScheduledThreadPool(int corePoolSize): corePoolSize 개수의 ScheduledThreadPoolExecutor를 만든다.
 \begin{lstlisting}[frame=single] 
@@ -1130,8 +1145,8 @@ AsyncTask를 설명하기 위해 백그라운드 스레드와 UI 스레드를 �
 \end{enumerate}
 여기 샘플에서 빠진 부분이 있다. 바로 loadImageFromNetwork() 메서드에 대한 예외 처리가 없는데 이 내용은 뒤에 다시 살펴보겠다.\\
 
-AsyncTask는 제네릭 클래스이고 파라미터 타입에는 Params, Progress, Result가 있다. 진행 상태가 필요하지 않은 경우 Progress에 Void가 들어가는 경우는 있지만 Params, Progress, Result가 모두 Void인 것도 권장되는 형태는 아니다.\\
-
+AsyncTask는 제네릭 클래스이고 파라미터 타입에는 Params, Progress, Result가 있다. 
+진행 상태가 필요하지 않은 경우 Progress에 Void가 들어가는 경우는 있지만 Params, Progress, Result가 모두 Void인 것도 권장되는 형태는 아니다.
 아래는 개발자 가이드에 있는 샘플이다.
 \begin{lstlisting}[frame=single]
 private class MyTask extends AsyncTask<Void, Void, Void> { ... }
