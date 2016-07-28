@@ -97,13 +97,13 @@ public class CalendarRelatedActivity extends Activity {
 
 	@Override
 	protected void onDestroy() {
-		Log.d("suribada", "CalenderRelatedActivity onDestroy");
+		Log.d(TAG, "CalenderRelatedActivity onDestroy");
 		super.onDestroy();
 	}
 	
 	@Override
 	protected void finalize() throws Throwable { // (2)
-		Log.d("suribada", "CalenderRelatedActivity finalize");
+		Log.d(TAG, "CalenderRelatedActivity finalize");
 		super.finalize();
 	}
 	
@@ -201,9 +201,10 @@ OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지
 4라인(1)에 바로 CalenderRelatedActivity의 finalize()가 불리었으니, 정상적으로 GC된 것을 알 수 있다.
 
 \section{마커 인터페이스}
-마커 인터페이스는 $\ulcorner$이펙티브 자바$\lrcorner$\footnote{조슈아 블로크 저, 이병준 역, 인사이트, 2014, 규칙 37}에 내용이 있고, \url{http://blog.doortts.com/153}에도 간략히 나온다.
-마커 인터페이스의 기본 내용은 메서드 선언이 비어 있는 인터페이스라는 것이다.
-Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페이스를 사용한다.\\
+마커 인터페이스\footnote{$\ulcorner$이펙티브 자바$\lrcorner$, 조슈아 블로크 저, 이병준 역, 인사이트, 2014, 규칙 37을 참고하자.}
+는 메서드가 선언이 없는 인터페이스로, 표식(marking) 용도로 인터페이스를 사용하는 것이다. 
+Serializable도 하나의 예이다. 이 절에서는 내용상 별 게 없는 마커 인터페이스를 활용하는 방법을 생각해보자.\\
+ % http://blog.doortts.com/153
 
 복잡한 부분은 클래스 구성을 잘 하면 쉽게 해결되는 부분이 많다.
 쇼핑 앱을 예로 들어보자. 상품에는 여러 카테고리가 있어서, 구매가 이뤄지면 카테고리별로 진행하는 일이 다르다.
@@ -246,7 +247,8 @@ Serializable도 그 예인데, 말 그대로 표식(marking) 용도로 인터페
 \item 작업은 순서가 중요한 경우가 많다. 해당 카테고리의 특정 API를 네트워크 호출하고, 그 결과를 DB에 저장하는 경우를 예로 들 수 있다.
 자식 클래스에서 부모 클래스의 메서드를 여러 개 호출하는 식이면, 순서를 잘못 호출할 가능성이 생긴다.
 
-\item 어떤 카테고리에서 someOperationW(), someOperationY(), someOperationZ()를 순차적으로 실행하고 있었는데, 정책이 바뀌면서 someOperationY()는 하지 않기로 했다. 이때 개발자는 어떤 행동을 할까? 
+\item 어떤 카테고리에서 someOperationW(), someOperationY(), someOperationZ()를 순차적으로 실행하고 있었는데, 정책이 바뀌면서 someOperationY()는 하지 않기로 했다. 
+이때 개발자는 어떤 행동을 할까? 
 언제 또 바뀔지 모른다며 주석 처리를 하려는 유혹에 빠지기 쉽다. 여기저기 주석 처리가 되면서 코드가 누더기가 되는 것은 물론이고, 주석을 해제해야 할 때가 되면 실수할 가능성이 많아진다.
 
 \item 카테고리가 추가될 때 기존 카테고리와 유사한 부분이 많다면, 이를 또 상속하고 싶은 유혹이 생긴다.
@@ -400,15 +402,15 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 	if (clazz.isAnnotationPresent(Markable2.class)) {
 		 someOperationX();
 	}
-	..
+	...
 	if (clazz.isAnnotationPresent(Markable3.class)) {
 		someOperationY();
 	} 
-	..
+	...
 	if (clazz.isAnnotationPresent(Markable4.class)) {
 		 someOperationZ();
 	}
-	..
+	...
 \end{lstlisting}
 
 이런 경우에는 인터페이스나 애노테이션을 쓰는 게 별 차이가 있어 보이지 않는다. 다만 인터페이스를 구현하면 자식 클래스에도 영향이 있지만, 애노테이션을 쓰는 경우 상속과 관련없이 각 클래스마다 개별적으로 애노테이션을 지정해야 한다. 어느 것이 맞는 게 아니라 방식을 이해하고 선택하도록 하자.
@@ -468,7 +470,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \item FragmentState에 속한 것이 아닌, 두 번째 방식에서 우리가 만든 Fragment의 변수들은 당연히 저장이 안된다.
 \end{itemize}
 
-두 번째 방법에서도 값을 유지할 수는 있는데, 가장 단순한 방법은 첫 번째 방법과 유사하게 set() 메서드에서 단순 대입이 아닌 setArguments()에 Bundle로 담아서 전달하는 것이다. 값을 유지하는 좀 더 복잡한 방법으로는 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
+두 번째 방법에서도 값을 유지할 수는 있는데, 가장 단순한 방법은 첫 번째 방법과 유사하게 set() 메서드에서 단순 대입이 아닌 setArguments()에 Bundle로 담아서 전달하는 것이다. 
+값을 유지하는 좀 더 복잡한 방법으로는 Fragment에서 onSaveInstanceState()를 오버라이드하는 것이다.
 \begin{lstlisting}[frame=single]
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, 
@@ -493,7 +496,7 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \end{lstlisting}
 onSaveInstanceState()를 꼭 써야하는 상황은 있겠지만, 전달된 값을 유지하기 위해서 이런 식으로 하진 말자. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.\\
 
-첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 상수가 외부에 노출되지 않아도 되는 장점이 있어서이다. Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
+첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 상수가 외부에 노출되지 않는 장점이 있기 때문이다. Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
 
 \begin{comment}
 \subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}

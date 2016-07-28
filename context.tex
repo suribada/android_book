@@ -65,12 +65,12 @@ ContextImpl은 앱에서 생성해서 사용할 수 있는 public 클래스는 �
 \item Activity, Service, Application은 3라인(1)의 생성자를 사용하지 않고, 실제로는 7라인(2)의 attachBaseContext()를 사용한다. Activity, Service, Application 모두 내부적으로 ActivityThread에서 컴포넌트를 시작하면서 내부적으로 각 컴포넌트의 attach() 메서드를 실행하고 attach() 메서드에서 또다시 attachBaseContext()를 실행하는 것을 볼 수 있다.
 \end{itemize}
 
-이제 또 다른 질문을 해보자. 그럼 ContextImpl은 앱에서 싱글톤으로 단 하나의 인스턴스를 가지고서 ContextWrapper에 전달하는가?
+이제 또 다른 질문을 해보자. 그럼 ContextImpl은 앱에서 싱글톤으로 단 1개의 인스턴스를 가지고서 ContextWrapper에 전달하는가?
 이것은 ContextWrapper에 getBaseContext()와 getApplicationContext()라는 2개의 메서드가 별도인 것을 보면 싱글톤이 아닌 것을 유추할 수 있다.\footnote{Context에는 getBaseContext() 메서드는 없고 getApplicationContext() 메서드만 있다.}\\
 
 Activity, Service, Application 컴포넌트는 각각 생성한 ContextImpl을 하나씩 Wrapping하고 있고 getBaseContext()는 각각 ContextImpl 인스턴스를 리턴한다. getApplicationContext()는 Application 인스턴스를 리턴하는 것으로 Application은 앱에서 1개 밖에 없고 어디서나 동일한 인스턴스를 반환한다.\\
 
-ContextImpl을 보면 3가지 정도로 메서드 범주를 나눌 수 있다.
+ContextImpl을 보면 메서드를 기능별로 나누면 3개의 그룹이 있다.
 \begin{itemize}
 \item 앱 패키지 정보, 내/외부 파일, SharedPreferences, 데이터베이스 등과 관련한 Helper 메서드가 있다. 
 
@@ -84,7 +84,8 @@ ContextImpl의 정적 초기화 블록(static initializer block)에서 클래스
 
 \includegraphics[scale=0.5]{context}\\
 객체지향의 원칙에서 상속보다는 구성을 사용하라고 하는데, 이 클래스 다이어그램을 보면 원칙에 들어맞는다.
-바로 Activity, Service, Application에서 ContextImpl을 직접 상속하지 않고, ContextImpl의 메서드를 호출하는 형태이다. 이렇게 하면 ContextImpl의 변수가 노출되지 않고, ContextWrapper에서는 ContextImpl의 public 메서드만 호출하게 된다. 또한 각 컴포넌트별로 사용하는 기능에 대한 제어도 단순해진다.\\
+바로 Activity, Service, Application에서 ContextImpl을 직접 상속하지 않고, ContextImpl의 메서드를 호출하는 형태이다. 
+이렇게 하면 ContextImpl의 변수가 노출되지 않고, ContextWrapper에서는 ContextImpl의 public 메서드만 호출하게 된다. 또한 각 컴포넌트별로 사용하는 기능에 대한 제어도 단순해진다.\\
 %ContextWrapper 소스에 있는 내용
 
 코드에서 Context를 쓰는 방법을 생각해보자.
@@ -104,10 +105,12 @@ View 클래스를 보면 생성자에 Context가 들어간다. 이 Context가 �
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         statusView = (TextView) findViewById(R.id.status_view);
-        Log.d("suribada", (statusView.getContext() == this));
-        Log.d("suribada", (statusView.getContext() == getBaseContext()));
-        Log.d("suribada", (statusView.getContext() == getApplicationContext()));
+        Log.d(TAG, (statusView.getContext() == this));
+        Log.d(TAG, (statusView.getContext() == getBaseContext()));
+        Log.d(TAG, (statusView.getContext() == getApplicationContext()));
     }
 \end{lstlisting}
-첫 번째 로그에서만 true가 나오는 것을 볼 수 있다. View 클래스는 생성자에 Context가 전달되어야 한다. 테스트해보면 Activity에서 쓸 수 있는 3가지 Context 모두 다 전달 가능하다. 그러나 View와 연관이 깊은 것은 Activity이므로 Activity를 전달하는 것을 이해할 수 있을 것이다.
+첫 번째 로그에서만 true가 나오는 것을 볼 수 있다. View 클래스는 생성자에 Context가 전달되어야 한다. 
+테스트해보면 Activity에서 쓸 수 있는 3가지 Context 모두 다 전달 가능하다. 
+그러나 View와 연관이 깊은 것은 Activity이므로 Activity를 전달하는 것을 이해할 수 있을 것이다.
 내부적으로 setContentView() 메서드에서 사용하는 LayoutInflator에 Activity 인스턴스가 전달되고, View 생성자의 Context 파라미터에 Activity 인스턴스가 전달된다. 

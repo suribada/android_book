@@ -452,7 +452,7 @@ ViewRootImpl에서 처음 그릴 때나 다시 그릴 필요가 있을 때(inval
 \subsection{Handler의 타이밍 이슈}
 개발하다 보면 수많은 타이밍 이슈를 접하게 된다. 원하는 시점과 실제 동작에서 차이가 생기는데, 이런 타이밍 이슈는 메인 스레드와 Handler를 이해하고 나면 생각보다 단순해진다.\\
 
-Activity의 onCreate() 메서드에서 Handler의 post() 메서드를 실행하면, 실제 post() 메서드에 전달되는 Runnable이 호출되는 시점은 언제일까? 
+Activity의 onCreate() 메서드에서 Handler의 post() 메서드를 실행하면, 실제 post() 메서드에 전달되는 Runnable이 실행되는 시점은 언제일까? 
 onCreate() 다음일까 아니면 다른 어느 시점일까?
 메인 스레드에서는 한 번에 한 작업 밖에 하지 못하고, 여러 작업이 서로 엉키지 않기 위해서 메인 Looper\footnote{Context의 getMainLooper()나 Looper.getMainLooper()를 통해 가져올 수 있다.}의 MessageQueue에서 Message를 하나씩 꺼내서 처리한다는 것을 먼저 염두에 두자.
 각각의 생명주기 메서드는 MessageQueue에서 각각 꺼내지면서 실행되는 것인지 의문을 가져볼 수 있다. 결과적으로 전혀 그렇지 않다.
@@ -469,7 +469,7 @@ MessageQueue에서 먼저 나온 Message 처리가 오래 걸린다면 실행이
 
 			@Override
 			public void run() {
-				Log.d("suribada", "200 delay");
+				Log.d(TAG, "200 delay");
 			}
 			
 		}, 200);
@@ -478,7 +478,7 @@ MessageQueue에서 먼저 나온 Message 처리가 오래 걸린다면 실행이
 
 			@Override
 			public void run() {
-				Log.d("suribada", "just");
+				Log.d(TAG, "just");
 				SystemClock.sleep(500);
 			}
 			
@@ -494,7 +494,7 @@ MessageQueue에서 먼저 나온 Message 처리가 오래 걸린다면 실행이
 \section{UI 변경 메커니즘}
 %https://gist.github.com/jieyu/5125806
 UI 변경(TextView를 예로 들면 setText, setTextSize, setTextColor 등) 메커니즘을 간단히 살펴보자.
-이 메커니즘을 이해한다면 언제 UI가 변경되고 어느 때 UI가 변경되지 않는지 알 수 있다.\\
+언제 UI가 변경되고 변경되지 않는지  메커니즘을 이해한다면 더 정확하게 코드를 작성할 수 있다.\\
 
 UI를 변경하는 메서드는 주로 setXxx()로 되어 있다. 
 커스텀 뷰를 만들면서 이런 setter 메서드를 작성할 때, POJO와 같이 단순 대입만 하는 실수를 한 경험이 있고 주위에서도 이런 실수를 보기도 했다. 
@@ -611,7 +611,9 @@ BroadcastReceiver와 Service, 그리고 InputDispatching(해당 케이스가 발
 
 ANR 발생 시에는 ActivityManagerService의 appNotResponding() 메서드에서 다이얼로그를 띄우는 등의 일을 처리한다. 
 이 메서드를 호출하는 쪽을 찾아보면 타임아웃 케이스를 어떻게 만들어 내는지 알 수 있다.
-BroadcastReceiver와 Service는 시작 전에 Handler의 sendMessageAtTime() 메서드를 사용해서 Message를 보내서, 타임아웃이 지나면 appNotResponding() 메서드를 호출한다. 물론 타임아웃 내에 실행이 끝나면 Message를 얼른 제거한다. 2.4.3절에서 얘기한 Handler의 4번째 용도에 해당한다. com.android.server.am.BroadcastQueue와 com.android.server.am.ActiveServices를 보자.\\
+BroadcastReceiver와 Service는 시작 전에 Handler의 sendMessageAtTime() 메서드를 사용해서 Message를 보내서, 타임아웃이 지나면 appNotResponding() 메서드를 호출한다. 
+물론 타임아웃 내에 실행이 끝나면 Message를 얼른 제거한다. 2.4.3절에서 얘기한 Handler의 4번째 용도에 해당한다. 
+com.android.server.am.BroadcastQueue와 com.android.server.am.ActiveServices를 보자.\\
 
 여기서 의문이 생길 수 있다. BroadcastReceiver의 onReceive() 메서드가 1분 이상 지속된다고 해도 어차피 메인 스레드를 점유하고 있는데, ActivityManagerService에서 Handler의 sendMessageAtTime() 메서드에 전달된 Message가 제 시간에 작동할 수 있을까? 
 물론이다. ActivityManagerService는 system\_server로 떠있는 별도의 프로세스에서 동작하기 때문에 이 Handler는 앱 프로세스의 메인 스레드와는 관련이 없다.\\
@@ -627,8 +629,9 @@ InputDispatching 타임아웃은 네이티브 소스에서 /frameworks/base/serv
 \begin{lstlisting}[frame=single] 
 	const nsecs_t DEFAULT_INPUT_DISPATCHING_TIMEOUT = 5000 * 1000000LL; // 5 sec
 \end{lstlisting}
-화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘에 대해서는 $\ulcorner$안드로이드의 모든 것 분석과 포팅$\lrcorner$\footnote{고현철, 유형목 공저, 한빛미디어, 2011, 4장. 최신 버전과 차이나는 부분이 있으니 개념 위주로 살펴보자.}을 참고하자. 기본 내용은 커널에서 네이티브 단을 거쳐서 입력 이벤트가 전달된다는 것이다. 
-InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고, InputDispatcher는 이벤트를 전달한다.\\
+화면 터치나 키 입력 같은 이벤트를 전달하는 메커니즘을 간단히 살펴보자.
+기본 내용은 커널에서 네이티브 단을 거쳐서 앱에 입력 이벤트가 전달된다는 것으로,
+InputReader에서 EventHub를 통해 커널에서 이벤트를 가져오고 InputDispatcher는 이벤트를 전달한다.\footnote{$\ulcorner$안드로이드의 모든 것 분석과 포팅$\lrcorner$, 고현철, 유형목 공저, 한빛미디어, 2011, 4장. 최신 버전과 차이나는 부분이 있으니 개념 위주로 살펴보자.}\\
 
 앱에서 이벤트를 전달받는 부분도 살펴보자. Activity는 Window(구체적으로는 PhoneWindow)를 갖고 Window는 ViewRootImpl과 일대일 매핑된다. 
 바로 ViewRootImpl의 내부 클래스인 WindowInputEventReceiver에서 이벤트를 전달받아서 하위 ViewGroup/View로 전달한다. 
@@ -659,7 +662,7 @@ Volume, Menu, Back 키의 경우는 어떨까? 이것들은 키가 눌리고서 
  	private Handler handler = new Handler() {
 
 		public void handleMessage(Message msg) { // (1)
-			Log.d("suribada", "handleMessage");
+			Log.d(TAG, "handleMessage");
 			SystemClock.sleep(2000);
 		};
 
@@ -821,7 +824,8 @@ finish()를 통해서 onDestroy()가 호출되는데, onDestory() 실행 이전�
 \underline{\bfseries 1) Looper.quit()을 쓰는 게 적절한가?}\\
 DB 반영 내용이 많아서 시간이 걸린다고 가정해보자. 
 사용자가 액션을 빈번하게 보냈을 때 즉시 처리되지 않은 상태에서 Back 키로 종료하면, Looper.quit()에서 아직 처리하지 않은 Message는 어떻게 하는가?
-코드 \ref{src:HandlerThreadSample}에서는 Delayed Message가 없으니까, 굳이 quitSafely()가 아닌 quit()으로 종료해도 문제가 없다. quit() 메서드는 아직 밀려있는 Message라도 시간이 현재 시점보다 앞선 것은 모두 다 처리하고 끝낸다.\\
+코드 \ref{src:HandlerThreadSample}에서는 Delayed Message가 없으니까, 굳이 quitSafely()가 아닌 quit()으로 종료해도 문제가 없다. 
+quit() 메서드는 아직 밀려있는 Message라도 시간이 현재 시점보다 앞선 것은 모두 다 처리하고 끝낸다.\\
 
 \underline{\bfseries 2) Looper를 null 체크하는 시점 이후에 스레드가 시작되면 어떻게 되는가?}\\
 바로 타이밍 문제가 생긴다. 
@@ -878,7 +882,8 @@ MessageQueue.IdleHandler API 문서를 보면, MessageQueue의 Message를 모두
 
 \begin{itemize}
 \item 8라인(1)에서 IdleHandler를 등록한다. onLooperPrepared() 메서드는 HandlerThread에서 일종의 hook 메서드로 Looper.prepare()가 실행된 다음에 호출된다.
-\item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. isFinishing() == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
+\item 14라인(2)에서 isFinishing() 메서드로 종료 여부를 체크한다. 
+isFinishing() == true인 경우에는 Looper를 종료하고, IdleHandler를 더 쓸 필요가 없으므로 queueIdle() 메서드는 false를 리턴한다.
 \end{itemize}
 
 여기서 하나 질문을 해보자. HandlerThread를 사용하는 IntentService는 이런 구조를 가지고 있지 않은데 무슨 차이일까?
@@ -886,9 +891,11 @@ Activity에서는 onDestroy()가 불리는 케이스가 있다. Back 키를 누�
 
 % 이 경우는 Thread 안에서 Handler를 쓰는 것이 낫다.
 서버에서 데이터를 가져와서  로컬 데이터베이스에 넣는데 카테고리와 상세를 각각 가져온다고 하자.
-카테고리가 먼저 입력되어야만 Foreign Key Contraint 문제가 발생하지 않는데, 각각 스레드로 병렬 실행한다면 상세 데이터를 먼저 가져와서 문제가 발생할 수 있다. 이런 경우에 순차 입력을 위해서 HandlerThread를 고려해보자.\\
+카테고리가 먼저 입력되어야만 Foreign Key Contraint 문제가 발생하지 않는데, 각각 스레드로 병렬 실행한다면 상세 데이터를 먼저 가져와서 문제가 발생할 수 있다. 
+이런 경우에 순차 입력을 위해서 HandlerThread를 고려해보자.\\
 
-라이브러리를 사용하면서 순차적으로 작업들을 실행할 때도 있다. 이때 하나가 끝나면 Listener에서 다음 작업을 실행하도록 만들거나, 만들어진 것을 본 적이 있을 것이다. 이런 경우도 HandlerThread를 사용하고 도중에 실패한 경우에는 HandlerThread의 quit() 메서드를 호출한다.
+라이브러리를 사용하면서 순차적으로 작업들을 실행할 때도 있다. 이때 하나가 끝나면 Listener에서 다음 작업을 실행하도록 만들거나, 만들어진 것을 본 적이 있을 것이다. 
+이런 경우도 HandlerThread를 사용하고 도중에 실패한 경우에는 HandlerThread의 quit() 메서드를 호출한다.
 \end{comment}
 
 \section{스레드 풀}
@@ -916,7 +923,8 @@ workQueue도 내용상 중요하다. 스레드 풀에서는 corePoolSize 개수�
 % 이 workQueue 개수 제한이 넘으면 pool의 스레드 개수를 늘리는 것을 고려해야 한다. 별도 라인에서 따로 설명?
 workQueue에 쓸 수 있는 것은 3가지이다.
 \begin{itemize}
-\item ArrayBlockingQueue: Queue 개수에 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다.
+\item ArrayBlockingQueue: Queue 개수에 제한이 있으며 요청이 들어오면 일단 Queue에 쌓는다. 
+Queue가 꽉 차서 더 넣을 수 없는 경우에는 maximumPoolSize가 될 때까지 스레드를 하나씩 추가해서 사용한다.
 
 \item LinkedBlockingQueue: 일반적으로 Queue 개수에 제한이 없다. 들어오는 요청마다 계속해서 쌓는데 이 경우에는 maximumPoolSize가 의미가 없다.
 LinkedBlockingQueue도 LinkedBlockingQueue(int capacity) 생성자를 사용해서 Queue 개수에 제한을 둘 수는 있다.
@@ -925,7 +933,8 @@ LinkedBlockingQueue도 LinkedBlockingQueue(int capacity) 생성자를 사용해�
 모든 스레드가 작업 중이라면 maximumPoolSize까지는 스레드를 생성해서 처리한다. 
 \end{itemize}
 
-ThreadPoolExecutor가 shutdown되거나, maximumPoolSize + workQueue 개수을 초과할 때는 때는 태스크가 거부된다. 이때 거부되는 방식을 정하는 게 ThreadPoolExecutor 생성자의 마지막 파라미터인 RejectedExecutionHandler이고, 미리 정의된 4개가 있다.
+ThreadPoolExecutor가 shutdown되거나, maximumPoolSize + workQueue 개수을 초과할 때는 때는 태스크가 거부된다. 
+이때 거부되는 방식을 정하는 게 ThreadPoolExecutor 생성자의 마지막 파라미터인 RejectedExecutionHandler이고, 미리 정의된 4개가 있다.
 \begin{itemize}
 \item ThreadPoolExecutor.AbortPolicy: 디폴트 handler로 RejectedExecutionException 런타임 예외를 발생시킨다.
 
@@ -1023,24 +1032,25 @@ new ScheduledThreadPoolExecutor(corePoolSize)
 
 \section{AsyncTask}
 \label{sec:asynctask}
-동시성 프로그래밍에 익숙하지 않은 경우에는 안드로이드 API에 과도하게 의존하는 경우도 있다.
+스레드를 다루는 데 익숙하지 않은 개발자는 안드로이드 API에 과도하게 의존하는 경우도 있다.
 예를 들어, Service에서 시간이 오래 걸리는 작업이라면 단순하게 백그라운드 스레드를 생성해서 실행하면 되는데, AsyncTask를 생성해서 doInBackground() 메서드만을 구현하는 케이스도 볼 수 있다. 
 AsyncTask는 백그라운드 스레드에서 작업하는 진행 상태나 결과 데이터를 UI 스레드에 전달하고, 백그라운드 스레드와 UI 스레드를 고민하지 않고 구분해서 쓸 수 있도록 만들어진 것이다.
-AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때, 즉 UI 작업이 필요하지 않는 경우 쓰지 않는 게 좋다. 이때는 AsyncTask의 스레드 풀을 사용하는 것 이상의 의미가 없다.\\
+AsyncTask는 onPostExecute() 오버라이드가 필요하지 않을 때, 즉 UI 작업이 필요하지 않는 경우 쓰지 않는 게 좋다. 
+이때는 AsyncTask의 스레드 풀을 사용하는 것 이상의 의미가 없다.\\
 
 AsyncTask를 설명하기 위해 백그라운드 스레드와 UI 스레드를 구분해서 사용하는 여러 방법을 살펴보자. 
 먼저 스레드 구분이 필요한 샘플부터 시작하자.
 \begin{lstlisting}[frame=single] 
 	public void onClick(View v) {
-    	new Thread(new Runnable() {
+    		new Thread(new Runnable() {
     		
-    		@Override
-        	public void run() {
-            	Bitmap b = loadImageFromNetwork("http://example.com/image.png");
-            	mImageView.setImageBitmap(b);
-        	}
+    			@Override
+        		public void run() {
+            		Bitmap b = loadImageFromNetwork("http://example.com/image.png");
+            		mImageView.setImageBitmap(b);
+        		}
         	
-    	}).start();
+    		}).start();
 	}
 \end{lstlisting}
 백그라운드 스레드에서 UI를 변경하므로 CalledFromWrongThreadException이 발생한다.
@@ -1063,18 +1073,18 @@ AsyncTask를 설명하기 위해 백그라운드 스레드와 UI 스레드를 �
 	};
 	
 	public void onClick(View v) {
-    	new Thread(new Runnable() {
+    		new Thread(new Runnable() {
     		
-    		@Override
-        	public void run() {
-            	final Bitmap bitmap 
-            		= loadImageFromNetwork("http://example.com/image.png");
-            	Message message = Message.obtain(mHandler, BITMAP_MSG, bitmap);
-            	mHandler.sendMessage(message);
-        	}
+    			@Override
+        		public void run() {
+            		final Bitmap bitmap 
+            			= loadImageFromNetwork("http://example.com/image.png");
+            		Message message = Message.obtain(mHandler, BITMAP_MSG, bitmap);
+            		mHandler.sendMessage(message);
+        		}
 
 	
-    	}).start();
+    		}).start();
 	}
 \end{lstlisting}
 
@@ -1082,63 +1092,65 @@ AsyncTask를 설명하기 위해 백그라운드 스레드와 UI 스레드를 �
 	private Handler mHandler = new Handler();
 	
 	public void onClick(View v) {
-    	new Thread(new Runnable() {
+    		new Thread(new Runnable() {
     	
-    		@Override
-        	public void run() {
-            	final Bitmap bitmap 
-            		= loadImageFromNetwork("http://example.com/image.png");
-            	mHandler.post(new Runnable() {
+    			@Override
+        		public void run() {
+            		final Bitmap bitmap 
+            			= loadImageFromNetwork("http://example.com/image.png");
+            		mHandler.post(new Runnable() {
             		
-                	public void run() {
-                    	mImageView.setImageBitmap(bitmap);
-                	}
+                		public void run() {
+                    		mImageView.setImageBitmap(bitmap);
+                		}
                 	
-            	});
-        	}
+            		});
+        		}
 
 	
-    	}).start();
+    		}).start();
 	}
 \end{lstlisting}
 
 \item View의 post() 메서드에 Runnable 전달: 내부적으로 Handler를 사용한다. Activity의 runOnUiThread() 메서드도 동일한 형태로 사용하면 된다.
 \begin{lstlisting}[frame=single] 
 	public void onClick(View v) {
-    	new Thread(new Runnable() {
+    		new Thread(new Runnable() {
     	
-    		@Override
-        	public void run() {
-            	final Bitmap bitmap
-            		= loadImageFromNetwork("http://example.com/image.png");
-            	mImageView.post(new Runnable() {
-                	public void run() {
-                    	mImageView.setImageBitmap(bitmap);
-                	}
-            	});
-        	}
+    			@Override
+        		public void run() {
+            		final Bitmap bitmap
+            			= loadImageFromNetwork("http://example.com/image.png");
+            		mImageView.post(new Runnable() {
+            		
+                		public void run() {
+                    		mImageView.setImageBitmap(bitmap);
+                		}
+                		
+            		});
+        		}
         	
-    	}).start();
+    		}).start();
 	}
 \end{lstlisting}
 	
 \item AsyncTask 이용: 내부적으로 Handler를 이용한 첫 번째 방식으로 되어있다.
 \begin{lstlisting}[frame=single]
 	public void onClick(View v) {
-    	new DownloadImageTask().execute("http://example.com/image.png");
+    		new DownloadImageTask().execute("http://example.com/image.png");
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	
 		@Override
-    	protected Bitmap doInBackground(String... urls) {
-        	return loadImageFromNetwork(urls[0]);
-    	}
+    		protected Bitmap doInBackground(String... urls) {
+        		return loadImageFromNetwork(urls[0]);
+    		}
 
       	@Override
-    	protected void onPostExecute(Bitmap result) {
-        	mImageView.setImageBitmap(result);
-    	}
+    		protected void onPostExecute(Bitmap result) {
+        		mImageView.setImageBitmap(result);
+    		}
     	
 	}	
 \end{lstlisting}
@@ -1153,99 +1165,154 @@ private class MyTask extends AsyncTask<Void, Void, Void> { ... }
 \end{lstlisting}
 이것은 백그라운드 스레드와 UI 스레드를 구분하기 위한 용도로만 쓰이는 것으로 Handler를 이용하는 게 더 단순할 수 있다.\\
 
-AsyncTask는 안드로이드 개발자에게는 익숙한 것이기 때문에 이 절에서는 이슈 중심으로 살펴보자.
-
-\subsection{병렬 실행 시 실행 순서}
-안드로이드 버전이 올라가면서 여러 논란 가운데 하나가 AsyncTask를 실행할 때 기본 동작이 `병렬 실행'에서 `순차 실행'으로 바뀐 것이다. 
-병렬 실행이 여러 문제를 일으켰기 때문에, 제어 가능하다고 자신하는 경우에만 `병렬 실행'을 쓰라는 의미이다.
-그럼에도 여전히 AsyncTask는 병렬 실행을 기본으로 해서 개발할 때가 많다.\\
-
-AsyncTask의 병렬 실행이 필요한 경우를 들어보자. 
-예를 들어, 화면에 여러 정보를 보여주는 데 서버 API로 한번에 가져오지 못할 때가 있다. 도착 지점의 날씨 정보와 주변 주차장 정보를 화면에 보여주고 싶은데 서버 API가 별도라면 API를 병렬로 호출하는 게 유리할 것이다.\\
-
-2개 이상을 병렬로 실행하는 경우도 있겠지만 일단 2개로 제한해서 얘기를 진행하자.   
-2개의 AsyncTask를 시작하면 메인 스레드에서 동작하는 onPostExecute()는 단일 스레드 규칙에 의해 하나씩 실행이 되지만 2개의 AsyncTask 가운데 어느 것이 먼저 doInBackground()를 먼저 끝내고 onPostExecute()를 실행할 지는 알 수 없다. 
-예를 들어, 필자는 동일한 데이터 구조를 로컬에서 가져온 것과 API를 통해 서버에서 가져온 것을 조합해서 화면에 보여준 적이 있다. 
-2개를 각각 AsyncTask로 만들고 로컬 데이터를 가져오는 것을 먼저 시작하고(AsyncTaskA) 서버 데이터를 가져오는 것을 바로 다음에 시작하였다(AsyncTaskB). 
-로컬 데이터가 결과를 빨리 가져온다는 가정 하에 AsyncTaskA에서는 멤버 변수에 데이터만 저장하고 AsyncTaskB의 onPostExecute()에서 조합해서 화면을 보여주었다.
-결과는 어땠을까? 아주 드물지만 로컬 데이터를 먼저 가져온다는 가정이 어긋나는 경우가 생겨서 에러를 발생시켰다. 
-작업량이 많고 적은 것으로 판단하면 안된다.
-백그라운드 스레드 간에는 무엇이 먼저 실행된다고 가정하면 안된다. 극단적으로 말하면 정상 동작 여부가 운에 따른 것이 된다.
-이런 문제가 제어가 어렵다면 차라리 `순차 실행'을 하는 게 나을 수도 있다.\\
-
-2개의 AsyncTask 간에 병렬 실행도 하면서 결과를 조합해야 하는 경우에는 일반적으로 2가지 방법을 사용한다.
-\begin{itemize}
-\item 멤버 변수에 비트 OR 연산을 사용한다. 2개의 AsyncTask가 끝나면 각각 비트 OR 연산해서 둘 다 충족했다면 onPostExcecute() 메서드에서 데이터를 조합해서 보여준다. 예외가 나오는 케이스도 고려해야만 한다. 
-\item CountDownLatch를 이용해서 AsyncTask 간에 다른 한 쪽의 작업이 끝날 때까지 대기했다가 이후에 데이터를 조합한다. 이 방식은 \url{http://suribada.com/wp/?p=13}을 참고하자.
-\end{itemize}
-
-AsyncTask의 대안으로 RxJava 라이브러리를 사용하기도 한다. RxJava에 대한 내용은 \url{https://github.com/ReactiveX/RxJava/wiki}를 참고하자.
+AsyncTask는 안드로이드 개발자에게는 익숙한 것이기 때문에 이 절에서는 이슈 중심으로 살펴보겠다.
+AsyncTask를 써도 될 때와 적절하게 쓰는 방법, 그리고 다른 대안에 대해서도 이해하고 사용하도록 하자.
 
 \subsection{Activity 종료 시점과 불일치}
-Activity에서 AsyncTask의 백그라운드 작업 실행 도중에 Back 키를 통해서 Activity를 종료하면 AsyncTask는 어떻게 되는가? 메모리에는 Activity가 남아있어서 onPostExecute()도 정상적으로 실행되고 그 안에서 setText()와 같은 UI 변경 메서드도 잘 실행된다. 다만 눈앞에서 사라져서 보이지 않을 뿐이다.
+Activity에서 AsyncTask의 백그라운드 작업 실행 도중에 Back 키를 통해서 Activity를 종료하면 AsyncTask는 어떻게 되는가? 
+메모리에는 Activity가 남아있어서 onPostExecute()도 정상적으로 실행되고 그 안에서 setText()와 같은 UI 변경 메서드도 잘 실행된다. 다만 눈앞에서 사라져서 보이지 않을 뿐이다.
 이렇게 Activity 종료 시점과 AsyncTask가 끝나는 시점이 달라서 발생하는 문제가 몇 가지 있다.
 
 \begin{itemize}
 \item 메모리 문제가 발생할 수 있다. Activity가 Back 키로 종료할 때는 AsyncTask가 오래 걸리는 게 아니라면 큰 문제까지는 아니다. 
 AsyncTask 때문에 문제가 생기는 것은 화면 회전으로 인해 계속해서 AsyncTask가 쌓여서 실행하는 경우이다.
-Activity가 화면 방향 고정이거나 android:configChanges 속성에 ``orientation''이 들어있지 않은 경우 화면 회전 시마다 Activity는 종료되고 새로 시작되는데 새로 시작되는 것은 다른 인스턴스이다. 
-AsyncTask가 아직 실행 중인 경우에는 기존 Activity도 메모리에서 제거되지 않는다. 빈번하게 화면을 회전할 때 OutOfMemoryError가 발생하는 원인 가운데 하나가 될 수 있다.
-$\ulcorner$안드로이드 멀티스레딩$\lrcorner$\footnote{안데르스 예란손 저, 한대희 역, 한빛미디어, 2015, 10.2.1절}에서 제안한 방법은 AsyncTask를 상속한 정적 내부 클래스에 Activity를 생성자에 전달해서 AsyncTask를 만드는 것인데, 번거로워서 쓰기에 망설여진다. Activity가 종료될 때 AsyncTask를 함께 종료하는 방법을 찾아보는 게 좋겠다. 이에 대해서는 바로 다음 절에서 살펴보자.  
+Activity가 화면 방향 고정이거나 android:configChanges 속성에 ``orientation''이 들어있지 않다면, 화면 회전 시마다 Activity는 종료되고 새로 시작되는데 새로 시작되는 것은 다른 인스턴스이다. 
+AsyncTask가 아직 실행 중인 경우에는 기존 Activity도 메모리에서 제거되지 않는다. 
+빈번하게 화면을 회전할 때 OutOfMemoryError가 발생하는 원인 가운데 하나가 될 수 있다.
+$\ulcorner$안드로이드 멀티스레딩$\lrcorner$\footnote{안데르스 예란손 저, 한대희 역, 한빛미디어, 2015, 10.2.1절}에서 제안한 방법은 AsyncTask를 상속한 정적 내부 클래스에 Activity를 생성자에 전달해서 AsyncTask를 만드는 것인데, 번거로워서 쓰기에 망설여진다. 
+Activity가 종료될 때 AsyncTask를 함께 종료하는 방법을 찾아보는 게 좋겠다. 이에 대해서는 바로 다음 절에서 살펴보자.  
 또 다른 대안으로는 Loader 프레임워크를 사용하는 방법도 있다.\footnote{\url{http://developer.android.com/intl/ko/guide/components/loaders.html} 내용을 참고하자.}
 Loader는 사용이 복잡하지만 충분히 고려할 만하다. 
 
 \item AsyncTask를 순차 실행한다면(SERIAL\_EXECUTOR) 화면 회전 시마다 작업이 쌓이므로 갈수록 실행이 느려질 수 있다.
 
-\item Fragment에서 AsyncTask를 실행할 때 문제가 발생할 수 있다. AsyncTask 실행 도중에 Back 키로 Activity를 종료하면 Fragment는 Activity와 분리되면서 Fragment에서 getActivity()는 null을 리턴한다. AsyncTask의 onPostExecute()에서 Context를 사용할 때 NullPointerException이 발생하므로, 권장되는 방식은 onPostExecute() 메서드 시작 부분에서 getActivity() == null을 체크해서 리턴하는 것이다. 어차피 화면이 없으므로 UI를 업데이트하지 않고 리턴하는 것이 적절하다. 
+\item Fragment에서 AsyncTask를 실행할 때 문제가 발생할 수 있다. 
+AsyncTask 실행 도중에 Back 키로 Activity를 종료하면 Fragment는 Activity와 분리되면서 Fragment에서 getActivity()는 null을 리턴한다. 
+AsyncTask의 onPostExecute()에서 Context를 사용할 때 NullPointerException이 발생하므로, 권장되는 방식은 onPostExecute() 메서드 시작 부분에서 getActivity() == null을 체크해서 리턴하는 것이다. 어차피 화면이 없으므로 UI를 업데이트하지 않고 리턴하는 것이 적절하다. 
 \end{itemize}
 
 \subsection{AsyncTask 취소}
-AsyncTask에는 cancel() 메서드가 있다. 이 메소드는 AsyncTask의 mCancelled 변수를 true로 만들고, 이로 인해 스레드 작업 이후에 onPostExecute() 대신 onCancelled()가 불린다. 스레드 작업이 오래 걸리는 경우에 doInBackground() 메서드에서는 중간에 isCancelled() 메서드로 체크해서 바로 리턴하는 로직을 쓰는 것을 권장하고 있다. 무엇을 리턴하든 간에 onPostExeceute()는 불리지 않고 onCancelled()에서 처리한다.\footnote{허니콤부터 onCancelled() 메서드는 파라미터가 없는 버전에 doInBackground()의 결과를 전달하는 onCancelled(Result result) 메서드가 추가되었다.}\\
+AsyncTask에는 cancel() 메서드가 있다. 이 메소드는 AsyncTask의 mCancelled 변수를 true로 만들고, 이로 인해 스레드 작업 이후에 onPostExecute() 대신 onCancelled()가 불린다. 
+스레드 작업이 오래 걸리는 경우에 doInBackground() 메서드에서는 중간에 isCancelled() 메서드로 체크해서 바로 리턴하는 로직을 쓰는 것을 권장하고 있다. 
+무엇을 리턴하든 간에 onPostExeceute()는 불리지 않고 onCancelled()에서 처리한다.\footnote{허니콤부터 onCancelled() 메서드는 파라미터가 없는 버전에 doInBackground()의 결과를 전달하는 onCancelled(Result result) 메서드가 추가되었다.}\\
 
-결론적으로 AsyncTask를 Activity 종료 시점에 근접하게 종료하는 방법은 isCancelled() 메서드를 doInBackground()에서 곳곳에 사용하고(특히 반복문에서), AsyncTask를 멤버 변수로 유지하고서 Activity의 onDestroy()에서 AsyncTask의 cancel() 메서드를 호출하는 것이다.
+결론적으로 AsyncTask를 Activity 종료 시점에 근접하게 종료하는 방법은 isCancelled() 메서드를 doInBackground()에서 곳곳에 사용하고(특히 반복문에서), AsyncTask를 멤버 변수로 유지하고서 Activity의 onDestroy()에서 AsyncTask의 cancel() 메서드를 호출하는 것이다.\\
 
-%mayInterruptIfRunning 파라미터에 true를 전달하면 무엇이 다를까? 이것은 스레드에 인터럽트 신호를 보내는 것으로 스레드가 바로 종료하는 것은 아니다.
-% 사용하는 클래스에서 사용?(예로 소켓 종료)
-% sleep 샘플(sleep 문제...)
+cancel(boolean mayInterruptIfRunning) 메서드의 mayInterruptIfRunning 파라미터는 doInBackground()를 실행하는 스레드에  interrupt()를 실행할 지 여부를 나타낸다. 
+interrupt()를 실행하면 Thread의 sleep(), join() 또는 Object의 wait() 메서드가 실행 중인 경우에는 바로 InterruptedException을 발생시키고 해당 catch 문을 실행한다(InterruptedException은 Checked Exception이기 때문에 try catch 문이 코드 상에서 필요하다). 
+또는 메서드내에서 인터럽트 상태를 체크해서 예외를 던지는 경우도 있다.\\
+
+서버에서 로컬에 파일을 다운로드하는 일반적인 샘플을 한번 보자.
+\begin{lstlisting}[frame=single]
+    	@Override
+    	protected Boolean doInBackground(String... params) {
+    		InputStream input = null;
+		OutputStream output = null;
+		....
+        try {
+            	URL url = new URL(params[0]);
+            	URLConnection connection = url.openConnection();
+            	connection.setConnectTimeout(5000);
+            	connection.connect();
+	       	 input = new BufferedInputStream(url.openStream());
+            	output = new FileOutputStream(tempFile);
+            	byte data[] = new byte[1024];
+            	while ((count = input.read(data)) != -1 // (1)
+            			&& isCancelled() == false) { // (2)
+				 output.write(data, 0, count);
+            	}
+            	output.flush();
+       } catch (Exception e) { // (3)
+            Log.i(TAG, "file Download Problem", e);
+            tempFile.delete();
+            return Boolean.FALSE; 
+       } finally {
+            // input, output close
+        }
+        return Boolean.TRUE;
+	}        
+\end{lstlisting}
+\begin{itemize}
+\item 15라인(2)에서 AsyncTask를 취소했는지 반복문에서 체크해서 취소되었으면 반복문을 벗어난다.
+
+\item AsyncTask에서 cancel(true)를 실행했다면, 15라인의 취소 여부를 체크하는 게 꼭 필요할까?
+이것은 14라인의 InputStream의 read() 메서드가 어떻게 동작하는지에 따라 다르다.
+만일 read() 내부에서 인터럽트에 대응해서 예외를 발생시키는 동작이 있다면 반복문이 더 진행되지 않고  바로 19라인(3)의 catch 문을 수행할 것이다.
+서버에서 파일을 다운로드하는 이 샘플에서는 15라인의 체크 로직이 없을 때 동작은 킷캣 이전과 이후가 다르다.
+킷캣 이전에는 AsyncTask를 취소해도 반복문은 계속 수행되고, 킷캣부터는 인터럽트에 반응해서 예외가 발생하고 반복문은 중지된다.
+킷캣부터 URLConnection은 http, https 프로토콜에 접근하는 경우 내부적으로 okhttp 라이브러리를 사용한다(URLConnection 구현체는 com.android.okhttp.internal.http.HttpURLConnectionImpl).
+인터럽트에 대응해서 킷켓부터 발생하는 예외는 InterruptedIOException이다.
+\begin{lstlisting}[frame=single]
+ java.io.InterruptedIOException
+	at com.android.okio.Deadline.throwIfReached(Deadline.java:56)
+	at com.android.okio.Okio$2.read(Okio.java:110)
+	at com.android.okio.RealBufferedSource.read(RealBufferedSource.java:48)
+	at com.android.okhttp.internal.http.HttpConnection$FixedLengthSource.read(HttpConnection.java:446)
+	at com.android.okio.RealBufferedSource$1.read(RealBufferedSource.java:168)
+    	at java.io.InputStream.read(InputStream.java:162)
+    	at java.io.BufferedInputStream.fillbuf(BufferedInputStream.java:149)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:295)
+    	at java.io.InputStream.read(InputStream.java:162)
+\end{lstlisting}
+
+인터럽트를 체크해서 예외를 발생시키는 코드는 아래와 같다.
+\begin{lstlisting}[frame=single]
+	if (Thread.interrupted()) 
+		throw new InterruptedIOException();
+\end{lstlisting}
+
+\colorbox{tearose}{\parbox[t]{15cm}{
+Thread에서 interrupt()를 실행하면  Thread는 내부적으로 interrupt 플래그를 true로 만든다.
+interrupted()나 isInterrupted() 메서드는 interrupt 플래그를 리턴한다. interrupted() 메서드는 사이드 이펙트로 interrupt 플래그를 false로 다시 만든다.
+따라서 스레드 인터럽트 상태에서 isInterrupted() 메서드는 여러 번 해도 true를 리턴하지만, interrupted()는 한번만 true를 리턴하고 이후에는 false를 리턴한다.
+}}\newline\newline
+
+이와 같이 반복문에서 InputStream의 read() 메서드가 실행될 때마다 인터럽트 여부를 체크한다면 AsyncTask의  cancel(true) 실행만으로도 백그라운드 작업을 중지시키는 효과를 볼 수는 있지만,
+반복문에서 인터럽트 여부가 체크되지 않는 경우도 있기 때문에  할 수 있다면 isCancelled()로 체크하는 게 좋다.
+
+\item 여기서는 doInBackground() 메서드에서 URL에 직접 접근해서 스트림을 읽어들이는 동작을 하지만, 이런 코드는 별도 클래스나 라이브러리에 있는 때가 더 많다.
+별도 클래스나 라이브러리를 쓸 때는 반복문에서  AsyncTask의 취소 여부를 알 수 있는 방법이 없으므로, interrupted()나 isInterrupted() 메서드로 인터럽트를 체크하는 게 좋다.
+\end{itemize}
 
 \subsection{예외 처리 메서드 부재} 
 AsyncTask에는 정상적인 데이터 처리를 위한 onPostExcecute()와 작업 취소를 위한 onCancelled() 메서드는 있는데 예외 처리를 위한 onError() 메서드는 없다. 
 백그라운드 스레드에서 하는 작업은 네트워크 문제와 같은 다양한 예외 케이스가 있어서, 이 경우에 문제가 발생했다고 화면에 표시하는 경우가 많다. 즉 예외 케이스에도 UI 작업이 필요한 것이다.\\
 
-백그라운드 스레드와 UI 스레드를 분리할 때 예외에 대해서도 고려가 필요한데, 이 내용이 AsyncTask에서 빠져서 AsyncTask의 기본 형태를 변형해서 사용하는 경우가 있다.
+백그라운드 스레드와 UI 스레드를 분리할 때 예외에 대해서도 고려가 필요한데, 이 내용이 AsyncTask에는 없어서 AsyncTask의 기본 패턴을 변형해서 사용하는 경우가 있다.
 \begin{lstlisting}[frame=single]
 	public void onClick(View v) {
-    	new DownloadImageTask().execute("http://example.com/image.png");
+    		new DownloadImageTask().execute("http://example.com/image.png");
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 	
 		@Override
-    	protected Bitmap doInBackground(String... urls) {
-    		try {
-        		return loadImageFromNetwork(urls[0]);
-        	} catch (Exception e) {
-        		return null; // (1)
-        	}
-    	}
+    		protected Bitmap doInBackground(String... urls) {
+    			try {
+        			return loadImageFromNetwork(urls[0]);
+        		} catch (Exception e) {
+        			return null; // (1)
+        		}
+    		}
 
       	@Override
-    	protected void onPostExecute(Bitmap result) {
-    		if (result == null) { // (2)
-    			// show error message at UI
-    			return;
+    		protected void onPostExecute(Bitmap result) {
+    			if (result == null) { // (2)
+    				// show error message at UI
+    				return;
+    			}
+        		mImageView.setImageBitmap(result);
     		}
-        	mImageView.setImageBitmap(result);
-    	}
     	
 	}	
 \end{lstlisting}
 예외가 발생할 때 12라인(1)에서 null을 리턴하고 18라인(2)에서 체크해서 null이면 에러 메시지를 보여주는 식이다. 이 방식도 문제가 완전히 해결된 것은 아니다. 
-loadImageFromNetwork()에서 예외는 발생하지 않지만 null을 리턴하는 경우가 있다면, error message가 의도에 맞지 않는다. 예외 상황이 아니면 null이 나올 수 없도록 하거나, 어쨌든 null이 나오는 것을 문제로 간주한다면 가능한 방식이다. 
+loadImageFromNetwork()에서 예외는 발생하지 않지만 null을 리턴하는 경우가 있다면, error message가 의도에 맞지 않는다. 
+예외 상황이 아니면 null이 나올 수 없도록 하거나, 어쨌든 null이 나오는 것을 문제로 간주한다면 가능한 방식이다. 
 
 \begin{lstlisting}[frame=single]
 	public void onClick(View v) {
-    	new DownloadImageTask().execute("http://example.com/image.png");
+    		new DownloadImageTask().execute("http://example.com/image.png");
 	}
 
 	private class DownloadImageTask extends AsyncTask<String, Void, Boolean> {
@@ -1253,32 +1320,200 @@ loadImageFromNetwork()에서 예외는 발생하지 않지만 null을 리턴하�
 		private Bitmap bitmap;
 		
 		@Override
-    	protected Bitmap doInBackground(String... urls) {
-        	try {
-        		bitmap = loadImageFromNetwork(urls[0]);
-        		return Boolean.TRUE;
-        	} catch (Exception e) {
-        		return Boolean.FALSE;
-        	}
-    	}
+    		protected Bitmap doInBackground(String... urls) {
+        		try {
+        			bitmap = loadImageFromNetwork(urls[0]);
+        			return Boolean.TRUE;
+        		} catch (Exception e) {
+        				return Boolean.FALSE;
+        		}
+    		}
 
       	@Override
-    	protected void onPostExecute(Boolean result) {
-    		if (!result) {
-    			// show error message
-    			return;
-    		}
-        	mImageView.setImageBitmap(bitmap);
-    	}
-    	
+	    	protected void onPostExecute(Boolean result) {
+	    		if (!result) {
+	    			// show error message
+	    			return;
+	    		}
+	        	mImageView.setImageBitmap(bitmap);
+	    	}
+	    	
 	}	
 \end{lstlisting}
-원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하는 것이 아니고, Boolean 값으로 성공 여부를 전달하고 있다. 
-전달하고자 하는 결과값은 뜬금없이 DownloadImageTask의 멤버 변수에 대입돼서 onPostExecute()에서 사용한다.
-가능한 방식이긴 하지만 원래 AsyncTask의 사용 방식과 차이가 생긴다.\\
+원래 의도와는 다르게 결과값을 doInBackground()에서 onPostExecute()로 전달하지 않고, Boolean 값으로 성공 여부를 전달하고 있다. 
+전달하는 결과값은 뜬금없이 DownloadImageTask의 멤버 변수에 대입돼서 onPostExecute()에서 사용한다.
+가능한 방식이지만 결과값을 파라미터로 전달하는 원래 AsyncTask의 사용 패턴과 차이가 생긴다.\\
 %3가지 패턴(Handler, tuple, 멤버 변수, true, false)
 
-군더더기 코드가 생겨나는데 이에 대한 대안으로 앞에서도 언급한 RxJava를 사용하기도 한다. RxJava에서는 예외에 대한 처리 방법을 기본으로 제공한다.
-%http://www.javalobby.org/java/forums/t83677.html Interruptible Method
-%http://stackoverflow.com/questions/4767553/safe-use-of-httpurlconnection
+군더더기 코드가 생겨나는데 이에 대한 대안으로 RxJava를 사용하기도 한다. RxJava에서는 예외 처리 방법을 기본으로 제공한다.
+RxJava에 대한 상세한 내용은 \url{https://github.com/ReactiveX/RxJava/wiki}를 참고하자.
+위와 동일한 기능을 제공하는 RxJava 샘플을 보면 아래와 같다.
+\begin{lstlisting}[frame=single]
+	public void onClick(View v) {
+    		Observable<Bitmap> observable 
+    			= loadImageFromNetwork("http://example.com/image.png"); // (1)
+    		observable.subscribeOn(Schedulers.io()) // (2)
+        		.observeOn(AndroidSchedulers.mainThread()) // (3)
+            	.subscribe(new Observer<Bitmap>() {
+
+	              @Override
+	              public void onNext(Bitmap bitmap) { // (4)
+	              	mImageView.setImageBitmap(bitmap);
+	              }
+	              
+	             @Override
+	              public void onError(Throwable e) { // (5)
+	                  // show error message
+	              }
+	              
+	             @Override
+                	public void onCompleted() {
+                    	Log.d(TAG, "onCompleted");
+                	}
+                	
+		 });
+	}
+\end{lstlisting}
+\begin{itemize}
+\item 3라인(1)에서 loadImageFromNetwork() 메서드는 Bitmap이 아닌 Observable<Bitmap>을 리턴하도록 변경이 필요하다.
+\item 4라인(2)에서 loadImageFromNetwork() 메서드가 실행되는 스레드를 정하고, 5라인(3)에서 Observer의 메서드가 실행되는 스레드를 정한다.
+\item 9라인(4)의 onNext() 메서드가 AsyncTask의 onPostExecute() 메서드와 역할이 비슷하다.
+\item 14라인(5)의 onError() 메서드에서 예외를 처리한다.
+\end{itemize}
 % http://www.androiddesignpatterns.com/2012/07/loaders-and-loadermanager-background.html
+
+\subsection{병렬 실행 시 실행 순서가 보장되지 않음}
+안드로이드 버전이 올라가면서 여러 논란 가운데 하나가 AsyncTask를 실행할 때 기본 동작이 `병렬 실행'에서 `순차 실행'으로 바뀐 것이다. 
+병렬 실행이 여러 문제를 일으켰기 때문에, 제어 가능하다고 자신하는 경우에만 `병렬 실행'을 쓰라는 의미이다.
+그럼에도 여전히 AsyncTask는 병렬 실행을 기본으로 해서 개발할 때가 많다.\\
+
+AsyncTask의 병렬 실행이 필요한 경우를 들어보자. 
+예를 들어, 화면에 여러 정보를 보여주는 데 서버 API로 한번에 가져오지 못할 때가 있다. 
+도착 지점의 날씨 정보와 주변 주차장 정보를 화면에 보여주고 싶은데 서버 API가 별도라면 빠르게 결과를 보여주기 위해 API를 병렬로 호출하는 게 유리할 것이다.\\
+
+성격이 전혀 다른 데이터라면 병렬 실행해서 각각의 위치에서 데이터를 보여주면 되는데, 데이터간의 의존성이 있을 때가 있다.
+예를 들어, 개요와 상세 데이터가 있다면 개요 위치에 먼저 데이터를 보여주고 그 다음에 상세 위치에 데이터를 보여주는 게 적절하다.
+즉 병렬로 실행하지만 실행 순서가 중요한 것이다.\\
+
+3개 이상을 병렬로 실행하는 경우도 있겠지만 일단 2개로 제한해서 얘기를 진행하자.
+2개의 AsyncTask를 함께 시작하면 메인 스레드에서 동작하는 onPostExecute()는 단일 스레드 규칙에 의해 하나씩 실행되지만
+ 2개의 AsyncTask 가운데 어느 것이  doInBackground()를 먼저 끝내고 onPostExecute()를 실행할 지는 알 수 없다. 
+예를 들어, 필자는 동일한 데이터 구조를 로컬에서 가져온 것으로 먼저 보여주고 API를 통해 서버에서 가져온 것을  다시 조합해서 화면에 보여준 적이 있다.
+2개를 각각 AsyncTask로 만들고 로컬 데이터를 가져오는 것을 먼저 시작하고(AsyncTaskA) 서버 데이터를 가져오는 것을 바로 다음에 시작하였다(AsyncTaskB). 
+로컬 데이터가 결과를 빨리 가져온다는 가정 하에 AsyncTaskA에서는 멤버 변수에 데이터를 저장하고 화면에 먼저 보여주고 AsyncTaskB의 onPostExecute()에서 조합해서 다시 화면을 보여주었다.
+결과는 어땠을까? 아주 드물지만 로컬 데이터를 먼저 가져온다는 가정이 어긋나는 경우가 생겨서 에러를 발생시켰다. 
+결과가 나오는 것을 작업량이 많고 적은 것으로 판단하면 안된다.
+스레드 간에는 무엇이 먼저 실행된다고 가정하면 안된다. 극단적으로 말하면 정상 동작 여부가 운에 따른 것이 된다.
+이런 문제가 제어가 어렵다면 차라리 `순차 실행'을 하는 게 나을 수도 있다.\\
+
+2개의 AsyncTask 간에 병렬 실행도 하면서 실행 순서가 중요한 경우에는 일반적으로 CountDownLatch를 사용하면 된다.
+CountDownLatch를 사용한 샘플을 한번 보자. 
+AsyncTask 간에 먼저 실행한 쪽의 작업이 끝날 때까지 대기했다가 이후에 데이터를 보여주는 것을 볼 수 있다.
+\begin{lstlisting}[frame=single]
+	private ArrayList<String> composedList = new ArrayList<>();
+
+	private CountDownLatch latch = new CountDownLatch(1); // (1)
+
+	private class AsyncTaskA extends AsyncTask<Void, Void, List<String>> {
+
+		@Override
+		protected List<String> doInBackground(Void... params) {
+			...
+			return Arrays.asList("spring", "summer", "fall", "winter"); // (2)
+		}
+
+		@Override
+		protected void onPostExecute(List<String> result) {
+			try {
+				composedList.addAll(result);
+				title.setText(TextUtils.join(", ", composedList));
+			} catch (Exception e) {
+				Toast.makeText(SomeActivity.this, "Error=" + e.getMessage(), 
+					Toast.LENGTH_LONG).show();
+			} finally {
+				latch.countDown(); // (3)
+			}
+		}
+	}
+
+	private class AsyncTaskB extends AsyncTask<Void, Void, List<String>> {
+
+		@Override
+		protected List<String> doInBackground(Void... params) {
+			try {
+				...
+				return Arrays.asList("east", "south", "west", "north");  // (4)
+			} catch (Exception e) {
+				Log.d(TAG, "exception = " + e.getMessage());
+				return null;
+			} finally {
+				try {
+					latch.await(); // (5)
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+
+		@Override
+		protected void onPostExecute(List<String> result) {
+			if (result != null) {
+				composedList.addAll(result);
+				title.setText(TextUtils.join(", ", composedList));
+			}
+		}
+
+	}
+
+	public void onClick(View view) { // (6)
+		AsyncTaskCompat.executeParallel(new AsyncTaskA());
+		AsyncTaskCompat.executeParallel(new AsyncTaskB());
+	}
+\end{lstlisting}
+\begin{itemize}
+\item AsyncTaskA가 먼저 실행되면 TextView에는 `spring, summer, fall, winter'가 먼저 보인 후에 `spring, summer, fall, winter, east, south, west, north'가 보인다.
+AsyncTaskB가 먼저 실행되면 TextView에는 한꺼번에 `spring, summer, fall, winter, east, south, west, north'가 보인다.
+\item ㅎㅎ
+\end{itemize}
+
+
+\begin{comment}
+	CountDownLatch latch = new CountDownLatch(1); // 생성자 파라미터는 다른 스레드 몇 개가 끝날때까지 대기할 것인가의 숫자
+	AsyncTask asyncTaskA = new .. {
+	
+		protected Boolean doInBackground(Void ... params) {
+			.... // 여러 작업들
+		}
+
+		protected void onPostExecute(Boolean result) {
+			... // UI 관련 작업
+			latch.countDown();  // countDown해서 생성자 파라미터의 값이 하나씩 마이너스가 돼서 0이 되면 대기상태가 풀림
+		}
+	}
+
+	AsyncTaskB asyncTaskB = new ...{
+		protected Boolean doInBackground(Void ... params) {
+			try {
+				... // 여러 작업들
+			} finally {
+				latch.await(); // 여러 작업들에서 exception이 나면 await를 할 기회가 없기 때문에     finally 안에 둠
+			}
+		}
+		
+		protected void onPostExecute(Boolean result) {
+		... // UI 관련 작업
+		}
+	
+	}
+	asyncTaskA.execute();
+	asyncTaskB.execute();
+\end{comment}
+
+\subsection{병렬 실행 후 데이터 조합}
+앞 절에서는 AsyncTask를 병렬로 실행하고서 결과를 보여주는 순서를 조정하였다.
+
+멤버 변수에 비트 OR 연산을 사용한다. 2개의 AsyncTask가 끝나면 각각 비트 OR 연산해서 둘 다 충족했다면 onPostExcecute() 메서드에서 데이터를 조합해서 보여준다. 
+예외가 나오는 케이스도 고려해야만 한다. 
+%AsyncTask의 대안으로 RxJava 라이브러리를 사용하기도 한다. RxJava에 대한 내용은 \url{https://github.com/ReactiveX/RxJava/wiki}를 참고하자.
+
+
+

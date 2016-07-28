@@ -8,23 +8,23 @@ public class LifecycleApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d("suribada", "Appliction Create");
+		Log.d(TAG, "Appliction Create");
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Log.d("suribada", "Thread start");
+				Log.d(TAG, "Thread start");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "10 seconds after");
+				Log.d(TAG, "10 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "20 seconds after");
+				Log.d(TAG, "20 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "30 seconds after");
+				Log.d(TAG, "30 seconds after");
 			}
 			
 		});
 		thread.start();
-		Log.d("suribada", "Appliction Created");
+		Log.d(TAG, "Appliction Created");
 	}
 
 }
@@ -61,9 +61,9 @@ public class LifecycleApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d("suribada", "Appliction Create");
+		Log.d(TAG, "Appliction Create");
 		startService(new Intent(this, SleepService.class));
-		Log.d("suribada", "Appliction Created");
+		Log.d(TAG, "Appliction Created");
 	}
 
 }
@@ -76,18 +76,18 @@ public class SleepService extends Service {
 	
 	@Override
 	public void onCreate() {
-		Log.d("suribada", "Service onCreate");
+		Log.d(TAG, "Service onCreate");
 		Thread thread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				Log.d("suribada", "Thread start");
+				Log.d(TAG, "Thread start");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "10 seconds after");
+				Log.d(TAG, "10 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "20 seconds after");
+				Log.d(TAG, "20 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "30 seconds after");
+				Log.d(TAG, "30 seconds after");
 			}
 			
 		});
@@ -388,7 +388,7 @@ public class SleepThreadService extends Service {
 	
 	@Override
 	public void onCreate() {
-		Log.d("suribada", "Service onCreate");
+		Log.d(TAG, "Service onCreate");
 	}
 	
 	private boolean isRunning = false;
@@ -396,7 +396,7 @@ public class SleepThreadService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		if (isRunning) {
-			Log.d("suribada", "skip");
+			Log.d(TAG, "skip");
 			return START_NOT_STICKY;
 		}
 		isRunning = true;
@@ -404,13 +404,13 @@ public class SleepThreadService extends Service {
 
 			@Override
 			public void run() {
-				Log.d("suribada", "Thread start");
+				Log.d(TAG, "Thread start");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "10 seconds after");
+				Log.d(TAG, "10 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "20 seconds after");
+				Log.d(TAG, "20 seconds after");
 				SystemClock.sleep(SLEEP_TIME);
-				Log.d("suribada", "30 seconds after");
+				Log.d(TAG, "30 seconds after");
 				stopSelf();
 			}
 		});

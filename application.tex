@@ -177,7 +177,7 @@ Application.ActivityLifecycleCallbacks은 Activity의 생명주기마다 대응�
 			MemoryInfo mi = new MemoryInfo(); 
 			Debug.getMemoryInfo(mi);
 			
-			Log.d("suribada", activity.getClass().getSimpleName()  + " " + method 
+			Log.d(TAG, activity.getClass().getSimpleName()  + " " + method 
 					+ " phase MemoryInfo(total) pss=" + mi.getTotalPss() 
 					+ ", sharedDirty=" + mi.getTotalSharedDirty() 
 					+ ", privateDirty=" + mi.getTotalPrivateDirty() + "."); 

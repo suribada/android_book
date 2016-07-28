@@ -842,11 +842,11 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 
 			@Override
 			public void run() {
-				Log.d("suribada", "Thread1 start");
+				Log.d(TAG, "Thread1 start");
 				SQLiteDatabase db = dbHelper.getReadableDatabase();
 				Cursor cursor = db.query(WordTable.TABLE_NAME, 
 					null, null, null, null, null, WordTable.COLUMN_KEYWORD); // (3)
-				Log.d("suribada", "cursor.count=" + cursor.getCount());
+				Log.d(TAG, "cursor.count=" + cursor.getCount());
 				cursor.close();
 			}
 
@@ -856,7 +856,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 
 			@Override
 			public void run() {
-				Log.d("suribada", "Thread2 start");
+				Log.d(TAG, "Thread2 start");
 				SQLiteDatabase db = dbHelper.getWritableDatabase();
 				Random random = new Random();
 				db.beginTransaction(); // (5)

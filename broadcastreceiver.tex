@@ -527,5 +527,5 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 App Widget 개수가 많다면 그 개수만큼 프로세스 분리하는 것보다 1개만 분리하는 게 관리가 수월하므로, Service에 App Widget 업데이트 로직을 넘기고 Service를 프로세스 분리해도 된다.
 
 \item 8라인(2)을 주석 처리하고 10라인(3)을 쓴 이유는, 8라인과 같이 Binder에 Bitmap을 전달할 때 Bitmap 사이즈가 크면 에러가 발생하기 때문에(Binder Transaction Buffer 크기가  최대 1M) 일부러 파일을 생성해서 RemoteViews에 Uri로 전달한 것이다. 
-이런 방법은 Activity 간에 Intent에 데이터를 전달할 때도 많이 쓰인다. 사진을 찍고 사진 Bitmap을 다음 Activity에 Intent Bundle에 전달하지 않고 사진의 파일 Uri를 전달하는 식이다.
+이런 방법은 Activity 간에 데이터를 전달할 때도 많이 쓰인다. 사진을 찍고 사진 Bitmap을 다음 Activity에 Intent Bundle에 전달하지 않고 사진의 파일 Uri를 전달하는 식이다.
 \end{itemize}

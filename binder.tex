@@ -706,7 +706,8 @@ Deep Sleep 관련해서 안드로이드 개발자 사이트에서 검색하면 �
 
 \item Thread.sleep(long time)이나 SystemClock.sleep(long ms) 메소드의 파라미터 값은 Deep Sleep 상태에 있는 시간이 제외된 시간이다.\footnote{SystemClock.sleep(long ms) 메소드는 InterruptedException을 무시하는 것이 Thread.sleep(long time)과 다르다.} 예를 들어, 1분 간 sleep()을 실행하고 다른 작업을 하려고 했는데 sleep() 도중에 Deep Sleep에 빠지면 결과적으로 현상으로 보여지는 sleep 시간은 `1분 + Deep Sleep 상태에 빠진 시간'이다. 
 
-\item Handler의 postAtTime() 메소드나 postDelayed() 메소드(계산을 통해 내부적으로 다시 postAtTime() 호출)는 uptimeMillis를 기준으로 한다. 따라서 도중에 Deep Sleep 상태에 들어가면 1분의 Delay를 주었을 뿐이지만, Deep Sleep에서 깨어나고 한참 후에(다른 Message 처리할 것이 앞에 가로막지 않는다면, 최대 1분) 실행될 수도 있다.
+\item Handler의 postAtTime() 메소드나 postDelayed() 메소드(계산을 통해 내부적으로 다시 postAtTime() 호출)는 uptimeMillis를 기준으로 한다. 
+따라서 도중에 Deep Sleep 상태에 들어가면 1분의 Delay를 주었을 뿐이지만, Deep Sleep에서 깨어나고 한참 후에(다른 Message 처리할 것이 앞에 가로막지 않는다면, 최대 1분) 실행될 수도 있다.
 % http://stackoverflow.com/questions/17561380/android-thread-sleep-sometimes-waits-far-too-long
 \item PowerManager에는 isSleep()이나 isDeepSleep() 같은 메서드는 없다. 이런 메서드는 의미 없는 게 Deep Sleep 상태에서는 메서드가 실행되지 않을 것이고, 깨어 있는 상태에서는 이미 Deep Sleep 상태가 아니기 때문이다.
 \end{itemize}
@@ -736,7 +737,7 @@ MessageQueue에 Message가 들어갔는데, 실행이 안되는 것처럼 보이
 1초마다 TextView에 현재 날짜와 시간을 갱신하고 있다.
 이런 패턴은 DigitalClock이나 TextClock에서도 쓰이는데 내부적으로 DELAY\_TIME을 1초 이내로 줘서 매 간격마다 시간을 갱신한다. 
 우리가 사용하는 단말에서 화면에 나타나는 시계도 이런 형태로 구현되어 있다.
-단말을 옆에 한참 방치해놓다가, 화면을 ON하면 순식간에 시간이 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 
+단말을 옆에 오랫동안 방치해놓다가, 화면을 ON하면 순식간에 한참 이전 시간에서 현재 시간으로 바뀌는 것을 보았을 것이다. 
 즉 그 사이에 매 초마다 시간을 변경하지 않고 있다가, 화면을 ON하는 순간 현재 시간을 보여준 것이다.
 이는 Deep Sleep으로 인해 MessageQueue에 들어간 게 실행이 중지된 것이다(실행이 중지된 것일 뿐 Message가 사라진 것은 아니다).
 그리고 CPU가 깨어난 순간 동작을 한 것인데, 만일 Delay Time이 큰 경우에는 어떨까?\\
