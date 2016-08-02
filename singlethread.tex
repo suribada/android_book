@@ -183,7 +183,7 @@ Message를 생성할 때는 오브젝트 풀(object pool)에서 가져오는 Mes
 내부적으로 Handler의 obtainMessage()는  Message.obtain()을 다시 호출한다.
 오브젝트 풀은 Message에 정적 변수로 있고(여기서도 Link로 연결됨) 최대 50개까지 Message를 저장한다. 
 그리고 Looper.loop() 메서드에서 Message를 처리하고 나서 recycleUnChecked() 메서드를 통해 Message를 초기화하고, 오프젝트 풀이 최대 개수에 도달하지 않았다면 오브젝트 풀에 Message를 추가하는 형태이다.
-new Message()와 같이 기본 생성자를 가져와서 값을 채워도 동작에는 문제가 없어 보이지만, Message 처리가 끝나면 불필요하게 풀에 추가하는 동작이 되어서 최대 개수에 이르는 건 시간 문제가 된다. 
+new Message()와 같이 기본 생성자를 가져와서 값을 채워도 동작에는 문제가 없어 보이지만, Message 처리가 끝나면 불필요하게 풀에 추가하면서 최대 개수에 이르는 건 시간 문제가 된다. 
 풀에서 가져와서(여분이 없으면 새로 생성) 풀에 돌려줘야지 따로 생성해서 풀에 돌려주는 건 불필요한 자원 낭비가 된다.\footnote{Handler를 통해 Message를 처리하는 게 아니라, 값을 전달하기 위한 용도로 Message를 대신 사용해서 주고받는 경우에만 Message 기본 생성자로 쓰도록 하자.}
 
 %Handler의 removeMessages 메서드에서는 원하는 Message를 제거하기 위해 Queue를 순회하는데, 이 경우에는 Link 구조가 조금 불리해진다.
@@ -571,7 +571,7 @@ View의 draw() 시작 부분에 있어서 invalidateInternal()를 통해서 View
 이 메시지를 통해 메인 스레드를 오랫동안 Blocking하는 것을 계속할 것인지, 프로세스를 종료할 것인지 사용자에게 묻는 과정을 거친다. 
 아무리 잘 만들어도 단말 상태가 좋지 않으면 발생할 수 있는 것이라서 완벽하게 피할 수는 없다. 따라서 ANR 가능 케이스를 최대한 줄이는 것이 그나마 가능한 목표다.
 안드로이드 프레임워크에서 ANR 관련한 내용은 
-/frameworks/base/services/java/com/android/server/am/ActivityManagerService.java에서 확인할 수 있다. \footnote{ActivityManagerService는 system\_server 프로세스에서 실행된다.}\\
+/frameworks/base/services/java/com/android/server/am/ActivityManagerService.java에서 확인할 수 있다(참고로 ActivityManagerService는 system\_server 프로세스에서 실행된다).\\
 
 먼저 젤리빈 이상에 적용된 코드를 보자.
 \begin{lstlisting}[frame=single] 
@@ -1269,14 +1269,22 @@ interrupted()나 isInterrupted() 메서드는 interrupt 플래그를 리턴한�
 
 이와 같이 반복문에서 InputStream의 read() 메서드가 실행될 때마다 인터럽트 여부를 체크한다면 AsyncTask의  cancel(true) 실행만으로도 백그라운드 작업을 중지시키는 효과를 볼 수는 있지만,
 반복문에서 인터럽트 여부가 체크되지 않는 경우도 있기 때문에  할 수 있다면 isCancelled()로 체크하는 게 좋다.
-
-\item 여기서는 doInBackground() 메서드에서 URL에 직접 접근해서 스트림을 읽어들이는 동작을 하지만, 이런 코드는 별도 클래스나 라이브러리에 있는 때가 더 많다.
-별도 클래스나 라이브러리를 쓸 때는 반복문에서  AsyncTask의 취소 여부를 알 수 있는 방법이 없으므로, interrupted()나 isInterrupted() 메서드로 인터럽트를 체크하는 게 좋다.
 \end{itemize}
 
-\subsection{예외 처리 메서드 부재} 
+여기서는 doInBackground() 메서드에서 URL에 직접 접근해서 스트림을 읽어들이는 동작을 하지만, 이런 코드는 별도 클래스나 라이브러리에 있는 때가 더 많다.
+별도 클래스나 라이브러리를 쓸 때는 그 안에서  AsyncTask의 취소 여부를 알 수 있는 방법이 없으므로, interrupted()나 isInterrupted() 메서드로 인터럽트를 체크하는 게 좋다.\\
+
+이제 결론을 알아보자. AsyncTask를 취소할 때는 mayInterruptIfRunning 파라미터를 일반적으로 true로 하는 게 낫다. 
+내부에서 인터럽트를 체크하지 않는다면 효과가 없지만, 인터럽트를 체크해서 예외를 발생시킨다면 백그라운드 작업을 중지시킬 수 있다.
+가능하면 isCancelled()도 함께 체크해서 백그라운드 작업을 중지하는 방식을 사용하자.\\
+
+mayInterruptIfRunning를 false로 하는 건, 일부러 인터럽트를 하지 않고 내부적으로 백그라운드 작업은 계속 진행하는 게 유리할 때 쓸 수 있다.
+onPostExecute()가 실행되지 않고 onCancelled()가 실행되어서 데이터를  UI에 곧바로 반영하지는 못하지만, 앱에서 반드시 필요한 데이터를 doInBackground() 메서드에서 가져온다면 고려해보자.
+
+\subsection{예외 처리 메서드 없음} 
 AsyncTask에는 정상적인 데이터 처리를 위한 onPostExcecute()와 작업 취소를 위한 onCancelled() 메서드는 있는데 예외 처리를 위한 onError() 메서드는 없다. 
-백그라운드 스레드에서 하는 작업은 네트워크 문제와 같은 다양한 예외 케이스가 있어서, 이 경우에 문제가 발생했다고 화면에 표시하는 경우가 많다. 즉 예외 케이스에도 UI 작업이 필요한 것이다.\\
+백그라운드 스레드에서 하는 작업은 네트워크 문제와 같은 다양한 예외 케이스가 있어서, 이 경우에 문제가 발생했다고 화면에 표시하는 경우가 많다. 
+즉 예외 케이스에도 UI 작업이 필요한 것이다.\\
 
 백그라운드 스레드와 UI 스레드를 분리할 때 예외에 대해서도 고려가 필요한데, 이 내용이 AsyncTask에는 없어서 AsyncTask의 기본 패턴을 변형해서 사용하는 경우가 있다.
 \begin{lstlisting}[frame=single]
@@ -1418,8 +1426,8 @@ AsyncTask 간에 먼저 실행한 쪽의 작업이 끝날 때까지 대기했다
 
 		@Override
 		protected List<String> doInBackground(Void... params) {
-			...
-			return Arrays.asList("spring", "summer", "fall", "winter"); // (2)
+			... // (2)
+			return Arrays.asList("spring", "summer", "fall", "winter"); 
 		}
 
 		@Override
@@ -1441,8 +1449,8 @@ AsyncTask 간에 먼저 실행한 쪽의 작업이 끝날 때까지 대기했다
 		@Override
 		protected List<String> doInBackground(Void... params) {
 			try {
-				...
-				return Arrays.asList("east", "south", "west", "north");  // (4)
+				... // (4)
+				return Arrays.asList("east", "south", "west", "north"); 
 			} catch (Exception e) {
 				Log.d(TAG, "exception = " + e.getMessage());
 				return null;
@@ -1470,50 +1478,33 @@ AsyncTask 간에 먼저 실행한 쪽의 작업이 끝날 때까지 대기했다
 	}
 \end{lstlisting}
 \begin{itemize}
-\item AsyncTaskA가 먼저 실행되면 TextView에는 `spring, summer, fall, winter'가 먼저 보인 후에 `spring, summer, fall, winter, east, south, west, north'가 보인다.
-AsyncTaskB가 먼저 실행되면 TextView에는 한꺼번에 `spring, summer, fall, winter, east, south, west, north'가 보인다.
-\item ㅎㅎ
+\item 39라인(6)에서 AsyncTaskA와 AsyncTaskB를 병렬로 실행한다.
+원래 의도가 AsyncTaskA가 먼저 실행된다면 TextView에는 `spring, summer, fall, winter'가 먼저 보인 후에 `spring, summer, fall, winter, east, south, west, north'가 보이고
+AsyncTaskB가 먼저 실행되면 TextView에는 한꺼번에 `spring, summer, fall, winter, east, south, west, north'가 보이는 것이다.
+
+\item 3라인(1), 22라인(3), 35라인(5)이 CountDownLatch를 사용하는 방식이다. 3라인에서 생성자에 들어가는 숫자는 countDown() 실행 횟수를 지정하는 것이다.
+countDown()을 실행해서 생성자 파라미터의 값이 하나씩 마이너스가 돼서 0이 되면 대기 상태가 풀린다.
+35라인의 await()는 대기하고 있다가 countDown()이 되면 대기 상태를 풀고 다음 라인을 진행한다.
+여기서는 AsyncTaskB에서 await()를 통해서 AsyncTaskA가 작업이 끝날 때까지 대기한다.
+await()보다 countDown()이 먼저 실행되어도 상관없다. countDown()을 통해 이미  0이 되었기 때문에 await()는 굳이 대기하지 않고 다음 라인을 진행한다.
+
+\item 22라인의 countDown()을 finally 문에서 실행하는 이유는 예외 사항에도 반드시 실행돼야 하기 때문이다.
+코드 실행 패스에서 countDown()이 빠뜨려지면 await()에서 계속 대기만 해서 문제가 발생하게 된다.
+35라인의 await()도 마찬가지다. await()가 빠드려지면 AsyncTaskB의 onPostExcecute()가 먼저 실행될 수 있다. 
+
+\item AsyncTaskB에서는 onPostExecute()를 실행하지 않고 기다리기 위해서 doInBackground()에서 await()를 실행하고, AsyncTaskA에서는 UI에 반영까지 하고서 AsyncTaskB도 UI 반영하라는 의미에서 onPostExecute()에서 countDown() 메서드를 실행한다.
+
+\item 2개의 AsyncTask 간에 시간차를 테스트하기 위해서는 9라인(2)과 32라인(4)에 SystemClock.sleep() 메서드로 2초, 5초로 하고 또 반대로 해보면 실행 순서를 보장하는 것을 볼 수 있다.
 \end{itemize}
 
-
 \begin{comment}
-	CountDownLatch latch = new CountDownLatch(1); // 생성자 파라미터는 다른 스레드 몇 개가 끝날때까지 대기할 것인가의 숫자
-	AsyncTask asyncTaskA = new .. {
-	
-		protected Boolean doInBackground(Void ... params) {
-			.... // 여러 작업들
-		}
-
-		protected void onPostExecute(Boolean result) {
-			... // UI 관련 작업
-			latch.countDown();  // countDown해서 생성자 파라미터의 값이 하나씩 마이너스가 돼서 0이 되면 대기상태가 풀림
-		}
-	}
-
-	AsyncTaskB asyncTaskB = new ...{
-		protected Boolean doInBackground(Void ... params) {
-			try {
-				... // 여러 작업들
-			} finally {
-				latch.await(); // 여러 작업들에서 exception이 나면 await를 할 기회가 없기 때문에     finally 안에 둠
-			}
-		}
-		
-		protected void onPostExecute(Boolean result) {
-		... // UI 관련 작업
-		}
-	
-	}
-	asyncTaskA.execute();
-	asyncTaskB.execute();
-\end{comment}
-
+% 이 내용은 시간이 되면 다시 추가
 \subsection{병렬 실행 후 데이터 조합}
 앞 절에서는 AsyncTask를 병렬로 실행하고서 결과를 보여주는 순서를 조정하였다.
 
 멤버 변수에 비트 OR 연산을 사용한다. 2개의 AsyncTask가 끝나면 각각 비트 OR 연산해서 둘 다 충족했다면 onPostExcecute() 메서드에서 데이터를 조합해서 보여준다. 
 예외가 나오는 케이스도 고려해야만 한다. 
 %AsyncTask의 대안으로 RxJava 라이브러리를 사용하기도 한다. RxJava에 대한 내용은 \url{https://github.com/ReactiveX/RxJava/wiki}를 참고하자.
-
+\end{comment}
 
 

@@ -1,4 +1,7 @@
 \chapter{ContentProvider}
+ContentProvider는 외부 프로세스에 데이터를 제공하는 표준 인터페이스이다. 
+여기서는 ContentProvider에서 주로 데이터 소스로 사용하는 SQLite를 먼저 살펴보고 DB Lock 이슈, SQLite 관련 클래스의 세부 내용, ContentProvider의 여러 이슈까지 살펴보기로 한다.
+
 \section{SQLite}\label{sec:sqlite}
 SQLite는 로컬 DB이지만 속도가 그렇게 빠르지는 않다. 딱 혼자서 쓸 수 있는 정도라고 생각하자.
 SQLite는 네이티브 라이브러리에 포함되어 있고 프레임워크를 통해서 접근하고 사용한다.\footnote{안드로이드 프레임워크에서 사용하는 네이티브 메서드는 jni를 이용해서 /frameworks/base/core/jni/android\_database\_SQLiteConnection.cpp 소스에 연결된다.
@@ -179,7 +182,8 @@ Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 1
 
 그런데 이 코드는 단말에서는 보안상 막아 놓는다. 엉뚱한 앱에서 자꾸 비행기 모드로 변경한다면 단말을 도저히 사용할 수 없을 것이다.
 이 내용이 에뮬레이터에서는 잘 동작한다.
-Settings.System 클래스를 보고 내부적으로 db를 사용하고 있는 것을 알면, 여러 앱에서 사용 가능한 nonsecure \& public 값들을 추가로 넣을 수 있지 않을까? 예를 들어, 가장 최근 검색어를 여러 앱에서 공유할 수도 있다.
+Settings.System 클래스를 보고 내부적으로 db를 사용하고 있는 것을 알면, 여러 앱에서 사용 가능한 nonsecure \& public 값들을 추가로 넣을 수 있지 않을까? 
+예를 들어, 가장 최근 검색어를 여러 앱에서 공유할 수도 있다.
 아래 코드는 마시멜로 이전 버전의 단말에서 잘 동작한다.
 \begin{lstlisting}[frame=single]
 Settings.System.putString(context.getContentResolver(), "most_recent_keyword",
@@ -206,6 +210,7 @@ PRAGMA user_version;
 
 SQLite 언어 지원에서 C API 등을 보면 다양한 함수가 있는데, 안드로이드의 SQLiteDatabase 클래스에서는 쓸 수 있는 게 많지 않다.
 그나마 여기에 도움을 주는 것이 PRAGMA 명령어라고 보면 된다. PRAGMA 명령어를 써서 앱의 환경에 맞는 튜닝도 약간은 가능하다.
+\footnote{\url{http://www.tutorialspoint.com/sqlite/sqlite_pragma.htm} 내용을 참고하자.}
 %PRAGRMA 몇 가지 보여주자.
 
 
@@ -221,10 +226,16 @@ Exclusive Lock은 말 그대로 다른 Lock을 허용하지 않는 배타적인 
 Lock 상태는 5가지 중의 하나이다(아래 설명에서는 여러 프로세스에 대해서 얘기했지만, 여러 스레드에 대해서도 마찬가지다).
 \begin{itemize}
 \item UNLOCKED: 기본 상태이다. 읽기나 쓰기가 안된다.
+
 \item SHARED: 읽기만 되고 쓰기는 안된다. 여러 프로세스가 동시에 Shared Lock을 가질 수 있다. 하나 이상의 Shared Lock이 활성화되어 있다면, 다른 프로세스에서 쓰기를 할 수 없다. 쓰기를 위해서는 Shared Lock이 모두 해제될 때까지 대기한다.
-\item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다 
-\item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 Clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다. 
-\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 이것은 스레드 프로그래밍에서 synchronized 블록을 크게 잡지 않도록 권장하는 것과 비슷하다. 
+
+\item RESERVED: 프로세스가 미래 어느 시점에 쓰기를 한다는 일종의 Flag Lock이다. Reserved Lock은 한번에 하나의 Reserved Lock만 있을 수 있으며, 여러 Shared Lock과 공존할 수 있다. Reserved Lock 상태에서는 새로운 Shared Lock을 더 잡을 수도 있다.
+
+\item PENDING: Lock을 잡고 있는 프로세스가 가능한 한 빨리 쓰기를 하려고 한다. 현재의 모든 Shared Lock이 Clear되면서 Exclusive Lock을 가지려고 한다. Pending Lock 상태에서는 이미 존재하는 Shared Lock은 허용되지만, 새로운 Shared Lock을 잡을 수는 없다.
+
+\item EXCLUSIVE: 파일에 쓰기 위해서 필요하다. 오직 하나의 Exclusive Lock만 허용되고 다른 Lock은 공존할 수 없다. 
+SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간을 최소화하고 있는데, 우리가 만드는 코드 내에서도 Exclusive Lock 구간을 줄이도록 노력해야 한다. 
+이것은 스레드 프로그래밍에서 synchronized 블록을 크게 잡지 않도록 권장하는 것과 비슷하다. 
 % 예를 들어 수차례의 HTTP call을 통해서 데이터를 가져와서 입력한다고 하면, Transaction을 먼저 시작하고, HTTP call을 하면 전체적인 Transaction 실행시간이 길어질 수 밖에 없다.
 \end{itemize}
 
@@ -235,8 +246,12 @@ SQLite에서 트랜잭션은 deferred, immediate, exclusive의 3가지 동작 �
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
 \begin{itemize}
-\item defered: 말 그대로 Lock을 가능한 한 뒤로 미룬다. 트랜잭션을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고 첫 write operation이 있을 때 Reserved Lock을 잡는다. 최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 스레드에서 DB 작업을 할 수 있다. 
-\item immediate: 트랜잭션을 시작할 때 Reserved Lock이 잡힌다. Reserved Lock은 2개 이상 잡힐 수 없으므로, 다른 immidate 트랜잭션을 시작할 수는 없다. 그래도 다른 프로세스나 스레드에서 읽기를 할 수는 있다.
+\item defered: 말 그대로 Lock을 가능한 한 뒤로 미룬다. 트랜잭션을 시작할 때는 Lock을 잡지 않고, 첫 read operation이 있을 때 Shared Lock을 잡고 첫 write operation이 있을 때 Reserved Lock을 잡는다. 
+최대한 Lock이 뒤로 미뤄지기 때문에 다른 프로세스나 스레드에서 DB 작업을 할 수 있다. 
+
+\item immediate: 트랜잭션을 시작할 때 Reserved Lock이 잡힌다. Reserved Lock은 2개 이상 잡힐 수 없으므로, 다른 immidate 트랜잭션을 시작할 수는 없다. 
+그래도 다른 프로세스나 스레드에서 읽기를 할 수는 있다.
+
 \item exclusive: 트랜잭션을 시작할 때부터 Exclusive Lock이 잡힌다. 따라서 트랜잭션의 시작부터 끝까지 다른 프로세스나 스레드에서 DB 작업을 전혀 할 수 없다.
 \end{itemize}
 
@@ -285,7 +300,8 @@ Lock/트랜잭션 관련해서 테스트 샘플 코드는 github에서 찾을 �
 \begin{enumerate}
 \item 여러 스레드에서 1개의 SQLiteDatabase 인스턴스만 가지고 쓰기를 한다. 이때는 Lock 문제가 발생하지 않는다. 
 
-\item 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고 쓰기를 한다. 이때는 Lock 문제가 발생한다. 여러 번 해봐도 문제가 잘 발생하지 않는다면 소스 상에서 스레드 개수를 늘려보자. 계속 늘려가보면 반드시 Lock 문제가 발생한다.
+\item 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고 쓰기를 한다. 이때는 Lock 문제가 발생한다. 
+여러 번 해봐도 문제가 잘 발생하지 않는다면 소스 상에서 스레드 개수를 늘려보자. 계속 늘려가보면 반드시 Lock 문제가 발생한다.
 
 \item 1개의 스레드에서 1개의 SQLiteDatabase 인스턴스를 가지고 계속 쓰기를 하고, 여러 스레드에서 각각 SQLiteDatabase 인스턴스를 가지고서 읽기만 한다면 Lock 문제가 발생한다.
 
@@ -303,7 +319,7 @@ threading mode 관련한 내용은 아래 url을 참고하자.\\
 \url{http://www.sqlite.org/threadsafe.html}\\
 
 SQLiteDatabase 인스턴스를 1개만 가지고서 serialized mode로 동작한다면 속도가 느려지진 않을까? 결론적으로 그렇다.
-쓰기와 읽기가 함께 있는 것이라면 serialized mode가 되어야만 Lock 문제가 없기 때문에 1개의 인스턴스를 사용해야 하지만, 읽기만 있다면 굳이 1개의 인스턴스를 고집할 필요가 없다.
+쓰기와 읽기가 함께 있는 것이라면 serialized mode가 되어야만 Lock 문제가 없기 때문에 1개의 인스턴스를 사용해야 하지만, 읽기만 한다면 굳이 1개의 인스턴스를 고집할 필요가 없다.
 
 \begin{comment}
 \subsubsection{Yield 하기}
@@ -418,14 +434,15 @@ onCreate() 메서드는 앱이 처음 DB를 생성할 때 호출된다. DB 버�
 버전이 1일 때 앱이 DB를 생성한다면 onCreate() 메서드가 호출되고, 중간에 앱을 업데이트하지 않다가 최신 버전으로 업데이트했다면 onUpgrade() 메서드가 호출된다.
 그럼 버전이 4일때 처음 앱을 설치한다면 어떨까? 바로 onCreate() 메서드만 호출되고 onUpgrade() 메서드는 호출되지 않는다. 
 개발하다 보면 onCreate()와 onUpgrade()가 순차적으로 호출되는 것으로 가끔 착각하게 되어서 언급하였다. onCreate()와 onUpgrade()는 둘 중에 하나만 호출된다.
+따라서 onCreate() 메서드에는 최신 DB 스키마와 데이터를 반영할 수 있도록 버전이 올라갈 때마다 수정해야 한다.
 
 \item DB 버전 업그레이드가 필요할 때 빠뜨려서는 안 된다. 예를 들어, 테이블 설계에 문제 있는 버전이 배포되었다고 하자.
-마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 이 버전을 사용중인 단말은 DB 버전이 동일하므로 onUpgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없다.
+마음 같아서는 다시 작성해서 동일한 버전으로 하면 코드도 깔끔할 것 같은데, 기존에 문제 있는 버전을 사용중인 단말은 DB 버전이 동일하므로 onUpgrade()는 실행되지 않고 변경된 테이블을 사용할 수 없다.
 버전을 올리고서 onUpgrade()에서 테이블 구조를 변경하는 코드가 들어가는 게 정상적인 방법이다.
 
 \item onCreate()와 onUpgrade() 메서드에서 하는 작업은 테이블 생성/수정 뿐 아니라 많은 기본 데이터 INSERT 등도 필요하다. 
 예를 들어, INSERT는 건당 시간이 얼마 안 걸리지만 1,000건, 10,000건이 된다면 속도가 대폭 떨어질 것을 예상할 수 있다.
-그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또 다시 트랜잭션을 고려할 필요가 없다.\footnote{SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
+그래서 트랜잭션을 쓰려고 하는데 SQLiteOpenHelper에는 이미 onCreate()와 onUpgrade() 메서드를 트랜잭션으로 감쌌기 때문에 또다시 트랜잭션을 고려할 필요가 없다.\footnote{SQLiteOpenHelper가 Template Method로서 의미 있는 부분이다.}
 
 \item DATABASE\_NAME 위치에 null을 넣으면 파일 DB가 아닌 메모리 DB가 된다. 파일 DB라도 속도가 느리진 않지만 메모리 DB는 그보다 훨씬 속도가 빠르다. 
 DB가 닫히면 함께 사라져버리는 휘발성 DB이므로 일종의 캐시 용도로 사용하는 것이 좋다.
@@ -456,7 +473,7 @@ public static DatabaseHelper extends SQLiteOpenHelper  {
 6라인(1)에서 context가 아닌 context.getApplicationContext()를 전달한 것을 주목하자.
 생성자가 private으로 감추어져 있으므로 사용하는 쪽에서는 getInstance()로 가져와서 사용한다.
 \begin{lstlisting}[frame=single] 
-DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+	DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
 \end{lstlisting}
 
 \item close() 메서드는 실제 호출할 일이 거의 없다.
@@ -477,11 +494,11 @@ ContentProvider 접근은 ContentResolver를 통해서만 가능하다. 그리�
 % 그림 필요
 ContextResolver는 일종의 Proxy인데, 해당하는 Uri의 ContentProvider를 찾는 역할을 한다.
 % 퍼미션 체크는 ContentProvider에서 한다.
-ContentResolver는 추상 클래스이고 실제 사용하는 클래스는 ContextImpl의 내부 클래스인 ApplicationContentResolver이다.
+ContentResolver는 추상 클래스이고 실제 구현체는 ContextImpl의 내부 클래스인 ApplicationContentResolver이다.
 
 \subsection{ContentProvider 적용}
 개발자 가이드에 의하면 로컬 프로세스에서만 사용하려면 ContentProvider를 사용하지 않는 것이 권장된다. 
-ContentResolver를 거치는 것보다 직접 DB를 접근하는 것이 속도가 훨씬 빠르다.\\
+ContentResolver를 거치는 것보다 직접 DB를 접근하는 것이 속도가 빠르다.\\
 
 한 앱에서도 ContentProvider를 쓰면 유용한 경우를 들어보자(이 때문에 어떤 문서에서는 가능하면 DB 관련 코드는 ContentProvider를 쓰라고 하기도 한다).
 \begin{itemize}
@@ -500,7 +517,7 @@ ContentResolver를 거치는 것보다 직접 DB를 접근하는 것이 속도�
 \end {itemize}
 
 가이드가 혼재되어 있는데 결론을 내려보자.
-로컬 프로세스에서는 ContentProvider를 쓰지 않는 것을 먼저 고려하자. ContentProvider를 사용하는 장점이 꼭 필요하다면, 그때 ContentProvider를 쓰기로 하자.
+로컬 프로세스에서는 ContentProvider를 쓰지 않는 것을 먼저 고려하자. ContentProvider의 유용함이 필요하다면, 그때 ContentProvider를 쓰기로 하자.
 다만 직접 DB에 접근하는 코드에서도 메서드 시그너처를 ContentProvider와 유사하게 만들면, 이후에 변경이 수월할 수 있다.
 프로세스가 분리되거나 다른 앱에서 DB 접근이 필요하다면, 필요한 부분만 ContentProvider로 접근해서 DB Access(내부용) + ContentProvider(외부용)으로 하는 것도 가능한 방법이다.\\
 
@@ -648,9 +665,10 @@ onCreate()는 처음 ContentProvider를 사용할 때 단 한번만 실행되고
 \item ContentProvider의 onCreate() 메서드는 Application의 onCreate() 메서드 이전에 실행된다.\footnote{ActivityThread의 handleBindApplication() 메서드를 분석해보자.}
 따라서 Application의 onCreate() 메서드가 먼저 실행된다고 가정하면 안된다.
 복잡한 앱에서는 Application의 onCreate() 메서드에서 앱 전체적으로 사용하는 인스턴스를 미리 생성하는 역할을 하기도 한다. ContentProvider에서도 Application에서 생성한 것을 쓰고 싶지만 순서를 주의하도록 하자.
-ContentProvider의 onCreate()는 메인 스레드에서 실행하고 다른 메서드는 일반적으로 별도 스레드에서 실행하므로(로컬에서도 ContentProvider는 스레드에서 호출하도록 권장되고, Binder를 통한 외부 앱의 접근은 Binder 스레드를 거쳐 실행), ContentProvider의 메서드 간에는 스레드 안정성에 주의하도록 하자. 멤버 변수를 함부로 쓰면 안된다는 얘기이다.
+ContentProvider의 onCreate()는 메인 스레드에서 실행하고 다른 메서드는 일반적으로 별도 스레드에서 실행하므로(로컬에서도 ContentProvider는 백그라운드 스레드에서 호출하도록 권장되고, Binder를 통한 외부 앱의 접근은 Binder 스레드를 거쳐 실행), ContentProvider의 메서드 간에는 스레드 안정성에 주의하도록 하자. 멤버 변수를 함부로 쓰면 안된다는 얘기이다.
 
-\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().not\-ifyChange\-(uri, null)를 호출한다. ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
+\item insert/update/delete 메서드에서 DB 명령 실행 후에 getContext().getContentResolver().notifyChange(uri, null)를 호출한다. 
+ContentResolver에는 registerContentObserver() 메서드가 있어서 데이터가 변경되면 알 수 있도록 ContentObserver를 등록하는데, 이 ContentObserver에 알림을 주기 위한 것이다. 
 ContentObserver에는 어떤 데이터가 변경되었는지 알리지는 않고 변경되었는지 여부만 전달한다. 
 그러면 무슨 쓸모가 있는가 의문이 생기는데,
 query() 메서드에서 리턴 결과인 Cursor에는 requery()라는 메서드가 있어서 새로 조회할 수 있다. 특히 CursorAdaper는 내부에 ContentObserver가 등록되어 있어서 notifyChange()를 받으면 requery()를 실행한다.
@@ -885,9 +903,11 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 \end{lstlisting}	
 \begin{itemize}
 \item 7라인(1)에서 여러 스레드에서 공통으로 사용할 dbHelper 변수를 생성하였다. DB Lock 문제가 발생하지 않으려면 하나의 dbHelper를 사용해야 한다.
+
 \item 11라인(2)과 25라인(4)에서 2개의 스레드를 시작한다.
 11라인의 스레드는 단순 조회이다.
 25라인의 스레드는 데이터를 10개 입력하는데 45라인(6)에서 1초간 sleep하기 때문에(시간이 걸리는 것을 시뮬레이션) 최소 실행 시간은 10초이다. 32라인(5)에서 트랜잭션을 시작하고 49라인(7)에서 트랜잭션을 종료한다.
+
 \item 스케줄링에 의해서 첫 번째 스레드가 운 좋게 먼저 실행된다면 다행이지만, 두 번째 스레드의 32라인(5)에서 beginTransaction() 메서드가, 첫 번째 스레드의 17라인(3)에서 query() 메서드보다 먼저 실행된다면 어떤 일이 발생할까? 바로 명령어가 serialization되기 때문에 두 번째 스레드의 49라인(startTransaction $\sim$ endTransaction)까지 첫 번째 스레드의 18라인이 대기한다. 사용자 입장에서는 단순 조회라서 금방 되어야 하는데 10초 이상이 걸리는 것이다. 
 \end{itemize}
 
@@ -895,7 +915,7 @@ dumpsys dbinfo 명령어는 속도 체크 뿐 아니라 쿼리가 원하는 시�
 서버와 데이터를 동기화하는 앱에서 많이 쓰이는 패턴은 아래와 같다.
 \begin{enumerate}
 \item startService()를 실행하여 Service의 백그라운드 스레드에서 서버 데이터를 가져와 DB에 반영한다. 이때 속도 향상을 위해서 트랜잭션을 사용한다(시간이 얼마나 걸릴지 알 수 없다. 사용자 데이터는 천차만별이다).
-\item 첫 화면은 AsyncTask를 이용해서 기존 DB의 데이터를 조회해서 UI에 반영한다. 
+\item 화면은 AsyncTask를 이용해서 기존 DB의 데이터를 조회해서 먼저 UI에 반영한다. 
 \item 동기화가 완료되면 DB에 다 반영되었으므로 Service에서 sendBroadcast()를 실행하고 화면에서는 AsyncTask로 변경된 결과를 다시 조회한다.
 \end{enumerate}
 
@@ -923,7 +943,7 @@ at android.content.ContentResolver.query(ContentResolver.java:407
 DB가 데이터 소스인 경우는 별로 그럴 일이 없지만, 네트워크나 파일, 또는 로직을 통해 생성한 결과 등을 데이터 소스로 사용한다면 이런 예외 케이스는 원인을 확인해야 한다.\\
 
 그럼 ContentProvider를 제공하는 쪽에서는 크래시가 발생하는가 하면 그렇지 않다. 바로 Exception을 잡아서 Binder로 전달하는 값에 숫자를 전달하고, DatabaseUtils 태그로 ERROR 레벨에 로그를 남긴다.\footnote{/frameworks/base/core/java/android/database/DatabaseUtils.java를 확인하자.}
-ContentProvider에서는 DatabaseUtils 태그로 문제를 확인하도록 하자.
+ContentProvider를 제공하는 앱에서는 DatabaseUtils 태그로 문제를 확인하도록 하자.
 % 샘플 만들자.
 % 그밖의 예외에 대해서는 어떻게 되지?
 

@@ -1,7 +1,7 @@
 \chapter{Application}
 Application도 Activity나 Service와 마찬가지로 ContextWrapper를 상속한다.
 % Application은 다른 컴포넌트들과 상호 작용하는 것이 없으므로, 컴포넌트로 보기는 어렵다고 생각했는데, ComponentCallbacks 인터페이스 API에서는 Application도 Component라고 말하고 있다.
-Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 프로세스가 생성되면서 Application이 먼저 생성되고 해당 컴포넌트가 그 다음에 실행된다. 
+Application은 단독으로 만들어져서 실행하지는 않고, 다른 컴포넌트가 실행 요청을 받으면 앱 프로세스가 생성되면서 Application이 먼저 생성되고 해당 컴포넌트가 그 다음에 실행된다. 
 즉 Activity, Service, BroadcastReceiver, ContentProvider 가운데서 어느 것이든지 외부에서(앱 아이콘, Notification, Alarm, 다른 앱) 실행하려고 할 때, Application이 이미 생성되어 있다면 생성하지 않고 아니면 Application을 먼저 생성한다. 그리고서 해당 컴포넌트를 시작한다. 
 앞에서도 설명했지만 Application의 onCreate()보다 ContentProvider의 onCreate()가 먼저 실행되는 것은 주의하도록 하자.\\
 
@@ -12,7 +12,7 @@ Activity에서는 특히 getApplication() 메서드를 사용해서 가져오기
 \section{앱 초기화}
 Application은 다른 컴포넌트보다 먼저 실행되기 때문에 앱을 위한 초기화 작업을 Application의 onCreate()에서 주로 실행한다.
 그리고 onCreate() 메서드는 가능한 한 빨리 끝나야만 한다. 
-앱 아이콘을 클릭해서 Activity를 새로 시작할 때, Application의 onCreate()에서 시간이 오래 걸린다면 검은 화면이 오래 보이는 문제가 생긴다.\\
+앱 아이콘을 클릭해서 Activity를 새로 시작할 때, Application의 onCreate()에서 시간이 오래 걸린다면 검은 화면이 오래 보이거나 화면이 늦게 뜨는 문제가 생긴다.\\
 
 % SplashPage에서 초기화 하는 것과 비교
 Application은 앱 프로세스의 메인 클래스인 ActivityThread에 mInitialApplication이라는 인스턴스 변수로 있기 때문에, 앱 프로세스가 살아있는 동안 계속 남아 있는 인스턴스이다.\footnote{Back 키를 통해서 화면을 다 벗어났어도 프로세스가 바로 종료되지는 않는다. 이 상태에서는 다시 앱 아이콘을 클릭해도 Application의 onCreate()는 실행되지 않는다.}
@@ -67,9 +67,10 @@ public class ShoppingApplication extends Application {
 \item 샘플을 위해서 5라인(1)에서 쇼핑 앱에서 쇼핑카드를 DB가 아닌 Application의 인스턴스 변수로 놓고, 이를 여러 곳에서 데이터 공유하도록 했다.
 Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메서드로 가져와서 ShoppingApplication으로 캐스팅한다면, getCart(), addCartProduct(), clearCart() 같은 메서드를 호출할 수 있다.
 
-\item 7라인(2)에서 productRepository는 앱에서 싱글 인스턴스로 사용하기로 한다. Application을 통해서만 인스턴스를 가져온다는 규칙을 정한다면, 싱글톤 패턴 대신 사용 가능한 방식이다.  
+\item 7라인(2)에서 productRepository는 앱에서 단일 인스턴스로 사용하기로 한다. Application을 통해서만 인스턴스를 가져온다는 규칙을 정한다면, 싱글톤 패턴 대신 사용 가능한 방식이다.  
 
-\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 외부 라이브러리를 사용하는 경우에는 Application의 onCreate()에서 라이브러리에 필요한 초기화를 하는 경우가 많다. 
+\item 14라인(4)에서는 앱을 위한 설정 초기화 작업을 하고 있다. Context가 전달되어야 하는 이런 작업들이 있다. 
+외부 라이브러리를 사용하는 경우에는 Application의 onCreate()에서 라이브러리에 필요한 초기화를 하는 경우가 많다. 
 다른 컴포넌트에 앞서서 Application의 onCreate()가 실행되기 때문에 `이른 초기화'가 필요한지 `늦은 초기화'로 해도 되는지 구분이 필요하다.
 예를 들어, 프로세스가 뜨면서 App Widget 하나만 실행하는 데도 Activity에서만 필요한 초기화 작업도 하고 있다면 불필요하게 메모리와 시간을 허비하게 된다.
 
@@ -82,7 +83,7 @@ Context의 getApplicationContext() 메서드나 Activity의 getApplication() 메
 \end{itemize}
 
 많은 문서에서 쇼핑카트의 예처럼 데이터 공유에 Application을 사용하면 된다고 하지만, 이 방식도 문제가 있다.
-메모리가 적거나 다른 프로세스가 사용자에게 즉각적으로 반응해야 할 때, 프로세스가 종료됐다가 재시작되기도 한다.
+메모리가 적거나 다른 프로세스가 사용자에게 즉각적으로 반응해야 할 때, 프로세스는 종료됐다가 재시작되기도 한다.
 이때 Application의 onCreate()는 다시 호출되지만, addCartProduct() 메서드로 추가해놓은 쇼핑카트 목록은 사라져 버린다. 
 이런 케이스도 있다는 것을 알고 데이터 공유에 신중해야 한다.
 결론적으로 사라져버려도 문제가 없고 남아있으면 유용한 캐시같은 것이 Appplication의 데이터 공유에 적용되는 것이 맞다.
@@ -92,19 +93,22 @@ Application에서는 onCreate() 메서드만 오버라이드하는 경우가 많
 다른 메서드도 유용한 경우가 있으니 어떤 것이 있는지 살펴보자. 
 참고로 onTerminated() 메서드는 emulated process 용도에서나 동작하고 실제 단말에서는 동작하지 않는다. 이 메서드는 무시하는 게 좋다.
 % 얘기 하는 이유는 여러 책에서 언급이 돼 있어서
-메서드 가운데서 register/unregister 메서드를 제외하고는 ComponentCallbacks2 인터페이스의 3개의 메서드가 있다. Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 ComponentCallbacks2 인터페이스를 구현하고 있다.\\ 
+메서드 가운데서 register/unregister 메서드를 제외하고는 ComponentCallbacks2 인터페이스의 3개의 메서드가 있다. 
+Application과 Activity뿐만 아니라 Service와 ContentProvider, Fragment도 ComponentCallbacks2 인터페이스를 구현하고 있다.\\ 
 
-Application에서 3개의 메서드는 ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 따라서 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.
+Application에서 3개의 메서드는 ICS 이전에는 비어있는 메서드였고, ICS부터는 기본 동작이 registerComponentCallbacks() 메서드를 통해 동록된 콜백의 메서드를 다시 호출하고 있다. 
+따라서 오버라이드할 때는 super.onXxx() 메서드도 호출해야 한다.
 이제 ComponentCallbacks2 인터페이스의 메서드를 각각 살펴보자.
 \begin{itemize}
 \item onConfigurationChanged(Configuration newConfig): Activity 외에 다른 컴포넌트는 Configuration이 변경되어도 재시작하지 않고 onConfigurationChanged() 메서드가 불린다. 
-다른 컴포넌트보다 Application의  onConfigurationChanged()가 먼저 실행되는 것을 볼 수 있다.
-필요한 경우를 예를 들면, 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기에서 startService()를 실행한다.
-% TimeZone이 변경되었을 때도?
+그 가운데서 Application의  onConfigurationChanged()가 먼저 실행된다. 
+필요한 경우를 생각해보면, 캘린더 앱 실행 중에 환경설정에서 언어가 변경되었을 때 휴일 정보를 새로 업데이트해야 한다면, 여기에서 startService()를 실행해서 휴일 정보를 Service에서 가져오면 된다.
 
-\item onLowMemory(): 전체 시스템에 메모리가 부족해서 이 앱도 곧 kill될 가능성이 있을 때 호출된다. 잡고 있는 캐시나 불필요한 리소스를 해제(release)하는 작업을 하면 된다. 리턴 이후에 GC가 실행된다.
+\item onLowMemory(): 전체 시스템에 메모리가 부족해서 백그라운드 프로세드들이 모두 kill될 가능성이 있을 때 호출된다. 잡고 있는 캐시나 불필요한 리소스를 해제(release)하는 작업을 하면 된다. 
+리턴 이후에 GC가 실행된다. ICS 이상에서는 onTrimMemory()에서 관련 로직을 처리하는 것을 권장한다.
+% 재현이 쉽지 않다.
 
-\item onTrimMemory(int level): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 세분화해서 처리할 수 있다. level에는 ComponentCallbacks2의 상수값이 전달된다.
+\item onTrimMemory(int level): ICS부터 사용 가능하다. 파라미터에 전달되는 level에 따라 onLowMemory() 메서드보다 세분화해서 처리할 수 있다. level에는 ComponentCallbacks2의 상수값이 전달된다.
 \end{itemize}
 
 Application Callback은 3가지가 있다. 모두 register/unregister 메서드가 있고, Callback은 여러 개를 등록할 수 있다.\\
@@ -113,15 +117,17 @@ Application.ActivityLifecycleCallbacks(ICS), \\
 ComponentCallbacks(ICS), \\
 Application.OnProviderAssistDataListener(젤리빈 API 레벨 18)\\
 
-ComponentCallbacks는 ICS 이전에서 Application에 onConfigurationChanged(), onLowMemory(), onTrimMemory() 메서드로 있던 것을 ICS 이상에서 Callback을 여러 개 등록할 수 있게 만든 버전이다.\\
+ComponentCallbacks는 ICS 이전에서 Application에 onConfigurationChanged(), onLowMemory() 메서드로 있던 것을 ICS 이상에서는 onTrimMemory() 메서드가 추가되고 Callback을 여러 개 등록할 수 있게 하였다.\\
 
-onTrimMemory()는 ComponentCallbacks가 아닌 이를 상속한 ComponentCallbacks2 인터페이스에 있으므로 onTrimMeory()를 쓸 때에는 registerComponentCallbacks()에 ComponentCallbacks2 구현체를 넘기도록 한다.\\
+onTrimMemory()는 ComponentCallbacks가 아닌 이를 상속한 ComponentCallbacks2 인터페이스에 있으므로 onTrimMemory()를 쓸 때는 registerComponentCallbacks()에 ComponentCallbacks2 구현체를 넘기면 된다.\\
 
+\begin{comment}
 ComponentCallbacks가 필요한 경우를 생각해보자.
 예를 들어, ListView에서 스크롤하면서 현재 스크롤된 화면에 맞게 네트워크나 DB를 통해서 데이터를 불러오는 기능이 있다.
 이때 이전에 스크롤했던 위치로 돌아갈 때 다시 데이터를 불러오면 속도가 그리 좋지 않으니, 한번 가져온 것은 캐시에 저장하는 경우가 있다.
 만일 메모리 상태가 좋지 않다면 onTrimMemory()에서 level에 따라 캐시에 저장된 데이터량을 조금씩 줄이는 방법으로 ComponentCallbacks/ComponentCallbacks2를 사용할 수 있다
-Activity와 Service도 ComponentCallbacks2 인터페이스를 구현하고 있으므로 동일한 방식을 사용할 수 있다.\\
+Activity와 Service도 ComponentCallbacks2 인터페이스를 구현하고 있으므로 동일한 방식을 사용할 수 있다.
+\end{comment}
 
 Application.ActivityLifecycleCallbacks은 Activity의 생명주기마다 대응하는 메서드가 있고, 생명주기가 끝날 때마다 호출한다.
 앱에서 메모리 문제가 있을 때, 어떤 Activity의 어느 생명주기에서 메모리가 크게 증가하는지 확인하기 위해 ActivityLifecycleCallbacks에 로그를 남기는 방법을 생각할 수 있다.
@@ -192,7 +198,8 @@ Application.ActivityLifecycleCallbacks은 Activity의 생명주기마다 대응�
 \end{itemize}
 
 \begin{comment}
-startService 하는 경우가 있는데, 어차피 시작 Activity의 onResume 이후에 실행된다. 따라서 Application에 꼭 넣을 것인지, 시작 Activity에 할 것인지 따져봐야 한다. 왜냐하면 Application.onCreate는 앱이 죽어 있을 때도 BroadcastReceiver, Service, ContentProvider를 다른 앱에서 사용하고자 할 때도 실행하기 때문이다.
+startService 하는 경우가 있는데, 어차피 시작 Activity의 onResume 이후에 실행된다. 따라서 Application에 꼭 넣을 것인지, 시작 Activity에 할 것인지 따져봐야 한다. 
+왜냐하면 Application.onCreate는 앱이 죽어 있을 때도 BroadcastReceiver, Service, ContentProvider를 다른 앱에서 사용하고자 할 때도 실행하기 때문이다.
 
 restore/full backup일때는 우리가 만든 Application.onCreate를 타지 않는다.
 
@@ -206,7 +213,7 @@ ActivityThread.main
 
 \section{프로세스 분리}
 각 프로세스별로 사용 가능한 메모리는 제한되어 있다. 안드로이드는 버전별/단말별로 메모리 제한에 차이가 있다.
-허니콤부터 anroid:largeHeap 옵션도 쓸 수 있지만 단말에 따라서 이 옵션이 소용없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
+허니콤부터는 anroid:largeHeap 옵션도 쓸 수 있지만 단말에 따라서 이 옵션이 소용없는 경우도 있고(제조사별로 차이가 있음), 이 옵션으로 인해 GC 시간이 오래 걸리거나 다른 앱의 실행에 악영향을 줄 수도 있다.\\ 
 
 주로 메모리 이슈 때문에 프로세스를 분리하는데, Activity/Service/ContentProvider/BroacastReceiver는 모두 프로세스 분리가 가능하다.
 동일 패키지에서 생성된 별도 프로세스는 pid(process id)는 다르지만, 동일한 uid(user id)를 가지고 동일하게 파일과 리소스에 접근할 수 있다.\\
@@ -215,8 +222,10 @@ ActivityThread.main
 \begin{itemize}
 \item Activity 자체가 무거운 경우이다. 사진공유 앱에서 기본 카메라 앱을 실행시키지 않고 자신의 카메라 Activity를 가지고 있는 경우가 있는데, 이런 카메라 Activity는 별도 프로세스로 분리하는 것이 낫다.
 
-\item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행하다가 OutOfMemoryError가 발생할 수 있다. 테스트 시에 에러가 잘 나지 않다가도 사용자 단말에서 가령 10\%라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
-Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 좋겠다. 정답은 없고 케이스별로 다르다.
+\item Activity가 무겁지는 않지만 동시에 Service에서 백그라운드 스레드로 작업을 진행한다면 OutOfMemoryError가 발생할 수 있다. 
+테스트 시에 에러가 잘 나지 않다가도 사용자 단말에서 가령 10\%라도 발생한다면, 이때는 Service나 Activity의 프로세스를 분리할 것인지 고민해야 한다.
+Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 
+만일 Service에 DB 작업이 많다면 DB Lock 문제 때문에 ContentProvider를 도입해야 하므로, 작업이 복잡해질 경우 Activity를 분리하는 게 좋겠다. 정답은 없고 케이스별로 다르다.
 % 분리함으로써 변경이 많이 필요한 쪽보다는 간단하게 분리 가능하는 게 나을 것이다.
 
 \item App Widget의 사이즈가 클 때는(4x4, 5x5 등), App Widget도 프로세스 분리를 고려해보자.
@@ -224,8 +233,7 @@ Service가 독립적인 부분이 많다면 Service를 분리하는 게 낫다. 
 
 Application도 AndroidManifest.xml에 android:process 값을 넣을 수는 있는데, 이 값은 앱의 컴포넌트가 실행되는 기본 프로세스를 얘기하는 것으로 프로세스 분리와는 의미가 다르다. 쓸 일이 거의 없다.\\
 
-컴포넌트의 프로세스를 분리하면 Application은 각 프로세스마다 새로 뜬다. 프로세스가 달라지면 Zygote에 의해서 fork된 이후에 새로 ActivityThread를 띄우고 Application을 새로 생성하는 것이다.\\
-
+컴포넌트의 프로세스를 분리하면 Application은 각 프로세스마다 새로 뜬다. 프로세스가 달라지면 Zygote에 의해서 fork된 이후에 새로 ActivityThread를 띄우고 Application을 새로 생성하는 것이다.
 설명을 위해서 \pageref{application} 페이지의 코드 \ref{application}을 다시 한번 보자. 
 앱에는 ShoppingApplication과 CategoryUpdaterService(디폴트 프로세스)가 있고, ActivityA(메인 Activity, 디폴트 프로세스)와 Activity\-B(and\-roid:process=``:ca\-mera'')가 있다고 하자. 
 ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 어떤 프로세스에서 실행되는지 확인해보자.
@@ -242,7 +250,7 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 컴포넌트가 프로세스 분리되어 있어도 Application만은 어느 프로세스에서도 한번은 실행되어야 한다(4).
 그리고 또 하나 주목할 부분은 분리된 프로세스에서 Application에서 띄우는 CategoryUpdaterService는 다시 디폴트 프로세스에서 실행된다는 점이다(6).\\
 
-프로세스가 분리됨으로써 Application의 onCreate() 메서드는 자주 호출될 가능성이 있고(이를테면 BroadcastReceiver를 프로세스 분리했다면), Application의 onCreate() 메서드에서 Service를 시작한다면 이 Service가 자주 실행될 가능성이 있다.
+프로세스 분리된 컴포넌트가 뜰 때마다 Application의 onCreate() 메서드는 매번 호출될 가능성이 있고, 가령 Application의 onCreate() 메서드에서 Service를 시작한다면 이 Service가 자주 실행될 가능성이 있다.
 기본 프로세스에서만 Service가 동작하게 하려면 아래처럼 작성할 수 있다.
 
 \begin{lstlisting}[frame=single] 
@@ -271,13 +279,13 @@ ActivityA에서 버튼을 클릭하면 ActivityB가 뜬다고 할 때, 각각 �
 \end{lstlisting}
 
 프로세스 분리시 주의할 점을 얘기해보자.
-당연한 얘기지만 간과해서는 안되는 게 메모리가 공유되지 않는다는 것이다. 
+당연한 얘기지만 간과해서는 안되는 게 메모리가 공유되지 않는 것이다. 
 그래서 프로세스에서 캐시 용도로 만든 것이든 싱글톤 인스턴스에서 공유하는 값이든 분리된 별도 프로세스에서는 소용이 없다.
 앱을 만들다가 프로세스 분리한 것을 잊고서 왜 값이 안 나오는지 쓸데없이 고민한 경험을 가진 개발자도 있을 것이다.
-이때는 값을 따로 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용해야 한다.\\
+이때는 값을 따로 다시 로딩하는 방법을 사용하거나, 값을 공유하기 위해서 SharedPreferences나 DB를 사용해야 한다.\\
 
-한편, 분리된 프로세스에서 각각 SharedPreferences를 쓸 때  
-SharedPreferences는 어차피 xml 파일에서 읽어들이는 것이기 때문에 한번 읽어오는 것은 문제가 되지 않는다.
+한편, 분리된 프로세스에서 각각 SharedPreferences를 쓸 때
+SharedPreferences는 어차피 xml 파일에서 읽어오는 것이기 때문에 한번 읽어오는 것은 문제가 되지 않는다.
 그런데 다른 프로세스에서 값을 변경한 것을 다시 가져오는 것은 문제가 단순하지 않다.
 허니콤 이후에는 Context의 getSharedPreferences(String name, int mode) 메서드를 사용할 때, mode에
 Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
@@ -311,7 +319,7 @@ Context.MODE\_PRIVATE을 전달하면 값을 제대로 가져올 수 없다.
 즉 쓰기를 하는 쪽에서는 이 옵션을 쓸 필요가 없다.\\
 
 그런데 마시멜로에서는 다시 Context.MODE\_MULTI\_\-PROCESS를 deprecation시켰다. 
-결론적으로 권장되는 것은 SharedPreferences를 다시 ContentProvider로 감싸서 다른 프로세스에서 접근하는 것으로,
+결론적으로 권장되는 것은 SharedPreferences를 다시 ContentProvider로 감싸서 다른 프로세스에서 접근하는 것이고,
 ContentObserver를 등록해서 데이터가 변경되면 requery하는 방식이다.
 %SharedPreferences에 관련한 자세한 이야기는 뒤에 다시 다루도록 하자.
 

@@ -6,7 +6,6 @@
 \section{싱글톤 패턴}
 \label{sec:singleton}
 % http://www.doubleencore.com/2013/06/context/
-% context.tex에 있는 것 제거할 것
 앱에서 싱글톤을 잘못 사용하면 메모리 누수 가능성이 많다. 
 구조가 복잡한 앱을 보면 속도 이슈 때문에 싱글톤을 많이 사용하는데, 어디선가 메모리 누수가 발생하면 찾을 때 어려움이 많다. 
 가급적이면 싱글톤은 꼭 필요한 곳에만 사용하자.\\
@@ -80,7 +79,7 @@ public class CalendarManager {
 
 }
 \end{lstlisting}
-9라인(1)에서 Context를 직접 전달해서 인스턴스를 생성하였다.\\
+반례로서 9라인(1)에서 Context를 직접 전달해서 인스턴스를 생성하였다.\\
 
 두 번째는 싱글톤을 사용하는 Activity이다. AndroidManifest.xml의 Activity 선언에 android:config\-Changes 속성을 따로 넣지 말자.
 \begin{lstlisting}[frame=single]
@@ -145,21 +144,29 @@ public class SingletonTestActivity extends Activity {
 \end{lstlisting}
 \begin{itemize}
 \item 10라인(1)에서 CalendarRelatedActivity를 시작한다.
+
 \item 14라인(2)에서 직접 gc()를 호출한다. 퍼포먼스를 떨어뜨릴 수도 있기 때문에 앱에서 gc()를 직접 호출하는 것은 권장되지 않는다. 
 여기서는 단지 테스트를 위한 것이다. Activity가 onDestroy()까지 불리고서 바로 메모리에서 제거되는 것은 아니기 때문에 gc()를 실행해서 메모리에서 제거를 유도한다.
+
 \item 23라인(3)에서 클릭할 때마다 createBitmap()에서 width를 2배씩 늘려가면서 메모리 사용량을 키워가면서 GC를 유도한다. 14라인과 역할은 동일하다.
 \end{itemize}
 
 첫 번째 검증 방법은 다음과 같다.
 \begin{enumerate}
 \item SingletonTestActivity에서 onClickAnotherActivity()을 통해 CalendarRelatedActivity를 실행시킨다.
-\item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료한다. 이때 onDestory() 메서드가 불린다.
-\item SingletonTestActivity에서 onClickGc()를 실행하고서 로그를 확인하면, CalendarRelatedActivity의 finalize() 메서드가 불리지 않는다. Heap Dump 결과로 확인해보면 CalendarManager에서 참조가 남아있는 것을 볼 수 있다. 
-\item 다른 방법으로도 확인해보자. 최근 앱에서 제거하거나 환경설정에서 앱을 강제 종료하고서 다시 CalendarRelatedActivity를 실행시킨다.
-\item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump 결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
-\item SingletonTestActivity에서 onClickButtonGc()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
-\end{enumerate}
 
+\item CalendarRelatedActivity에서는 바로 Back 키를 통해서 Activity를 종료한다. 이때 onDestory() 메서드가 불린다.
+
+\item SingletonTestActivity에서 onClickGc()를 실행하고서 로그를 확인하면, CalendarRelatedActivity의 finalize() 메서드가 불리지 않는다. Heap Dump 결과로 확인해보면 CalendarManager에서 참조가 남아있는 것을 볼 수 있다. 
+
+\item 다른 방법으로도 확인해보자. 최근 앱에서 제거하거나 환경설정에서 앱을 강제 종료하고서 다시 CalendarRelatedActivity를 실행시킨다.
+
+\item CalendarRelatedActivity에서 화면 방향을 가로/세로 여러 번 회전한다. 이때 Heap Dump 결과를 보면 회전할 때마다 인스턴스 갯수가 늘어난 것을 볼 수 있다. 
+인스턴스 개수를 확인하고 Back 키를 통해서 Activity를 종료한다.
+
+\item SingletonTestActivity에서 onClickButtonGc()를 실행하고서 로그를 확인한다. CalendarRelatedActivity의 finalize() 메서드가 여러 번 불리는데, 앞에서 생성된 인스턴스 개수에서 1회 적게 불린다. 
+즉 1개의 인스턴스가 남아있는데 Heap Dump 결과로 확인하면 역시 CalendarManager에서 참조가 남아있다.
+\end{enumerate}
 
 두 번째 검증 방법은 다음과 같다.
 \begin{enumerate}
@@ -188,7 +195,7 @@ OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지
 이제 CalendarManager에서 주석으로 있던 부분으로 대체해서 테스트해보자.
 즉 context를 그대로 전달하지 않고 context.getApplicationContext()를 전달한 것이다.
 첫 번째 검증 방법을 수행하면 finalize()가 정상적으로 불리는 것을 알 수 있다.
-두 번째 검증 방법을 수행하면 아래와 같은 로그를 보게 된다.
+그리고 두 번째 검증 방법을 수행하면 아래와 같은 로그를 보게 된다.
 \begin{lstlisting}[frame=single]
 09-02 20:51:27.099  25785-25785/com.naver.android.sample D/suribada: CalenderRelatedActivity onDestroy
 09-02 20:51:29.739  25785-25785/com.naver.android.sample D/dalvikvm: GC_FOR_ALLOC freed 199K, 31% free 8532K/12332K, paused 15ms, total 19ms
@@ -203,7 +210,7 @@ OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지
 \section{마커 인터페이스}
 마커 인터페이스\footnote{$\ulcorner$이펙티브 자바$\lrcorner$, 조슈아 블로크 저, 이병준 역, 인사이트, 2014, 규칙 37을 참고하자.}
 는 메서드가 선언이 없는 인터페이스로, 표식(marking) 용도로 인터페이스를 사용하는 것이다. 
-Serializable도 하나의 예이다. 이 절에서는 내용상 별 게 없는 마커 인터페이스를 활용하는 방법을 생각해보자.\\
+Serializable도 마커 인터페이스의 예이다. 이 절에서는 마커 인터페이스를 활용하는 방법을 생각해보자.\\
  % http://blog.doortts.com/153
 
 복잡한 부분은 클래스 구성을 잘 하면 쉽게 해결되는 부분이 많다.
@@ -249,7 +256,7 @@ Serializable도 하나의 예이다. 이 절에서는 내용상 별 게 없는 �
 
 \item 어떤 카테고리에서 someOperationW(), someOperationY(), someOperationZ()를 순차적으로 실행하고 있었는데, 정책이 바뀌면서 someOperationY()는 하지 않기로 했다. 
 이때 개발자는 어떤 행동을 할까? 
-언제 또 바뀔지 모른다며 주석 처리를 하려는 유혹에 빠지기 쉽다. 여기저기 주석 처리가 되면서 코드가 누더기가 되는 것은 물론이고, 주석을 해제해야 할 때가 되면 실수할 가능성이 많아진다.
+언제 또 바뀔지 모른다며 주석으로 처리하려는 유혹에 빠지기 쉽다. 여기저기 주석 처리가 되면서 코드가 누더기가 되는 것은 물론이고, 주석을 해제해야 할 때가 되면 실수할 가능성이 많아진다.
 
 \item 카테고리가 추가될 때 기존 카테고리와 유사한 부분이 많다면, 이를 또 상속하고 싶은 유혹이 생긴다.
 카테고리끼리의 상속은 정책이 바뀐다면 뜯어고칠 부분이 많아진다.
@@ -321,10 +328,10 @@ Eclass extends Category implements Markable2, Markable3, Markable4 { }
 	}
 \end{lstlisting}
 
-안드로이드 프레임워크 소스에도, 전달되는 파라미터가 많은 메서드를 흔하게 볼 수 있다. ActivityThread의 bindApplication() 메서드는 파라미터가 18개나 된다.
+안드로이드 프레임워크 소스에도, 전달되는 파라미터가 많은 메서드를 흔하게 볼 수 있다. ActivityThread의 bindApplication() 메서드를 보면 파라미터가 18개나 된다.
 파라미터가 많다면 메서드 내에서 파라미터에 따른 조건문도 복잡해진다.
 이렇게 파라미터가 많은 메서드에서, 동일한 타입이 연달아 나오는 경우 실수할 가능성이 많다. 
-showPhoneDialog() 메서드에서 phoneNumber와 keyword, 그리고 isNaverUser와 isKorean은 타입이 동일하기 때문에 호출하는 쪽에서 데이터를 반대로 넣을 수 있다.
+showPhoneDialog() 메서드에서 phoneNumber와 keyword, 그리고 isNaverUser와 isKorean은 타입이 동일하기 때문에 호출하는 쪽에서 데이터를 반대로 잘못 넣을 수 있다.
 타입은 맞기 때문에 컴파일러에서는 검증할 게 없고, 결국 사람이 제대로 값을 써주어야 한다.
 Builder 패턴을 통해 파라미터 개수를 줄이려는 노력을 할 수도 있다. 그래도 아직은 파라미터가 아주 많지는 않으니까(5개 이내) 파라미터를 더 늘리지 않는 쪽에 주의해보자.\\
 
@@ -352,8 +359,7 @@ Builder 패턴을 통해 파라미터 개수를 줄이려는 노력을 할 수�
 		...
 	}
 \end{lstlisting}
-다른 쪽 호출 로직에 덜 영향을 주기 위해 두 번째 메서드로 오버로드했지만, 두 번째 메서드도 결국 public 메서드이기 때문에 역시 파라미터가 많은 문제점을 안고 있다.\\ 
-
+다른 쪽 호출 로직에 덜 영향을 주기 위해 두 번째 메서드로 오버로드했지만, 두 번째 메서드도 결국 public 메서드이기 때문에 역시 파라미터가 많은 문제점을 안고 있다.
 이런 때에 쓸 수 있는 방법도 바로 마커 인터페이스다. Context 파라미터에 컴포넌트 this가 주로 전달되는데, 컴포넌트에 마커 인터페이스를 하나 연결해주면 된다.
 
 \begin{lstlisting}[frame=single]
@@ -460,8 +466,9 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
     }
 \end{lstlisting}
 
-첫 번째 방식은 사용하려는 변수를 어렵게 넣고 빼는 거 같은데, 사용하기에는 두 번째가 편한 것 같다.
-그래서 두 번째 방식을 선택하려는 유혹이 있는데, 첫 번째 방식을 권장하는 이유는 바로 Configuration 변경과 Activity의 예기치 않은 종료에 대응할 수 있기 때문이다. 첫 번째 방식은 값을 유지하고 두 번째는 값을 유지하지 못한다.\\
+첫 번째 방식은 사용하려는 변수를 어렵게 넣고 빼는 거 같아서, 사용하기에는 두 번째가 편한 것 같다.
+그래서 두 번째 방식을 선택하려는 유혹이 있는데, 첫 번째 방식을 권장하는 이유는 바로 Configuration 변경과 Activity의 예기치 않은 종료에 대응할 수 있기 때문이다. 
+첫 번째 방식은 값을 유지하고 두 번째는 값을 유지하지 못한다.\\
 
 프레임워크 소스를 통해서 원인을 파악해보자.
 \begin{itemize}
@@ -496,7 +503,8 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 \end{lstlisting}
 onSaveInstanceState()를 꼭 써야하는 상황은 있겠지만, 전달된 값을 유지하기 위해서 이런 식으로 하진 말자. 프레임워크에서 이미 제공하는 기능을 피할 이유가 없다.\\
 
-첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 상수가 외부에 노출되지 않는 장점이 있기 때문이다. Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
+첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 변수명이 외부에 노출되지 않는 장점 때문이다. 
+Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
 
 \begin{comment}
 \subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}

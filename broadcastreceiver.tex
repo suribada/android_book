@@ -1,10 +1,12 @@
 \chapter{BroadcastReceiver}
-BroadcastReceiver는 Observer 패턴\footnote{\url{http://warmz.tistory.com/751}를 참고하자.}을 안드로이드에서 구현한 방식이다.
+BroadcastReceiver는 Observer 패턴을 안드로이드에서 구현한 방식이다.
+%\url{http://warmz.tistory.com/751}를 참고하자.
 한 쪽에서 뭔가 특별한 이벤트가 발생할 때 다른 쪽에서도 해야 할 작업이 있다.
 예를 들어, 안드로이드 책이 한 권 출판되어서(1) 출판사에서 연락하면(2), 각 온라인 서점에서는 데이터를 각각 입력해야만 한다(3). BroadcastReceiver 입장에서 보면 1번은 Intent 내용, 2번은 sendBroadcast() 메서드 호출, 3번은 onReceive() 메서드에 대응된다.\\
 
 Observer 패턴에서는 일대다 관계에서 직접 호출하지 않고, 인터페이스를 통한 느슨한 결합을 통해 Observer를 register/unregister하는 방법을 제공한다.
-이 방식은 BroadcastReceiver에서도 마찬가지이다. BroadcastReceiver는 바로 Observer이고, 이벤트는 sendBroadcast()에 전달되는 Intent이다(이벤트는 여러 곳에 퍼뜨리기 위한 방송용 이벤트라고 보면 된다). Context에는 registerReceiver()와 unregisterReceiver() 메서드가 있어서 여러 컴포넌트(Activity, Service, Application)에서 사용할 수 있다.
+이 방식은 BroadcastReceiver에서도 마찬가지이다. BroadcastReceiver는 바로 Observer이고, 이벤트는 sendBroadcast()에 전달되는 Intent이다(이벤트는 여러 곳에 퍼뜨리기 위한 방송용 이벤트라고 보면 된다). 
+Context에는 registerReceiver()와 unregisterReceiver() 메서드가 있어서 여러 컴포넌트(Activity, Service, Application)에서 사용할 수 있다.
 
 \section{BroadcastReceiver 구현}
 BroacastReceiver에는 추상 메서드가 하나뿐이고 나머지 메서드는 사용할 일이 많지 않다.
@@ -16,16 +18,20 @@ BroadcastReceiver는 ContentProvider와 마찬가지로 ContextWrapper 하위 �
 startService(), startActivity() 외에도 sendBroadcast()를 다시 호출할 수도 있다. 
 이벤트가 발생하면 이벤트에 대응해서 화면을 보여주거나 백그라운드 작업이 필요한 경우가 많기 때문에, 실제로 실행하는 주된 일이 startService()나 startActivity()이다.\\
 
-onReceive() 메서드에 Context가 전달되지만, Context의 메서드인 registerReceiver()나 bindService()를 호출하면 런타임 예외를 발생시킨다. 단순하게 생각하면 이런 비동기로 동작하는 이런 메서드는 실행이 안 되는 정도면 될 것 같은데, 엄격하게 제한하고 있다. onReceive()에 전달된 Context는 구체적으로 ContextWrapper인 Application을 다시 감싼 ReceiverRestrictedContext 인스턴스이다. ReceiverRestrictedContext는 ContextImpl의 내부 클래스이면서 ContextWrapper를 상속하고 registerReceiver()와 bindService()를 오버라이드해서 예외를 발생하게 한 것이다.\\
+onReceive() 메서드에 Context가 전달되지만, Context의 메서드인 registerReceiver()나 bindService()를 호출하면 런타임 예외를 발생시킨다.
+단순하게 생각하면 이런 비동기로 동작하는 이런 메서드는 실행이 안 되는 정도면 될 것 같은데, 엄격하게 제한하고 있다. 
+onReceive()에 전달된 Context는 구체적으로 ContextWrapper인 Application을 다시 감싼 ReceiverRestrictedContext 인스턴스이다. 
+ReceiverRestrictedContext는 ContextImpl의 내부 클래스이면서 ContextWrapper를 상속하고 registerReceiver()와 bindService()를 오버라이드해서 예외를 발생하게 한 것이다.\\
 
 방송용 이벤트가 발생할 때(예를 들어, 부팅이 완료되거나 언어 설정이 변경되는 경우) 직접적으로 startService()나 startActivity()를 실행하는 방법은 없다. 이벤트는 바로 방송의 형태를 띄기 위해서 sendBroadcast()를 통해서 전달되고, 이때 화면을 띄우려면 BroadcastReceiver의 onReceive() 메서드에서 startActivity()를 실행하고, UI가 없는 내부 작업이 필요하다면 startService()를 실행한다.\\
 
-Line이나 카카오톡 같은 메신저 앱의 경우를 보자. 누군가 내게 메시지를 보내면 Push Message를 BroadcastReceiver에서 받는다. 그 순간에 `띵동' 소리가 나고 화면에 `팟' 하면서 팝업에 대화 내용이 뜨는데, 이 팝업이 바로 onReceive() 메서드에서 startActivity()를 실행한 결과이다.\\
-
-onReceive()에서 startService()와 startActivity()를 둘 다 실행하는 경우도 있다. 특정 이벤트가 발생할 때 배경 음악(화면이 닫혀도 배경 음악이 유지되어야 한다고 가정)이 깔리면서 화면이 떠야 한다면, 배경 음악이 깔리는 것은 startService()를 실행해야 하고 화면이 뜨는 것은 startActivity()를 실행해야 한다.\\
+Line이나 카카오톡 같은 메신저 앱의 경우를 보자. 누군가 내게 메시지를 보내면 Push Message를 BroadcastReceiver에서 받는다. 
+그 순간에 `띵동' 소리가 나고 화면에 `팟' 하면서 팝업에 대화 내용이 뜨는데, 이 팝업이 바로 onReceive() 메서드에서 startActivity()를 실행한 결과이다.
+onReceive()에서 startService()와 startActivity()를 둘 다 실행하는 경우도 있다. 
+특정 이벤트가 발생할 때 배경 음악(화면이 닫혀도 배경 음악이 유지되어야 한다고 가정)이 깔리면서 화면이 떠야 한다면, 배경 음악이 깔리는 것은 startService()를 실행해야 하고 화면이 뜨는 것은 startActivity()를 실행해야 한다.\\
 
 onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도 있다.
-10초(포그라운드)/1분(백그라운드: 기본)내에 onReceive() 메서드 실행이 끝나야 한다. 10초/1분이 넘으면 ANR이 발생한다.
+10초(포그라운드)/1분(백그라운드: 기본) 내에 onReceive() 메서드 실행이 끝나야 한다. 10초/1분이 넘으면 ANR이 발생한다.
 메인 쓰레드에서 실행되므로 실제로는 1분/10초/5초도 아닌 훨씬 짧은 시간 내에 처리가 완료되어야 한다. 그렇지 않으면 UI에서 버벅거림의 원인이 될 수 있다.\\
 
 단일 이벤트에 대해서 하나의 앱에 여러 BroadcastReceiver가 등록된 경우도 주의해야 한다.
@@ -36,10 +42,11 @@ onReceive() 메서드는 메인 스레드에서 실행되므로 시간 제한도
 \end{comment}
 
 \section{BroadcastReceiver 등록}
-BroadcastReceiver를 등록하는 방식은 정적인 등록(statically publish)과 동적인 등록(dynamically register) 2가지가 있다. 등록이라고 번역하면서 영문에서는 publish와 register로 구분하고 있다. 
-정적인 등록은 공개의 의미가 있다고 이해하자. 정적으로 등록된 BroadcastReceiver는 앱을 설치하고서 곧바로 BroadcastReceiver가 사용 가능하다.\\
+BroadcastReceiver를 등록하는 방식은 정적인 등록(statically publish)과 동적인 등록(dynamically register) 2가지가 있다. 
+등록이라고 번역하면서 영문에서는 publish와 register로 구분하고 있다. 
+정적인 등록은 공개의 의미가 있다고 이해하자. 정적으로 등록된 BroadcastReceiver는 앱을 설치하고서 곧바로 BroadcastReceiver가 사용 가능하다.
+정적인 등록은 AndroidManifest.xml에 추가해서 해당 이벤트에 항상 반응하는 것이다. 주로 시스템 이벤트를 받을 때 많이 사용하는 것으로 앱 실행 중이 아닐 때도 이벤트를 처리한다.\\
 
-정적인 등록은 AndroidManifest.xml에 추가해서 해당 이벤트에 항상 반응하는 것이다. 주로 시스템 이벤트를 받을 때 많이 사용하는 것으로 앱 실행 중이 아닐 때도 이벤트를 처리한다.
 아래는 ApiDemos에 등록된 BroadcastReceiver의 예이다.
 \begin{lstlisting}[frame=single] 
 <receiver android:name=".os.SmsMessageReceiver">
@@ -87,8 +94,8 @@ ACTION_SCREEN_ON
 
 문서를 보면 `This is a protected intent that can only be sent by the system.' 메시지가 많이 나온다. 
 즉 해당 이벤트는 시스템이 발생시키는 것이지, 앱에서 발생시킬 수는 없는 것이다.
-이런 protected intent를 발생시켜보면 SecurityException을 만나게 된다. 아래는 
-sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPL\-ETED))를 실행한 결과 예외 스택이다.
+이런 protected intent를 발생시켜보면 SecurityException을 만나게 된다. 
+아래는 sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPL\-ETED))를 실행한 결과 예외 스택이다.
 \begin{lstlisting}[frame=single] 
 07-29 21:53:20.312: E/AndroidRuntime(15102): Caused by: java.lang.SecurityException:
 	Permission Denial: not allowed to send broadcast
@@ -103,10 +110,10 @@ sendBroadcast(new Intent(Intent.ACTION\_BOOT\_COMPL\-ETED))를 실행한 결과 
 Intent 클래스에 정의된 모든 Broadcast Action이 `protected intent'인 것은 아니다.
 ACTION\_ME\-DIA\_SC\-A\-NNER\_SC\-AN\_FI\-LE Action 같은 것은 앱에서 발생시키라고 있는 것이다.
 이미지를 SD Card에 저장했는데 미디어 스캐닝이 안 돼서 곧바로 화면에 가져올 수 없는 경우가 있다.
-이때 바로 앱에서 사용하는 방식이 ACTION\_MEDIA\_SCANNER\_SCAN\_FILE Action를 Broadcast해서 미디어 스캐너가 동작하게 하는 것이다.\\
-
+이때 바로 앱에서 사용하는 방식이 ACTION\_MEDIA\_SCANNER\_SCAN\_FILE Action를 Broadcast해서 미디어 스캐너가 동작하게 하는 것이다.
 캘린더 앱이라면, 처리해야 하는 이벤트로는 ACTION\_TIMEZONE\_CHANGED,
-ACTION\_LO\-CALE\_C\-HANG\-ED Action이 있다.
+ACTION\_LO\-CALE\_C\-HANG\-ED Action이 있다.\\
+
 그리고 많은 앱에서 처리하는 이벤트로는 ACTION\_BOOT\_\-COMPLETED Action도 있다. 
 앱에서 특정 시간에 하는 작업을 위해서는 AlarmManager에 등록하고 있다.
 PendingIntent를 setXxx() 메서드를 통해서 특정 시간에 동작하도록 AlarmManager에 등록하는데, 이 알람들은 단말이 꺼지면 모두 사라져 버리므로 다시 부팅하면 사라진 알람들을 재등록해야 한다. 이때 ACTION\_BOOT\_COMPLETED Action을 받아서 재등록을 진행한다.\\
@@ -177,8 +184,8 @@ Activity가 visible lifetime이나 entire lifetime에서 이벤트를 받아야 
 	intent.putExtra("duplicate", false);
 	context.sendBroadcast(intent);
 \end{lstlisting}
-여기에 필요한 퍼미션은 문서에 나와 있다.
-\url{http://developer.android.com/reference/android/Manifest.permission.html}
+여기에 필요한 퍼미션은 안드로이드 개발자 문서\footnote{\url{http://developer.android.com/reference/android/Manifest.permission.html}를 참고하자.}에 나와 있다.
+
 \begin{lstlisting}[frame=single] 
 <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 \end{lstlisting}
@@ -193,15 +200,18 @@ Broadacast Intent에 대해서 동적으로 동록된 BroadcastReceiver만 반�
 sendOrderedBroadcast(Intent intent, String receiverPermission) 메서드는 등록된 BroadcastReceiver 가운데 priority가 높은 순으로 전달한다.\footnote{파라미터에 Intent만 전달되는 메서드는 없으며, 권한이 불필요하면 null로 전달한다. sendOrderedBroadcast()는 파라미터 개수가 다른 두 개의 메서드가 더 있다.}
 priority는 AndroidManifest.xml에서 intent-filter에 android:priority를 쓸 수도 있고, IntentFilter에 setPriority(int priority) 메서드로 정할 수도 있다. priority가 동일하면 실행 순서는 랜덤이다.\\
 
-Ordered Broadcast는 여러 BroadcastReceiver를 순서대로 진행하면서  BroadcastReceiver 간에 결과를 넘겨줄 수도 있고, Broadcast를 도중에 중지시킬 수도 있다. Broadcast가 가벼운 작업이 아닌데 결과를 넘겨가면서 계속해서 진행한다는 의미보다는, 결과를 넘겨가면서 적정 시점이 되면 중지시키기 위함이라고 보는 게 더 적절하다.\\
+Ordered Broadcast는 여러 BroadcastReceiver를 순서대로 진행하면서  BroadcastReceiver 간에 결과를 넘겨줄 수도 있고, Broadcast를 도중에 중지시킬 수도 있다. 
+Broadcast가 가벼운 작업이 아닌데 결과를 넘겨가면서 계속해서 진행한다는 의미보다는, 결과를 넘겨가면서 적정 시점이 되면 중지시키는 것으로 보는 게 더 적절하다.\\
 
-예를 들어보자. 여러 화면이 떠있는 상태에서, Service에서 백그라운드로 서버와 동기화 작업을 하다가 인증 문제(AUTH\_FAILED)가 발생했다. 이때 원하는 것은 ``인증 실패 발생'' 메시지를 화면에 보여주고 `` 확인'' 버튼을 클릭하면 떠있는 화면을 모두 종료하는 것이다.
+예를 들어보자. 여러 화면이 떠있는 상태에서, Service에서 백그라운드로 서버와 동기화 작업을 하다가 인증 문제(AUTH\_FAILED)가 발생했다. 
+이때 원하는 것은 ``인증 실패 발생'' 메시지를 화면에 보여주고 `` 확인'' 버튼을 클릭하면 떠있는 화면을 모두 종료하는 것이다.
 Service에서도 Activity를 띄울 수는 있는데, 인증 실패 메시지 화면 외에 다른 떠있는 화면들을 종료하는 것은 어떻게 할까?\\
 
 이때 가장 먼저 떠오르는 방법이 AUTH\_FAILED Action를 받는 BroadcastReceiver를 Activity마다 등록해서 onReceive()에서 Activity의 finish() 메서드를 호출하는 것이다.
-상위 클래스인 BaseActivity의 onCreate()에서 registerReceiver()로 등록하는 것이 가능하지만, 하나씩 finish()를 실행하면 뭔가 비효율적이다. 젤리빈부터 가능하긴 하지만, finishAffinity() 메서드로 Ordered Broadcast의 활용 방법을 생각해보자.\\
+상위 클래스인 BaseActivity의 onCreate()에서 registerReceiver()로 등록하는 것이 가능하지만, 하나씩 finish()를 실행하면 뭔가 비효율적이다. 
+젤리빈부터 가능하긴 하지만, finishAffinity() 메서드로 Ordered Broadcast의 활용 방법을 생각해보자.\\
 
-finishAffinity() 메서드는 Activity 어느 하나에서만 호출하면 되는데, registerReceiver()를 실행할 때 IntentFilter에 setPriority()로 우선순위를 지정하고, 가장 먼저 onReceive()를 실행하는 곳에서 finishAffinity()를 호출하고서 Broadcast를 중지(abort)시킬 수 있다.
+finishAffinity() 메서드는 Activity 어느 하나에서만 호출하면 되는데, registerReceiver()를 실행할 때 가장 먼저 onReceive()를 실행하는 곳에서 finishAffinity()를 호출하고서 Broadcast를 중지(abort)시킬 수 있다.
 
 \begin{lstlisting}[frame=single] 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -226,10 +236,12 @@ finishAffinity() 메서드는 Activity 어느 하나에서만 호출하면 되�
 이런 식으로 어디서든 한쪽에서만 실행하고 끝나도 되는 것이라면, Ordered Broadcast를 고려해보자.
 
 \section{Sticky Broadcast}
-sendStickyBroadcast()는 Intent를 시스템에 등록해놓고, 새로 해당 Intent를 받을 수 있는 BroadcastReceiver가 등록되면 이 시점에 BroadcastReceiver의 onReceive()가 호출된다. 즉 먼저 이벤트를 발생시켜 놓고서, 그 이벤트 상태를 알고자 하는 BroadcastReceiver가 등록되는 시점에 BroadcastReceiver에서 이벤트를 받는 것이다.
+sendStickyBroadcast()는 Intent를 시스템에 등록해놓고, 새로 해당 Intent를 받을 수 있는 BroadcastReceiver가 등록되면 이 시점에 BroadcastReceiver의 onReceive()가 호출된다. 
+즉 먼저 이벤트를 발생시켜 놓고서, 그 이벤트 상태를 알고자 하는 BroadcastReceiver가 등록되는 시점에 BroadcastReceiver에서 이벤트를 받는 것이다.
 Sticky Broadcast를 보내기 위해서는 android.permission.BROADCAST\_STICKY 퍼미션이 필요하다.\\
 
-시스템에서 보내는 Sticky Broadcast는 Intent API 문서에서 확인할 수 있다. ACTION\-\_BATTERY\-\_CHAN\-GED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
+시스템에서 보내는 Sticky Broadcast는 Intent API 문서에서 확인할 수 있다. 
+ACTION\-\_BATTERY\-\_CHAN\-GED, ACTION\_DEVICE\_STORAGE\_LOW, ACTION\_DOCK\_EVENT Action에 대해서 BroadcastReceiver를 등록해서 배터리 상태나 저장소 부족 여부, 그리고 도킹 상태를 알 수 있다.\\
 
 앱에서는 sendStickyBroadcast()를 호출하는 것은 권장되지 않는다. 롤리팝에서는 이 메서드가 deprecated되기도 했다.
 Sticky Broadcast는 계속 시스템 메모리에 정보가 남아있어서, 어디선가 정보를 알고 싶을 때 언제든지 빼낼 수가 있기 때문에 보안 문제가 있다.
@@ -237,7 +249,7 @@ Sticky Broadcast는 계속 시스템 메모리에 정보가 남아있어서, 어
 한 앱에서 로그인하면 해당 아이디로 다른 앱에서도 로그인 되고, 명시적으로 로그아웃하면 다른 앱에서도 로그아웃되는 게 SSO의 기본 기능이다. 이때 Sticky Broadcast를 쓰고 싶은 유혹이 있다. 
 Sticky Broadcast를 사용해서 Intent에 로그인 여부와 로그인 아이디 등을 전달하면 어떨까? 
 onResume()에서 registerReceiver()를 실행한다면, 앱이 포그라운드로 올 때마다 최신 정보를 알 수 있고 그에 맞게 처리할 수 있다. 그런데 이 정보는 다른 앱에서도 빼낼 수 있고, Intent 정보를 다른 것으로 바꿔치기 하고서 sendStickyBroadcast()를 다시 할 수도 있다.
-쓰기에 따라서 유용하지만 중요한 정보에 대해서 sendStickyBroadcast()를 쓰지 않는 게 좋다. 
+쓰기에 따라서 유용하지만 중요한 정보에 대해서 sendStickyBroadcast()를 쓰면 안된다.
 % http://blog.naver.com/PostView.nhn?blogId=huewu&logNo=110090854068
 % 사용 예가 필요하다. 
 
@@ -263,10 +275,10 @@ LocalBroadcastManager는 로컬 프로세스에서만 이벤트를 주고받을 
 시스템 Broadcast와는 구조가 완전히 다른데 ActivityManagerService를 거치지 않고 싱글톤인 LocalBroadcastManager에서 BroadcastReceiver를 등록하고 sendBroadcast()를 실행한다.
 
 \begin{lstlisting}[frame=single] 
-LocalBroadcastManager.getInstance(this)
-	.sendBroadcast(CalendarIntent.CHANGE_TIME);
-...
-LocalBroadcastManager.getInstance(this).registerReceiver(..)
+	LocalBroadcastManager.getInstance(this)
+		.sendBroadcast(CalendarIntent.CHANGE_TIME);
+	...
+	LocalBroadcastManager.getInstance(this).registerReceiver(..)
 \end{lstlisting}
 
 LocalBroadcastManager가 좋은 점은 일반적으로 2가지를 얘기한다.
@@ -275,11 +287,12 @@ LocalBroadcastManager가 좋은 점은 일반적으로 2가지를 얘기한다.
 \item 글로벌 Broadcast보다 속도가 빠르다.
 \end{itemize}
 
-LocalBroadcastManager의 sendBroadcast() 메서드는 내부적으로 등록된 BroadcastReceiver를 바로 실행하지 않고 Handler에 처리하라고 메시지를 보내서 다음에 메인 스레드가 가능한 시점에 처리한다. 메인 Looper MessageQueue에 쌓여있는 게 많다면 처리가 늦을 수도 있다.\\
+LocalBroadcastManager의 sendBroadcast() 메서드는 내부적으로 등록된 BroadcastReceiver를 바로 실행하지 않고 Handler에 처리하라고 메시지를 보내서 다음에 메인 스레드가 가능한 시점에 처리한다. 
+메인 Looper MessageQueue에 쌓여있는 게 많다면 처리가 늦을 수도 있다.\\
 
 그런데 인증 에러같은 것은 MessageQueue에서 처리하면 문제가 될 수 있다.
 BroadcastReceiver에서 바로 처리해야 하는데, 그렇지 않고 다른 작업을 하다가 타이밍상 엉뚱한 결과를 만들어 내는 경우가 생긴다. 
-이럴 때 쓰는 것이 sendBroadcastSync() 메서드이다. 
+이때 쓰는 것이 sendBroadcastSync() 메서드이다. 
 등록된 BroadcastReceiver은 모두 그 순간에 처리하는데, 다만 이때는 sendBroadcastSync()와 onReceive()는 동일한 스레드에서 실행된다는 제약이 있다.\\
 
 LocalBroadcast에서 주의할 점은 BroadcastReceiver의 한 종류인 App Widget에는 이벤트가 전달되지 않는다는 것이다. App Widget이 설치된 위치는 홈 스크린으로 별도 프로세스에 있으므로, 일반 Broadcast를 사용해서 이벤트를 전달해야만 한다. 다만 App Widget의 onReceive() 실행 위치는 다시 앱의 프로세스이다.
@@ -293,14 +306,16 @@ runOnUIThread는 해결책이라고 볼 수가 없네요.
 \end{comment}
 
 \section{App Widget}
-App Widget은 다른 애플리케이션에 내장되어서(embeded), 주기적으로 업데이트하는 작은 애플리케이션(miniature application views)이다. 데스크탑 바탕 화면이나 웹브라우저에서 일부 영역을 차지하고 있는 동그란 시계 위젯같은 것을 안드로이드에서도 제공한다고 보면 된다.\\
+App Widget은 다른 애플리케이션에 내장되어서(embeded), 주기적으로 업데이트하는 작은 애플리케이션(miniature application views)이다. 
+데스크탑 바탕 화면이나 웹브라우저에서 일부 영역을 차지하고 있는 동그란 시계 위젯같은 것을 안드로이드에서도 제공한다고 보면 된다.\\
 
-보통 Launcher의 홈 스크린에서 AppWidgetHost를 구현해서 App Widget을 내장한다. 젤리빈 API 레벨 17부터 락 스크린에서도 App Widget이 내장된다. 홈 스크린이나 락 스크린이 아닌 일반 앱 화면에서도 AppWidgetHost를 구현할 수는 있지만 따라야 할 제약(contractual obligation)이 많아서 권장되지 않는다.
+보통 Launcher의 홈 스크린에서 AppWidgetHost를 구현해서 App Widget을 내장하고, 젤리빈 API 레벨 17부터 락 스크린에서도 App Widget을 내장할 수 있다. 
+홈 스크린이나 락 스크린이 아닌 일반 앱 화면에서도 AppWidgetHost를 구현할 수는 있지만 따라야 할 제약(contractual obligation)이 많아서 권장되지 않는다.
 
 \subsection{App Widget 기본}
 App Widget의 기본 특성을 알아보자.
 \begin{enumerate}
-\item 설치되는 위치(Launcher 프로세스)와 실행되는 위치(앱 프로세스)가 다르다. AppWidgetService(App Widget 목록, 이벤트 발생)가 실행되는 system\_server까지 포함하면 관련 프로세스는 모두 3개이다.
+\item 설치되는 위치(Launcher 프로세스)와 실행되는 위치(앱 프로세스)가 다르다. AppWidgetService(App Widget 목록 유지, 이벤트 발생)가 실행되는 system\_server까지 포함하면 관련 프로세스는 모두 3개이다.
 
 \item Broadcast를 통해 App Widget을 변경한다. 주로 시스템(AppWidgetService)에서 sendBroadcast()를 호출하면 BroadcastReceiver의 onReceive() 메서드에서 App Widget에 작업을 하는 방식이다.
 아래는 ApiDemos에 있는 App Widget 선언이다.
@@ -320,7 +335,7 @@ App Widget의 기본 특성을 알아보자.
 BroadcastReceiver로도 App Widget을 만들 수는 있지만 대체로 AppWidgetProvider를 상속해서 App Widget을 만든다. 
 AppWidgetProvider는 내부적으로 onReceive()에서 Intent Action으로 구분해서, onUpdate(), onDeleted(), onEnabled(), onDisabled() 메서드로 Intent extra 값을 전달한다.\\
 
-AppWidgetProvider의 프레임워크 소스를 보자. 각 메서드가 언제 호출되는지와 각 메서드에 전달되는 appWidgetIds 등 파라미터의 의미를 알 필요가 있기 때문에 한 번쯤은 보는 게 좋다.
+AppWidgetProvider의 프레임워크 소스를 보자. 각 메서드가 언제 호출되는지와 각 메서드에 전달되는 appWidgetIds 등 파라미터의 의미를 알 필요가 있기 때문에 한번쯤은 보는 게 좋다.
 \begin{lstlisting}[frame=single, caption=AppWidgetProvider.java] 
 public class AppWidgetProvider extends BroadcastReceiver {
 
@@ -399,20 +414,23 @@ public class AppWidgetProvider extends BroadcastReceiver {
 \item 43라인(5)에서 ACTION\_APPWIDGET\_DISABLED Action은 마지막 인스턴스가 삭제될 때 호출된다.
 \item ACTION\_APPWIDGET\_DELETED, ACTION\_OPTIONS\_CHANGED, ACTION\_\-ENABLED,
 ACTION\_DISABLED Action은 protected intent로 시스템에서만 보낼 수 있다.
-앱에서는 ACTION\_A\-PP\-WIDGET\_UPDATE만 보낼 수 있다.
+앱에서는 ACTION\_A\-PP\-WIDGET\_UPDATE Action만 보낼 수 있다.
 \end{itemize}
 
-AppWidgetProvider를 상속하면 onReceive() 메서드는 구현하지 않아도 되지만, 별도 Intent Action을 사용한다면 onReceive() 메서드를 오버라이드해야 한다. App Widget에 버튼 클릭 같은 액션이 있어서 다시 그려야 하는 경우 등이다.
+AppWidgetProvider를 상속하면 onReceive() 메서드는 구현하지 않아도 되지만, 별도 Intent Action을 사용한다면 onReceive() 메서드를 오버라이드해야 한다. 
+App Widget에 버튼 클릭 같은 액션이 있어서 다시 그려야 하는 경우 등이다.
 
 \subsection{RemoteViews}
 RemoteViews는 다른 프로세스에 있는 뷰 계층을 나타낸다. 다른 프로세스에서 보여져야 하는 Notification이나 App Widget에서 주로 사용된다.
 RemoteViews는 언뜻 보기에 일종의 ViewGroup으로 생각할 수 있는데, android.widget 패키지 안에 있을 뿐 View나 ViewGroup를 상속한 것이 아닌 Parcelable과 LayoutInflator.Filter 인터페이스를 구현한 일반 클래스일 뿐이다.\\
 
 \colorbox{tearose}{\parbox[t]{15cm}{
-Toast도 내부적으로 Notification과 동일하게 system\_server 프로세스의 NotificationManagerService를 사용한다. 그런데 Toast는 커스텀 화면으로 만들 때 왜 RemoteViews를 쓰지 않을까? Toast는 Binder Callback을 전달해서 Callback을 받는 로컬에서 띄우는 것이기 때문에 RemoteViews는 필요하지 않다.
+Toast도 내부적으로 Notification과 동일하게 system\_server 프로세스의 NotificationManagerService를 사용한다. 
+그런데 Toast는 커스텀 화면으로 만들 때 왜 RemoteViews를 쓰지 않을까? Toast는 Binder Callback을 전달해서 Callback을 받는 로컬에서 띄우는 것이기 때문에 RemoteViews는 필요하지 않다.
 }}\newline\newline
 
-RemoteViews의 레이아웃에서 쓸 수 있는 뷰 클래스는 한정되어 있는데, LayoutInflator.Filter 인터페이스의  onLoadClass() 메서드가 뷰 클래스를 제한하는 역할을 한다. LayoutInflator.Filter 구현체인 RemoteViews에서 boolean onLoadClass(Class clazz) 메서드를 보면 클래스 선언에 @RemoteView 애노테이션이 있는 것만 true를 리턴한다.
+RemoteViews의 레이아웃에서 쓸 수 있는 뷰 클래스는 한정되어 있는데, LayoutInflator.Filter 인터페이스의  onLoadClass() 메서드가 뷰 클래스를 제한하는 역할을 한다. 
+LayoutInflator.Filter 구현체인 RemoteViews에서 boolean onLoadClass(Class clazz) 메서드를 보면 클래스 선언에 @RemoteView 애노테이션이 있는 것만 true를 리턴한다.
 애노테이션으로 제한되어 사용가능한 뷰 클래스는 아래와 같다.
 \begin{itemize}
 \item FrameLayout, LinearLayout, RelativeLayout, GridLayout
@@ -423,8 +441,8 @@ RemoteViews의 레이아웃에서 쓸 수 있는 뷰 클래스는 한정되어 �
 이런 제한을 알아도 거치게 되는 시행착오들이 있다. 그런 내용을 알아 보자.
 \begin{itemize}
 \item 애노테이션은 상속된 클래스는 해당하지 않기 때문에 위 목록에 있는 것의 하위 클래스도 RemoteViews에는 쓸 수 없다.
-\item 커스텀 뷰도 쓸 수 없다. 클래스 선언에 @RemoteView를 추가하면 될 것 같지만, 설치되는 프로세스인 Launcher에서 이 커스텀 뷰를 찾을 방법이 없어서 그렇다.\footnote{\url{http://yenliangl.blogspot.kr/2010\_05\_23\_archive.html}을 참고하자.}
-\item 최상위 클래스인 android.view.View는 쓸 수 없다. 레이아웃에 내용을 구분하기 위한 단순 라인 구분자(line separator)를 만들 때는 View에 background color을 넣으면 됐지만, RemoteViews에서는 TextView 같은 지원되는 뷰 클래스로 대체해야 한다. 이 경우 레이아웃에서 Lint warning에 나온다. 이런 warning은 무시하자.
+\item 커스텀 뷰도 쓸 수 없다. 클래스 선언에 @RemoteView를 추가하면 될 것 같지만, 설치되는 프로세스인 Launcher에서 이 커스텀 뷰를 찾을 방법이 없어서 그렇다.%\url{http://yenliangl.blogspot.kr/2010\_05\_23\_archive.html}을 참고하자.}
+\item 최상위 클래스인 android.view.View는 쓸 수 없다. 레이아웃에 내용을 구분하기 위한 단순 라인 구분자(line separator)를 만들 때는 View에 background color을 넣으면 됐지만, RemoteViews에서는 TextView 같은 지원되는 뷰 클래스로 대체해야 한다. 이 경우 레이아웃에서 Lint warning에 나오는데 이런 warning은 무시하자.
 \end{itemize}
 
 RemoteViews는 뷰 계층 상에 있는 레이아웃 리소스 id를 대상으로 작업(TextView라면 텍스트 변경, 사이즈 변경, 텍스트 색상 변경 등)을 전달한다.
@@ -449,8 +467,9 @@ App Widget을 업데이트하는 주요 코드는 간단하다.
 \item AppWidgetManager의 updateAppWidget() 메서드를 호출한다(3).
 \end{itemize}
 
-그렇다면 이런 루틴들은 꼭 BroadcastReceiver에서 실행되어야 할까? 그렇지 않다. AppWidgetManager.getInstance(Context context)를 통해 Context가 전달되는 어디서든 AppWidgetManager를 얻을 수 있기 때문에, Activity나 Service에서도 동일하게 사용할 수 있다.
-게다가 백그라운드 스레드에서 루틴을 실행해도 문제가 없다. Service에서 백그라운드 스레드로 App Widget을 업데이트를 해도 되는 이유이다.\\
+그렇다면 이런 루틴들은 꼭 BroadcastReceiver에서 실행되어야 할까? 그렇지 않다. 
+AppWidgetManager.getInstance(Context context)를 통해 Context가 전달되는 어디서든 AppWidgetManager를 얻을 수 있기 때문에, Activity나 Service에서도 동일하게 사용할 수 있다.
+게다가 백그라운드 스레드에서 루틴을 실행해도 문제가 없다. Service에서 백그라운드 스레드로 App Widget을 업데이트해도 되는 이유이다.\\
 
 updateAppWidget()을 호출할 때 호출 스택을 따라가보면 아래와 같다.
 \begin{lstlisting}[frame=single] 
@@ -470,9 +489,11 @@ onReceive() 메서드는 당연히 메인 스레드에서 실행된다. 따라�
 그렇다면 onReceive() 메서드 내에서 네트워크 통신이 필요하거나\footnote{메인 스레드에서는 NetworkOnMainThreadException 때문에 네트워크 통신을 할 수 없다.} DB에서 가져올 데이터가 많아 처리 시간이 많이 예상되는 경우에는 어떻게 할 것인가? 이런 경우에도 App Widget Update 작업을 Service로 넘기고 백그라운드 스레드에서 처리해야 한다.\\
 
 onReceive() 메서드에서 AsyncTask를 실행해서 App Widget을 업데이트하는 코드를 본 적이 있는데, BroadcastReceiver는 onReceive() 메서드가 리턴되면 프로세스가 제거될 수 있기 때문에 실행을 보장할 수 없다.
-좀 더 상세히 얘기해보자. 예를 들어, 앱의 Activity가 포그라운드에 있다면 프로세스 우선순위가 높아서 문제가 되지 않는다. 그런데 이렇게 다른 컴포넌트가 실행 중인 게 없고, Widget update interval 시간이 되었거나 특정 Broadcast에 반응해서 BroadcastReceiver가 단독으로 실행된다면 어떨까? 
+좀 더 상세히 얘기해보자. 예를 들어, 앱의 Activity가 포그라운드에 있다면 프로세스 우선순위가 높아서 문제가 되지 않는다. 
+그런데  다른 컴포넌트가 실행 중인 게 없고, Widget update interval 시간이 되었거나 특정 Broadcast에 반응해서 BroadcastReceiver가 단독으로 실행된다면 어떨까? 
 onReceive() 메서드가 끝나자마자 프로세스 우선순위가 낮아져서 다른 프로세스에 밀리면 프로세스가 종료될 가능성이 있다. 
-AsyncTask 결과가 나올 때까지 프로세스가 기다릴 수 없는 것이다.\\
+AsyncTask 결과가 나올 때까지 프로세스가 기다리는 것을 보장할 수 없다.
+이런 게 개발 중에는 문제가 나오지 않고(계속 앱을 사용하면서 테스트하기 때문에), 사용하다보면 나오는 문제인데 원리를 알고 있다면 단순한 문제가 된다. \\
 
 결론적으로 App Widget 업데이트는 간단한 것 외에는 Service에 넘겨서 백그라운드 스레드에서 실행하는 것이 권장된다. 
 
@@ -484,14 +505,17 @@ DB에서 데이터를 가져와서 보여주고, 일정이 없다면 ``일정 �
 단말 전원을 새로 켜면 홈 스크린 화면이 보이고 나서 금방 부팅이 완료되는 것이 아니다. 
 내부적으로 이후에도 여러 작업들을 한참 하고서야 부팅이 끝났다고 ACTION\_BOOT\_COMPLETED Action을 발생시키고, 그 이후에 ACTION\_APPWIDGET\_UPDATE Action을 발생시킨다.\\
 
-화면이 처음 보일 때에 App Widget은 바로 initialLayout 상태 그대로 보여준다. 부팅이 끝나고서야 업데이트를 하므로, 사용자 입장에서는 일정 목록이 없다가 시간이 꽤 지나니까 제대로 보이게 된다.
+화면이 처음 보일 때에 App Widget은 바로 initialLayout 상태 그대로 보여준다. 
+부팅이 끝나고서야 App Widget을 업데이트하므로, 사용자 입장에서는 일정 목록이 없다가 시간이 꽤 지나니까 제대로 보이게 된다.
 이런 경우에 사용자는 ``왜 일정이 없지'' 하고서 앱을 실행해 본다. 그리고 다시 홈 스크린으로 돌아오면 일정이 나오기 때문에, 앱을 실행해야만 App Widget이 보이는 것으로 오해하게 된다.\\
 
-이런 경우를 위해서 일반적으로 레이아웃을 만들 때, 다른 부분은 보기 상태를 View.GONE으로 하고, ProgressBar를 포함한 로딩 메시지만을 기본으로 보이도록 한다.
+이런 경우를 위해서 일반적으로 initialLayout을 만들 때, 다른 부분은 보기 상태를 View.GONE으로 하고, ProgressBar를 포함한 로딩 메시지만을 기본으로 보이도록 한다.
 
 \subsubsection{ICS부터 기본 패딩}
 \label{subsubsec:icspadding}
-ICS 이전에는 셀 경계까지 꽉 채워서 App Widget을 배치했는데, targetSdkVersion을 14(ICS) 이상으로 하면 App Widget 간 확실한 구분을 위해서 셀 경계와 App Widget 테두리 사이에 기본 패딩이 생긴다. 개발자 가이드에서는 패딩 또는 마진을 혼용해서 용어를 사용하는데 패딩이라고 하는 게 적절할 듯 하다. 마진이라고 하면 셀 경계가 기준이 되어야 하는데 경계는 그냥 표시일 뿐이다. Launcher마다 값은 다르지만 패딩이 조금씩 있는 것을 볼 수 있다.\\
+ICS 이전에는 셀 경계까지 꽉 채워서 App Widget을 배치했는데, targetSdkVersion을 14(ICS) 이상으로 하면 App Widget 간 확실한 구분을 위해서 셀 경계와 App Widget 테두리 사이에 기본 패딩이 생긴다. 
+개발자 가이드에서는 패딩 또는 마진을 혼용해서 용어를 사용하는데 패딩이라고 하는 게 적절할 듯 하다. 마진이라고 하면 셀 경계가 기준이 되어야 하는데 경계는 그냥 표시일 뿐이다. 
+Launcher마다 값은 다르지만 패딩이 조금씩 있는 것을 볼 수 있다.\\
 
 따라서 기존에 꽉 채우는 것을 기준으로 만든 App Widget은 레이아웃을 조정할 필요가 있다. 예를 들어, 일정 4개가 보이기로 한 일정 목록이 targetSdkVersion을 올리면 기본 패딩 때문에 3개 반이 보이는 경우가 생긴다.
 %단말 별로 다른 Launcher를 사용하고 있고 패딩값이 모두 다른데 어떻게 계산할까? 바로 AppWidgetHostView의 getDefaultPaddingForWidget 메서드 리턴값을 가지고 사용 가능한 영역을 계산할 수 있다.
@@ -499,8 +523,8 @@ ICS 이전에는 셀 경계까지 꽉 채워서 App Widget을 배치했는데, t
 \subsubsection{고해상도 단말에서 Bitmap 생성 시 메모리 문제}
 App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여기서 클릭을 하면 Activity를 띄워 상세 정보를 보여주는 식이다.\\
 
-그런데 캘린더나 시간표 같은 앱은 사용자의 요구로 인해 App Widget의 사이즈가 4x4나 5x5 정도까지 해서 단순 정보가 아닌 화면을 꽉 채운 정보를 전달하는 경우가 있다.
-그리고 RemoteViews에서 지원하는 일반적인 뷰 클래스로는 불가능하여 Bitmap을 생성하고, Bitmap에 내용을 그리고서 ImageView에 setBitmap()을 실행하는 경우가 있다.
+그런데 캘린더나 시간표 같은 앱은 사용자의 요구로 인해 App Widget의 사이즈가 4x4나 5x5 정도까지 해서 단순 정보가 아닌 화면을 꽉 채워서 정보를 보여주는 경우가 있다.
+그리고 RemoteViews에서 지원하는 일반적인 뷰 클래스로는 불가능하여 Bitmap을 생성하고, Bitmap에 내용을 그리고서 ImageView에 setBitmap()을 실행하기도 한다.
 게다가 홈 스크린에서는 화면을 크게 차지하면 가급적 바탕화면도 보이도록 투명하게 만들기도 한다.\\
 
 이런 조건들이 있다면 먼저 Bitmap.createBitmap()으로 Bitmap을 생성하고 여기에 그리게 된다.
@@ -518,7 +542,8 @@ App Widget의 일반 용도는 단순한 정보를 보여주는 것이다. 여�
 \end{lstlisting}
 \begin{itemize}
 \item 2라인(1)에서 createBitmap()의 세 번째 파라미터는 Bitmap.Config API 문서에서 보면, 투명 Bitmap을 생성하기 위해서 ARGB\_8888을 적용한 것이다.
-그런데 이 옵션은 픽셀당 4바이트를 차지한다(투명 Alpha 값이 없는 RGB\_565의 2배). 갤럭시 노트4의 경우를 보면 해상도가 2560x1440이므로 곱해보면 화면을 거의 채운다고 할 때, createBitmap()만으로도 14M 가량을 사용하게 되는 셈이다. 
+그런데 이 옵션은 픽셀당 4바이트를 차지한다(투명 Alpha 값이 없는 RGB\_565의 2배). 
+갤럭시 노트4의 경우 해상도가 2560x1440이므로 곱해보면 화면을 거의 채운다고 할 때, createBitmap()만으로도 14M 가량을 사용하게 되는 셈이다. 
 앱 실행 중에 App Widget Update가 발생한다면 OutOfMemoryError의 원인이 될 수 있다.\\
 
 기존에는 문제가 없었는데 특히 최신 단말에서 App Widget을 생성할 때 Bitmap.createBitmap()에서 OutOfMemoryError가 발생한다면 이것을 원인으로 보면 거의 맞다.

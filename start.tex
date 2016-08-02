@@ -94,7 +94,14 @@ parent를 쓰지 않고서도 속성을 상속하는 암묵적 상속이 있는�
 여기서 android:focusable 속성이 true로 되어 있다.
 따라서 레이아웃에서 CheckBox 속성을 android:focusable=``false''로 하면 style이 다시 오버라이드되어 ListView에서 정상적으로 ItemClick이 동작한다.\\
 
-ImageButton의 경우는 android:focusable=``false''로 해도 반영되지 않는데, 그 이유는 ImageButton 생성자에서 setFocusable(true)을 실행해서 레이아웃의 속성을 다시 오버라이드하기 때문이다. 따라서 ListAdapter의 getView() 메서드에서 ImageButton에 setFocusable(false)를 실행해서 또다시 오버라이드하면 ItemClick 이 문제없이 동작한다.\\
+ImageButton의 경우는 android:focusable=``false''로 해도 반영되지 않는데, 그 이유는 ImageButton 생성자에서 setFocusable(true)을 실행해서 레이아웃의 속성을 다시 오버라이드하기 때문이다. 
+\begin{lstlisting}[frame=single]
+    public ImageButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        setFocusable(true);
+    }
+\end{lstlisting}
+따라서 ListAdapter의 getView() 메서드에서 ImageButton에 setFocusable(false)를 실행해서 또다시 오버라이드하면 ItemClick 이 문제없이 동작한다.\\
 
 프레임워크 리소스에서 styles.xml을 보면 CheckBox, RadioButton, ToggleButton, Switch, SeekBar, EditText, ImageButton 등 위젯의 android:focusable 속성이 true이다. 
 이런 위젯이 ListView에 포함된다면 주의해야 한다.
