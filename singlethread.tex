@@ -84,7 +84,7 @@ ActivityThread는 클래스명 때문에 Thread를 상속한 것으로 오해를
 % http://www.2cto.com/kf/201407/317129.html
 
 \section{Looper}
-Looper 클래스\footnote{\url{http://developer.android.com/reference/android/os/Looper.html}}는 내용이 단순하다. Looper에서 필요한 내용을 알아보자.
+Looper 클래스는 내용이 단순하다. Looper에서 필요한 내용을 알아보자.
 \begin{itemize}
 \item TLS(Thread Local Storage)에 Looper를 저장한다. 
 구체적으로 ThreadLocal<Looper>에 set() 메서드로 새로운 Looper를 추가하고 get() 메서드로 Looper를 가져오는데, 각 스레드별로 다른 Looper가 반환된다.
@@ -213,7 +213,7 @@ Handler는 Looper(결국 MessageQueue)와 연결되어 있는데, 이들 생성�
 
 Looper API 문서를 보면 백그라운드 스레드에서 Handler를 사용하는 방법이 나온다.
 
-\begin{lstlisting}[frame=single, caption=LooperThead, label=src:LooperThread] 
+\begin{lstlisting}[frame=single, caption=Looper 사용, label=src:LooperThread] 
 class LooperThread extends Thread {
 	public Handler mHandler;
 
@@ -746,7 +746,7 @@ HandlerThread를 쓰지 않고서 비슷한 동작을 하려면, 백그라운드
 BlockingQueue API 문서에 관련 샘플이 있는데, HandlerThread를 사용하면 구조보다 Message에 더 집중할 수 있다.\\
 
 아래 코드를 한번 보자. 샘플을 통해 HandlerThread의 구조를 더 잘 이해할 수 있을 것이다.
-\begin{lstlisting}[frame=single, label=src:HandlerThreadSample] 
+\begin{lstlisting}[frame=single] 
  	private Handler favoriteHandler;
     private HandlerThread handlerThread;
 

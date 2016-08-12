@@ -16,7 +16,7 @@
 
 \item Android Runtime의 Core Libraries에는 android.jar가 있다. 여기에는 android.* 패키지, com.android.* 패키지, 자바 기본 패키지(java.*, javax.*), Apache HttpClient(마시멜로에서 제거됨), DOM/SAX/XM\-LPullParser 등 자바 클래스와 안드로이드 기본 리소스(android.R)가 포함되어 있다.
 
-\item Dalvik Virtual Machine은 자바/C/C++로 작성되어 있다(롤리팝에서는 Dalvik을 대체한 ART가 적용).\footnote{\url{https://source.android.com/devices/tech/dalvik/art.html}를 참고하자.} Register 기반의 가상 머신(Virtual Machine)으로 자바 가상 머신보다 명령이 단순하고 속도가 빠르다.
+\item Dalvik Virtual Machine은 자바/C/C++로 작성되어 있다(롤리팝에서는 Dalvik을 대체한 ART가 적용).\footnote{\url{https://source.android.com/devices/tech/dalvik/art.html}을 참고하자.} Register 기반의 가상 머신(Virtual Machine)으로 자바 가상 머신보다 명령이 단순하고 속도가 빠르다.
 % Dalvik Virtual Machine은 한 번에 여러 가상 머신 인스턴스를 띄울 수 있다. 
 % J2SE/J2EE 자바 애플리케이션을 만들다보면 여러 가상 머신 인스턴스는 당연한 얘기지만, J2ME에서는 여러 Midlet이 하나의 가상 머신에서 돌아가는 방식이었고 안드로이드에서는 이 방식을 변경하였다. (SVN, MVM이 있어서 하나의 가상 머신이 맞는 얘기가 아님)
 
@@ -44,7 +44,7 @@ DDMS에서 보면 Binder\_1, Binder\_2와 같은 이름의 스레드가 바로 B
 3.X는 태블릿 전용 버전이고, 만일 소스가 공개되어 이 버전이 폰에 이식된다면 파편화 문제가 심각해질 우려가 있어서 비공개로 결정되었다고 한다.
 커널 소스는 \url{https://source.android.com/source/building-kernels.html}을 참고해서 별도로 다운로드한다.\\
  
-프레임워크 소스를 다운로드하는 곳으로 \url{http://github.com/android}도 있는데, 여기는 읽기 전용 미러링 GitHub 계정이다. 
+프레임워크 소스를 다운로드하는 곳으로 \url{https://github.com/android}도 있는데, 여기는 읽기 전용 미러링 GitHub 계정이다. 
 항목별 소스 다운로드나 웹브라우저로 소스 보기에는 더 편리하다는 장점이 있다.\\
 
 https://android.googlesource.com에서 소스를 다운로드한 결과는 아래와 같다.
@@ -66,9 +66,9 @@ https://android.googlesource.com에서 소스를 다운로드한 결과는 아�
 개발 시에 소스를 버전별로 모두 다운로드하지는 않고, 보통 프레임워크 소스는 
 \url{http://grepcode.com}에서 확인하기도 한다. 링크가 잘 되어 있고 버전별로 변경 내용을 확인해 볼 수도 있다.\\
 
-개발하다가 궁금한 게 있을 때, 프레임워크 소스에서 확인하지 않고 \href{http://stackoverlow.com}{Stack Overflow}에 의존하는 경향을 가진 이들도 있다. % 면접에서 이런 분을 보기도 했다.
-Stack Overflow에는 다양한 수준과 경험을 가진 사람들이 있어서 답변들이 어느 것이 맞는지 모호하기도 하고, 정작 내가 원하는 답은 없을 때도 있다.
-Stack Overflow에서 답변을 찾았다고 해도 그게 맞는 것인지 검증하려면 테스트를 수행하고 프레임워크 소스로 재차 검증하는 것이 좋다.\\
+개발하다가 궁금한 게 있을 때, 프레임워크 소스에서 확인하지 않고 \href{http://stackoverlow.com}{StackOverflow}에 의존하는 경향을 가진 이들도 있다. % 면접에서 이런 분을 보기도 했다.
+StackOverflow에는 다양한 수준과 경험을 가진 사람들이 있어서 답변들이 어느 것이 맞는지 모호하기도 하고, 정작 내가 원하는 답은 없을 때도 있다.
+StackOverflow에서 답변을 찾았다고 해도 그게 맞는 것인지 검증하려면 테스트를 수행하고 프레임워크 소스로 재차 검증하는 것이 좋다.\\
 
 예를 들어보자.
 ListView의 아이템 레이아웃에 CheckBox가 있으면 ItemClick이 정상적으로 동작하지 않는다. 
@@ -186,8 +186,8 @@ ICS(아이스크림 샌드위치) & 14 & 4.0-4.0.2\\ \cline{2-3}
 
 \subsection{호환성 모드}
 앱이 동작하는 안드로이드 버전을 지정하기 위해서는 AndroidManifest.xml에서 uses-sdk 항목에  android:min\-SdkVersion과 android:targetSdkVersion에 버전을 기재한다. 
-만든 지 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 것을 본 적이 있는데, targetSdkVersion를 명시하지 않으면 minSdkVersion와 동일한 값으로 지정된다.
-targetSdkVersion는 반드시 지정하도록 하자. 해당 버전까지는 테스트해봤는데 앱 실행에 문제가 없다는 의미이고, 그 버전까지는 호환성 모드를 쓰지 않겠다는 뜻이다.\\
+만든 지 오래된 앱에서 minSdkVersion만 지정하고 targetSdkVersion을 지정하지 않은 것을 본 적이 있는데, targetSdkVersion을 명시하지 않으면 minSdkVersion과 동일한 값으로 지정된다.
+targetSdkVersion은 반드시 지정하도록 하자. 해당 버전까지는 테스트해봤는데 앱 실행에 문제가 없다는 의미이고, 그 버전까지는 호환성 모드를 쓰지 않겠다는 뜻이다.\\
 
 호환성 모드는 안드로이드 버전이 올라가더라도 앱의 기존 동작이 바뀌는 것을 방지하기 위한 것이다.
 프레임워크 소스를 보면 targetSdkVersion을 가지고 체크하는 부분이 많다.
@@ -305,7 +305,7 @@ Version 2 (Android 3.2 and greater)
 \end{comment}
 
 \subsection{버전 체크}
-앱에 들어가는 기능을 정할 때는 버전별 히스토리가 의미가 있지만, 앱 개발 시에 버전 관련한 주요 관심은 ``특정 클래스와 메서드가 이 버전에서 쓸 수 있는가''이다.
+앱에 들어가는 기능을 정할 때는 버전별 히스토리가 의미가 있지만, 앱 개발 시에 버전 관련한 주요 관심은 `특정 클래스와 메서드가 이 버전에서 쓸 수 있는가'이다.
 런타임에 해당 단말 버전에 존재하지 않는 클래스와 메서드가 사용된다면 크래시가 발생하므로, 앞의 AsyncTaskCompat과 같이 if 문을 사용해서 버전을 체크하는 코드를 사용한다.\\
 
 별게 아닌 것 같지만 앱을 배포하고서 많은 크래시를 유발하는 게 이 부분이다.\footnote{필자도 버전 문제로 다량의 크래시를 유발한 적이 있다.}
@@ -463,7 +463,6 @@ public class ViewCompat {
 
  	...
 }
-
 \end{lstlisting}
 \begin{itemize}
 \item 11라인(1)의 ViewCompatImpl 인터페이스에는 Compat에서 사용하는 메서드 목록이 들어간다. 

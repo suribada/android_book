@@ -118,7 +118,7 @@ ActivityC가 닫히는 순간 ActivityA의 onActivityResult() 메서드는 불�
 이런 식으로 하면 2개가 아닌 여러 개를 거쳐도 맨 아래에서 startActivityForResult()를 실행한 Activity에 값을 다시 전달할 수 있다.
 \end{itemize}
 
-\subsection{Activity 전환 시 생명주기}
+\subsection{Activity 전환 시 생명주기 메서드 호출}
 Activity가 전환되면서 생명주기 메소드가 어떻게 불리는지 알아보자.\\
 
 \underline{\bfseries Activity에서 다른 Activity를 시작할 때}\\
@@ -459,7 +459,7 @@ Configuration 변경으로 Activity가 재시작되어도 사용자 경험상 �
 예를 들어, ViewPager에서 플링(fling)을 통해 특정 페이지로 이동했을 때 Configuration 변경에도 동일한 페이지를 보여주려고 한다. 
 이때 상태를 임시 저장하고 복구하는 메서드인 onSaveInstanceState()와 onRestoreInstanceState()를 사용하면 된다. 
 onRestoreInstanceState() 메서드에 전달되는 Bundle savedInstanceState 파라미터는 onCreate() 메서드에도 전달되지만, 대칭을 위해서 onRestoreInstanceState() 메서드에서 복구하는 로직을 많이 사용한다.
-onSaveInstanceState() 메소드는 Configuration 변경으로 재시작할 때 뿐만 아니라, 메모리 문제로 시스템이 Activity를 kill하는 경우(주로 백그라운드에 있을 때 우선순위에 밀려서 발생)에도 호출된다\\
+onSaveInstanceState() 메소드는 Configuration 변경으로 재시작할 때 뿐만 아니라, 메모리 문제로 시스템이 Activity를 kill하는 경우(주로 백그라운드에 있을 때 우선순위에 밀려서 발생)에도 호출된다.\\
 
 onSaveInstanceState()는 생명주기 메서드처럼 항상 호출되는 것이 아니다.
 로그를 남겨서 실행 여부를 체크해보면, onSaveInstanceState()는 매번 호출되지 않는 것을 알 수 있다. 
@@ -1014,7 +1014,7 @@ FLAG\_ACTIVITY\_SINGLE\_TOP 플래그를 함께 쓰지 않고 단독으로 쓰�
 
 이제 FLAG\_ACTIVITY\_CLEAR\_TOP의 한계도 알고 있어야 한다. ActivityA$\Rightarrow$Activity\-B$\Rightarrow$Activi\-tyA$\Rightarrow$ActivityB까지 스택에 있을 때 FLAG\_ACTI\-VITY\_CLEAR\_TOP 플래그를 전달해서 ActivityA를 시작하면 어떻게 될까? 
 맨 아래에 있는 ActivityA만 남으면 좋겠는데 실제로는 맨 위에 있는 ActivityA 기준으로 ClearTop이 되면서 결과로서 ActivityA$\Rightarrow$ActivityB$\Rightarrow$ActivityA가 스택에 남게 된다. 
-이를 해결하는 방법으로 \ref{sec:alias} 절에서 <activity-alias>을 활용하는 것을 살펴볼 것이다. 
+이를 해결하는 방법으로 \ref{sec:alias} 절에서 <activity-alias>를 활용하는 것을 살펴볼 것이다. 
 
 \item FLAG\_ACTIVITY\_CLEAR\_TASK: 허니콤부터 사용 가능하다. Callee가 시작하기 전에 관련한 스택이 모두 제거되고 Callee는 빈 태스크의 baseActivity가 된다. 이 플래그는 FLAG\_ACTIVITY\_NEW\-\_TASK와 함께 사용되어야 한다. 
 앱을 사용하면서 태스크에 여러 Activity를 쌓아놓았다가, 로그아웃하고 다른 아이디로 로그인한다면 이 플래그를 사용해서 Launcher Activity를 새로 시작하는 것이 적절할 것이다.

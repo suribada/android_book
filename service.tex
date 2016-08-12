@@ -73,7 +73,7 @@ public class LifecycleApplication extends Application {
 }
 \end{lstlisting}
 
-\begin{lstlisting}[frame=single, caption=SleepService, label=SleepService]
+\begin{lstlisting}[frame=single, caption=서비스에서 스레드 실행, label=SleepService]
 public class SleepService extends Service {
 
 	private static final long SLEEP_TIME = 10000;
@@ -296,7 +296,7 @@ Service는 AndroidManifest.xml에 등록할 때 intent-filter를 추가하면 �
 ComponentName componentName = startService(new Intent("com.example.android.apis.app.REMOTE_SERVICE"));
 \end{lstlisting}
 action name이 동일한 Service가 여러 개 있는 경우는 어떨까? 참고로 Activity의 경우는 action name이 동일하면 Activity를 선택하라는 화면을 보여주고, BroadcastReceiver는 action name이 동일한 모든 BroadcastReceiver를 실행한다.
-Service는 intent-filter의 android:priority 속성값\footnote{\url{http://developer.android.com/guide/topics/manifest/intent-filter-element.html}를 참고하자. priority값은 -999에서 999까지이다. 디폴트값은 0이다. 실제로 범위를 넘는 값을 넣어도 실행에는 문제가 없다. IntentFilter 소스를 봐도 체크 로직이 없다. 가용한 범위도 충분하기 때문에 굳이 범위를 넘어서 쓰진 말자. 이후 버전에서는 유효성 체크에 범위가 사용될 수도 있다.}을 먼저 비교해서 높은 것을 실행하고, android:priority 값이 같은 경우에는 시스템이 랜덤으로 선택해서 실행한다.
+Service는 intent-filter의 android:priority 속성값\footnote{\url{http://developer.android.com/guide/topics/manifest/intent-filter-element.html}을 참고하자. priority값은 -999에서 999까지이다. 디폴트값은 0이다. 실제로 범위를 넘는 값을 넣어도 실행에는 문제가 없다. IntentFilter 소스를 봐도 체크 로직이 없다. 가용한 범위도 충분하기 때문에 굳이 범위를 넘어서 쓰진 말자. 이후 버전에서는 유효성 체크에 범위가 사용될 수도 있다.}을 먼저 비교해서 높은 것을 실행하고, android:priority 값이 같은 경우에는 시스템이 랜덤으로 선택해서 실행한다.
 결국 암시적 인텐트로 Service를 실행하는 건 여러 변수가 있다.
 
 \begin{lstlisting}[frame=single]

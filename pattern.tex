@@ -205,7 +205,7 @@ OOM이 발생할 때까지도 CalenderRelatedActivity의 finalize()가 불리지
 ...
 09-02 20:51:36.829  25785-25785/com.naver.android.sample E/dalvikvm-heap: Out of memory on a 176947216-byte allocation.
 \end{lstlisting}
-4라인(1)에 바로 CalenderRelatedActivity의 finalize()가 불리었으니, 정상적으로 GC된 것을 알 수 있다.
+4라인(1)에서  CalenderRelatedActivity의 finalize()가 불리었으니, 정상적으로 GC된 것을 알 수 있다.
 
 \section{마커 인터페이스}
 마커 인터페이스\footnote{$\ulcorner$이펙티브 자바$\lrcorner$, 조슈아 블로크 저, 이병준 역, 인사이트, 2014, 규칙 37을 참고하자.}
@@ -268,7 +268,7 @@ Serializable도 마커 인터페이스의 예이다. 이 절에서는 마커 인
 
 여기에서 필자가 선택한 방법이 마커 인터페이스이다. 마커 인터페이스를 통해 두 번째와 세 번째도 문제가 해결되는 것을 확인해보자.
 지금 상황에서 마커 인터페이스를 적용하는 방법을 보자.
-먼저 각 작업을 마커 인터페이스에 대응시켜 만든다.\\
+먼저 각 작업을 마커 인터페이스로 매핑한다.\\
 
 \begin{lstlisting}[frame=single]
 public interface Markable1 { }
@@ -421,6 +421,73 @@ public TaxiActivity extends Activity implements IgnorePhoneState {
 
 이런 경우에는 인터페이스나 애노테이션을 쓰는 게 별 차이가 있어 보이지 않는다. 다만 인터페이스를 구현하면 자식 클래스에도 영향이 있지만, 애노테이션을 쓰는 경우 상속과 관련없이 각 클래스마다 개별적으로 애노테이션을 지정해야 한다. 어느 것이 맞는 게 아니라 방식을 이해하고 선택하도록 하자.
 
+\begin{comment}
+\subsection{EnumSet 또는 bit flag 사용}
+오버라이딩할 필요가 있는데 속성의 수도 많아 메서드를 수십 개 만들어야 하는 상황이라면 EnumSet을 활용할 수도 있다.
+
+\begin{lstlisting}[frame=single]  
+    @Override 
+    protected EnumSet<Attr> getAttributes() { 
+        return EnumSet.of(Attr.A, Attr.B, Attr.D);
+    }
+
+\end{lstlisting}
+
+상위 클래스에서 다음과 같이 쓴다. 
+\begin{lstlisting}[frame=single] 
+	EnumSet<Attr> enumSet = getAttributes();
+  	if (enumSet.contains(Attr.A)) { 
+  		someOperationW();
+  	} 
+\end{lstlisting}
+ 
+EnumSet과 유사한 방식으로 bit field를 사용할 수도 있다. Effective Java Item 32에는 bit field 보다는 EnumSet을 쓰라고 나오지만, bit field도 안드로이드에서 많이 쓰이는 방식이다.\footnote{안드로이드에서는 퍼포먼스 이슈 때문에 Enum보다는 int 상수를 쓰라는 가이드가 아직 남아있다. Effective Java와 상충되는 여러 가지 가이드가 있지만, 갈수록 고려할 내용에서 줄어들고 있다.}
+
+\subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}
+boolean을 리턴하는 메서드를 쓰는 것도 비슷하긴 하다.
+ 
+부모 클래스에서 아래와 같이 사용한다.
+	
+\begin{lstlisting}[frame=single] 
+	public void execute() {
+		if (isAttribute1()) {
+ 			someOperationW();
+		}
+		...
+	}
+ 
+	protected boolean isAttribute1() {
+		return false;
+	}
+\end{lstlisting}
+ 
+하위 클래스에서 isAttributeA() 메서드를 필요할 때 오버라이드 하는 방식이다.
+나도 이 방법을 쓰는 경우가 있긴 한데, marker interface는 좀 더 복잡한 케이스에 더 맞는다.\\
+
+경우를 좀 생각해보자.
+해야 할 if  문이 10개라고 하면 10개의 boolean을 리턴하는 메서드가 필요해진다.
+하위 클래스에서는 어느 것에 true이고, 어느 것에 false인지를 정해주면 되는데, 갯수가 많아지면, 나중에 정책이 바뀔 때 작업에서 혼돈이 있지 않을까.\\
+ 
+한 가지 비유를 생각해보았다.
+10권의 지정된 책이 있다. 내가 속한 조직의 구성원들한테, 각 책을 갖고 있는지 여부에 따라서 뭔가를 해주고 싶다. 책을 사준다든가, 교육을 보내준다든가 하는 게 있을 것이다.\\
+ 
+이때 각각의 boolean 리턴 메서드를 만들 수 있다. hasEffectiveJava(), hasAndroidHacks(), ...
+각 구성원 클래스는 이것을 오버라이드 해서 갖고 있는 책에다 true를 리턴하게 하면 된다.\\
+
+그런데 어느날 책 장터가 열려서 각자 갖고 있는 책들이 다 바뀌어 버렸다.
+이때 또 각각 찾아서 true/false를 바꿔주면 된다.\\
+ 
+그런데 이런 경우에 이게 더 쉽지 않을까? 책1 가지고 있는지, 책2 가지고 있는지 계속 묻는 거 보다, 자기가 갖고 있는 책만 나열하라고 하는 것이다.
+boolean 메서드를 쓰는 방식이 책 각각에 대해서 묻는 것이고, marker interface를 쓰는 건 갖고 있는 것만 나열하는 방식이다.\\
+ 
+한두개라면  boolean 메서드 방식이 확실히 더 낫겠지만, 갯수가 막 늘어나면 한계가 보인다는 것이다.
+결국 100\% 정답은 없고, 저울질을 해봐야 한다.\\
+ 
+marker interface의 장점이 또 하나 있다. 
+10권에서 한권이 늘어나도, 수정이 간단하다. 인터페이스 하나 만들고, 각 하위 클래스에다 implements 에 인터페이스 추가만 하면 된다.
+아무리 IDE가 편리해 졌다지만, 메서드 생성하고 true/false 리턴하는 번거로움 보다 낫다.\\
+\end{comment}
+
 \section{Fragment 정적 생성}
 아래 2가지 패턴 가운데 첫 번째 패턴이 개발자 사이트나 많은 샘플에서 주로 쓰고 있다. 그런데 왜인지는 잘 나와있지 않다.
 \begin{lstlisting}[frame=single]
@@ -506,98 +573,8 @@ onSaveInstanceState()를 꼭 써야하는 상황은 있겠지만, 전달된 값�
 첫 번째 방식이 선호되는 또 다른 이유는 LEFT나 RIGHT 같은 변수명이 외부에 노출되지 않는 장점 때문이다. 
 Activity간 전환에서도 Intent의 Extra Bundle 키 값을 서로 알 필요가 없게 하기 위해서 정적인 생성 방식을 사용하기도 한다.
 
-\begin{comment}
-\subsubsection{하위 클래스에서 boolean 리턴 메서드 오버라이드}
-boolean을 리턴하는 메서드를 쓰는 것도 비슷하긴 하다.
- 
-부모 클래스에서 아래와 같이 사용한다.
-	
-\begin{lstlisting}[frame=single] 
-	public void execute() {
-		if (isAttribute1()) {
- 			someOperationW();
-		}
-		...
-	}
- 
-	protected boolean isAttribute1() {
-		return false;
-	}
-\end{lstlisting}
- 
-하위 클래스에서 isAttributeA() 메서드를 필요할 때 오버라이드 하는 방식이다.
-나도 이 방법을 쓰는 경우가 있긴 한데, marker interface는 좀 더 복잡한 케이스에 더 맞는다.\\
+\section{AOP}
 
-경우를 좀 생각해보자.
-해야 할 if  문이 10개라고 하면 10개의 boolean을 리턴하는 메서드가 필요해진다.
-하위 클래스에서는 어느 것에 true이고, 어느 것에 false인지를 정해주면 되는데, 갯수가 많아지면, 나중에 정책이 바뀔 때 작업에서 혼돈이 있지 않을까.\\
- 
-한 가지 비유를 생각해보았다.
-10권의 지정된 책이 있다. 내가 속한 조직의 구성원들한테, 각 책을 갖고 있는지 여부에 따라서 뭔가를 해주고 싶다. 책을 사준다든가, 교육을 보내준다든가 하는 게 있을 것이다.\\
- 
-이때 각각의 boolean 리턴 메서드를 만들 수 있다. hasEffectiveJava(), hasAndroidHacks(), ...
-각 구성원 클래스는 이것을 오버라이드 해서 갖고 있는 책에다 true를 리턴하게 하면 된다.\\
-
-그런데 어느날 책 장터가 열려서 각자 갖고 있는 책들이 다 바뀌어 버렸다.
-이때 또 각각 찾아서 true/false를 바꿔주면 된다.\\
- 
-그런데 이런 경우에 이게 더 쉽지 않을까? 책1 가지고 있는지, 책2 가지고 있는지 계속 묻는 거 보다, 자기가 갖고 있는 책만 나열하라고 하는 것이다.
-boolean 메서드를 쓰는 방식이 책 각각에 대해서 묻는 것이고, marker interface를 쓰는 건 갖고 있는 것만 나열하는 방식이다.\\
- 
-한두개라면  boolean 메서드 방식이 확실히 더 낫겠지만, 갯수가 막 늘어나면 한계가 보인다는 것이다.
-결국 100\% 정답은 없고, 저울질을 해봐야 한다.\\
- 
-marker interface의 장점이 또 하나 있다. 
-10권에서 한권이 늘어나도, 수정이 간단하다. 인터페이스 하나 만들고, 각 하위 클래스에다 implements 에 인터페이스 추가만 하면 된다.
-아무리 IDE가 편리해 졌다지만, 메서드 생성하고 true/false 리턴하는 번거로움 보다 낫다.\\
-
-\subsubsection{EnumSet 또는 bit flag 사용}
-오버라이딩할 필요가 있는데 속성의 수도 많아 메서드를 수십 개 만들어야 하는 상황이라면 EnumSet을 활용할 수도 있다.
-
-\begin{lstlisting}[frame=single]  
-    @Override 
-    protected EnumSet<Attr> getAttributes() { 
-        return EnumSet.of(Attr.A, Attr.B, Attr.D);
-    }
-
-\end{lstlisting}
-
-상위 클래스에서 다음과 같이 쓴다. 
-\begin{lstlisting}[frame=single] 
-	EnumSet<Attr> enumSet = getAttributes();
-  	if (enumSet.contains(Attr.A)) { 
-  		someOperationW();
-  	} 
-\end{lstlisting}
- 
-EnumSet과 유사한 방식으로 bit field를 사용할 수도 있다. Effective Java Item 32에는 bit field 보다는 EnumSet을 쓰라고 나오지만, bit field도 안드로이드에서 많이 쓰이는 방식이다.\footnote{안드로이드에서는 퍼포먼스 이슈 때문에 Enum보다는 int 상수를 쓰라는 가이드가 아직 남아있다. Effective Java와 상충되는 여러 가지 가이드가 있지만, 갈수록 고려할 내용에서 줄어들고 있다.}
-\end{comment}
-
-\begin{comment}
-\subsubsection{Model View Presenter 패턴}
-전체적으로 쓰기에는 무리가 있다.
-뷰 네비게이션 정도로만 사용하는 것이 좋지 않을까.
-Presenter를 쓰면 뷰를 다른 뷰로 교체하는 게 수월한 부분은 큰 이익입니다.
-여러 개의 뷰를 하나의 Presenter로 커버하는 건 간단치는 않은 듯 하고요. 
-"리스트뷰가 그리드뷰로 바뀌었다" 이 정도의 요구사항이면 그럴 수 있지만, 실제 요구사항은 정말 복잡다단하잖아요.
- 
-Presenter에서 네트웍 상태를 체크해서 뷰에 반영하기 위해서는 어찌해야 될까 생각해봤습니다.
-Context 가 Presenter에 전달되어 있어야 겠죠. Context가 전달되어야만 할 수 있는 게 무지 많습니다.
- 
-Context만 전달되면 모든게 다 될까요? 경우에 따라서는 액티비티가 전달이 되어야 할 수도 있습니다. 
-그렇다면 액티비티에서는 바로 XXX 메서드호출해서 체크하는 것을 Presenter에서는  ((Activity) context).XXX 해야하는 경우까지 생길 수 있겠죠.
- 
-요지는 뭔가 하면 디펜던시를 어떻게 완전히 끊느냐입니다.
- 
-웹에서 유명한 프레임웍이 스트러츠와 스프링이 있습니다.
-초기에 스트러츠에서는 액션을 만들때 HttpServletRequest라는 걸 계속 전달을 해왔습니다. 근데 이 Servlet API 종속때문에 테스트도 어렵고, 그 자체로 완결성을 갖기가 어려웠어요.
-그런데 스프링에서는 프레임웍 내부에서 알아서 다 하고, 개발자가 POJO 만 만들면 되었어요.
-POJO만 만들었으니, 이건 꼭 웹에서만 사용하는 것도 아니고, 일반 애플리케이션에서도 사용하는 데 아무 문제가 없었죠.
- 
-안드로이드 MVP 패턴을 전적으로 사용함에도 코드 복잡성을 줄이기 위해서는 일종의 프레임웍까지 함께 있어야 한다는 게 제 생각이고요.
-모바일에서 속도를 희생시키지 않으면서도 잘만든 프레임웍을 만드는 건 꽤 어려운 일인 듯 합니다만..
-
-\subsection{AOP}
 AOP를 굳이 설명은 하지 않고 아래 링크로 대체하겠습니다.
 http://isstory83.tistory.com/90
  
@@ -640,4 +617,29 @@ http://javajigi.net/pages/viewpage.action?pageId=1081
  
 http://www.eclipse.org/aspectj/doc/next/adk15notebook/ataspectj.html
 http://www.egovframe.go.kr/wiki/doku.php?id=egovframework:rte:fdl:aop:aspectj
+
+\begin{comment}
+\section{Model View Presenter 패턴}
+전체적으로 쓰기에는 무리가 있다.
+뷰 네비게이션 정도로만 사용하는 것이 좋지 않을까.
+Presenter를 쓰면 뷰를 다른 뷰로 교체하는 게 수월한 부분은 큰 이익입니다.
+여러 개의 뷰를 하나의 Presenter로 커버하는 건 간단치는 않은 듯 하고요. 
+"리스트뷰가 그리드뷰로 바뀌었다" 이 정도의 요구사항이면 그럴 수 있지만, 실제 요구사항은 정말 복잡다단하잖아요.
+ 
+Presenter에서 네트웍 상태를 체크해서 뷰에 반영하기 위해서는 어찌해야 될까 생각해봤습니다.
+Context 가 Presenter에 전달되어 있어야 겠죠. Context가 전달되어야만 할 수 있는 게 무지 많습니다.
+ 
+Context만 전달되면 모든게 다 될까요? 경우에 따라서는 액티비티가 전달이 되어야 할 수도 있습니다. 
+그렇다면 액티비티에서는 바로 XXX 메서드호출해서 체크하는 것을 Presenter에서는  ((Activity) context).XXX 해야하는 경우까지 생길 수 있겠죠.
+ 
+요지는 뭔가 하면 디펜던시를 어떻게 완전히 끊느냐입니다.
+ 
+웹에서 유명한 프레임웍이 스트러츠와 스프링이 있습니다.
+초기에 스트러츠에서는 액션을 만들때 HttpServletRequest라는 걸 계속 전달을 해왔습니다. 근데 이 Servlet API 종속때문에 테스트도 어렵고, 그 자체로 완결성을 갖기가 어려웠어요.
+그런데 스프링에서는 프레임웍 내부에서 알아서 다 하고, 개발자가 POJO 만 만들면 되었어요.
+POJO만 만들었으니, 이건 꼭 웹에서만 사용하는 것도 아니고, 일반 애플리케이션에서도 사용하는 데 아무 문제가 없었죠.
+ 
+안드로이드 MVP 패턴을 전적으로 사용함에도 코드 복잡성을 줄이기 위해서는 일종의 프레임웍까지 함께 있어야 한다는 게 제 생각이고요.
+모바일에서 속도를 희생시키지 않으면서도 잘만든 프레임웍을 만드는 건 꽤 어려운 일인 듯 합니다만..
+
 \end{comment}

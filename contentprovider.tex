@@ -242,7 +242,7 @@ SQLite에서는 동시성을 높이기 위해서 Exclusive Lock을 잡는 시간
 결국 CRUD에서 Read를 뺀 나머지 CUD에서 쓰기를 할 때 Exclusive Lock을 잡는 것 때문에 DB Lock 문제가 생긴다. 
 그러나 단순 CUD에서도 Lock을 잡는 게 짧은 시간이기 때문에 빈번하게 문제를 일으키지 않는다. 
 가장 Lock을 오래 잡을 수 있는 케이스로는 쓰기를 한꺼번에 하는 트랜잭션이다.
-SQLite에서 트랜잭션은 deferred, immediate, exclusive의 3가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}를 참고하자.}\\
+SQLite에서 트랜잭션은 deferred, immediate, exclusive의 3가지 동작 방식(behavior)를 사용하고, 디폴트는 deferred이다.\footnote{\url{http://sqlite.org/lang\_transaction.html}을 참고하자.}\\
 
 트랜잭션의 각 동작 방식에 대해서 먼저 알아보자.
 \begin{itemize}
@@ -313,7 +313,8 @@ Lock/트랜잭션 관련해서 테스트 샘플 코드는 github에서 찾을 �
 
 \end{enumerate}
 
-1$\sim$5번의 테스트에서 중요한 것은  SQLiteDatabase 인스턴스를 하나만 가지고 여러 스레드에서 명령을 실행해도 Lock 문제가 발생하지 않는다는 것이다. 이것은 SQLite의 default threading mode가 serialized이기 때문이다. 즉 명령어들은 순차적으로 실행되는 것이다.\footnote{\url{http://stackoverflow.com/questions/11167834/what-is-the-default-threading-mode-of-sqlite-in-android}}\\
+1$\sim$5번의 테스트에서 중요한 것은  SQLiteDatabase 인스턴스를 하나만 가지고 여러 스레드에서 명령을 실행해도 Lock 문제가 발생하지 않는다는 것이다. 이것은 SQLite의 default threading mode가 serialized이기 때문이다. 즉 명령어들은 순차적으로 실행되는 것이다.
+% \footnote{\url{http://stackoverflow.com/questions/11167834/what-is-the-default-threading-mode-of-sqlite-in-android}}\\
 
 threading mode 관련한 내용은 아래 url을 참고하자.\\
 \url{http://www.sqlite.org/threadsafe.html}\\
@@ -419,7 +420,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 \item 생성자의 세 번째 파라미터는 거의 null을 넣는다. 
 쿼리 결과로 Cursor 구현체인 SQLiteCursor를 쓰지 않는다면, Cursor 구현을 생성하는 Factory인 
 SQLiteDatabase.CursorFactory를 새로 만들어서 파라미터에 전달할 수 있지만 필요한 경우가 사실상 없다.
-%쿼리 결과로 SQLiteCursor를 쓰지 않는 경우라면, Cursor를 생성하는 SQLiteDatabase.CursorFactory 를 새로 만들어서 넣는 게 가능하지만, 필요한 경우가 사실상 없다.
 
 \item DB 생성은 어느 시점에 될까? SQLiteOpenHelper 생성자에서 하는 것으로 생각할 수 있지만 그렇지 않다.
 실제로 DB 열기/생성(openOrCreate)은 SQLiteOpenHelper의 getReadableDatabase()나 getWritableDatabase() 메서드를 호출할 때이다.
