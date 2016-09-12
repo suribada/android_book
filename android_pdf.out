@@ -31,7 +31,7 @@
 \BOOKMARK [0][-]{chapter.5}{Activity}{}% 31
 \BOOKMARK [1][-]{section.5.1}{생명주기}{chapter.5}% 32
 \BOOKMARK [2][-]{subsection.5.1.1}{startActivity\(\)와 startActivityForResult\(\)}{section.5.1}% 33
-\BOOKMARK [2][-]{subsection.5.1.2}{Activity 전환 시 생명주기}{section.5.1}% 34
+\BOOKMARK [2][-]{subsection.5.1.2}{Activity 전환 시 생명주기 메서드 호출}{section.5.1}% 34
 \BOOKMARK [2][-]{subsection.5.1.3}{생명주기 메서드 사용 시 주의사항}{section.5.1}% 35
 \BOOKMARK [1][-]{section.5.2}{Configuration 변경}{chapter.5}% 36
 \BOOKMARK [2][-]{subsection.5.2.1}{리소스 반영}{section.5.2}% 37
@@ -93,4 +93,3 @@
 \BOOKMARK [1][-]{section.11.1}{싱글톤 패턴}{chapter.11}% 93
 \BOOKMARK [1][-]{section.11.2}{마커 인터페이스}{chapter.11}% 94
 \BOOKMARK [1][-]{section.11.3}{Fragment 정적 생성}{chapter.11}% 95
-\BOOKMARK [1][-]{section.11.4}{AOP}{chapter.11}% 96
