@@ -8,7 +8,7 @@ latexbook 아래 위치. 편집 검토하면서 내용이 많이 변경
 # 정오표
 - 3p. 10라인 씬 클라인언트->씬 클라이언트
 - 49p. 2라인 스레드가 스레드를 -> 스레드 풀에서 스레드를
-- 54p. 15, 16라인 DelayWorkQueue -> DelayedWorkQueue
+- 54p. 15, 16라인 DelayWorkQueue -> DelayedWorkQueue(제보해주신 loadofnightmare.9876님 감사합니다.)
 - 73p. 1라인 ContetImpl -> ContextImpl(제보해주신 김동진님 감사합니다.)
 - 73p. 3라인 Context Wrapper -> ContextWrapper
 - 86p. 코드 5-2 3라인 ActvityA -> ActivityA
