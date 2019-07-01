@@ -13,7 +13,7 @@ latexbook 아래 위치. 편집 검토하면서 내용이 많이 변경
 - 73p. 1라인 ContetImpl -> ContextImpl(제보해주신 김동진님 감사합니다.)
 - 73p. 3라인 Context Wrapper -> ContextWrapper
 - 86p. 코드 5-2 3라인 ActvityA -> ActivityA
-- 86p. 코드 5-2 6라인 제거 필요(제보해주신 loadofnightmare.9876님 감사합니다.)
+- 86p. 코드 5-2 7라인 제거 필요(제보해주신 loadofnightmare.9876님 감사합니다.)
 - 126p. SplashPage와 SplashActivity가 혼용되어 있음. SplashActivity로 맞춤
 - 222p. 15라인 Appplication의 데이 공유에->Application의 데이터 공유에(제보해주신 황두영님 감사합니다.)
 - 233p. 11라인 불필요하도록 오버라이드한 -> 불필요하도록 오버로드한
